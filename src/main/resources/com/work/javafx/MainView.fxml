@@ -9,7 +9,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.work.javafx.controller.MainViewController"
-            prefHeight="600.0" prefWidth="800.0"
+            prefHeight="500.0" prefWidth="800.0"
             styleClass="root">
 
     <!-- 顶部导航栏 -->

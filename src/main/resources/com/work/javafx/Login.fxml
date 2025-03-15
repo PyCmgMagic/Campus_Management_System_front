@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" styleClass="main-container" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.LoginController">
+
+    <!-- 左侧红色区域 -->
+    <HBox prefWidth="400.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <VBox alignment="CENTER_LEFT" spacing="20.0" styleClass="left-content">
+            <padding>
+                <Insets left="40.0" />
+            </padding>
+
+            <!-- 系统图标 -->
+            <StackPane styleClass="logo-container">
+                <Rectangle height="40.0" styleClass="logo-box" width="40.0" />
+            </StackPane>
+
+            <!-- 系统名称 -->
+            <Label styleClass="system-title" text="教务管理系统" />
+
+            <!-- 欢迎文本 -->
+            <Label styleClass="welcome-text" text="欢迎使用教务管理系统" />
+
+            <!-- 系统描述 -->
+            <Label styleClass="system-desc" text="高效管理课程、成绩和学生信息" />
+
+            <!-- 底部设计信息 -->
+            <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                <VBox alignment="BOTTOM_LEFT">
+                    <Label styleClass="design-info" text="Designed by Group10" />
+                    <padding>
+                        <Insets bottom="30.0" />
+                    </padding>
+                </VBox>
+            </HBox>
+        </VBox>
+    </HBox>
+
+    <!-- 右侧登录区域 -->
+    <VBox alignment="CENTER" prefWidth="400.0" styleClass="right-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <VBox maxWidth="350.0" spacing="20.0" styleClass="login-form">
+            <!-- 登录标题 -->
+            <Label styleClass="login-title" text="用户登录" />
+
+            <!-- 用户名输入框 -->
+            <VBox spacing="10.0">
+                <Label styleClass="field-label" text="用户名" />
+                <TextField fx:id="usernameField" promptText="请输入学号/工号" styleClass="input-field" />
+            </VBox>
+
+            <!-- 密码输入框 -->
+            <VBox spacing="10.0">
+                <Label styleClass="field-label" text="密码" />
+                <PasswordField fx:id="passwordField" promptText="请输入密码" styleClass="input-field" />
+            </VBox>
+
+            <!-- 管理员登录-->
+            <HBox alignment="CENTER_RIGHT">
+            <HBox alignment="CENTER" prefHeight="6.0" prefWidth="200.0">
+               <children>
+                  <HBox prefHeight="22.0" prefWidth="214.0">
+                     <children>
+                        <Label fx:id="errorMessageLabel" alignment="CENTER" prefHeight="43.0" prefWidth="200.0" textFill="RED" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+               </children>
+            </HBox>
+                <Hyperlink fx:id="adminLogin" styleClass="adminLogin" text="管理员登录" />
+            </HBox>
+         <HBox alignment="CENTER">
+            <children>
+                        <!-- 登录按钮 -->
+                  <Button fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
+            </children>
+         </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>

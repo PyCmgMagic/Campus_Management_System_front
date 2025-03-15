@@ -1,11 +1,14 @@
 package com.work.javafx.controller;
 
+import com.work.javafx.MainApplication;
+import com.work.javafx.util.ShowMessage;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -143,6 +146,15 @@ public class MainViewController implements Initializable {
     @FXML
     private void logout() {
         // TODO: 实现退出登录的逻辑
+        //TODO： 清除token
+
+        //切换到登陆界面
+        try {
+            MainApplication.changeView("Login.fxml","css/Login.css");
+        } catch (IOException e) {
+            e.printStackTrace();
+              ShowMessage.showErrorMessage("退出登录失败",null);
+        }
         System.out.println("执行退出登录操作");
     }
 

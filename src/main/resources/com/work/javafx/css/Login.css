@@ -1,0 +1,124 @@
+/* 全局样式 */
+.main-container {
+    -fx-background-color: white;
+}
+
+/* 左侧面板样式 */
+.left-panel {
+    -fx-background-color: #c13232;
+    -fx-background-radius: 0;
+}
+
+.left-content {
+    -fx-padding: 40px 20px;
+}
+
+/* 系统图标样式 */
+.logo-container {
+    -fx-padding: 10px 0 30px 0;
+}
+
+.logo-box {
+    -fx-fill: transparent;
+    -fx-stroke: white;
+    -fx-stroke-width: 3;
+    -fx-arc-width: 10;
+    -fx-arc-height: 10;
+}
+
+/* 左侧文本样式 */
+.system-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 20px 0;
+}
+
+.welcome-text {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-padding: 10px 0;
+}
+
+.system-desc {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-opacity: 0.9;
+    -fx-padding: 5px 0;
+}
+
+.design-info {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-opacity: 0.8;
+}
+
+/* 右侧登录面板样式 */
+.right-panel {
+    -fx-background-color: white;
+    -fx-padding: 40px;
+}
+
+.login-form {
+    -fx-padding: 20px;
+}
+
+.login-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 20px 0;
+    -fx-border-color: #c13232;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-insets: 0 0 20 0;
+}
+
+/* 输入框样式 */
+.field-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.input-field {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #999999;
+}
+
+.input-field:focused {
+    -fx-border-color: #c13232;
+}
+
+/* 忘记密码链接样式 */
+.adminLogin {
+    -fx-text-fill: #666666;
+    -fx-font-size: 12px;
+    -fx-border-width: 0;
+}
+
+.adminLogin:hover {
+    -fx-text-fill: #c13232;
+}
+
+/* 登录按钮样式 */
+.login-button {
+    -fx-background-color: #c13232;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 12px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-min-width: 100%;
+    -fx-margin-top: 20px;
+}
+
+.login-button:hover {
+    -fx-background-color: #a52a2a;
+}
+
+.login-button:pressed {
+    -fx-background-color: #8b0000;
+}
