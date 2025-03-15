@@ -25,7 +25,7 @@
 }
 
 .user-btn {
-    -fx-background-radius: 50%;
+    -fx-background-radius: 15px;
     -fx-min-width: 30px;
     -fx-min-height: 30px;
     -fx-background-color: rgba(255, 255, 255, 0.3);
