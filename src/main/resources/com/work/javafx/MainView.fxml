@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.work.javafx.controller.MainViewController"
+            prefHeight="600.0" prefWidth="800.0"
+            styleClass="root">
+
+    <!-- 顶部导航栏 -->
+    <top>
+        <HBox styleClass="top-bar">
+            <Label text="教务管理系统" styleClass="app-title"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button styleClass="notification-btn" text="&#xf0f3;" />
+            <Button styleClass="user-btn" text="学" />
+            <Button styleClass="logout-btn" text="退出登录" />
+        </HBox>
+    </top>
+
+    <!-- 左侧菜单 -->
+    <left>
+        <VBox styleClass="side-menu">
+            <Button styleClass="menu-item, active-menu-item" text="首页">
+                <graphic>
+                    <Region styleClass="home-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="个人中心">
+                <graphic>
+                    <Region styleClass="user-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="课表与课程">
+                <graphic>
+                    <Region styleClass="course-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="选课系统">
+                <graphic>
+                    <Region styleClass="select-course-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="成绩查询">
+                <graphic>
+                    <Region styleClass="grade-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="考试管理">
+                <graphic>
+                    <Region styleClass="exam-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="通知公告">
+                <graphic>
+                    <Region styleClass="notice-icon"/>
+                </graphic>
+            </Button>
+            <Button styleClass="menu-item" text="教学评价">
+                <graphic>
+                    <Region styleClass="evaluation-icon"/>
+                </graphic>
+            </Button>
+        </VBox>
+    </left>
+
+    <!-- 主内容区域 -->
+    <center>
+        <VBox styleClass="content-area">
+            <HBox styleClass="content-header">
+                <Label text="首页" styleClass="content-title"/>
+            </HBox>
+
+            <VBox styleClass="schedule-container">
+                <HBox styleClass="schedule-header">
+                    <Label text="今日课程" styleClass="schedule-title"/>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button text="查看完整课表" styleClass="view-all-btn"/>
+                </HBox>
+
+                <VBox styleClass="date-display">
+                    <Label text="2023年3月15日 星期六" styleClass="date-text"/>
+                </VBox>
+
+                <VBox styleClass="course-item">
+                    <HBox styleClass="course-time">
+                        <Label text="08:00 - 09:40" styleClass="time-text"/>
+                    </HBox>
+                    <HBox styleClass="course-info">
+                        <VBox>
+                            <Label text="高等数学 (II)" styleClass="course-name"/>
+                            <HBox styleClass="course-location">
+                                <Region styleClass="location-icon"/>
+                                <Label text="理科楼 A203" styleClass="location-text"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <VBox styleClass="course-item">
+                    <HBox styleClass="course-time">
+                        <Label text="10:10 - 11:50" styleClass="time-text"/>
+                    </HBox>
+                    <HBox styleClass="course-info">
+                        <VBox>
+                            <Label text="大学物理实验" styleClass="course-name"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

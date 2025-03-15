@@ -1,0 +1,18 @@
+module com.work.javafx {
+    requires javafx.controls;
+    requires javafx.fxml;
+    requires javafx.web;
+
+    requires org.controlsfx.controls;
+    requires com.dlsc.formsfx;
+    requires net.synedra.validatorfx;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.bootstrapfx.core;
+    requires eu.hansolo.tilesfx;
+    requires com.almasb.fxgl.all;
+
+    opens com.work.javafx to javafx.fxml;
+    exports com.work.javafx;
+    exports com.work.javafx.controller;
+    opens com.work.javafx.controller to javafx.fxml;
+}
