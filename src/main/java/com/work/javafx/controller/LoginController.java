@@ -1,6 +1,7 @@
 package com.work.javafx.controller;
 
 import com.work.javafx.MainApplication;
+import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -53,6 +54,9 @@ public class LoginController {
         if (adminLogin != null) {
             adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
+        //缺省登录用户名和密码
+        usernameField.setText("admin");
+        passwordField.setText("admin123");
     }
 
     /**
@@ -68,10 +72,22 @@ public class LoginController {
             showErrorMessage("用户名和密码不能为空");
             return;
         }
-
-        // 这里添加实际的用户验证逻辑
-        // 示例：简单的用户名和密码验证
+        // 用户验证逻辑
         if (authenticateUser(username, password)) {
+            //网络请求
+//            NetworkUtils.get("https://uapis.cn/api/say", new NetworkUtils.Callback<String>() {
+//                @Override
+//                public void onSuccess(String result) {
+//                    System.out.println(result);
+//                    System.out.println("请求成功");
+//                }
+//
+//                @Override
+//                public void onFailure(Exception e) {
+//                    System.out.println(e);
+//                    System.out.println("请求失败");
+//                }
+//            });
             // 登录成功，跳转到主界面
             navigateToMainPage();
         } else {
@@ -96,6 +112,7 @@ private void handleAdminButtonClicked(ActionEvent event){
      */
     private boolean authenticateUser(String username, String password) {
         //TODO 登陆验证
+
         //测试
         return (username.equals("admin") && password.equals("admin123")) ||
                 (username.equals("teacher") && password.equals("teacher123")) ||
