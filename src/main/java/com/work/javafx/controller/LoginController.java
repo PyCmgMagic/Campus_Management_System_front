@@ -172,7 +172,7 @@ private void handleAdminButtonClicked(ActionEvent event){
      */
     private void navigateToMainPage() {
         try {
-            MainApplication.changeView("MainView.fxml","css/MainView.css");
+            MainApplication.showMainView();
         } catch (IOException e) {
             e.printStackTrace();
             showErrorMessage("无法加载主界面");

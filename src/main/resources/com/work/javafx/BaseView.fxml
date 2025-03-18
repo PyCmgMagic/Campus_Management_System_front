@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.work.javafx.controller.BaseViewController"
+            prefHeight="600.0" prefWidth="900.0"
+            styleClass="root">
+
+    <!-- 顶部导航栏 -->
+    <top>
+        <HBox styleClass="top-bar">
+            <Label text="教务管理系统" styleClass="app-title"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button styleClass="user-btn" text="谭同学" />
+            <Button styleClass="logout-btn" text="退出登录" onAction="#logout" />
+        </HBox>
+    </top>
+
+    <!-- 左侧菜单 -->
+    <left>
+        <VBox styleClass="side-menu">
+            <Button fx:id="homeBtn" styleClass="menu-item" text="首页" onAction="#switchToHome">
+                <graphic>
+                    <Region styleClass="home-icon"/>
+                </graphic>
+            </Button>
+            <Button fx:id="personalCenterBtn" styleClass="menu-item" text="个人中心" onAction="#switchToPersonalCenter">
+                <graphic>
+                    <Region styleClass="user-icon"/>
+                </graphic>
+            </Button>
+            <Button fx:id="courseScheduleBtn" styleClass="menu-item" text="课表查询" onAction="#switchToCourseSchedule">
+                <graphic>
+                    <Region styleClass="course-icon"/>
+                </graphic>
+            </Button>
+            <Button fx:id="courseSelectionBtn" styleClass="menu-item" text="选课系统" onAction="#switchToCourseSelection">
+                <graphic>
+                    <Region styleClass="select-course-icon"/>
+                </graphic>
+            </Button>
+            <Button fx:id="gradeQueryBtn" styleClass="menu-item" text="成绩查询" onAction="#switchToGradeQuery">
+                <graphic>
+                    <Region styleClass="grade-icon"/>
+                </graphic>
+            </Button>
+            <Button fx:id="teachingEvaluationBtn" styleClass="menu-item" text="教学评价" onAction="#switchToTeachingEvaluation">
+                <graphic>
+                    <Region styleClass="evaluation-icon"/>
+                </graphic>
+            </Button>
+        </VBox>
+    </left>
+
+    <!-- 主内容区域 - 将用于动态加载其他视图 -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <!-- 内容将动态加载到这里 -->
+        </StackPane>
+    </center>
+</BorderPane> 

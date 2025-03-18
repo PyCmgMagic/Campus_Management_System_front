@@ -25,10 +25,15 @@ public class MainApplication extends Application {
         stage.setMinWidth(APP_WIDTH);
         stage.setMinHeight(APP_HEIGHT);
         
+        // 初始加载登录页面
         changeView("Login.fxml","css/Login.css");
         stage.show();
     }
     
+    /**
+     * 切换视图方法
+     * 用于切换整个场景的视图
+     */
     public static void changeView(String fxml, String css) throws IOException {
         Parent root = null;
         try {
@@ -36,17 +41,43 @@ public class MainApplication extends Application {
             double currentWidth = stage.getWidth();
             double currentHeight = stage.getHeight();
             
-            root = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource((fxml))));
+            // 加载新视图
+            FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource(fxml));
+            root = loader.load();
+            
+            // 创建新场景
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(MainApplication.class.getResource(css)).toExternalForm());
+            
+            // 如果有CSS样式表，则添加
+            if (css != null && !css.isEmpty()) {
+                scene.getStylesheets().add(
+                        Objects.requireNonNull(MainApplication.class.getResource(css)).toExternalForm());
+            }
+            
+            // 如果加载的是基础视图，将控制器实例保存到场景的userData中，使内容控制器可以访问
+            if (fxml.equals("BaseView.fxml")) {
+                scene.setUserData(loader.getController());
+            }
+            
+            // 设置新场景
             stage.setScene(scene);
             
             // 恢复窗口尺寸
             stage.setWidth(currentWidth);
             stage.setHeight(currentHeight);
+            
         } catch (IOException e){
             e.printStackTrace();
+            throw e;
         }
+    }
+    
+    /**
+     * 登录成功后切换到主界面
+     * 使用基础视图作为主框架
+     */
+    public static void showMainView() throws IOException {
+        changeView("BaseView.fxml", "css/BaseView.css");
     }
 
     public static void main(String[] args) {
