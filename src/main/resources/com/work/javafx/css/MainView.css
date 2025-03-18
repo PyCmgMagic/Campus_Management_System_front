@@ -90,9 +90,42 @@
 }
 
 /* 内容区域样式 */
+.content-scroll-pane {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background: white;
+}
+
+.content-scroll-pane > .viewport {
+    -fx-background-color: white;
+}
+
+.content-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.content-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 2px;
+}
+
+.content-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.content-scroll-pane .scroll-bar:vertical .increment-button,
+.content-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 5 0 5;
+}
+
 .content-area {
     -fx-background-color: white;
-    -fx-padding: 20px;
+    -fx-padding: 20px 20px 30px 20px;
+    -fx-min-width: 730;
+    -fx-pref-width: 730;
 }
 
 .content-header {

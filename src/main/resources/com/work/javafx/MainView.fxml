@@ -9,7 +9,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.work.javafx.controller.MainViewController"
-            prefHeight="500.0" prefWidth="800.0"
+            prefHeight="600.0" prefWidth="900.0"
             styleClass="root">
 
     <!-- 顶部导航栏 -->
@@ -60,48 +60,52 @@
 
     <!-- 主内容区域 -->
     <center>
-        <VBox styleClass="content-area">
-            <HBox styleClass="content-header">
-                <Label text="首页" styleClass="content-title"/>
-            </HBox>
-
-            <VBox styleClass="schedule-container">
-                <HBox styleClass="schedule-header">
-                    <Label text="今日课程" styleClass="schedule-title"/>
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button text="查看完整课表" styleClass="view-all-btn" onAction="#switchToCourseSchedule"/>
-                </HBox>
-
-                <VBox styleClass="date-display">
-                    <Label text="2023年3月15日 星期六" styleClass="date-text"/>
-                </VBox>
-
-                <VBox styleClass="course-item">
-                    <HBox styleClass="course-time">
-                        <Label text="08:00 - 09:40" styleClass="time-text"/>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll-pane" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox styleClass="content-area">
+                    <HBox styleClass="content-header">
+                        <Label text="首页" styleClass="content-title"/>
                     </HBox>
-                    <HBox styleClass="course-info">
-                        <VBox>
-                            <Label text="高等数学 (II)" styleClass="course-name"/>
-                            <HBox styleClass="course-location">
-                                <Region styleClass="location-icon"/>
-                                <Label text="理科楼 A203" styleClass="location-text"/>
+
+                    <VBox styleClass="schedule-container">
+                        <HBox styleClass="schedule-header">
+                            <Label text="今日课程" styleClass="schedule-title"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button text="查看完整课表" styleClass="view-all-btn" onAction="#switchToCourseSchedule"/>
+                        </HBox>
+
+                        <VBox styleClass="date-display">
+                            <Label text="2023年3月15日 星期六" styleClass="date-text"/>
+                        </VBox>
+
+                        <VBox styleClass="course-item">
+                            <HBox styleClass="course-time">
+                                <Label text="08:00 - 09:40" styleClass="time-text"/>
+                            </HBox>
+                            <HBox styleClass="course-info">
+                                <VBox>
+                                    <Label text="高等数学 (II)" styleClass="course-name"/>
+                                    <HBox styleClass="course-location">
+                                        <Region styleClass="location-icon"/>
+                                        <Label text="理科楼 A203" styleClass="location-text"/>
+                                    </HBox>
+                                </VBox>
                             </HBox>
                         </VBox>
-                    </HBox>
-                </VBox>
 
-                <VBox styleClass="course-item">
-                    <HBox styleClass="course-time">
-                        <Label text="10:10 - 11:50" styleClass="time-text"/>
-                    </HBox>
-                    <HBox styleClass="course-info">
-                        <VBox>
-                            <Label text="大学物理实验" styleClass="course-name"/>
+                        <VBox styleClass="course-item">
+                            <HBox styleClass="course-time">
+                                <Label text="10:10 - 11:50" styleClass="time-text"/>
+                            </HBox>
+                            <HBox styleClass="course-info">
+                                <VBox>
+                                    <Label text="大学物理实验" styleClass="course-name"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                    </HBox>
+                    </VBox>
                 </VBox>
-            </VBox>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

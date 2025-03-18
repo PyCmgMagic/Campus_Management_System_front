@@ -1,0 +1,328 @@
+/* 引入MainView.css的基础样式 */
+@import "MainView.css";
+
+/* 选课系统特定样式 */
+
+/* 选课系统导航 */
+.course-selection-nav {
+    -fx-background-color: white;
+    -fx-padding: 0 0 0 0;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-spacing: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 30px;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: transparent;
+    -fx-font-weight: normal;
+    -fx-transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    -fx-background-color: #f8f8f8;
+    -fx-text-fill: #333333;
+}
+
+.active-nav-button {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent #d32f2f transparent;
+    -fx-background-color: #fff8f8;
+}
+
+/* 查询条件容器 */
+.query-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
+    -fx-margin-bottom: 25px;
+    -fx-margin-top: 25px;
+}
+
+.query-form .text-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 13px;
+    -fx-transition: all 0.3s ease;
+}
+
+.query-form .text-field:focused {
+    -fx-border-color: #d32f2f;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(211, 47, 47, 0.2), 3, 0, 0, 0);
+}
+
+.query-form .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #444444;
+    -fx-font-weight: bold;
+}
+
+.query-form .combo-box {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-size: 13px;
+    -fx-padding: 3px;
+}
+
+.query-form .combo-box:hover {
+    -fx-border-color: #aaaaaa;
+}
+
+.query-form .combo-box:focused {
+    -fx-border-color: #d32f2f;
+    -fx-background-color: white;
+}
+
+/* 课程列表容器 */
+.course-list-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 18px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
+    -fx-margin-top: 25px;
+}
+
+/* 状态图例 */
+.status-legend {
+    -fx-padding: 15px 0;
+    -fx-spacing: 20px;
+    -fx-alignment: center-left;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px 15px;
+}
+
+.legend-item {
+    -fx-spacing: 8px;
+    -fx-alignment: center-left;
+}
+
+.legend-dot {
+    -fx-min-width: 14px;
+    -fx-min-height: 14px;
+    -fx-background-radius: 7px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.available-dot {
+    -fx-background-color: #4caf50;
+}
+
+.selected-dot {
+    -fx-background-color: #2196f3;
+}
+
+.full-dot {
+    -fx-background-color: #ff5722;
+}
+
+.legend-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+}
+
+.course-count {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-padding: 5px 10px;
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-font-weight: bold;
+}
+
+/* 课程表格样式 */
+.course-table {
+    -fx-background-color: white;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.course-table .column-header {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 15px;
+    -fx-font-weight: bold;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #444444;
+}
+
+.course-table .column-header-background {
+    -fx-background-color: #f5f5f5;
+}
+
+.course-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-cell-size: 60px; 
+}
+
+.course-table .table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+
+.course-table .table-row-cell:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.course-table .table-cell {
+    -fx-alignment: center;
+    -fx-padding: 14px;
+    -fx-wrap-text: true;
+    -fx-font-size: 13px;
+}
+
+/* 表格行状态样式 */
+.available-row {
+    -fx-border-color: transparent transparent transparent #4caf50;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.selected-row {
+    -fx-border-color: transparent transparent transparent #2196f3;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.full-row {
+    -fx-border-color: transparent transparent transparent #ff5722;
+    -fx-border-width: 0 0 0 4px;
+}
+
+/* 操作按钮样式 */
+.select-button {
+    -fx-background-color: linear-gradient(to bottom, #4caf50, #388e3c);
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 8px 14px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.select-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #45a049, #2e7d32);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+.select-button:pressed {
+    -fx-background-color: #2e7d32;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.withdraw-button {
+    -fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 8px 14px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.withdraw-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #e53935, #c62828);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+.withdraw-button:pressed {
+    -fx-background-color: #c62828;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.disabled-button {
+    -fx-background-color: linear-gradient(to bottom, #9e9e9e, #757575);
+    -fx-text-fill: #eeeeee;
+    -fx-font-size: 13px;
+    -fx-padding: 8px 14px;
+    -fx-background-radius: 5px;
+    -fx-opacity: 0.8;
+    -fx-font-weight: bold;
+}
+
+/* 分页控件样式 */
+.pagination-container {
+    -fx-padding: 20px 0 5px 0;
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+    -fx-border-color: #f0f0f0 transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+    -fx-margin-top: 10px;
+}
+
+.pagination-button {
+    -fx-background-color: white;
+    -fx-text-fill: #666666;
+    -fx-padding: 8px 18px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.pagination-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #bbbbbb;
+}
+
+.pagination-button:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-translate-y: 1px;
+}
+
+.pagination-spacer {
+    -fx-pref-width: 15px;
+}
+
+.current-page {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: white;
+    -fx-padding: 8px 0;
+    -fx-background-radius: 50%;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(211, 47, 47, 0.4), 5, 0, 0, 1);
+}
+
+/* 信息提示样式 */
+.info-message {
+    -fx-padding: 15px;
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #90caf9;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1976d2;
+    -fx-effect: dropshadow(gaussian, rgba(25, 118, 210, 0.1), 5, 0, 0, 1);
+} 

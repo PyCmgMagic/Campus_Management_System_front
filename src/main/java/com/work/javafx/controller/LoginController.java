@@ -1,5 +1,7 @@
 package com.work.javafx.controller;
 
+import com.google.gson.Gson;
+import com.work.javafx.DataResponse.Res;
 import com.work.javafx.MainApplication;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
@@ -74,6 +76,33 @@ public class LoginController {
         }
         // 用户验证逻辑
         if (authenticateUser(username, password)) {
+//            //网络请求test ————post
+//            Gson gson = new Gson();
+//            class Body {
+//                private String content ;
+//                public String getContent() {
+//                    return content;
+//                }
+//
+//                public void setContent(String content) {
+//                    this.content = content;
+//                }
+//            }
+//            Body body = new Body();
+//            body.setContent(username);
+//            String json = gson.toJson(body);
+//            String url = "https://uapis.cn/api/fanyi?text=" + username;
+//            NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
+//                @Override
+//                public void onSuccess(String result) {
+//                    Res res = gson.fromJson(result,Res.class);
+//                    System.out.println(res.getTranslate());
+//                }
+//                @Override
+//                public void onFailure(Exception e) {
+//                    System.out.println(e);
+//                }
+//            });
             //网络请求
 //            NetworkUtils.get("https://uapis.cn/api/say", new NetworkUtils.Callback<String>() {
 //                @Override
@@ -88,7 +117,7 @@ public class LoginController {
 //                    System.out.println("请求失败");
 //                }
 //            });
-            // 登录成功，跳转到主界面
+//             登录成功，跳转到主界面
             navigateToMainPage();
         } else {
             // 登录失败，显示错误消息
@@ -112,7 +141,8 @@ private void handleAdminButtonClicked(ActionEvent event){
      */
     private boolean authenticateUser(String username, String password) {
         //TODO 登陆验证
-
+//
+//        return true;
         //测试
         return (username.equals("admin") && password.equals("admin123")) ||
                 (username.equals("teacher") && password.equals("teacher123")) ||

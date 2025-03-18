@@ -54,6 +54,7 @@ public class MainViewController implements Initializable {
         initButtonEvents();
         //初始化当前按钮
         currentActiveButton = homeBtn;
+        homeBtn.getStyleClass().add("active-menu-item");
     }
 
     /**
@@ -163,8 +164,8 @@ public class MainViewController implements Initializable {
      */
     @FXML
     private void viewFullSchedule() {
-        // TODO: 实现查看完整课表的逻辑
-        System.out.println("查看完整课表");
+        // 调用切换到课表查询的方法
+        switchToCourseSchedule();
     }
 
     /**
@@ -197,7 +198,13 @@ public class MainViewController implements Initializable {
         System.out.println("切换到课表");
         switchActiveButton(courseScheduleBtn);
 
-        // TODO: 实现切换到课表与课程的逻辑
+        // 实现切换到课表查询的逻辑
+        try {
+            MainApplication.changeView("CourseSchedule.fxml", "css/CourseSchedule.css");
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessage.showErrorMessage("切换到课表查询失败", null);
+        }
     }
 
     /**
@@ -208,7 +215,12 @@ public class MainViewController implements Initializable {
         System.out.println("切换到选课系统");
         switchActiveButton(courseSelectionBtn);
 
-        // TODO: 实现切换到选课系统的逻辑
+        try {
+            MainApplication.changeView("CourseSelection.fxml", "css/CourseSelection.css");
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessage.showErrorMessage("切换到选课系统失败", null);
+        }
     }
 
     /**
