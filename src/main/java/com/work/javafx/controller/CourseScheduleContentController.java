@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -273,7 +274,18 @@ public class CourseScheduleContentController implements Initializable {
     @FXML
     private void printSchedule() {
         System.out.println("打印课表");
-        ShowMessage.showInfoMessage("功能提示", "打印功能正在开发中");
+        try {
+            // 导入我们新创建的工具类
+            com.work.javafx.util.ExportUtils.printNode(
+                scheduleTableView, 
+                academicYearComboBox.getValue() + " " + 
+                semesterComboBox.getValue() + " " + 
+                scheduleTypeComboBox.getValue() + " 课表"
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowMessage.showErrorMessage("打印错误", "打印课表时发生错误：" + e.getMessage());
+        }
     }
 
     /**
@@ -282,7 +294,22 @@ public class CourseScheduleContentController implements Initializable {
     @FXML
     private void exportToExcel() {
         System.out.println("导出Excel");
-        ShowMessage.showInfoMessage("功能提示", "导出Excel功能正在开发中");
+        try {
+            // 获取当前窗口
+            Stage stage = (Stage) exportButton.getScene().getWindow();
+            
+            // 调用导出工具
+            com.work.javafx.util.ExportUtils.exportToExcel(
+                scheduleTableView,
+                academicYearComboBox.getValue(),
+                semesterComboBox.getValue(),
+                scheduleTypeComboBox.getValue(),
+                stage
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowMessage.showErrorMessage("导出错误", "导出Excel时发生错误：" + e.getMessage());
+        }
     }
 
     /**
