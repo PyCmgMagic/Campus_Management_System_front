@@ -23,52 +23,26 @@ import java.util.zip.ZipOutputStream;
 public class ExportUtils {
 
     /**
-     * 打印TableView内容
-     * 
-     * @param node      要打印的节点
-     * @param title     打印标题
+     * 打印节点
+     * @param node 要打印的节点
+     * @param jobName 打印任务名称
+     * @return 是否打印成功
      */
-    public static void printNode(Node node, String title) {
+    public static boolean printNode(Node node, String jobName) {
         PrinterJob job = PrinterJob.createPrinterJob();
-        
         if (job != null) {
             // 显示打印对话框
-            boolean showDialog = job.showPrintDialog(node.getScene().getWindow());
-            
-            if (showDialog) {
-                // 设置页面布局
-                PageLayout pageLayout = job.getPrinter().createPageLayout(
-                        Paper.A4, PageOrientation.LANDSCAPE, Printer.MarginType.DEFAULT);
-                job.getJobSettings().setPageLayout(pageLayout);
-                
-                // 设置打印标题
-                job.getJobSettings().setJobName(title);
-                
-                // 计算打印比例以适应页面
-                double scaleX = pageLayout.getPrintableWidth() / node.getBoundsInParent().getWidth();
-                double scaleY = pageLayout.getPrintableHeight() / node.getBoundsInParent().getHeight();
-                double scale = Math.min(scaleX, scaleY);
-                
-                // 应用缩放
-                Scale printScale = new Scale(scale, scale);
-                node.getTransforms().add(printScale);
-                
-                // 执行打印
+            boolean proceed = job.showPrintDialog(node.getScene().getWindow());
+            if (proceed) {
                 boolean success = job.printPage(node);
-                
-                // 移除缩放变换
-                node.getTransforms().remove(printScale);
-                
                 if (success) {
                     job.endJob();
-                    ShowMessage.showInfoMessage("打印成功", "课表已发送到打印机");
-                } else {
-                    ShowMessage.showErrorMessage("打印失败", "无法完成打印操作");
+                    return true;
                 }
             }
-        } else {
-            ShowMessage.showErrorMessage("打印错误", "无法创建打印任务");
+            job.endJob();
         }
+        return false;
     }
     
     /**

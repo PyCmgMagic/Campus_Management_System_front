@@ -1,0 +1,603 @@
+/* 成绩查询页面样式 */
+
+/* 内容区域 */
+.content-area {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 0 0 20px 0;
+}
+
+/* 标题栏 */
+.content-header {
+    -fx-background-color: white;
+    -fx-padding: 18px 24px;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 2, 0, 0, 1);
+}
+
+.content-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+}
+
+/* 查询区域 */
+.query-container {
+    -fx-background-color: white;
+    -fx-padding: 0;
+    -fx-margin: 18px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 2, 0, 0, 1);
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-border-radius: 8px;
+}
+
+.query-form {
+    -fx-padding: 16px;
+    -fx-spacing: 12px;
+}
+
+/* 按钮样式 */
+.primary-button {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #b71c1c;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.utility-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #333;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.utility-button:hover {
+    -fx-background-color: #e8e8e8;
+}
+
+/* 标签页样式 */
+.score-tab-pane {
+    -fx-tab-min-width: 120px;
+}
+
+.score-tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0, 0, 1);
+}
+
+.score-tab-pane .tab {
+    -fx-background-color: white;
+    -fx-padding: 2px 10px;
+}
+
+.score-tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #d32f2f;
+}
+
+.score-tab-pane .tab .tab-label {
+    -fx-text-fill: #666;
+    -fx-font-size: 14px;
+}
+
+.score-tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+}
+
+/* 成绩概览区域 */
+.summary-section {
+    -fx-background-color: white;
+    -fx-padding: 18px 24px;
+    -fx-margin: 18px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 1, 0, 0, 1);
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-border-radius: 8px;
+}
+
+.section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+    -fx-padding: 0 0 14px 0;
+}
+
+.summary-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 18px;
+    -fx-padding: 0 0 15px 0;
+    -fx-pref-width: 100%;
+}
+
+.summary-item {
+    -fx-background-color: #fafafa;
+    -fx-padding: 18px 22px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 2, 0, 0, 1);
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-min-width: 150px;
+    -fx-max-width: infinity;
+    -fx-pref-width: 100%;
+    -fx-alignment: center-left;
+    -fx-transition: -fx-background-color 0.2s;
+}
+
+.summary-item:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 3, 0, 0, 2);
+}
+
+.summary-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding: 0 0 10px 0;
+}
+
+.summary-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+}
+
+/* 图表区域 */
+.chart-container {
+    -fx-padding: 12px 0 0 0;
+    -fx-spacing: 24px;
+    -fx-min-height: 250px;
+    -fx-pref-height: 300px;
+}
+
+.chart {
+    -fx-padding: 18px;
+    -fx-background-color: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 1, 0, 0, 1);
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-min-height: 200px;
+    -fx-pref-height: 250px;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+    -fx-padding: 0 0 14px 0;
+}
+
+/* 自定义图表样式 */
+.custom-chart .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.custom-chart .chart-vertical-grid-lines {
+    -fx-stroke: #f0f0f0;
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 2 2;
+}
+
+.custom-chart .chart-horizontal-grid-lines {
+    -fx-stroke: #f0f0f0;
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 2 2;
+}
+
+.custom-chart .axis {
+    -fx-tick-label-fill: #666;
+    -fx-tick-length: 3;
+}
+
+.custom-chart .axis-label {
+    -fx-text-fill: #666;
+}
+
+.custom-chart .axis-tick-mark {
+    -fx-stroke: #e0e0e0;
+    -fx-stroke-width: 1;
+}
+
+.custom-chart .axis-minor-tick-mark {
+    -fx-stroke: transparent;
+}
+
+/* 柱状图样式 */
+.chart-bar {
+    -fx-bar-fill: #d32f2f;
+    -fx-opacity: 0.9;
+}
+
+.chart-bar:hover {
+    -fx-opacity: 1;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #f0f0f0;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #f0f0f0;
+}
+
+.chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #d32f2f;
+    -fx-background-radius: 4px 4px 0 0;
+    -fx-background-insets: 0;
+    -fx-opacity: 0.9;
+}
+
+.default-color0.chart-bar:hover {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+}
+
+/* 折线图样式 */
+.chart-series-line {
+    -fx-stroke: #2196F3;
+    -fx-stroke-width: 2.5px;
+}
+
+.chart-line-symbol {
+    -fx-background-color: #2196F3, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+}
+
+.default-color0.chart-line-symbol {
+    -fx-background-color: #2196F3, white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 0);
+}
+
+.default-color0.chart-line-symbol:hover {
+    -fx-background-color: #2196F3, white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 0);
+}
+
+.default-color0.chart-series-line {
+    -fx-stroke: #2196F3;
+}
+
+/* 预测线样式 */
+.prediction-series .chart-series-line {
+    -fx-stroke: #9C27B0;
+    -fx-stroke-width: 2px;
+    -fx-stroke-dash-array: 8 4;
+    -fx-opacity: 0.7;
+}
+
+.default-color1.chart-line-symbol {
+    -fx-background-color: #9C27B0, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 6px;
+    -fx-padding: 5px;
+}
+
+.default-color1.chart-line-symbol:hover {
+    -fx-background-color: #9C27B0, white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 0);
+}
+
+.default-color1.chart-series-line {
+    -fx-stroke: #9C27B0;
+}
+
+/* 图表数据标签样式 */
+.chart-data-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-padding: 3px 6px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 0);
+}
+
+.chart-data-hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 4, 0, 0, 1);
+    -fx-cursor: hand;
+    -fx-opacity: 1.0;
+}
+
+/* 饼图样式 */
+.default-color0.chart-pie { -fx-pie-color: #4285F4; }
+.default-color1.chart-pie { -fx-pie-color: #EA4335; }
+.default-color2.chart-pie { -fx-pie-color: #FBBC05; }
+.default-color3.chart-pie { -fx-pie-color: #34A853; }
+.default-color4.chart-pie { -fx-pie-color: #9C27B0; }
+
+.chart-pie-label {
+    -fx-fill: #333;
+    -fx-font-size: 12px;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: #666;
+    -fx-stroke-width: 1px;
+}
+
+.chart-pie:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+    -fx-opacity: 0.9;
+    -fx-cursor: hand;
+}
+
+/* 历年成绩筛选区域样式 */
+.filter-box {
+    -fx-background-color: white;
+    -fx-padding: 12px 16px;
+    -fx-spacing: 10px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #eee;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 1, 0, 0, 1);
+}
+
+.filter-box .label {
+    -fx-text-fill: #555;
+    -fx-font-size: 13px;
+}
+
+.filter-box .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+    -fx-padding: 2px;
+}
+
+.filter-box .combo-box:hover {
+    -fx-border-color: #bbb;
+}
+
+.filter-box .text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+}
+
+.filter-box .text-field:focused {
+    -fx-border-color: #d32f2f;
+}
+
+/* 统计页面样式 */
+.semester-select-box {
+    -fx-background-color: white;
+    -fx-padding: 12px 20px;
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+    -fx-border-width: 1px;
+    -fx-border-color: #eee;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.semester-toggle {
+    -fx-background-color: transparent;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-text-fill: #666;
+    -fx-font-size: 14px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.semester-toggle:selected {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(211, 47, 47, 0.3), 5, 0, 0, 2);
+}
+
+.semester-toggle:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.semester-toggle:selected:hover {
+    -fx-background-color: #b71c1c;
+}
+
+.stats-card-grid {
+    -fx-padding: 15px 0;
+    -fx-hgap: 20px;
+    -fx-vgap: 20px;
+}
+
+/* 统计卡片样式变体 */
+.total-credits-card {
+    -fx-background-color: linear-gradient(to bottom right, #E3F2FD, #BBDEFB);
+}
+
+.completed-courses-card {
+    -fx-background-color: linear-gradient(to bottom right, #E8F5E9, #C8E6C9);
+}
+
+.avg-gpa-card {
+    -fx-background-color: linear-gradient(to bottom right, #FFF3E0, #FFE0B2);
+}
+
+.ranking-card {
+    -fx-background-color: linear-gradient(to bottom right, #F3E5F5, #E1BEE7);
+}
+
+.excellent-courses-card {
+    -fx-background-color: linear-gradient(to bottom right, #E1F5FE, #B3E5FC);
+}
+
+.failed-courses-card {
+    -fx-background-color: linear-gradient(to bottom right, #FFEBEE, #FFCDD2);
+}
+
+.failed-courses-container {
+    -fx-background-color: white;
+    -fx-padding: 15px 20px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 1, 0, 0, 1);
+}
+
+.no-warning-label {
+    -fx-text-fill: #43A047;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 0;
+}
+
+/* 表格区域 */
+.scores-table-container {
+    -fx-background-color: white;
+    -fx-padding: 15px 18px 20px 18px;
+    -fx-margin: 18px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.04), 1, 0, 0, 1);
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-border-color: #f0f0f0;
+    -fx-border-radius: 8px;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #eee;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 100%;
+    -fx-column-resize-policy: constrained-resize;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 14px 10px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-padding: 12px 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-pref-height: 36px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fcfcfc;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* 表格内容对齐 */
+.table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 8px 10px;
+}
+
+.index-column {
+    -fx-alignment: center;
+    -fx-max-width: 60px;
+}
+
+.score-column {
+    -fx-alignment: center;
+}
+
+.credit-column {
+    -fx-alignment: center;
+    -fx-max-width: 80px;
+}
+
+.gpa-column {
+    -fx-alignment: center;
+    -fx-max-width: 80px;
+}
+
+.rank-column {
+    -fx-alignment: center;
+    -fx-max-width: 100px;
+}
+
+/* 成绩样式 */
+.grade-excellent {
+    -fx-text-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+.grade-good {
+    -fx-text-fill: #2196F3;
+    -fx-font-weight: bold;
+}
+
+.grade-average {
+    -fx-text-fill: #FF9800;
+    -fx-font-weight: bold;
+}
+
+.grade-pass {
+    -fx-text-fill: #FF5722;
+    -fx-font-weight: bold;
+}
+
+.grade-fail {
+    -fx-text-fill: #F44336;
+    -fx-font-weight: bold;
+}
+
+/* 占位文本样式 */
+.placeholder-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #999;
+    -fx-alignment: center;
+    -fx-padding: 20px;
+}
+
+/* 图表高亮样式 */
+.chart-bar-highlighted {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(211, 47, 47, 0.4), 5, 0, 0, 0);
+}
+
+/* 确保图表内容区域可见 */
+.chart-content {
+    -fx-padding: 10px;
+    -fx-min-height: 150px;
+}
+
+/* 图表轴区域样式 */
+.axis {
+    -fx-tick-label-fill: #666;
+    -fx-tick-length: 3;
+    -fx-minor-tick-visible: false;
+} 

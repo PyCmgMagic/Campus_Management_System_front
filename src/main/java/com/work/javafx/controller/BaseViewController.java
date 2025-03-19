@@ -104,8 +104,8 @@ public class BaseViewController implements Initializable {
             return "/com/work/javafx/css/CourseSelection.css";
         } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
             return "/com/work/javafx/css/PersonalCenter.css";
-        } else if (fxmlPath.equals("GradeQueryContent.fxml")) {
-            return "/com/work/javafx/css/GradeQuery.css";
+        } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
+            return "/com/work/javafx/css/ScoreSearch.css";
         } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
             return "/com/work/javafx/css/TeachingEvaluation.css";
         }
@@ -195,7 +195,7 @@ public class BaseViewController implements Initializable {
     private void switchToGradeQuery() {
         System.out.println("切换到成绩查询");
         switchActiveButton(gradeQueryBtn);
-        loadView("GradeQueryContent.fxml");
+        loadView("ScoreSearchContent.fxml");
     }
     
     /**
