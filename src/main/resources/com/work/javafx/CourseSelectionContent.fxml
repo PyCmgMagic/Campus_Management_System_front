@@ -85,7 +85,7 @@
                         <TableColumn fx:id="courseTypeColumn" text="课程性质" prefWidth="100"/>
                         <TableColumn fx:id="teacherColumn" text="任课教师" prefWidth="100"/>
                         <TableColumn fx:id="timeLocationColumn" text="上课时间/地点" prefWidth="180"/>
-                        <TableColumn fx:id="capacityColumn" text="容量/已选" prefWidth="100"/>
+                        <TableColumn fx:id="capacityColumn" text="已选/容量" prefWidth="100"/>
                         <TableColumn fx:id="actionColumn" text="操作" prefWidth="100"/>
                     </columns>
                     <columnResizePolicy>

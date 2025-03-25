@@ -156,7 +156,6 @@ private void handleAdminButtonClicked(ActionEvent event){
     usernameField.setPromptText("请输入管理员账号");
     passwordField.setPromptText("请输入管理员密码");
 }
-
     /**
      * 验证用户凭据
      * @param username 用户名
