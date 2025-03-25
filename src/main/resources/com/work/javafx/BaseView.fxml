@@ -1,60 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.BaseViewController"
-            prefHeight="600.0" prefWidth="900.0"
-            styleClass="root">
+<BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.BaseViewController">
 
     <!-- 顶部导航栏 -->
     <top>
         <HBox styleClass="top-bar">
-            <Label text="教务管理系统" styleClass="app-title"/>
+            <Label styleClass="app-title" text="教务管理系统" />
             <Region HBox.hgrow="ALWAYS" />
             <Button styleClass="user-btn" text="谭同学" />
-            <Button styleClass="logout-btn" text="退出登录" onAction="#logout" />
+            <Button onAction="#logout" styleClass="logout-btn" text="退出登录" />
         </HBox>
     </top>
 
     <!-- 左侧菜单 -->
     <left>
         <VBox styleClass="side-menu">
-            <Button fx:id="homeBtn" styleClass="menu-item" text="首页" onAction="#switchToHome">
-                <graphic>
-                    <Region styleClass="home-icon"/>
-                </graphic>
-            </Button>
-            <Button fx:id="personalCenterBtn" styleClass="menu-item" text="个人中心" onAction="#switchToPersonalCenter">
-                <graphic>
-                    <Region styleClass="user-icon"/>
-                </graphic>
-            </Button>
-            <Button fx:id="courseScheduleBtn" styleClass="menu-item" text="课表查询" onAction="#switchToCourseSchedule">
-                <graphic>
-                    <Region styleClass="course-icon"/>
-                </graphic>
-            </Button>
-            <Button fx:id="courseSelectionBtn" styleClass="menu-item" text="选课系统" onAction="#switchToCourseSelection">
-                <graphic>
-                    <Region styleClass="select-course-icon"/>
-                </graphic>
-            </Button>
-            <Button fx:id="gradeQueryBtn" styleClass="menu-item" text="成绩查询" onAction="#switchToGradeQuery">
-                <graphic>
-                    <Region styleClass="grade-icon"/>
-                </graphic>
-            </Button>
-            <Button fx:id="teachingEvaluationBtn" styleClass="menu-item" text="教学评价" onAction="#switchToTeachingEvaluation">
-                <graphic>
-                    <Region styleClass="evaluation-icon"/>
-                </graphic>
-            </Button>
+         <HBox>
+            <children>
+                  <Button fx:id="homeBtn" onAction="#switchToHome" styleClass="menu-item" text="首页">
+                      <graphic>
+                          <Region styleClass="home-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0">
+            <children>
+                  <Button fx:id="personalCenterBtn"  onAction="#switchToPersonalCenter" styleClass="menu-item" text="个人中心">
+                      <graphic>
+                          <Region styleClass="user-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0">
+            <children>
+                  <Button fx:id="courseScheduleBtn" onAction="#switchToCourseSchedule" styleClass="menu-item" text="课表查询">
+                      <graphic>
+                          <Region styleClass="course-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0">
+            <children>
+                  <Button fx:id="courseSelectionBtn" onAction="#switchToCourseSelection" styleClass="menu-item" text="选课系统">
+                      <graphic>
+                          <Region styleClass="select-course-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0">
+            <children>
+                  <Button fx:id="gradeQueryBtn" onAction="#switchToGradeQuery" styleClass="menu-item" text="成绩查询">
+                      <graphic>
+                          <Region styleClass="grade-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0">
+            <children>
+                  <Button fx:id="teachingEvaluationBtn" onAction="#switchToTeachingEvaluation" styleClass="menu-item" text="教学评价">
+                      <graphic>
+                          <Region styleClass="evaluation-icon" />
+                      </graphic>
+                  </Button>
+            </children>
+         </HBox>
         </VBox>
     </left>
 
@@ -64,4 +87,4 @@
             <!-- 内容将动态加载到这里 -->
         </StackPane>
     </center>
-</BorderPane> 
+</BorderPane>

@@ -75,20 +75,60 @@
 }
 
 .home-icon {
-    -fx-shape: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z";
+    -fx-background-color: linear-gradient(to bottom right, #FF6B6B, #FF8E8E);
+    -fx-shape: "M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z";
 }
 
 .user-icon {
+    -fx-background-color: linear-gradient(to bottom right, #4ECDC4, #45B7AF);
     -fx-shape: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z";
 }
 
 .location-icon {
+    -fx-background-color: linear-gradient(to bottom right, #FFD93D, #FFC300);
     -fx-shape: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z";
-    -fx-background-color: #666;
-    -fx-min-width: 12px;
-    -fx-min-height: 12px;
+}
+/* 课程图标 - 书本 */
+.course-icon {
+    -fx-background-color: linear-gradient(to bottom right, #9B59B6, #8E44AD);
+    -fx-shape: "M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 16H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V8h12v2z";
 }
 
+/* 选课图标 - 复选框 */
+.select-course-icon {
+    -fx-background-color: linear-gradient(to bottom right, #FF7675, #FF6B6B);
+    -fx-shape: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z";
+}
+
+/* 成绩图标 - 奖杯 */
+.grade-icon {
+    -fx-background-color: linear-gradient(to bottom right, #F1C40F, #F39C12);
+    -fx-shape: "M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.6 1.7 4.8 4 5.7V19H5v2h14v-2h-2v-3.3c2.3-.9 4-3.1 4-5.7V7c0-1.1-.9-2-2-2zM5 10V7h2v3.8c-1.2-.4-2-1.5-2-2.8zm14 0c0 1.3-.8 2.4-2 2.8V7h2v3z";
+}
+
+/* 考试图标 - 铅笔文档 */
+.exam-icon {
+    -fx-background-color: linear-gradient(to bottom right, #3498DB, #2980B9);
+    -fx-shape: "M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-9-9H7v-2h2v2zm4 0h-2v-2h2v2zm-4 4H7v-2h2v2zm4 0h-2v-2h2v2z";
+}
+
+/* 通知图标 - 铃铛 */
+.notice-icon {
+    -fx-background-color: linear-gradient(to bottom right, #E74C3C, #C0392B);
+    -fx-shape: "M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.1-1.7-5.6-4.5-6.3V4c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5v.7C7.7 5.4 6 7.9 6 11v5l-2 2v1h16v-1l-2-2z";
+}
+
+/* 评价图标 - 星级 */
+.evaluation-icon {
+    -fx-background-color: linear-gradient(to bottom right, #FF9F43, #FF7F50);
+    -fx-shape: "M12 17.3l4.2 2.6-1.1-4.8 3.7-3.2-4.9-.4L12 6l-1.9 4.5-4.9.4 3.7 3.2-1.1 4.8zM22 9.2l-5.4 4.7 1.6 7.1L12 17.7 5.8 21l1.6-7.1L2 9.2l7.3-.6L12 2l2.7 6.6z";
+}
+
+/* 统一形状缩放设置 */
+.icon {
+    -fx-scale-shape: false; /* 禁用形状缩放 */
+    -fx-shape-origin: center; /* 中心变换基点 */
+}
 /* 内容区域样式 */
 .content-scroll-pane {
     -fx-background-color: white;
