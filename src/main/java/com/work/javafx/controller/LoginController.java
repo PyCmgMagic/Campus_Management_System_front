@@ -155,6 +155,15 @@ public class LoginController {
 private void handleAdminButtonClicked(ActionEvent event){
     usernameField.setPromptText("请输入管理员账号");
     passwordField.setPromptText("请输入管理员密码");
+    adminLogin.setText("学生或教职工登录");
+}/**
+ * 处理学生或教职工登录按钮点击事件
+ * @param event 事件对象
+ */
+private void handleAdminButtonClicked2(ActionEvent event){
+    usernameField.setPromptText("请输入学号或工号");
+    passwordField.setPromptText("请输入密码");
+    adminLogin.setText("学生或教职工登录");
 }
     /**
      * 验证用户凭据
