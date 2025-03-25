@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -26,12 +28,15 @@ public class NetworkUtils {
     private static final Logger LOGGER = Logger.getLogger(NetworkUtils.class.getName());
     private static final int TIMEOUT = 10000; // 超时时间，单位毫秒
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final String DEFAULT_CONTENT_TYPE = "application/json";
+    
     /**
      * 方法枚举
      */
     public enum HttpMethod {
         GET, POST, PUT, DELETE
     }
+    
     /**
      * 网络请求结果回调接口
      */
@@ -39,6 +44,7 @@ public class NetworkUtils {
         void onSuccess(T result);
         void onFailure(Exception e);
     }
+    
     /**
      * 异步发送HTTP请求
      *
@@ -95,9 +101,63 @@ public class NetworkUtils {
      * @param callback 回调处理
      */
     public static void get(String urlString, Callback<String> callback) {
-       Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
         request(urlString, HttpMethod.GET, headers, null, callback);
+    }
+    
+    /**
+     * 发送HTTP GET请求(带参数)
+     *
+     * @param urlString 请求URL
+     * @param params URL参数
+     * @param callback 回调处理
+     */
+    public static void get(String urlString, Map<String, String> params, Callback<String> callback) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String fullUrl = appendQueryParams(urlString, params);
+        request(fullUrl, HttpMethod.GET, headers, null, callback);
+    }
+    
+    /**
+     * 发送HTTP GET请求(带参数和请求头)
+     *
+     * @param urlString 请求URL
+     * @param params URL参数
+     * @param headers 请求头
+     * @param callback 回调处理
+     */
+    public static void get(String urlString, Map<String, String> params, 
+                          Map<String, String> headers, Callback<String> callback) {
+        String fullUrl = appendQueryParams(urlString, params);
+        request(fullUrl, HttpMethod.GET, headers, null, callback);
+    }
+    
+    /**
+     * 异步发送HTTP GET请求
+     *
+     * @param urlString 请求URL
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> getAsync(String urlString) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        return requestAsync(urlString, HttpMethod.GET, headers, null);
+    }
+    
+    /**
+     * 异步发送HTTP GET请求(带参数)
+     *
+     * @param urlString 请求URL
+     * @param params URL参数
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> getAsync(String urlString, Map<String, String> params) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String fullUrl = appendQueryParams(urlString, params);
+        return requestAsync(fullUrl, HttpMethod.GET, headers, null);
     }
 
     /**
@@ -108,7 +168,84 @@ public class NetworkUtils {
      * @param callback 回调处理
      */
     public static void post(String urlString, String body, Callback<String> callback) {
-        request(urlString, HttpMethod.POST, null, body, callback);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        request(urlString, HttpMethod.POST, headers, body, callback);
+    }
+    
+    /**
+     * 发送HTTP POST请求(带请求头)
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @param headers 请求头
+     * @param callback 回调处理
+     */
+    public static void post(String urlString, String body, Map<String, String> headers, Callback<String> callback) {
+        request(urlString, HttpMethod.POST, headers, body, callback);
+    }
+    
+    /**
+     * 异步发送HTTP POST请求
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> postAsync(String urlString, String body) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        return requestAsync(urlString, HttpMethod.POST, headers, body);
+    }
+    
+    /**
+     * 发送HTTP PUT请求
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @param callback 回调处理
+     */
+    public static void put(String urlString, String body, Callback<String> callback) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        request(urlString, HttpMethod.PUT, headers, body, callback);
+    }
+    
+    /**
+     * 异步发送HTTP PUT请求
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> putAsync(String urlString, String body) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        return requestAsync(urlString, HttpMethod.PUT, headers, body);
+    }
+    
+    /**
+     * 发送HTTP DELETE请求
+     *
+     * @param urlString 请求URL
+     * @param callback 回调处理
+     */
+    public static void delete(String urlString, Callback<String> callback) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        request(urlString, HttpMethod.DELETE, headers, null, callback);
+    }
+    
+    /**
+     * 异步发送HTTP DELETE请求
+     *
+     * @param urlString 请求URL
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> deleteAsync(String urlString) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        return requestAsync(urlString, HttpMethod.DELETE, headers, null);
     }
 
     /**
@@ -140,6 +277,41 @@ public class NetworkUtils {
                     runOnUiThread(() -> onError.accept((Exception) ex.getCause()));
                     return null;
                 });
+    }
+    
+    /**
+     * 附加URL查询参数
+     *
+     * @param urlString 基础URL
+     * @param params 参数Map
+     * @return 附加了参数的完整URL
+     */
+    private static String appendQueryParams(String urlString, Map<String, String> params) {
+        if (params == null || params.isEmpty()) {
+            return urlString;
+        }
+        
+        StringBuilder urlBuilder = new StringBuilder(urlString);
+        if (!urlString.contains("?")) {
+            urlBuilder.append("?");
+        } else if (!urlString.endsWith("&") && !urlString.endsWith("?")) {
+            urlBuilder.append("&");
+        }
+        
+        String queryString = params.entrySet().stream()
+            .map(entry -> {
+                try {
+                    return URLEncoder.encode(entry.getKey(), "UTF-8") + "=" 
+                         + URLEncoder.encode(entry.getValue(), "UTF-8");
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "URL参数编码失败", e);
+                    return entry.getKey() + "=" + entry.getValue();
+                }
+            })
+            .collect(Collectors.joining("&"));
+            
+        urlBuilder.append(queryString);
+        return urlBuilder.toString();
     }
 
     /**
@@ -177,7 +349,9 @@ public class NetworkUtils {
             if (body != null && !body.isEmpty() &&
                     (method == HttpMethod.POST || method == HttpMethod.PUT)) {
                 connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "application/json");
+                if (!connection.getRequestProperties().containsKey("Content-Type")) {
+                    connection.setRequestProperty("Content-Type", DEFAULT_CONTENT_TYPE);
+                }
 
                 try (OutputStream os = connection.getOutputStream()) {
                     byte[] input = body.getBytes(StandardCharsets.UTF_8);
@@ -235,6 +409,17 @@ public class NetworkUtils {
         }
     }
 
+    /**
+     * 设置默认连接超时时间
+     * 
+     * @param timeoutMillis 超时时间(毫秒)
+     */
+    public static void setDefaultTimeout(int timeoutMillis) {
+        // 不可直接修改TIMEOUT常量，此处仅作为示例
+        // 实际应用中可以使用一个非final变量来支持超时设置
+        LOGGER.info("设置超时时间: " + timeoutMillis + "ms");
+    }
+    
     /**
      * 关闭线程池，应用退出时调用
      */

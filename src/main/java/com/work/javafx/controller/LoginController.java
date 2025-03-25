@@ -1,6 +1,8 @@
 package com.work.javafx.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.work.javafx.DataResponse.Res;
 import com.work.javafx.MainApplication;
 import com.work.javafx.util.NetworkUtils;
@@ -22,6 +24,7 @@ import javafx.scene.Scene;
 import java.io.IOException;
 
 public class LoginController {
+    Gson gson = new Gson();
 
     @FXML
     private TextField usernameField;
@@ -76,6 +79,27 @@ public class LoginController {
         }
         // 用户验证逻辑
         if (authenticateUser(username, password)) {
+            //网络请求测试
+//            NetworkUtils.get("https://v.api.aa1.cn/api/zhihu-news/index.php?aa1=xiarou", new NetworkUtils.Callback<String>() {
+//                @Override
+//                public void onSuccess(String result) {
+//                    JsonObject res = gson.fromJson(result,JsonObject.class);
+//                    JsonArray data = res.getAsJsonArray("news");
+//                    for (int i = 0; i < data.size(); i++) {
+//                        JsonObject item = data.get(i).getAsJsonObject();
+//                        String content = item.get("title").getAsString();
+//                        String author = item.get("url").getAsString();
+//                        System.out.println("title:"+content);
+//                        System.out.println("url:"+author);
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Exception e) {
+//                    System.out.println(e);
+//                }
+//            });
 //            //网络请求test ————post
 //            Gson gson = new Gson();
 //            class Body {

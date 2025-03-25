@@ -1,6 +1,11 @@
 package com.work.javafx.DataResponse;
 
 public class Res {
+    private String text;
+    private Integer code;
+    private String translate;
+    private String requestId;
+    private String message;
     public Res() {
     }
 
@@ -34,7 +39,5 @@ public class Res {
         this.translate = translate;
     }
 
-    private String text;
-    private Integer code;
-    private String translate;
+
 }

@@ -57,11 +57,11 @@ public class CourseSelectionContentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化当前活动导航按钮
         currentActiveNavButton = thisTermBtn;
-        
         // 初始化导航按钮样式（如果存在）
         if (thisTermBtn != null) {
             thisTermBtn.getStyleClass().add("active-nav-button");
         }
+        switchActiveNavButton(currentActiveNavButton);
 
         // 初始化下拉框
         initComboBoxes();

@@ -13,7 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -253,10 +256,10 @@ public class ExportUtils {
         String[] weekdays = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"};
         
         // 构建共享字符串索引映射
-        java.util.Map<String, Integer> stringIndexMap = new java.util.HashMap<>();
+        Map<String, Integer> stringIndexMap = new HashMap<>();
         
         // 存储所有将被使用的字符串，用于计算总使用次数
-        java.util.List<String> allUsedStrings = new java.util.ArrayList<>();
+        List<String> allUsedStrings = new ArrayList<>();
         
         // 添加标题和表头
         addStringToSharedStringTable(stringIndexMap, sharedStrings, titleText, allUsedStrings);
@@ -360,10 +363,10 @@ public class ExportUtils {
     /**
      * 向共享字符串表添加字符串，并记录到列表中
      */
-    private static void addStringToSharedStringTable(java.util.Map<String, Integer> map, 
+    private static void addStringToSharedStringTable(Map<String, Integer> map, 
                                                   StringBuilder sharedStrings, 
                                                   String text, 
-                                                  java.util.List<String> allUsedStrings) {
+                                                  List<String> allUsedStrings) {
         if (text != null && !text.trim().isEmpty()) {
             if (!map.containsKey(text)) {
                 // 添加到映射，索引是当前映射大小
@@ -380,7 +383,7 @@ public class ExportUtils {
     /**
      * 添加单元格到工作表
      */
-    private static void addCellToSheet(StringBuilder sheet, String col, int row, String value, java.util.Map<String, Integer> stringIndexMap) {
+    private static void addCellToSheet(StringBuilder sheet, String col, int row, String value, Map<String, Integer> stringIndexMap) {
         if (value != null && !value.trim().isEmpty()) {
             // 使用共享字符串表中的索引
             Integer stringIndex = stringIndexMap.get(value);
@@ -454,5 +457,233 @@ public class ExportUtils {
             }
             directory.delete();
         }
+    }
+
+    /**
+     * 将TableView导出为CSV文件
+     * 
+     * @param <T> TableView的数据类型
+     * @param tableView 要导出的表格
+     * @param filePath 导出文件路径
+     * @return 是否导出成功
+     */
+    public static <T> boolean exportToCSV(TableView<T> tableView, String filePath) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            // 导出表头
+            StringBuilder header = new StringBuilder();
+            for (int i = 0; i < tableView.getColumns().size(); i++) {
+                if (i > 0) {
+                    header.append(",");
+                }
+                header.append(escapeCSV(tableView.getColumns().get(i).getText()));
+            }
+            writer.println(header.toString());
+            
+            // 导出数据行
+            for (T item : tableView.getItems()) {
+                StringBuilder row = new StringBuilder();
+                for (int i = 0; i < tableView.getColumns().size(); i++) {
+                    if (i > 0) {
+                        row.append(",");
+                    }
+                    Object cellData = tableView.getColumns().get(i).getCellData(item);
+                    row.append(escapeCSV(cellData != null ? cellData.toString() : ""));
+                }
+                writer.println(row.toString());
+            }
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 处理CSV中的特殊字符
+     */
+    private static String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        
+        // 如果包含逗号、引号或换行符，需要用引号包围并转义内部引号
+        boolean needQuotes = value.contains(",") || value.contains("\"") || value.contains("\n");
+        if (!needQuotes) {
+            return value;
+        }
+        
+        // 将文本中的引号替换为两个引号，并用引号包围整个文本
+        return "\"" + value.replace("\"", "\"\"") + "\"";
+    }
+
+    /**
+     * 将成绩表导出为Excel文件
+     * 
+     * @param <T> TableView的数据类型
+     * @param tableView 成绩表格
+     * @param title 表格标题
+     * @param parentStage 父窗口
+     * @param file 保存的文件
+     * @return 导出是否成功
+     */
+    public static <T> boolean exportScoresToExcel(TableView<T> tableView, 
+                                               String title,
+                                               Stage parentStage,
+                                               File file) {
+        try {
+            // 创建临时目录来存放Excel XML文件
+            Path tempDir = Files.createTempDirectory("excel_export_");
+            
+            // 创建Excel所需的文件夹结构
+            createExcelFolderStructure(tempDir);
+            
+            // 创建工作表内容（针对成绩表的通用版本）
+            createScoreWorksheet(tempDir, title, tableView);
+            
+            // 打包成ZIP文件（Excel本质上是ZIP文件）
+            createExcelZipFile(tempDir, file.toPath());
+            
+            // 删除临时文件夹
+            deleteDirectory(tempDir.toFile());
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 创建成绩工作表内容
+     */
+    private static <T> void createScoreWorksheet(Path baseDir, String title, TableView<T> tableView) throws IOException {
+        // 收集所有字符串并创建SharedStrings表
+        StringBuilder sharedStrings = new StringBuilder();
+        sharedStrings.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+        sharedStrings.append("<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"");
+        
+        // 稍后添加count和uniqueCount属性，先保留占位符
+        sharedStrings.append(" count=\"TOTAL_COUNT\" uniqueCount=\"UNIQUE_COUNT\">");
+        
+        // 构建共享字符串索引映射
+        Map<String, Integer> stringIndexMap = new HashMap<>();
+        
+        // 存储所有将被使用的字符串，用于计算总使用次数
+        List<String> allUsedStrings = new ArrayList<>();
+        
+        // 添加标题
+        addStringToSharedStringTable(stringIndexMap, sharedStrings, title, allUsedStrings);
+        
+        // 添加表头
+        List<String> headers = new ArrayList<>();
+        for (javafx.scene.control.TableColumn<T, ?> column : tableView.getColumns()) {
+            String headerText = column.getText();
+            headers.add(headerText);
+            addStringToSharedStringTable(stringIndexMap, sharedStrings, headerText, allUsedStrings);
+        }
+        
+        // 添加表格数据
+        List<List<String>> rowsData = new ArrayList<>();
+        for (T item : tableView.getItems()) {
+            List<String> rowData = new ArrayList<>();
+            for (javafx.scene.control.TableColumn<T, ?> column : tableView.getColumns()) {
+                Object cellValue = column.getCellData(item);
+                String cellText = cellValue != null ? cellValue.toString() : "";
+                rowData.add(cellText);
+                addStringToSharedStringTable(stringIndexMap, sharedStrings, cellText, allUsedStrings);
+            }
+            rowsData.add(rowData);
+        }
+        
+        sharedStrings.append("</sst>");
+        
+        // 计算count和uniqueCount
+        int totalCount = allUsedStrings.size();
+        int uniqueCount = stringIndexMap.size();
+        
+        // 更新count和uniqueCount
+        String completeSharedStrings = sharedStrings.toString()
+                .replace("count=\"TOTAL_COUNT\"", "count=\"" + totalCount + "\"")
+                .replace("uniqueCount=\"UNIQUE_COUNT\"", "uniqueCount=\"" + uniqueCount + "\"");
+        
+        Files.write(baseDir.resolve("xl/sharedStrings.xml"), completeSharedStrings.getBytes(), StandardOpenOption.CREATE);
+        
+        // 创建工作表
+        StringBuilder sheetXml = new StringBuilder();
+        sheetXml.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+        sheetXml.append("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
+        
+        // 列宽设置
+        sheetXml.append("<cols>");
+        char lastColumn = (char)('A' + headers.size() - 1);
+        for (int i = 0; i < headers.size(); i++) {
+            char col = (char)('A' + i);
+            sheetXml.append("<col min=\"").append(i + 1).append("\" max=\"").append(i + 1)
+                   .append("\" width=\"15\" customWidth=\"1\"/>");
+        }
+        sheetXml.append("</cols>");
+        
+        // 表格数据
+        sheetXml.append("<sheetData>");
+        
+        // 标题行
+        sheetXml.append("<row r=\"1\" ht=\"30\" customHeight=\"1\">");
+        sheetXml.append("<c r=\"A1\" s=\"2\" t=\"s\"><v>").append(stringIndexMap.get(title)).append("</v></c>");
+        sheetXml.append("</row>");
+        
+        // 表头行
+        sheetXml.append("<row r=\"2\" ht=\"25\" customHeight=\"1\">");
+        for (int i = 0; i < headers.size(); i++) {
+            char col = (char)('A' + i);
+            sheetXml.append("<c r=\"").append(col).append("2\" s=\"3\" t=\"s\"><v>")
+                   .append(stringIndexMap.get(headers.get(i))).append("</v></c>");
+        }
+        sheetXml.append("</row>");
+        
+        // 数据行
+        for (int rowIndex = 0; rowIndex < rowsData.size(); rowIndex++) {
+            List<String> rowData = rowsData.get(rowIndex);
+            int excelRowIndex = rowIndex + 3; // +3 因为前两行是标题和表头
+            
+            sheetXml.append("<row r=\"").append(excelRowIndex).append("\">");
+            
+            for (int colIndex = 0; colIndex < rowData.size(); colIndex++) {
+                char col = (char)('A' + colIndex);
+                String cellValue = rowData.get(colIndex);
+                if (!cellValue.isEmpty()) {
+                    sheetXml.append("<c r=\"").append(col).append(excelRowIndex).append("\" s=\"1\" t=\"s\"><v>")
+                           .append(stringIndexMap.get(cellValue)).append("</v></c>");
+                } else {
+                    sheetXml.append("<c r=\"").append(col).append(excelRowIndex).append("\" s=\"1\"/>");
+                }
+            }
+            
+            sheetXml.append("</row>");
+        }
+        
+        sheetXml.append("</sheetData>");
+        
+        // 合并单元格（标题行）
+        sheetXml.append("<mergeCells count=\"1\">");
+        sheetXml.append("<mergeCell ref=\"A1:").append(lastColumn).append("1\"/>");
+        sheetXml.append("</mergeCells>");
+        
+        // 页面设置
+        sheetXml.append("<pageMargins left=\"0.7\" right=\"0.7\" top=\"0.75\" bottom=\"0.75\" header=\"0.3\" footer=\"0.3\"/>");
+        sheetXml.append("<pageSetup orientation=\"portrait\"/>");
+        
+        sheetXml.append("</worksheet>");
+        
+        // 修改workbook.xml中的工作表名称
+        String workbook = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
+                "<sheets>" +
+                "<sheet name=\"成绩表\" sheetId=\"1\" r:id=\"rId1\"/>" +
+                "</sheets>" +
+                "</workbook>";
+        Files.write(baseDir.resolve("xl/workbook.xml"), workbook.getBytes(), StandardOpenOption.CREATE);
+        
+        Files.write(baseDir.resolve("xl/worksheets/sheet1.xml"), sheetXml.toString().getBytes(), StandardOpenOption.CREATE);
     }
 } 

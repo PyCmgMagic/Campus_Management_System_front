@@ -16,7 +16,7 @@
 
         <!-- 成绩查询标签页 -->
         <TabPane styleClass="score-tab-pane">
-            <Tab fx:id="currentSemesterTab" text="本学期成绩" closable="false">
+            <Tab fx:id="currentSemesterTab" text="学期成绩" closable="false">
                 <VBox spacing="15">
                     <!-- 查询条件区域 -->
                     <VBox styleClass="query-container">
@@ -149,22 +149,9 @@
                     </VBox>
                 </VBox>
             </Tab>
-            
-            <Tab fx:id="historicalScoresTab" text="历年成绩" closable="false">
-                <VBox spacing="15">
-                    <!-- 这里将由代码动态添加筛选区域和表格 -->
-                </VBox>
-            </Tab>
-            
+
             <Tab fx:id="statisticsTab" text="成绩统计" closable="false">
                 <VBox spacing="15">
-                    <!-- 这里将由代码动态添加统计内容 -->
-                </VBox>
-            </Tab>
-            
-            <Tab fx:id="warningTab" text="学业预警" closable="false">
-                <VBox spacing="15">
-                    <!-- 这里将由代码动态添加预警内容 -->
                 </VBox>
             </Tab>
         </TabPane>
