@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" styleClass="content-scroll-pane" xmlns="http://javafx.com/javafx"
+<ScrollPane fx:id="contentScrollPane"  fitToWidth="true" styleClass="content-scroll-pane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.work.javafx.controller.TeachingEvaluationContentController"
             VBox.vgrow="ALWAYS">

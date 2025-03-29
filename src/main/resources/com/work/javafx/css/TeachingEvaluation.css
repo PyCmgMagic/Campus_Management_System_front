@@ -105,6 +105,125 @@
     -fx-border-color: #d32f2f;
     -fx-background-color: white;
 }
+/*评价表单*/
+/* 评价对话框样式 */
+.evaluation-dialog {
+    -fx-background-color: #f8f8f8;
+}
+
+.evaluation-dialog > *.header-panel {
+    -fx-background-color: #d32f2f;
+    -fx-padding: 15px 20px;
+}
+
+.evaluation-dialog > *.header-panel *.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.evaluation-dialog > *.button-bar > *.container {
+    -fx-padding: 15px;
+}
+
+/* 评价表单样式 */
+.evaluation-form-grid {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #eeeeee;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.evaluation-form-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent #eeeeee transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-insets: 0 0 10 0;
+}
+
+.evaluation-item-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+.evaluation-score-label {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-min-width: 35px;
+    -fx-alignment: center;
+}
+
+.evaluation-slider .track {
+    -fx-background-color: #eaeaea;
+    -fx-background-radius: 3px;
+}
+
+.evaluation-slider .thumb {
+    -fx-background-color: #d32f2f;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.evaluation-slider:focused .thumb {
+    -fx-background-color: #c62828;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 4, 0, 0, 1);
+}
+
+.evaluation-slider .axis {
+    -fx-tick-label-fill: #666666;
+}
+
+.evaluation-comments-area {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #999999;
+}
+
+.evaluation-comments-area:focused {
+    -fx-border-color: #d32f2f;
+}
+
+.evaluation-submit-button {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.evaluation-submit-button:hover {
+    -fx-background-color: #c62828;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.evaluation-cancel-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #666666;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+
+.evaluation-cancel-button:hover {
+    -fx-background-color: #eeeeee;
+}
+/* 选中行高亮 */
+.evaluation-table .table-row-cell:selected {
+    -fx-background-color: #d32f2f15; 
+}
+
 
 /* 按钮样式 */
 .primary-button {
@@ -170,6 +289,8 @@
     -fx-font-weight: bold;
     -fx-text-fill: #333;
 }
+
+/* 正常状态下的文本颜色 */
 
 .evaluation-table .table-row-cell {
     -fx-background-color: white;

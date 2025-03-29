@@ -7,15 +7,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-
+import javafx.application.Platform;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TeachingEvaluationContentController implements Initializable {
@@ -34,6 +37,7 @@ public class TeachingEvaluationContentController implements Initializable {
     @FXML private VBox pendingEvaluationContainer;
     @FXML private VBox completedEvaluationContainer;
     @FXML private VBox evaluationStatsContainer;
+    @FXML private ScrollPane contentScrollPane; 
     
     // 待评价课程表格
     @FXML private TableView<CourseEvaluation> pendingCoursesTableView;
@@ -89,7 +93,14 @@ public class TeachingEvaluationContentController implements Initializable {
         initPendingCoursesTable();
         initCompletedCoursesTable();
         initEvaluationDetailsTable();
-        
+        pendingEvaluationContainer.setVisible(true);
+        pendingEvaluationContainer.setManaged(true);
+
+        completedEvaluationContainer.setVisible(false);
+        completedEvaluationContainer.setManaged(false);
+
+        evaluationStatsContainer.setVisible(false);
+        evaluationStatsContainer.setManaged(false);
         // 加载示例数据
         loadSampleData();
         
@@ -136,10 +147,8 @@ public class TeachingEvaluationContentController implements Initializable {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    
                     if (item == null || empty) {
                         setText(null);
-                        setStyle("");
                     } else {
                         setText(item);
                         if ("待评价".equals(item)) {
@@ -151,7 +160,42 @@ public class TeachingEvaluationContentController implements Initializable {
                 }
             };
         });
-        
+        // 设置自定义行工厂来处理样式
+        pendingCoursesTableView.setRowFactory(tv -> {
+            TableRow<CourseEvaluation> row = new TableRow<CourseEvaluation>() {
+                @Override
+                protected void updateItem(CourseEvaluation item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    // 重置所有自定义样式
+                    getStyleClass().removeAll("selected-row");
+
+                    if (empty) {
+                        setStyle("");
+                    } else {
+                        // 根据行索引设置交替行样式
+
+                    }
+                }
+            };
+
+            // 监听选择状态变化
+            row.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected) {
+                    row.getStyleClass().add("selected-row");
+                } else {
+                    row.getStyleClass().remove("selected-row");
+//                    // 恢复交替行样式
+//                    if (row.getIndex() % 2 == 0) {
+//                        row.setStyle("-fx-background-color: white;");
+//                    } else {
+//                        row.setStyle("-fx-background-color: #fafafa;");
+//                    }
+                }
+            });
+
+            return row;
+        });
         // 设置操作列
         pendingActionColumn.setCellFactory(createPendingActionCellFactory());
         
@@ -178,14 +222,15 @@ public class TeachingEvaluationContentController implements Initializable {
                 @Override
                 protected void updateItem(Double item, boolean empty) {
                     super.updateItem(item, empty);
-                    
+
+                    // 清除所有之前的样式
+                    getStyleClass().removeAll("high-score", "medium-score", "low-score");
+
                     if (item == null || empty) {
                         setText(null);
-                        setStyle("");
                     } else {
                         setText(String.format("%.1f", item));
-                        getStyleClass().removeAll("high-score", "medium-score", "low-score");
-                        
+
                         if (item >= 4.5) {
                             getStyleClass().add("high-score");
                         } else if (item >= 3.5) {
@@ -197,7 +242,46 @@ public class TeachingEvaluationContentController implements Initializable {
                 }
             };
         });
-        
+        // 设置自定义行工厂来处理样式
+        completedCoursesTableView.setRowFactory(tv -> {
+            TableRow<CourseEvaluation> row = new TableRow<CourseEvaluation>() {
+                @Override
+                protected void updateItem(CourseEvaluation item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    // 重置所有自定义样式
+                    getStyleClass().removeAll("selected-row");
+
+                    if (empty) {
+                        setStyle("");
+                    } else {
+                        // 根据行索引设置交替行样式
+                        if (getIndex() % 2 == 0) {
+                            setStyle("-fx-background-color: white;");
+                        } else {
+                            setStyle("-fx-background-color: #fafafa;");
+                        }
+                    }
+                }
+            };
+
+            // 监听选择状态变化
+            row.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected) {
+                    row.getStyleClass().add("selected-row");
+                } else {
+                    row.getStyleClass().remove("selected-row");
+                    // 恢复交替行样式
+                    if (row.getIndex() % 2 == 0) {
+                        row.setStyle("-fx-background-color: white;");
+                    } else {
+                        row.setStyle("-fx-background-color: #fafafa;");
+                    }
+                }
+            });
+
+            return row;
+        });
         // 设置操作列
         completedActionColumn.setCellFactory(createCompletedActionCellFactory());
         
@@ -377,46 +461,62 @@ public class TeachingEvaluationContentController implements Initializable {
      */
     @FXML
     private void showPendingEvaluations() {
+        // 显示待评价容器
         pendingEvaluationContainer.setVisible(true);
+        pendingEvaluationContainer.setManaged(true);
+
+        // 隐藏其他容器并从布局中移除
         completedEvaluationContainer.setVisible(false);
+        completedEvaluationContainer.setManaged(false);
         evaluationStatsContainer.setVisible(false);
-        
+        evaluationStatsContainer.setManaged(false);
+
         // 更新导航按钮样式
         pendingEvalBtn.getStyleClass().add("active-nav-button");
         completedEvalBtn.getStyleClass().remove("active-nav-button");
         evaluationStatsBtn.getStyleClass().remove("active-nav-button");
     }
-    
-    /**
-     * 切换到已评价课程视图
-     */
+
     @FXML
     private void showCompletedEvaluations() {
+        // 隐藏待评价容器并从布局中移除
         pendingEvaluationContainer.setVisible(false);
+        pendingEvaluationContainer.setManaged(false);
+
+        // 显示已评价容器
         completedEvaluationContainer.setVisible(true);
+        completedEvaluationContainer.setManaged(true);
+
+        // 隐藏统计容器并从布局中移除
         evaluationStatsContainer.setVisible(false);
-        
+        evaluationStatsContainer.setManaged(false);
+
         // 更新导航按钮样式
         pendingEvalBtn.getStyleClass().remove("active-nav-button");
         completedEvalBtn.getStyleClass().add("active-nav-button");
         evaluationStatsBtn.getStyleClass().remove("active-nav-button");
     }
-    
-    /**
-     * 切换到评价统计视图
-     */
+
     @FXML
     private void showEvaluationStats() {
+        // 隐藏待评价容器并从布局中移除
         pendingEvaluationContainer.setVisible(false);
+        pendingEvaluationContainer.setManaged(false);
+
+        // 隐藏已评价容器并从布局中移除
         completedEvaluationContainer.setVisible(false);
+        completedEvaluationContainer.setManaged(false);
+
+        // 显示统计容器
         evaluationStatsContainer.setVisible(true);
-        
+        evaluationStatsContainer.setManaged(true);
+
         // 更新导航按钮样式
         pendingEvalBtn.getStyleClass().remove("active-nav-button");
         completedEvalBtn.getStyleClass().remove("active-nav-button");
         evaluationStatsBtn.getStyleClass().add("active-nav-button");
     }
-    
+
     /**
      * 查询课程
      */
@@ -424,62 +524,230 @@ public class TeachingEvaluationContentController implements Initializable {
     private void searchCourses() {
         String academicYear = academicYearComboBox.getValue();
         String semester = semesterComboBox.getValue();
-        
+
         System.out.println("查询条件: " + academicYear + " " + semester);
-        // TODO: 根据查询条件过滤课程
-        
-        // 模拟查询结果
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("查询结果");
-        alert.setHeaderText(null);
-        alert.setContentText(String.format("已查询%s %s的课程评价信息", academicYear, semester));
-        alert.showAndWait();
+
+        // 重新加载数据（实际应用中应该从数据库获取）
+        pendingCourses.clear();
+        completedCourses.clear();
+        evaluationDetails.clear();
+
+        // 模拟根据条件筛选数据
+        if ("2024-2025".equals(academicYear) && "第二学期".equals(semester)) {
+            // 加载当前学期数据
+            loadSampleData();
+        } else if ("2023-2024".equals(academicYear) && "第一学期".equals(semester)) {
+            // 加载上一学年第一学期的示例数据
+            pendingCourses.addAll(
+                    new CourseEvaluation("CS301", "Java程序设计", "吴教授", 3.0, "待评价"),
+                    new CourseEvaluation("CS302", "数据库原理", "郑教授", 4.0, "待评价")
+            );
+
+            completedCourses.addAll(
+                    new CourseEvaluation("CS303", "软件工程", "陈教授", 3.0, "已评价", "2023-12-20 10:30", 4.6)
+            );
+
+            evaluationDetails.addAll(
+                    new EvaluationDetail("软件工程", "陈教授", 4.8, 4.5, 4.7, 4.4, 4.6)
+            );
+        } else {
+            // 其他学期暂无数据
+        }
+
+        // 更新计数标签和统计信息
+        pendingCountLabel.setText(String.format("共有%d门课程待评价", pendingCourses.size()));
+        completedCountLabel.setText(String.format("共有%d门课程已评价", completedCourses.size()));
+        updateStatistics();
     }
-    
+
     /**
      * 评价课程
      */
     private void evaluateCourse(CourseEvaluation course) {
         System.out.println("评价课程: " + course.getCourseName());
-        
-        // 模拟评价完成
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("评价成功");
-        alert.setHeaderText(null);
-        alert.setContentText(String.format("您已成功评价课程: %s", course.getCourseName()));
-        alert.showAndWait();
-        
-        // 将课程从待评价列表移动到已评价列表
-        pendingCourses.remove(course);
-        
-        // 创建新的已评价课程对象
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String evaluationTime = now.format(formatter);
-        
-        CourseEvaluation evaluatedCourse = new CourseEvaluation(
-                course.getCourseCode(),
-                course.getCourseName(),
-                course.getTeacher(),
-                course.getCredit(),
-                "已评价",
-                evaluationTime,
-                4.5 // 模拟评分
-        );
-        
-        completedCourses.add(evaluatedCourse);
-        
-        // 添加评价详情
-        evaluationDetails.add(new EvaluationDetail(
-                course.getCourseName(),
-                course.getTeacher(),
-                4.6, 4.5, 4.7, 4.2, 4.5
-        ));
-        
-        // 更新计数标签和统计信息
-        pendingCountLabel.setText(String.format("共有%d门课程待评价", pendingCourses.size()));
-        completedCountLabel.setText(String.format("共有%d门课程已评价", completedCourses.size()));
-        updateStatistics();
+
+        // 创建评价对话框
+        Dialog<EvaluationDetail> dialog = new Dialog<>();
+        dialog.setTitle("课程评价");
+        dialog.setHeaderText(course.getCourseName() + " - " + course.getTeacher());
+
+        // 设置对话框样式
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStyleClass().add("evaluation-dialog");
+        dialogPane.getStylesheets().add(getClass().getResource("/com/work/javafx/css/TeachingEvaluation.css").toExternalForm());
+
+        // 设置按钮
+        ButtonType submitButtonType = new ButtonType("提交", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = ButtonType.CANCEL;
+        dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, cancelButtonType);
+
+        // 自定义按钮样式
+        Button submitButton = (Button) dialog.getDialogPane().lookupButton(submitButtonType);
+        submitButton.getStyleClass().add("evaluation-submit-button");
+
+        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelButtonType);
+        cancelButton.getStyleClass().add("evaluation-cancel-button");
+        cancelButton.setText("取消");
+
+        // 创建评价表单
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("evaluation-form-grid");
+        grid.setHgap(15);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(25, 25, 20, 25));
+
+        // 创建标题
+        Label titleLabel = new Label("请对以下方面进行评分(1-5分)：");
+        titleLabel.getStyleClass().add("evaluation-form-title");
+        grid.add(titleLabel, 0, 0, 3, 1);
+
+        // 创建评分滑块
+        Slider contentSlider = createRatingSlider("教学内容评分");
+        Slider methodSlider = createRatingSlider("教学方法评分");
+        Slider attitudeSlider = createRatingSlider("教学态度评分");
+        Slider effectSlider = createRatingSlider("教学效果评分");
+
+        // 添加评分项到表单
+        Label contentPrompt = new Label("教学内容:");
+        contentPrompt.getStyleClass().add("evaluation-item-label");
+        grid.add(contentPrompt, 0, 1);
+        grid.add(contentSlider, 1, 1);
+
+        Label contentScoreLabel = new Label(String.format("%.1f", contentSlider.getValue()));
+        contentScoreLabel.getStyleClass().add("evaluation-score-label");
+        grid.add(contentScoreLabel, 2, 1);
+
+        Label methodPrompt = new Label("教学方法:");
+        methodPrompt.getStyleClass().add("evaluation-item-label");
+        grid.add(methodPrompt, 0, 2);
+        grid.add(methodSlider, 1, 2);
+
+        Label methodScoreLabel = new Label(String.format("%.1f", methodSlider.getValue()));
+        methodScoreLabel.getStyleClass().add("evaluation-score-label");
+        grid.add(methodScoreLabel, 2, 2);
+
+        Label attitudePrompt = new Label("教学态度:");
+        attitudePrompt.getStyleClass().add("evaluation-item-label");
+        grid.add(attitudePrompt, 0, 3);
+        grid.add(attitudeSlider, 1, 3);
+
+        Label attitudeScoreLabel = new Label(String.format("%.1f", attitudeSlider.getValue()));
+        attitudeScoreLabel.getStyleClass().add("evaluation-score-label");
+        grid.add(attitudeScoreLabel, 2, 3);
+
+        Label effectPrompt = new Label("教学效果:");
+        effectPrompt.getStyleClass().add("evaluation-item-label");
+        grid.add(effectPrompt, 0, 4);
+        grid.add(effectSlider, 1, 4);
+
+        Label effectScoreLabel = new Label(String.format("%.1f", effectSlider.getValue()));
+        effectScoreLabel.getStyleClass().add("evaluation-score-label");
+        grid.add(effectScoreLabel, 2, 4);
+
+        // 添加评价意见文本区域
+        Label commentsPrompt = new Label("评价意见:");
+        commentsPrompt.getStyleClass().add("evaluation-item-label");
+        grid.add(commentsPrompt, 0, 5);
+
+        TextArea commentsArea = new TextArea();
+        commentsArea.getStyleClass().add("evaluation-comments-area");
+        commentsArea.setPrefRowCount(4);
+        commentsArea.setPromptText("请输入您对本课程的评价建议...");
+        commentsArea.setWrapText(true);
+        grid.add(commentsArea, 1, 5, 2, 1);
+
+        // 更新分数显示
+        contentSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                contentScoreLabel.setText(String.format("%.1f", newVal.doubleValue())));
+
+        methodSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                methodScoreLabel.setText(String.format("%.1f", newVal.doubleValue())));
+
+        attitudeSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                attitudeScoreLabel.setText(String.format("%.1f", newVal.doubleValue())));
+
+        effectSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                effectScoreLabel.setText(String.format("%.1f", newVal.doubleValue())));
+
+        dialog.getDialogPane().setContent(grid);
+
+        // 设置提交结果转换器
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == submitButtonType) {
+                double contentScore = contentSlider.getValue();
+                double methodScore = methodSlider.getValue();
+                double attitudeScore = attitudeSlider.getValue();
+                double effectScore = effectSlider.getValue();
+                double overallScore = (contentScore + methodScore + attitudeScore + effectScore) / 4.0;
+
+                return new EvaluationDetail(
+                        course.getCourseName(),
+                        course.getTeacher(),
+                        contentScore,
+                        methodScore,
+                        attitudeScore,
+                        effectScore,
+                        overallScore
+                );
+            }
+            return null;
+        });
+
+        // 显示对话框并处理结果
+        Optional<EvaluationDetail> result = dialog.showAndWait();
+
+        result.ifPresent(evaluationDetail -> {
+            // 移除待评价课程
+            pendingCourses.remove(course);
+
+            // 添加到已评价列表
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            String evaluationTime = now.format(formatter);
+
+            CourseEvaluation evaluatedCourse = new CourseEvaluation(
+                    course.getCourseCode(),
+                    course.getCourseName(),
+                    course.getTeacher(),
+                    course.getCredit(),
+                    "已评价",
+                    evaluationTime,
+                    evaluationDetail.getOverallScore()
+            );
+
+            completedCourses.add(evaluatedCourse);
+
+            // 添加评价详情
+            evaluationDetails.add(evaluationDetail);
+
+            // 更新计数标签和统计信息
+            pendingCountLabel.setText(String.format("共有%d门课程待评价", pendingCourses.size()));
+            completedCountLabel.setText(String.format("共有%d门课程已评价", completedCourses.size()));
+            updateStatistics();
+
+            // 提示评价成功
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("评价成功");
+            alert.setHeaderText(null);
+            alert.setContentText(String.format("您已成功评价课程: %s", course.getCourseName()));
+            alert.showAndWait();
+        });
+    }
+
+    /**
+     * 创建评分滑块
+     */
+    private Slider createRatingSlider(String name) {
+        Slider slider = new Slider(1, 5, 4.5);
+        slider.getStyleClass().add("evaluation-slider");
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(1);
+        slider.setMinorTickCount(4);
+        slider.setBlockIncrement(0.1);
+        slider.setSnapToTicks(true);
+        slider.setPrefWidth(220);
+        return slider;
     }
     
     /**

@@ -81,7 +81,10 @@
                   </HBox>
                </children>
             </HBox>
-                <Hyperlink fx:id="adminLogin" styleClass="adminLogin" text="管理员登录" />
+                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="管理员登录">
+               <HBox.margin>
+                  <Insets right="-5.0" />
+               </HBox.margin></Hyperlink>
             </HBox>
          <HBox alignment="CENTER">
             <children>

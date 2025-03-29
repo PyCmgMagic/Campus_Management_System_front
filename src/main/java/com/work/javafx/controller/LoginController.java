@@ -41,6 +41,7 @@ public class LoginController {
     @FXML
     private Label errorMessageLabel;
 
+    private boolean togglestate = false;
     /**
      * 初始化控制器
      */
@@ -57,6 +58,7 @@ public class LoginController {
         }
         //管理员登陆按钮
         if (adminLogin != null) {
+
             adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
         //缺省登录用户名和密码
@@ -153,17 +155,18 @@ public class LoginController {
  * @param event 事件对象
  */
 private void handleAdminButtonClicked(ActionEvent event){
-    usernameField.setPromptText("请输入管理员账号");
-    passwordField.setPromptText("请输入管理员密码");
-    adminLogin.setText("学生或教职工登录");
-}/**
- * 处理学生或教职工登录按钮点击事件
- * @param event 事件对象
- */
-private void handleAdminButtonClicked2(ActionEvent event){
-    usernameField.setPromptText("请输入学号或工号");
-    passwordField.setPromptText("请输入密码");
-    adminLogin.setText("学生或教职工登录");
+    if(togglestate){
+        usernameField.setPromptText("请输入学号或工号");
+        passwordField.setPromptText("请输入密码");
+        adminLogin.setText("管理员登录");
+        togglestate = false;
+    }else {
+        usernameField.setPromptText("请输入管理员账号");
+        passwordField.setPromptText("请输入管理员密码");
+        adminLogin.setText("学生或教职工登录");
+        togglestate = true;
+    }
+
 }
     /**
      * 验证用户凭据
