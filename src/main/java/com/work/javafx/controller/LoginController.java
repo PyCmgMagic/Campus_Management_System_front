@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.DataResponse.Res;
 import com.work.javafx.MainApplication;
+import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
 import javafx.fxml.FXML;
@@ -176,12 +177,21 @@ private void handleAdminButtonClicked(ActionEvent event){
      */
     private boolean authenticateUser(String username, String password) {
         //TODO 登陆验证
-//
-//        return true;
-        //测试
-        return (username.equals("admin") && password.equals("admin123")) ||
-                (username.equals("teacher") && password.equals("teacher123")) ||
-                (username.equals("student") && password.equals("student123"));
+        if (username.equals("admin") && password.equals("admin123")) {
+            UserSession.getInstance().setIdentity(-1);
+            return true;
+        };
+        if (username.equals("teacher") && password.equals("teacher123")) {
+            UserSession.getInstance().setIdentity(1);
+            return true;
+
+        }
+        if (username.equals("student") && password.equals("student123")) {
+            UserSession.getInstance().setIdentity(0);
+            return true;
+
+        }
+        return false;
     }
 
     /**

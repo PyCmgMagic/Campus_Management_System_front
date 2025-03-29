@@ -1,4 +1,5 @@
 package com.work.javafx;
+import com.work.javafx.entity.UserSession;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,7 +30,11 @@ public class MainApplication extends Application {
         changeView("Login.fxml","css/Login.css");
         stage.show();
     }
-    
+    @Override
+    public void stop() {
+        UserSession.getInstance().clearSession(); // 清理数据
+        System.out.println("应用关闭，用户数据已清除");
+    }
     /**
      * 切换视图方法
      * 用于切换整个场景的视图
@@ -55,7 +60,7 @@ public class MainApplication extends Application {
             }
             
             // 如果加载的是基础视图，将控制器实例保存到场景的userData中，使内容控制器可以访问
-            if (fxml.equals("BaseView.fxml")) {
+            if (fxml.equals("StudentBaseView.fxml")||fxml.equals("TeacherBaseView.fxml")||fxml.equals("AdminBaseView.fxml")) {
                 scene.setUserData(loader.getController());
             }
             
@@ -77,7 +82,22 @@ public class MainApplication extends Application {
      * 使用基础视图作为主框架
      */
     public static void showMainView() throws IOException {
-        changeView("BaseView.fxml", "css/BaseView.css");
+        switch (UserSession.getInstance().getIdentity()){
+            case 0:
+                changeView("StudentBaseView.fxml", "css/BaseView.css");
+                break;
+            case 1:
+                changeView("TeacherBaseView.fxml", "css/BaseView.css");
+                break;
+            case -1:
+                changeView("AdminBaseView.fxml", "css/BaseView.css");
+                break;
+            default:
+
+        }
+
+
+
     }
 
     public static void main(String[] args) {
