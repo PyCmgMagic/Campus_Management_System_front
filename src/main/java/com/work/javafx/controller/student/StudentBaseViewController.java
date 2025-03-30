@@ -1,11 +1,10 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
 import com.work.javafx.MainApplication;
 import com.work.javafx.util.ShowMessage;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -19,7 +18,7 @@ import java.util.ResourceBundle;
  * 基础视图控制器
  * 负责处理顶部导航栏和侧边菜单，以及加载不同的内容视图
  */
-public class BaseViewController implements Initializable {
+public class StudentBaseViewController implements Initializable {
     
     @FXML private StackPane contentArea;
     
@@ -46,7 +45,7 @@ public class BaseViewController implements Initializable {
         homeBtn.getStyleClass().add("active-menu-item");
         
         // 默认加载首页内容
-        loadView("HomeContent.fxml");
+        loadView("StudentHomeContent.fxml");
     }
     
     /**
@@ -63,9 +62,9 @@ public class BaseViewController implements Initializable {
             // 清空当前内容区
             contentArea.getChildren().clear();
             
-            // 加载新的内容
+            // 加载新的内容student
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
-                    getClass().getResource("/com/work/javafx/" + fxmlPath)));
+                    getClass().getResource("/com/work/javafx/student/" + fxmlPath)));
             Parent view = loader.load();
             
             // 应用CSS样式
@@ -96,18 +95,18 @@ public class BaseViewController implements Initializable {
      * @return CSS路径
      */
     private String getCssPathForView(String fxmlPath) {
-        if (fxmlPath.equals("HomeContent.fxml")) {
-            return "/com/work/javafx/css/HomeContent.css";
+        if (fxmlPath.equals("StudentHomeContent.fxml")) {
+            return "/com/work/javafx/css/student/HomeContent.css";
         } else if (fxmlPath.equals("CourseScheduleContent.fxml")) {
-            return "/com/work/javafx/css/CourseSchedule.css";
+            return "/com/work/javafx/css/student/CourseSchedule.css";
         } else if (fxmlPath.equals("CourseSelectionContent.fxml")) {
-            return "/com/work/javafx/css/CourseSelection.css";
+            return "/com/work/javafx/css/student/CourseSelection.css";
         } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
             return "/com/work/javafx/css/PersonalCenter.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
-            return "/com/work/javafx/css/ScoreSearch.css";
+            return "/com/work/javafx/css/student/ScoreSearch.css";
         } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
-            return "/com/work/javafx/css/TeachingEvaluation.css";
+            return "/com/work/javafx/css/student/TeachingEvaluation.css";
         }
         return null;
     }
@@ -155,7 +154,7 @@ public class BaseViewController implements Initializable {
     private void switchToHome() {
         System.out.println("切换到首页");
         switchActiveButton(homeBtn);
-        loadView("HomeContent.fxml");
+        loadView("StudentHomeContent.fxml");
     }
     
     /**

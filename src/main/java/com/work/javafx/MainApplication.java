@@ -40,6 +40,7 @@ public class MainApplication extends Application {
      * 用于切换整个场景的视图
      */
     public static void changeView(String fxml, String css) throws IOException {
+
         Parent root = null;
         try {
             // 保存当前窗口尺寸
@@ -60,7 +61,7 @@ public class MainApplication extends Application {
             }
             
             // 如果加载的是基础视图，将控制器实例保存到场景的userData中，使内容控制器可以访问
-            if (fxml.equals("StudentBaseView.fxml")||fxml.equals("TeacherBaseView.fxml")||fxml.equals("AdminBaseView.fxml")) {
+            if (fxml.equals("StudentBaseView.fxml")||fxml.equals("Teacher/TeacherBaseView.fxml")||fxml.equals("AdminBaseView.fxml")) {
                 scene.setUserData(loader.getController());
             }
             
@@ -84,10 +85,10 @@ public class MainApplication extends Application {
     public static void showMainView() throws IOException {
         switch (UserSession.getInstance().getIdentity()){
             case 0:
-                changeView("StudentBaseView.fxml", "css/BaseView.css");
+                changeView("student/StudentBaseView.fxml", "css/student/BaseView.css");
                 break;
             case 1:
-                changeView("TeacherBaseView.fxml", "css/BaseView.css");
+                changeView("teacher/TeacherBaseView.fxml", "css/teacher/TeacherBaseView.css");
                 break;
             case -1:
                 changeView("AdminBaseView.fxml", "css/BaseView.css");

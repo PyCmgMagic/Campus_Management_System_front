@@ -1,4 +1,4 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -19,20 +19,15 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import com.work.javafx.model.ScoreRecord;
 import com.work.javafx.util.ShowMessage;
 import com.work.javafx.util.ExportUtils;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * 成绩查询控制器

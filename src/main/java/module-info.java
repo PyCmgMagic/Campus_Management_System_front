@@ -27,4 +27,8 @@ module com.work.javafx {
     
     // 导出util包
     exports com.work.javafx.util;
+    exports com.work.javafx.controller.student;
+    opens com.work.javafx.controller.student to javafx.fxml;
+    exports com.work.javafx.controller.teacher;
+    opens com.work.javafx.controller.teacher to javafx.fxml;
 }

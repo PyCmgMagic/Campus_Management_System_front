@@ -7,7 +7,7 @@
 
 <ScrollPane fitToWidth="true" styleClass="main-scroll-pane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.ScoreSearchContentController"
+            fx:controller="com.work.javafx.controller.student.ScoreSearchContentController"
             VBox.vgrow="ALWAYS">
     <VBox styleClass="content-area" VBox.vgrow="ALWAYS">
         <HBox styleClass="content-header">

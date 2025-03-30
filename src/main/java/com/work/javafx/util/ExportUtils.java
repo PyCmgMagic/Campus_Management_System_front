@@ -1,17 +1,15 @@
 package com.work.javafx.util;
 
-import com.work.javafx.controller.CourseScheduleContentController.CourseRow;
+import com.work.javafx.controller.student.CourseScheduleContentController.CourseRow;
 import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
-import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;

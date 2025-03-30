@@ -1,4 +1,4 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,12 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import javafx.application.Platform;
+
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -574,7 +572,7 @@ public class TeachingEvaluationContentController implements Initializable {
         // 设置对话框样式
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStyleClass().add("evaluation-dialog");
-        dialogPane.getStylesheets().add(getClass().getResource("/com/work/javafx/css/TeachingEvaluation.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/com/work/javafx/css/student/TeachingEvaluation.css").toExternalForm());
 
         // 设置按钮
         ButtonType submitButtonType = new ButtonType("提交", ButtonBar.ButtonData.OK_DONE);

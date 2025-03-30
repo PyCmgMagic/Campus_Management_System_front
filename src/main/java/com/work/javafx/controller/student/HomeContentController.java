@@ -1,9 +1,8 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 
 import java.net.URL;
@@ -55,8 +54,8 @@ public class HomeContentController implements Initializable {
             if (scene != null) {
                 // 获取基础视图控制器实例
                 Object userData = scene.getUserData();
-                if (userData instanceof BaseViewController) {
-                    BaseViewController baseController = (BaseViewController) userData;
+                if (userData instanceof StudentBaseViewController) {
+                    StudentBaseViewController baseController = (StudentBaseViewController) userData;
                     // 调用基础视图控制器的方法切换到课表查询
                     baseController.switchToCourseSchedule();
                 } else {

@@ -1,4 +1,4 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
 import com.work.javafx.MainApplication;
 import com.work.javafx.util.ShowMessage;
@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.io.IOException;

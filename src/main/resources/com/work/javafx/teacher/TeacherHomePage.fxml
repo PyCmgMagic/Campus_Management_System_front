@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.control.ScrollPane?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.work.javafx.controller.student.HomeContentController"
+      styleClass="content-container"
+      VBox.vgrow="ALWAYS">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <Label styleClass="page-title" text="教师工作台" />
+      
+      <ScrollPane fitToWidth="true" styleClass="content-scroll-pane" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox spacing="20.0">
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+               <children>
+                  <GridPane hgap="20.0" vgap="20.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="270.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="200.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="250.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                        <!-- 课程日历卡片 -->
+                        <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" styleClass="card-header">
+                                 <children>
+                                    <Label styleClass="card-title" text="今日教学任务" />
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Label styleClass="card-action" text="查看完整课表" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" styleClass="calendar-header">
+                                 <children>
+                                    <Label styleClass="calendar-date" text="2025年3月15日 星期六" />
+                                 </children>
+                              </HBox>
+                              <VBox styleClass="course-list">
+                                 <children>
+                                    <VBox styleClass="course-item">
+                                       <children>
+                                          <Label styleClass="course-time" text="08:00 - 09:40" />
+                                          <Label styleClass="course-name" text="高等数学 (II)" />
+                                          <HBox styleClass="course-info">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
+                                                      <Label text="理科楼 A203" />
+                                                   </children>
+                                                </HBox>
+                                                <Pane HBox.hgrow="ALWAYS" />
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
+                                                      <Label text="计算机系 / 68人" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox styleClass="course-item">
+                                       <children>
+                                          <Label styleClass="course-time" text="10:10 - 11:50" />
+                                          <Label styleClass="course-name" text="数据结构与算法" />
+                                          <HBox styleClass="course-info">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
+                                                      <Label text="信息楼 B501" />
+                                                   </children>
+                                                </HBox>
+                                                <Pane HBox.hgrow="ALWAYS" />
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
+                                                      <Label text="软件工程 / 42人" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox styleClass="course-item">
+                                       <children>
+                                          <Label styleClass="course-time" text="14:30 - 16:10" />
+                                          <Label styleClass="course-name" text="面向对象程序设计" />
+                                          <HBox styleClass="course-info">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
+                                                      <Label text="实验楼 C302" />
+                                                   </children>
+                                                </HBox>
+                                                <Pane HBox.hgrow="ALWAYS" />
+                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
+                                                   <children>
+                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
+                                                      <Label text="人工智能 / 35人" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- 待办事项卡片 -->
+                        <VBox styleClass="dashboard-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" styleClass="card-header">
+                                 <children>
+                                    <Label styleClass="card-title" text="教学任务" />
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Label styleClass="card-action" text="添加任务" />
+                                 </children>
+                              </HBox>
+                              <VBox styleClass="todo-list">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" styleClass="todo-item">
+                                       <children>
+                                          <CheckBox styleClass="todo-checkbox" />
+                                          <VBox styleClass="todo-content">
+                                             <children>
+                                                <Label styleClass="todo-title" text="高等数学期中考试试卷批改" />
+                                                <Label styleClass="todo-deadline" text="截止日期: 2025-03-18" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="todo-item">
+                                       <children>
+                                          <CheckBox styleClass="todo-checkbox" />
+                                          <VBox styleClass="todo-content">
+                                             <children>
+                                                <Label styleClass="todo-title" text="数据结构实验报告评分" />
+                                                <Label styleClass="todo-deadline" text="截止日期: 2025-03-17" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="todo-item">
+                                       <children>
+                                          <CheckBox styleClass="todo-checkbox" />
+                                          <VBox styleClass="todo-content">
+                                             <children>
+                                                <Label styleClass="todo-title" text="软件工程项目中期答辩安排" />
+                                                <Label styleClass="todo-deadline" text="截止日期: 2025-03-20" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="todo-item">
+                                       <children>
+                                          <CheckBox styleClass="todo-checkbox" />
+                                          <VBox styleClass="todo-content">
+                                             <children>
+                                                <Label styleClass="todo-title" text="本学期教学计划提交" />
+                                                <Label styleClass="todo-deadline" text="截止日期: 2025-03-25" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="todo-item">
+                                       <children>
+                                          <CheckBox styleClass="todo-checkbox" />
+                                          <VBox styleClass="todo-content">
+                                             <children>
+                                                <Label styleClass="todo-title" text="教师教学研讨会准备" />
+                                                <Label styleClass="todo-deadline" text="截止日期: 2025-03-22" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+
+                     <!-- 课程统计卡片 -->
+                     <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <children>
+                           <HBox alignment="CENTER_LEFT" styleClass="card-header">
+                              <children>
+                                 <Label styleClass="card-title" text="本学期统计" />
+                                 <Pane HBox.hgrow="ALWAYS" />
+                                 <Label styleClass="card-action" text="查看详情" />
+                              </children>
+                           </HBox>
+                           <HBox alignment="CENTER" spacing="10" VBox.vgrow="ALWAYS">
+                              <children>
+                                 <GridPane styleClass="stats-grid" HBox.hgrow="ALWAYS">
+                                    <columnConstraints>
+                                       <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                       <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                       <RowConstraints minHeight="60.0" vgrow="SOMETIMES" />
+                                       <RowConstraints minHeight="60.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                       <VBox alignment="CENTER" styleClass="stats-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                          <children>
+                                             <Label styleClass="stats-value" text="5" />
+                                             <Label styleClass="stats-label" text="授课班级" />
+                                          </children>
+                                       </VBox>
+                                       <VBox alignment="CENTER" styleClass="stats-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                          <children>
+                                             <Label styleClass="stats-value" text="198" />
+                                             <Label styleClass="stats-label" text="学生总数" />
+                                          </children>
+                                       </VBox>
+                                       <VBox alignment="CENTER" styleClass="stats-item" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                          <children>
+                                             <Label styleClass="stats-value" text="32" />
+                                             <Label styleClass="stats-label" text="课时" />
+                                          </children>
+                                       </VBox>
+                                       <VBox alignment="CENTER" styleClass="stats-item" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <children>
+                                             <Label styleClass="stats-value" text="89%" />
+                                             <Label styleClass="stats-label" text="平均出勤率" />
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                    <padding>
+                                       <Insets top="10.0" />
+                                    </padding>
+                                 </GridPane>
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                        
+                        <!-- 学生考勤卡片 -->
+                       <VBox styleClass="dashboard-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" styleClass="card-header">
+                                 <children>
+                                    <Label styleClass="card-title" text="学生考勤情况" />
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Label styleClass="card-action" text="考勤管理" />
+                                 </children>
+                              </HBox>
+                              <VBox styleClass="attendance-list">
+                                 <children>
+                                    <HBox alignment="CENTER" styleClass="attendance-item">
+                                       <children>
+                                          <Label styleClass="attendance-course" text="高等数学 (II)" />
+                                          <Pane HBox.hgrow="ALWAYS" />
+                                          <HBox styleClass="attendance-stats">
+                                             <children>
+                                                <HBox alignment="CENTER" styleClass="attendance-stat">
+                                                   <children>
+                                                      <Circle radius="4.0" styleClass="attendance-dot,dot-green" />
+                                                      <Label text="92%" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" styleClass="attendance-item">
+                                       <children>
+                                          <Label styleClass="attendance-course" text="数据结构与算法" />
+                                          <Pane HBox.hgrow="ALWAYS" />
+                                          <HBox styleClass="attendance-stats">
+                                             <children>
+                                                <HBox alignment="CENTER" styleClass="attendance-stat">
+                                                   <children>
+                                                      <Circle radius="4.0" styleClass="attendance-dot,dot-green" />
+                                                      <Label text="88%" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" styleClass="attendance-item">
+                                       <children>
+                                          <Label styleClass="attendance-course" text="面向对象程序设计" />
+                                          <Pane HBox.hgrow="ALWAYS" />
+                                          <HBox styleClass="attendance-stats">
+                                             <children>
+                                                <HBox alignment="CENTER" styleClass="attendance-stat">
+                                                   <children>
+                                                      <Circle radius="4.0" styleClass="attendance-dot,dot-orange" />
+                                                      <Label text="85%" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" styleClass="attendance-item">
+                                       <children>
+                                          <Label styleClass="attendance-course" text="计算机网络" />
+                                          <Pane HBox.hgrow="ALWAYS" />
+                                          <HBox styleClass="attendance-stats">
+                                             <children>
+                                                <HBox alignment="CENTER" styleClass="attendance-stat">
+                                                   <children>
+                                                      <Circle radius="4.0" styleClass="attendance-dot,dot-red" />
+                                                      <Label text="78%" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" styleClass="attendance-item">
+                                       <children>
+                                          <Label styleClass="attendance-course" text="软件工程导论" />
+                                          <Pane HBox.hgrow="ALWAYS" />
+                                          <HBox styleClass="attendance-stats">
+                                             <children>
+                                                <HBox alignment="CENTER" styleClass="attendance-stat">
+                                                   <children>
+                                                      <Circle radius="4.0" styleClass="attendance-dot,dot-green" />
+                                                      <Label text="94%" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- 通知公告卡片 -->
+                        <VBox styleClass="dashboard-card" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" styleClass="card-header">
+                                 <children>
+                                    <Label styleClass="card-title" text="通知公告" />
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Label styleClass="card-action" text="发布公告" />
+                                 </children>
+                              </HBox>
+                              <VBox styleClass="notification-list">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
+                                       <children>
+                                          <StackPane styleClass="notification-icon">
+                                             <children>
+                                                <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" size="16" styleClass="notification-icon-inner" />
+                                             </children>
+                                          </StackPane>
+                                          <VBox styleClass="notification-content">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT">
+                                                   <children>
+                                                      <Label styleClass="notification-title" text="计算机学院2025届毕业设计答辩安排通知" />
+                                                      <Label styleClass="notification-badge" text="重要" />
+                                                   </children>
+                                                </HBox>
+                                                <Label styleClass="notification-time" text="2025-03-15 10:30" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
+                                       <children>
+                                          <StackPane styleClass="notification-icon">
+                                             <children>
+                                                <FontAwesomeIconView glyphName="PLUS_SQUARE" size="16" styleClass="notification-icon-inner" />
+                                             </children>
+                                          </StackPane>
+                                          <VBox styleClass="notification-content">
+                                             <children>
+                                                <Label styleClass="notification-title" text="关于教师教学工作量计算方法调整的通知" />
+                                                <Label styleClass="notification-time" text="2025-03-14 14:45" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
+                                       <children>
+                                          <StackPane styleClass="notification-icon">
+                                             <children>
+                                                <FontAwesomeIconView glyphName="USER_CIRCLE" size="16" styleClass="notification-icon-inner" />
+                                             </children>
+                                          </StackPane>
+                                          <VBox styleClass="notification-content">
+                                             <children>
+                                                <Label styleClass="notification-title" text="2025年春季学期教师发展培训计划" />
+                                                <Label styleClass="notification-time" text="2025-03-12 09:15" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                      </GridPane>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

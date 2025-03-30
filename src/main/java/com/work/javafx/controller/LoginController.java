@@ -63,8 +63,8 @@ public class LoginController {
             adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
         //缺省登录用户名和密码
-        usernameField.setText("admin");
-        passwordField.setText("admin123");
+        usernameField.setText("teacher");
+        passwordField.setText("teacher123");
     }
 
     /**

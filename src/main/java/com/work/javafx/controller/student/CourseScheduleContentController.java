@@ -1,6 +1,5 @@
-package com.work.javafx.controller;
+package com.work.javafx.controller.student;
 
-import com.work.javafx.MainApplication;
 import com.work.javafx.util.ShowMessage;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,15 +8,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**

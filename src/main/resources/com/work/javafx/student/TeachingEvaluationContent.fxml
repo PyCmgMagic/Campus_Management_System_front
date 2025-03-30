@@ -8,7 +8,7 @@
 
 <ScrollPane fx:id="contentScrollPane"  fitToWidth="true" styleClass="content-scroll-pane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.TeachingEvaluationContentController"
+            fx:controller="com.work.javafx.controller.student.TeachingEvaluationContentController"
             VBox.vgrow="ALWAYS">
     <content>
         <VBox styleClass="content-area">
