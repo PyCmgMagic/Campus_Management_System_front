@@ -9,7 +9,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.work.javafx.controller.student.HomeContentController"
+      fx:controller="com.work.javafx.controller.teacher.TeacherHomePageController"
       styleClass="content-container"
       VBox.vgrow="ALWAYS">
    <padding>
@@ -42,7 +42,7 @@
                                  <children>
                                     <Label styleClass="card-title" text="今日教学任务" />
                                     <Pane HBox.hgrow="ALWAYS" />
-                                    <Label styleClass="card-action" text="查看完整课表" />
+                                    <Label fx:id="CompleteCourseSchedule" styleClass="card-action" text="查看完整课表" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" styleClass="calendar-header">

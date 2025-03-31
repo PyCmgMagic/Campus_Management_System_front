@@ -26,11 +26,11 @@ public class TeacherBaseViewController implements Initializable {
     // 菜单按钮
     @FXML private Button homeBtn;
     @FXML private Button personalCenterBtn;
-    @FXML private Button courseScheduleBtn;
-    @FXML private Button courseSelectionBtn;
-    @FXML private Button gradeQueryBtn;
-    @FXML private Button teachingEvaluationBtn;
-    @FXML private Button attendanceManagement;
+    @FXML private Button courseScheduleManagementBtn;
+    @FXML private Button courseManagementBtn;
+    @FXML private Button scoreInputBtn;
+    @FXML private Button examManagementBtn;
+    @FXML private Button attendanceManagementBtn;
 
     // 当前活动的按钮
     private Button currentActiveButton;
@@ -68,7 +68,11 @@ public class TeacherBaseViewController implements Initializable {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/com/work/javafx/teacher/" + fxmlPath)));
             Parent view = loader.load();
-            
+            Object controller = loader.getController();
+            if (controller instanceof TeacherHomePageController) {
+                ((TeacherHomePageController) controller).setBaseController(this);
+            }
+
             // 应用CSS样式
             String cssPath = getCssPathForView(fxmlPath);
             if (cssPath != null) {
@@ -153,7 +157,7 @@ public class TeacherBaseViewController implements Initializable {
      * 切换到首页
      */
     @FXML
-    private void switchToHome() {
+    protected void switchToHome() {
         System.out.println("切换到首页");
         switchActiveButton(homeBtn);
         loadView("TeacherHomePage.fxml");
@@ -173,45 +177,47 @@ public class TeacherBaseViewController implements Initializable {
      * 切换到课表查询
      */
     @FXML
-    public void switchToCourseSchedule() {
+    protected void switchTocourseScheduleManagement() {
         System.out.println("切换到课表查询");
-        switchActiveButton(courseScheduleBtn);
-        loadView("CourseScheduleContent.fxml");
+        switchActiveButton(courseScheduleManagementBtn);
+        loadView("courseScheduleManagementContent.fxml");
     }
     
     /**
-     * 切换到选课系统
+     * 切换到课程管理
      */
     @FXML
-    private void switchToCourseSelection() {
-        System.out.println("切换到选课系统");
-        switchActiveButton(courseSelectionBtn);
-        loadView("CourseSelectionContent.fxml");
+    private void switchTocourseManagement() {
+        System.out.println("切换到课程管理");
+        switchActiveButton(courseManagementBtn);
+        loadView("courseManagementContent.fxml");
     }
     
     /**
-     * 切换到成绩查询
+     * 切换到成绩录入
      */
     @FXML
-    private void switchToGradeQuery() {
-        System.out.println("切换到成绩查询");
-        switchActiveButton(gradeQueryBtn);
-        loadView("ScoreSearchContent.fxml");
+    private void switchToscoreInput() {
+        System.out.println("切换到成绩录入");
+        switchActiveButton(scoreInputBtn);
+        loadView("scoreInputContent.fxml");
     }
     
     /**
-     * 切换到教学评价
+     * 切换到考试管理
      */
     @FXML
-    private void switchToTeachingEvaluation() {
-        System.out.println("切换到教学评价");
-        switchActiveButton(teachingEvaluationBtn);
-        loadView("TeachingEvaluationContent.fxml");
+    private void switchToexamManagement() {
+        System.out.println("切换到考试管理");
+        switchActiveButton(examManagementBtn);
+        loadView("examManagementContent.fxml");
     }
-
+    /**
+     * 切换到考试管理
+     */
     public void switchToAttendanceManagement(ActionEvent actionEvent) {
         System.out.println("切换到考勤管理");
-        switchActiveButton(attendanceManagement);
+        switchActiveButton(attendanceManagementBtn);
         loadView("AttendanceManagementContent.fxml");
     }
 }

@@ -44,7 +44,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="courseScheduleBtn" onAction="#switchToCourseSchedule" styleClass="menu-item" text="课表管理">
+               <Button fx:id="courseScheduleManagementBtn" onAction="#switchTocourseScheduleManagement" styleClass="menu-item" text="课表管理">
                   <graphic>
                      <Region styleClass="course-icon" />
                   </graphic>
@@ -53,7 +53,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="courseSelectionBtn" onAction="#switchToCourseSelection" styleClass="menu-item" text="课程管理">
+               <Button fx:id="courseManagementBtn" onAction="#switchTocourseManagement" styleClass="menu-item" text="课程管理">
                   <graphic>
                      <Region styleClass="select-course-icon" />
                   </graphic>
@@ -61,7 +61,7 @@
             </children>
          </HBox><HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="attendanceManagement" onAction="#switchToAttendanceManagement" styleClass="menu-item" text="考勤管理">
+               <Button fx:id="attendanceManagementBtn" onAction="#switchToAttendanceManagement" styleClass="menu-item" text="考勤管理">
                   <graphic>
                      <Region styleClass="select-course-icon" />
                   </graphic>
@@ -70,7 +70,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="gradeQueryBtn" onAction="#switchToGradeQuery" styleClass="menu-item" text="成绩录入">
+               <Button fx:id="scoreInputBtn" onAction="#switchToscoreInput" styleClass="menu-item" text="成绩录入">
                   <graphic>
                      <Region styleClass="grade-icon" />
                   </graphic>
@@ -79,7 +79,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="teachingEvaluationBtn" onAction="#switchToTeachingEvaluation" styleClass="menu-item" text="考试管理">
+               <Button fx:id="examManagementBtn" onAction="#switchToexamManagement" styleClass="menu-item" text="考试管理">
                   <graphic>
                      <Region styleClass="evaluation-icon" />
                   </graphic>

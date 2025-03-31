@@ -11,11 +11,12 @@ module com.work.javafx {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires com.google.gson;
-    requires java.logging;
-    
+
     // 打印支持
     requires javafx.swing;
-    
+    requires org.apache.poi.poi;
+    requires java.logging;
+
     // 导出 DataResponse 包到 Gson 模块
     exports com.work.javafx.DataResponse to com.google.gson;
     // 如果Gson需要反射访问私有字段（例如没有公共getter/setter时），需开放包
