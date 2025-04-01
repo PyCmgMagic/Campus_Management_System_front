@@ -55,7 +55,7 @@
             <children>
                <Button fx:id="courseManagementBtn" onAction="#switchTocourseManagement" styleClass="menu-item" text="课程管理">
                   <graphic>
-                     <Region styleClass="select-course-icon" />
+                     <Region styleClass="course-management-icon" />
                   </graphic>
                </Button>
             </children>
@@ -72,7 +72,7 @@
             <children>
                <Button fx:id="scoreInputBtn" onAction="#switchToscoreInput" styleClass="menu-item" text="成绩录入">
                   <graphic>
-                     <Region styleClass="grade-icon" />
+                     <Region styleClass="score-input-icon" />
                   </graphic>
                </Button>
             </children>
@@ -81,7 +81,7 @@
             <children>
                <Button fx:id="examManagementBtn" onAction="#switchToexamManagement" styleClass="menu-item" text="考试管理">
                   <graphic>
-                     <Region styleClass="evaluation-icon" />
+                     <Region styleClass="exam-management-icon" />
                   </graphic>
                </Button>
             </children>

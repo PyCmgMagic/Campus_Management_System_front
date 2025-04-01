@@ -111,8 +111,8 @@ public class TeacherBaseViewController implements Initializable {
             return "/com/work/javafx/css/PersonalCenter.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
             return "/com/work/javafx/css/student/ScoreSearch.css";
-        } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
-            return "/com/work/javafx/css/student/TeachingEvaluation.css";
+        } else if (fxmlPath.equals("AttendanceManagementContent.fxml")) {
+            return "/com/work/javafx/css/teacher/AttendanceManagement.css";
         }
         return null;
     }

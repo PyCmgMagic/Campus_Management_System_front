@@ -121,7 +121,6 @@
 .dashboard-card {
     -fx-background-color: white;
     -fx-background-radius: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
     -fx-padding: 20px;
 }
 
@@ -445,7 +444,7 @@
 
 /* 图标样式 */
 .home-icon, .user-icon, .course-icon, .select-course-icon,
-.grade-icon, .exam-icon, .notice-icon, .evaluation-icon, .location-icon {
+.grade-icon, .exam-icon, .notice-icon, .evaluation-icon, .location-icon,.course-management-icon,.exam-management-icon,.score-input-icon  {
     -fx-min-width: 16px;
     -fx-min-height: 16px;
     -fx-background-color: white;
@@ -489,6 +488,23 @@
     -fx-background-color: linear-gradient(to bottom right, #3498DB, #2980B9);
     -fx-shape: "M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-9-9H7v-2h2v2zm4 0h-2v-2h2v2zm-4 4H7v-2h2v2zm4 0h-2v-2h2v2z";
 }
+/* 课程管理图标 - 文件夹 */
+.course-management-icon {
+    -fx-background-color: linear-gradient(to bottom right, #5DADE2, #3498DB); /* 蓝色系 */
+    -fx-shape: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z";
+}
+
+/* 考试管理图标  */
+.exam-management-icon {
+     -fx-background-color: linear-gradient(to bottom right, #AF7AC5, #8E44AD); /* 紫色系 */
+     -fx-shape: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-8h8v-2H8v2zm0 4h8v-2H8v2zm0 4h5v-2H8v2z";
+ }
+
+/* 成绩录入图标  */
+.score-input-icon {
+    -fx-background-color: linear-gradient(to bottom right, #F5B041, #F39C12); /* 保留橙黄色系 */
+    -fx-shape: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4H8v-2h4V7h2v4h4v2h-4v4zM3 5L1 7v12c0 1.1.9 2 2 2h12l2-2H3V5z";
+}
 
 /* 通知图标 - 铃铛 */
 .notice-icon {
@@ -496,11 +512,7 @@
     -fx-shape: "M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.1-1.7-5.6-4.5-6.3V4c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5v.7C7.7 5.4 6 7.9 6 11v5l-2 2v1h16v-1l-2-2z";
 }
 
-/* 评价图标 - 星级 */
-.evaluation-icon {
-    -fx-background-color: linear-gradient(to bottom right, #FF9F43, #FF7F50);
-    -fx-shape: "M12 17.3l4.2 2.6-1.1-4.8 3.7-3.2-4.9-.4L12 6l-1.9 4.5-4.9.4 3.7 3.2-1.1 4.8zM22 9.2l-5.4 4.7 1.6 7.1L12 17.7 5.8 21l1.6-7.1L2 9.2l7.3-.6L12 2l2.7 6.6z";
-}
+
 
 /* 统一形状缩放设置 */
 .icon {
