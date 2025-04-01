@@ -103,8 +103,8 @@ public class TeacherBaseViewController implements Initializable {
     private String getCssPathForView(String fxmlPath) {
         if (fxmlPath.equals("TeacherHomePage.fxml")) {
             return "/com/work/javafx/css/teacher/TeacherBaseView.css";
-        } else if (fxmlPath.equals("CourseScheduleContent.fxml")) {
-            return "/com/work/javafx/css/student/CourseSchedule.css";
+        } else if (fxmlPath.equals("ScoreInputContent.fxml")) {
+            return "/com/work/javafx/css/teacher/ScoreInputContent.css";
         } else if (fxmlPath.equals("CourseSelectionContent.fxml")) {
             return "/com/work/javafx/css/student/CourseSelection.css";
         } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
@@ -200,7 +200,7 @@ public class TeacherBaseViewController implements Initializable {
     protected void switchToscoreInput() {
         System.out.println("切换到成绩录入");
         switchActiveButton(scoreInputBtn);
-        loadView("scoreInputContent.fxml");
+        loadView("ScoreInputContent.fxml");
     }
     
     /**
