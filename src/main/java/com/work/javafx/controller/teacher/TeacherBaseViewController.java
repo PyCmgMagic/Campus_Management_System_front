@@ -187,7 +187,7 @@ public class TeacherBaseViewController implements Initializable {
      * 切换到课程管理
      */
     @FXML
-    private void switchTocourseManagement() {
+    protected void switchTocourseManagement() {
         System.out.println("切换到课程管理");
         switchActiveButton(courseManagementBtn);
         loadView("courseManagementContent.fxml");
@@ -197,7 +197,7 @@ public class TeacherBaseViewController implements Initializable {
      * 切换到成绩录入
      */
     @FXML
-    private void switchToscoreInput() {
+    protected void switchToscoreInput() {
         System.out.println("切换到成绩录入");
         switchActiveButton(scoreInputBtn);
         loadView("scoreInputContent.fxml");
@@ -207,7 +207,7 @@ public class TeacherBaseViewController implements Initializable {
      * 切换到考试管理
      */
     @FXML
-    private void switchToexamManagement() {
+    protected void switchToexamManagement() {
         System.out.println("切换到考试管理");
         switchActiveButton(examManagementBtn);
         loadView("examManagementContent.fxml");
@@ -215,7 +215,7 @@ public class TeacherBaseViewController implements Initializable {
     /**
      * 切换到考试管理
      */
-    public void switchToAttendanceManagement(ActionEvent actionEvent) {
+    public void switchToAttendanceManagement() {
         System.out.println("切换到考勤管理");
         switchActiveButton(attendanceManagementBtn);
         loadView("AttendanceManagementContent.fxml");

@@ -261,7 +261,7 @@
                                  <children>
                                     <Label styleClass="card-title" text="学生考勤情况" />
                                     <Pane HBox.hgrow="ALWAYS" />
-                                    <Label styleClass="card-action" text="考勤管理" />
+                                    <Label fx:id="AttendanceManagement" styleClass="card-action" text="考勤管理" />
                                  </children>
                               </HBox>
                               <VBox styleClass="attendance-list">
