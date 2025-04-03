@@ -1,0 +1,276 @@
+/* General Styles */
+.root {
+    -fx-font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* Apply to the ScrollPane in ScoreInputView.fxml if needed */
+.content-scroll-pane {
+    -fx-background-color: #f5f5f5; /* Match body background */
+}
+
+.content-container {
+    -fx-background-color: #f5f5f5;
+}
+
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: #eee;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: #333;
+}
+
+/* Card Style */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px; /* Match background radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    /* -fx-padding: 20px; defined in FXML */
+}
+
+/* Info Cards */
+.info-card-container {
+    /* -fx-hgap: 20px; -fx-vgap: 20px; defined in FXML */
+}
+
+.info-card {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-min-width: 200px; /* Ensure minimum width */
+}
+
+.info-card-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding-bottom: 5px; /* Add some space */
+}
+
+.info-card-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* Info Card Specific Colors */
+.primary-card .info-card-value { -fx-text-fill: #3F8CFF; }
+.success-card .info-card-value { -fx-text-fill: #4CAF50; }
+.warning-card .info-card-value { -fx-text-fill: #FF9800; }
+.danger-card .info-card-value { -fx-text-fill: #F44336; }
+
+
+/* Filter Row */
+.filter-row {
+    -fx-alignment: center-left;
+    /* -fx-hgap: 15px; -fx-vgap: 10px; defined in FXML */
+}
+
+/* Buttons */
+.button {
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.primary-button {
+    -fx-background-color: #E23C3C;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
+}
+.primary-button:hover {
+    -fx-background-color: #c82a2a;
+}
+
+.secondary-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #333;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+.secondary-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Specific Button Styles from Header (TeacherBaseView) */
+.top-bar {
+    -fx-background-color: #E23C3C;
+    -fx-padding: 10px 30px; /* Adjust padding */
+    -fx-alignment: center-left;
+}
+.app-title {
+     -fx-font-size: 20px;
+     -fx-font-weight: bold;
+     -fx-text-fill: white;
+}
+.user-btn, .logout-btn {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-text-fill: white;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px; /* Match background */
+    -fx-padding: 5px 15px;
+    -fx-margin-left: 10px;
+}
+.user-btn:hover, .logout-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* TableView */
+.table-view {
+    -fx-border-color: #eee;
+    -fx-border-width: 1px 0 1px 0; /* Top and bottom border */
+    -fx-background-color: white;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent #eee transparent transparent; /* Right border for headers */
+    -fx-padding: 12px 15px;
+    -fx-font-weight: bold;
+    -fx-size: 13px; /* Explicitly set header font size if needed */
+}
+
+.table-view .table-cell {
+    -fx-padding: 10px 15px; /* Adjust cell padding */
+    -fx-border-color: transparent #eee transparent transparent; /* Match header border */
+     -fx-alignment: center-left; /* Default cell alignment */
+}
+/* Center score and status columns potentially */
+/* .table-view .table-column#regularScoreCol .table-cell, ... { -fx-alignment: center; } */
+
+
+.table-view .text-field-table-cell .text-field {
+    -fx-background-color: #f9f9f9; /* Slightly different background when editing */
+    -fx-border-color: #ccc;
+    -fx-padding: 5px 8px;
+}
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f9f9f9; /* 保持悬停颜色 */
+}
+
+/* 修改选中行的样式 */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #d5d5d5; /* 改为中性浅灰色 */
+}
+
+
+
+/* Status Cell Styles */
+.table-cell.status-normal {
+    -fx-text-fill: #4CAF50; /* Green */
+    -fx-font-weight: bold;
+}
+.table-cell.status-fail {
+    -fx-text-fill: #FF9800; /* Orange/Red as per prototype */
+    -fx-font-weight: bold;
+}
+.table-cell.status-absent { /* Optional: if you add absent status */
+    -fx-text-fill: #FF9800; /* Orange */
+    -fx-font-weight: bold;
+}
+
+/* Button Group */
+.button-group {
+    /* -fx-alignment: center-right; -fx-spacing: 10px; defined in FXML */
+    -fx-padding-top: 15px; /* Add some space above buttons */
+}
+
+/* Stats Container */
+.stats-container {
+    /* -fx-padding: 30 0 0 0; defined in FXML */
+}
+
+.stats-title {
+    -fx-font-size: 18px;
+    -fx-padding: 0 0 10 0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #eee;
+    -fx-text-fill: #555;
+    -fx-font-weight: normal;
+}
+
+.stats-row {
+    /* -fx-hgap: 20px; -fx-vgap: 20px; defined in FXML */
+}
+
+.stats-box {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+    -fx-min-width: 180px; /* Minimum width */
+}
+
+.stats-box-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding-bottom: 8px;
+}
+
+.stats-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+.stats-box {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2); /* Keep original shadow or adjust */
+    -fx-border-color: #e0e0e0; /* Add a light grey border */
+    -fx-border-width: 1px;    /* Border width */
+    -fx-min-width: 180px; /* Minimum width */
+}
+/* Charts */
+.chart-container {
+    /* -fx-spacing: 20px; defined in FXML */
+}
+
+/* Bar Chart Colors (using style classes applied in Controller) */
+.bar-color-0 { -fx-bar-fill: #FF9800; } /* 不及格 */
+.bar-color-1 { -fx-bar-fill: #FFC107; } /* 60-70 */
+.bar-color-2 { -fx-bar-fill: #8BC34A; } /* 70-80 */
+.bar-color-3 { -fx-bar-fill: #4CAF50; } /* 80-90 */
+.bar-color-4 { -fx-bar-fill: #3F8CFF; } /* 90-100 */
+
+.chart {
+    -fx-padding: 10px;
+}
+.axis {
+    -fx-tick-label-fill: #666;
+    -fx-tick-length: 5;
+    -fx-minor-tick-length: 3;
+    -fx-border-color: transparent; /* Remove default axis border */
+}
+.axis-label {
+    -fx-text-fill: #333;
+}
+
+
+/* Pie Chart Colors (using style classes applied in Controller) */
+.pie-color-0 { -fx-pie-color: #3F51B5; } /* 优秀 */
+.pie-color-1 { -fx-pie-color: #4CAF50; } /* 良好 */
+.pie-color-2 { -fx-pie-color: #FFC107; } /* 及格 */
+.pie-color-3 { -fx-pie-color: #FF9800; } /* 不及格 */
+
+
+/* Custom Legend */
+.legend {
+    /* -fx-spacing: 10px; defined in FXML */
+}
+.legend-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555;
+}

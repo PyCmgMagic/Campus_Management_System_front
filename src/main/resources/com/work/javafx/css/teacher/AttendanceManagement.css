@@ -1,0 +1,226 @@
+/* Basic Content Container Style */
+.content-container {
+    -fx-background-color: #f5f5f5;
+}
+
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Card Style */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+.card-title {
+    -fx-padding: 0 0 10px 0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #eee;
+    -fx-alignment: center-left;
+}
+
+.card-title-text {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Action Button Style */
+.action-btn {
+    -fx-background-color: #d9342a;
+    -fx-text-fill: white;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 12px;
+    -fx-cursor: hand;
+}
+
+.action-btn:hover {
+    -fx-background-color: #c12e25;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+    -fx-padding: 15px;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding: 0 0 5px 0;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.stat-normal {
+    -fx-text-fill: #00a854;
+}
+
+.stat-warning {
+    -fx-text-fill: #fa8c16;
+}
+
+.stat-danger {
+    -fx-text-fill: #f5222d;
+}
+
+
+.filter-form {
+    -fx-padding: 15px 0 0 0;
+}
+
+.form-group {
+    -fx-alignment: center-left;
+
+}
+
+.form-group Label {
+     -fx-padding: 0 8px 0 0;
+     -fx-text-fill: #666;
+}
+
+.form-control {
+    -fx-pref-width: 150px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.form-control:focused {
+    -fx-border-color: #d9342a;
+}
+
+/* Table Styles */
+.table-view {
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    /* 添加内部网格线颜色 */
+    -fx-table-cell-border-color: #ddd; 
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f1f1f1;
+    /* 确保列头背景覆盖 */
+    -fx-background-insets: 0; 
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    /* 保留底部边框，并添加右侧边框 */
+    -fx-border-width: 0 1px 2px 0; 
+    -fx-border-color: transparent #ddd #ddd transparent; /* 上 右 下 左 */
+    -fx-padding: 10px;
+}
+
+/* 特殊处理最后一列的列头，移除右边框 */
+.table-view .column-header:last-visible, .table-view .filler:last-visible {
+    -fx-border-width: 0 0 2px 0; /* 移除右边框 */
+}
+
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-alignment: center-left; /* 默认左对齐 */
+    -fx-padding: 0 5px 0 5px; /* 添加一些内边距 */
+}
+
+.table-view .table-cell {
+    -fx-padding: 12px 10px;
+    /* 单元格添加右边框和下边框 */
+    -fx-border-color: transparent #ddd #ddd transparent; /* 上 右 下 左 */
+    -fx-border-width: 0 1px 1px 0; 
+    -fx-alignment: center-left; /* 默认左对齐 */
+}
+
+/* 特殊处理最后一列的单元格，移除右边框 */
+.table-view .table-row-cell .table-cell:last-visible {
+     -fx-border-width: 0 0 1px 0; /* 移除右边框 */
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f9f9f9; /* 保持悬停颜色 */
+}
+
+/* 修改选中行的样式 */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #d5d5d5; /* 改为中性浅灰色 */
+}
+
+/* 确保选中行中的文本颜色足够深 */
+.table-view .table-row-cell:selected .table-cell {
+     -fx-text-fill: #222; /* 使用深灰色或黑色 */
+}
+
+/* 特别为状态标签设置选中时的颜色 */
+.table-view .table-row-cell:selected .status-badge {
+
+}
+
+
+/* Status Badge Styles - Applied to Labels within TableCells */
+.status-badge {
+  -fx-padding: 3px 8px;
+  -fx-background-radius: 3px;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
+
+.status-normal {
+  -fx-background-color: #e6f7ee;
+  -fx-text-fill: #00a854;
+}
+
+.status-late {
+  -fx-background-color: #fff7e6;
+  -fx-text-fill: #fa8c16;
+}
+
+.status-absent {
+  -fx-background-color: #fff1f0;
+  -fx-text-fill: #f5222d;
+}
+
+.status-leave {
+  -fx-background-color: #e6f7ff;
+  -fx-text-fill: #1890ff;
+}
+
+
+/* Pagination Styles */
+.pagination {
+    -fx-padding: 15px 0 0 0; /* Add top padding */
+    -fx-spacing: 5px; /* Spacing between buttons */
+    -fx-alignment: center-right;
+}
+
+.pagination Button {
+    -fx-padding: 5px 10px;
+    -fx-border-color: #ddd;
+    -fx-background-color: white;
+    -fx-cursor: hand;
+    -fx-background-radius: 3px;
+     -fx-border-radius: 3px;
+}
+
+.pagination Button:hover {
+    -fx-background-color: #eee;
+}
+
+.pagination Button.active {
+    -fx-background-color: #d9342a;
+    -fx-text-fill: white;
+    -fx-border-color: #d9342a;
+}

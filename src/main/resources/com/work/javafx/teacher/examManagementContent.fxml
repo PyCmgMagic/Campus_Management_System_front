@@ -1,14 +1,225 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.teacher.ExamManagementContent"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="content" stylesheets="@../css/teacher/examManagement.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.ExamManagementContent">
+   <children>
+      <ScrollPane fitToWidth="true" fitToHeight="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <VBox spacing="20.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Label styleClass="page-title" text="考试管理">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <HBox fx:id="infoCardContainer" spacing="20.0" styleClass="info-card-container">
+                     <children>
+                        <VBox styleClass="info-card, primary" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="info-card-title" text="待安排考试" />
+                              <Label fx:id="pendingExamCountLabel" styleClass="info-card-value" text="0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        <VBox styleClass="info-card, success" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="info-card-title" text="进行中考试" />
+                              <Label fx:id="ongoingExamCountLabel" styleClass="info-card-value" text="0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        <VBox styleClass="info-card, warning" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="info-card-title" text="本周考试数" />
+                              <Label fx:id="thisWeekExamCountLabel" styleClass="info-card-value" text="0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <TabPane fx:id="mainTabPane" styleClass="card" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                     <tabs>
+                        <Tab text="考试计划">
+                           <content>
+                              <BorderPane>
+                                 <top>
+                                    <VBox spacing="15.0" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <FlowPane hgap="15.0" styleClass="filter-row" vgap="10.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                                   <children>
+                                                      <Label text="学期:" />
+                                                      <ComboBox fx:id="planSemesterCombo" prefWidth="180.0" promptText="选择学期" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                                   <children>
+                                                      <Label text="课程:" />
+                                                      <ComboBox fx:id="planCourseCombo" prefWidth="180.0" promptText="全部课程" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                                   <children>
+                                                      <Label text="考试类型:" />
+                                                      <ComboBox fx:id="planTypeCombo" prefWidth="150.0" promptText="全部类型" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                                   <children>
+                                                      <Label text="状态:" />
+                                                      <ComboBox fx:id="planStatusCombo" prefWidth="150.0" promptText="全部状态" />
+                                                   </children>
+                                                </HBox>
+                                                <Button fx:id="planQueryButton" mnemonicParsing="false" styleClass="button, primary" text="查询" />
+                                                <Button fx:id="planClearButton" mnemonicParsing="false" styleClass="button, secondary" text="清空" />
+                                             </children>
+                                          </FlowPane>
+                                          <HBox spacing="10.0" styleClass="batch-buttons">
+                                             <children>
+                                                <Button fx:id="addExamButton" mnemonicParsing="false" styleClass="button, primary" text="新增考试" />
+                                                <Button fx:id="importExamButton" mnemonicParsing="false" styleClass="button, secondary" text="批量导入" />
+                                                <Button fx:id="exportExamButton" mnemonicParsing="false" styleClass="button, secondary" text="导出Excel" />
+                                                <Button fx:id="batchAssignInvigilatorButton" mnemonicParsing="false" styleClass="button, secondary" text="批量安排监考" />
+                                                <Button fx:id="batchAssignRoomButton" mnemonicParsing="false" styleClass="button, secondary" text="批量分配考场" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </VBox>
+                                 </top>
+                                 <center>
+                                    <TableView fx:id="examPlanTable" BorderPane.alignment="CENTER">
+                                       <columns>
+                                          <TableColumn fx:id="planSelectCol" prefWidth="40.0">
+                                             <graphic>
+                                                <CheckBox fx:id="planSelectAllCheckbox" mnemonicParsing="false" />
+                                             </graphic>
+                                          </TableColumn>
+                                          <TableColumn fx:id="planExamIdCol" prefWidth="100.0" text="考试ID" />
+                                          <TableColumn fx:id="planCourseCol" prefWidth="150.0" text="课程" />
+                                          <TableColumn fx:id="planTypeCol" prefWidth="100.0" text="考试类型" />
+                                          <TableColumn fx:id="planDateCol" prefWidth="100.0" text="考试日期" />
+                                          <TableColumn fx:id="planStartTimeCol" prefWidth="80.0" text="开始时间" />
+                                          <TableColumn fx:id="planEndTimeCol" prefWidth="80.0" text="结束时间" />
+                                          <TableColumn fx:id="planRoomCol" prefWidth="120.0" text="考场" />
+                                          <TableColumn fx:id="planInvigilatorCol" prefWidth="150.0" text="监考老师" />
+                                          <TableColumn fx:id="planStatusCol" prefWidth="100.0" text="状态" />
+                                          <TableColumn fx:id="planActionsCol" prefWidth="180.0" text="操作" />
+                                       </columns>
+                                       <BorderPane.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </BorderPane.margin>
+                                    </TableView>
+                                 </center>
+                                 <bottom>
+                                    <Pagination fx:id="planPagination" pageCount="1" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </BorderPane.margin></Pagination>
+                                 </bottom>
+                              </BorderPane>
+                           </content>
+                        </Tab>
+                        <Tab text="考试申请审批">
+                           <content>
+                              <BorderPane>
+                                 <top>
+                                    <FlowPane hgap="15.0" styleClass="filter-row" vgap="10.0" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                             <children>
+                                                <Label text="状态:" />
+                                                <ComboBox fx:id="approvalStatusCombo" prefWidth="150.0" promptText="全部状态" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                             <children>
+                                                <Label text="申请人:" />
+                                                <TextField fx:id="applicantNameField" promptText="输入申请人姓名" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="filter-item">
+                                             <children>
+                                                <Label text="申请日期:" />
+                                                <DatePicker fx:id="approvalStartDatePicker" prefWidth="140.0" promptText="开始日期" />
+                                                <Label text="-" />
+                                                <DatePicker fx:id="approvalEndDatePicker" prefWidth="140.0" promptText="结束日期" />
+                                             </children>
+                                          </HBox>
+                                          <Button fx:id="approvalQueryButton" mnemonicParsing="false" styleClass="button, primary" text="查询" />
+                                          <Button fx:id="approvalClearButton" mnemonicParsing="false" styleClass="button, secondary" text="清空" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </FlowPane>
+                                 </top>
+                                 <center>
+                                    <TableView fx:id="examApprovalTable" BorderPane.alignment="CENTER">
+                                       <columns>
+                                          <TableColumn fx:id="approvalIdCol" prefWidth="100.0" text="申请ID" />
+                                          <TableColumn fx:id="approvalCourseCol" prefWidth="180.0" text="课程" />
+                                          <TableColumn fx:id="approvalTypeCol" prefWidth="100.0" text="考试类型" />
+                                          <TableColumn fx:id="approvalApplicantCol" prefWidth="100.0" text="申请人" />
+                                          <TableColumn fx:id="approvalApplyDateCol" prefWidth="120.0" text="申请日期" />
+                                          <TableColumn fx:id="approvalExamDateCol" prefWidth="120.0" text="期望考试日期" />
+                                          <TableColumn fx:id="approvalStatusCol" prefWidth="100.0" text="状态" />
+                                          <TableColumn fx:id="approvalActionsCol" prefWidth="220.0" text="操作" />
+                                       </columns>
+                                       <BorderPane.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </BorderPane.margin>
+                                    </TableView>
+                                 </center>
+                                 <bottom>
+                                    <Pagination fx:id="approvalPagination" pageCount="1" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </BorderPane.margin>
+                                    </Pagination>
+                                 </bottom>
+                              </BorderPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
 </AnchorPane>
