@@ -11,10 +11,10 @@ module com.work.javafx {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires com.google.gson;
+    requires de.jensd.fx.glyphs.fontawesome;
 
     // 打印支持
     requires javafx.swing;
-    requires org.apache.poi.poi;
     requires java.logging;
 
     // 导出 DataResponse 包到 Gson 模块

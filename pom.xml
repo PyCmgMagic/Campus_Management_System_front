@@ -103,6 +103,12 @@
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx-fontawesome</artifactId>
             <version>4.7.0-9.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -132,6 +138,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>SparseBitSet</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -155,13 +166,23 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>com.work.javafx.MainApplication</mainClass>
-
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                            <options>
+                                <option>--add-modules</option>
+                                <option>ALL-MODULE-PATH</option>
+                                <option>--add-opens</option>
+                                <option>java.base/java.lang=ALL-UNNAMED</option>
+                            </options>
+                            <ignoreModuleConflicts>
+                                <ignoreModuleConflict>org.apache.poi.poi</ignoreModuleConflict>
+                                <ignoreModuleConflict>org.apache.poi.ooxml</ignoreModuleConflict>
+                                <ignoreModuleConflict>com.zaxxer.sparseBitSet</ignoreModuleConflict>
+                            </ignoreModuleConflicts>
                         </configuration>
                     </execution>
                 </executions>
