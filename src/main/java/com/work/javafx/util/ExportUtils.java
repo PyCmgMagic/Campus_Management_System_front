@@ -47,7 +47,7 @@ public class ExportUtils {
     }
     
     /**
-     * 将课表导出为Excel文件(.xlsx)
+     * 将课表导出为Excel文件(.xlsx) - 学生端
      *
      * 
      * @param tableView     课表TableView
@@ -84,6 +84,75 @@ public class ExportUtils {
                 
                 // 创建工作表内容
                 createWorksheet(tempDir, academicYear, semester, scheduleType, rows);
+                
+                // 打包成ZIP文件（Excel本质上是ZIP文件）
+                createExcelZipFile(tempDir, file.toPath());
+                
+                // 删除临时文件夹
+                deleteDirectory(tempDir.toFile());
+                
+                ShowMessage.showInfoMessage("导出成功", "课表已导出到：" + file.getAbsolutePath());
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("导出失败", "导出Excel时发生错误：" + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * 将课表导出为Excel文件(.xlsx) - 教师端
+     *
+     * @param tableView     课表TableView
+     * @param academicYear  学年
+     * @param semester      学期
+     * @param scheduleType  课表类型
+     * @param parentStage   父窗口Stage
+     */
+    public static void exportToExcelForTeacher(TableView<com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow> tableView, 
+                                    String academicYear, 
+                                    String semester, 
+                                    String scheduleType,
+                                    Stage parentStage) {
+        // 创建文件选择器
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("保存Excel文件");
+        fileChooser.setInitialFileName(academicYear + "-" + semester + "-" + scheduleType + ".xlsx");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel文件 (*.xlsx)", "*.xlsx"));
+        
+        // 显示保存对话框
+        File file = fileChooser.showSaveDialog(parentStage);
+        
+        if (file != null) {
+            try {
+                // 创建临时目录来存放Excel XML文件
+                Path tempDir = Files.createTempDirectory("excel_export_");
+                
+                // 创建Excel所需的文件夹结构
+                createExcelFolderStructure(tempDir);
+                
+                // 表格数据 - 转换为学生端的CourseRow格式
+                List<com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow> teacherRows = tableView.getItems();
+                List<CourseRow> convertedRows = new ArrayList<>();
+                
+                // 转换教师端的CourseRow到学生端的CourseRow
+                for (com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow teacherRow : teacherRows) {
+                    com.work.javafx.controller.student.CourseScheduleContentController.CourseRow convertedRow = new com.work.javafx.controller.student.CourseScheduleContentController.CourseRow(
+                        teacherRow.getTime(),
+                        teacherRow.getMonday(),
+                        teacherRow.getTuesday(),
+                        teacherRow.getWednesday(),
+                        teacherRow.getThursday(),
+                        teacherRow.getFriday(),
+                        teacherRow.getSaturday(),
+                        teacherRow.getSunday()
+                    );
+                    convertedRows.add(convertedRow);
+                }
+                
+                // 创建工作表内容
+                createWorksheet(tempDir, academicYear, semester, scheduleType, convertedRows);
                 
                 // 打包成ZIP文件（Excel本质上是ZIP文件）
                 createExcelZipFile(tempDir, file.toPath());
@@ -684,4 +753,4 @@ public class ExportUtils {
         
         Files.write(baseDir.resolve("xl/worksheets/sheet1.xml"), sheetXml.toString().getBytes(), StandardOpenOption.CREATE);
     }
-} 
+}

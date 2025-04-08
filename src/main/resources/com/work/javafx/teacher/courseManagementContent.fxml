@@ -1,14 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.teacher.CourseManagementContent"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox spacing="20" styleClass="content-container" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.CourseManagementContent">
+    
+    <Text styleClass="page-title" text="我的课程管理" />
+    
+    <HBox spacing="20" styleClass="info-card-container">
+        <VBox styleClass="info-card,success" HBox.hgrow="ALWAYS">
+            <VBox styleClass="card-content">
+                <Text styleClass="info-card-title" text="本学期授课" />
+                <Text styleClass="info-card-value" text="3" />
+            </VBox>
+        </VBox>
+        <VBox styleClass="info-card,warning" HBox.hgrow="ALWAYS">
+            <VBox styleClass="card-content" VBox.vgrow="ALWAYS">
+                <Text styleClass="info-card-title" text="待审课程申请" />
+                <Text styleClass="info-card-value" text="1" />
+            </VBox>
+        </VBox>
+    </HBox>
+    
+    <VBox styleClass="card">
+        <HBox styleClass="action-buttons-header">
+            <HBox styleClass="filter-row">
+                <HBox styleClass="filter-item">
+                    <Label text="学期:" />
+                    <ComboBox fx:id="semesterComboBox" styleClass="filter-combo" />
+                </HBox>
+                <HBox styleClass="filter-item">
+                    <Label text="状态:" />
+                    <ComboBox fx:id="statusComboBox" styleClass="filter-combo" />
+                </HBox>
+                <HBox styleClass="filter-item">
+                    <TextField fx:id="searchField" promptText="搜索我的课程..." styleClass="search-field" />
+                </HBox>
+                <Button styleClass="secondary" text="查询" />
+            </HBox>
+            <Button styleClass="primary,propose-btn">
+                <graphic>
+                    <Text text="➕" />
+                </graphic>
+                <text>申请新课程</text>
+            </Button>
+        </HBox>
+        
+        <TableView fx:id="courseTable" styleClass="course-table">
+            <columns>
+                <TableColumn styleClass="sortable-column" text="课程代码">
+                    <cellValueFactory><PropertyValueFactory property="courseCode" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="课程名称">
+                    <cellValueFactory><PropertyValueFactory property="courseName" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="其它教师/助教">
+                    <cellValueFactory><PropertyValueFactory property="otherTeachers" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="学期">
+                    <cellValueFactory><PropertyValueFactory property="semester" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="学分">
+                    <cellValueFactory><PropertyValueFactory property="credits" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="学生人数">
+                    <cellValueFactory><PropertyValueFactory property="studentCount" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn minWidth="30.0" text="教学大纲">
+                    <cellValueFactory><PropertyValueFactory property="syllabusStatus" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="状态">
+                    <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="操作">
+                    <cellValueFactory><PropertyValueFactory property="actions" /></cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+        
+        <HBox styleClass="pagination">
+            <Label text="共 5 条记录" />
+            <Button disable="true" styleClass="secondary">
+                <text>上一页</text>
+            </Button>
+            <Button styleClass="secondary active">
+                <text>1</text>
+            </Button>
+            <Button styleClass="secondary">
+                <text>下一页</text>
+            </Button>
+        </HBox>
+    </VBox>
+</VBox>

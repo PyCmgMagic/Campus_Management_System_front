@@ -108,11 +108,13 @@ public class TeacherBaseViewController implements Initializable {
         } else if (fxmlPath.equals("CourseSelectionContent.fxml")) {
             return "/com/work/javafx/css/student/CourseSelection.css";
         } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
-            return "/com/work/javafx/css/PersonalCenter.css";
-        } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
-            return "/com/work/javafx/css/student/ScoreSearch.css";
+            return "/com/work/javafx/css/teacher/PersonalCenter.css";
+        } else if (fxmlPath.equals("CourseScheduleContent_teacher.fxml")) {
+            return "/com/work/javafx/css/teacher/TeacherCourseSchedule.css";
         } else if (fxmlPath.equals("AttendanceManagementContent.fxml")) {
             return "/com/work/javafx/css/teacher/AttendanceManagement.css";
+        }else if (fxmlPath.equals("courseManagementContent.fxml")) {
+            return "/com/work/javafx/css/teacher/courseManagementContent.css";
         }
         return null;
     }
@@ -180,7 +182,7 @@ public class TeacherBaseViewController implements Initializable {
     protected void switchTocourseScheduleManagement() {
         System.out.println("切换到课表查询");
         switchActiveButton(courseScheduleManagementBtn);
-        loadView("courseScheduleManagementContent.fxml");
+        loadView("CourseScheduleContent_teacher.fxml");
     }
     
     /**
