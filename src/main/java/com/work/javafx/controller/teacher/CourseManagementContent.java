@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 public class CourseManagementContent implements Initializable {
 
@@ -56,6 +58,12 @@ public class CourseManagementContent implements Initializable {
     private void setupTable() {
         courseList = FXCollections.observableArrayList();
         courseTable.setItems(courseList);
+        
+        // 设置表格列宽策略为自适应填充可用空间
+        courseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
+        // 确保表格能够填充父容器的可用空间
+        VBox.setVgrow(courseTable, Priority.ALWAYS);
     }
 
     private void loadSampleData() {

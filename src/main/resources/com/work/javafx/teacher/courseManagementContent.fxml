@@ -54,33 +54,33 @@
             </Button>
         </HBox>
         
-        <TableView fx:id="courseTable" styleClass="course-table">
+        <TableView fx:id="courseTable" styleClass="course-table" VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
             <columns>
-                <TableColumn styleClass="sortable-column" text="课程代码">
+                <TableColumn prefWidth="100" styleClass="sortable-column" text="课程代码">
                     <cellValueFactory><PropertyValueFactory property="courseCode" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="课程名称">
+                <TableColumn prefWidth="150" text="课程名称">
                     <cellValueFactory><PropertyValueFactory property="courseName" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="其它教师/助教">
+                <TableColumn prefWidth="120" text="其它教师/助教">
                     <cellValueFactory><PropertyValueFactory property="otherTeachers" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="学期">
+                <TableColumn prefWidth="80" text="学期">
                     <cellValueFactory><PropertyValueFactory property="semester" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="学分">
+                <TableColumn prefWidth="60" text="学分">
                     <cellValueFactory><PropertyValueFactory property="credits" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="学生人数">
+                <TableColumn prefWidth="80" text="学生人数">
                     <cellValueFactory><PropertyValueFactory property="studentCount" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn minWidth="30.0" text="教学大纲">
-                    <cellValueFactory><PropertyValueFactory property="syllabusStatus" /></cellValueFactory>
-                </TableColumn>
-                <TableColumn text="状态">
+                <TableColumn prefWidth="88.80010986328125" text="状态">
                     <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn text="操作">
+                <TableColumn minWidth="220.0" prefWidth="261.599853515625" text="操作">
                     <cellValueFactory><PropertyValueFactory property="actions" /></cellValueFactory>
                 </TableColumn>
             </columns>

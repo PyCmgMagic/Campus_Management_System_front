@@ -152,6 +152,7 @@
     -fx-border-width: 1;
     -fx-border-radius: 4;
     -fx-table-cell-border-color: #eeeeee;
+    -fx-pref-width: 100%;
 }
 
 .course-table .column-header {
