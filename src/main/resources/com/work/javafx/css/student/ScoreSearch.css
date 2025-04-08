@@ -600,4 +600,22 @@
     -fx-tick-label-fill: #666;
     -fx-tick-length: 3;
     -fx-minor-tick-visible: false;
-} 
+}
+.table-view .table-row-cell:hover {
+        -fx-background-color: #e0f0ff; /* 使用更深的淡蓝色作为悬停颜色 */
+        -fx-transition: background-color 0.15s ease-in-out; /* 加快颜色过渡效果 */
+        -fx-cursor: hand;
+}
+
+/* 修改选中行的样式 */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #d0e4ff; /* 使用更深的蓝色作为选中背景，增强对比度 */
+    -fx-border-color: #4169E1; /* 保持蓝色边框 */
+    -fx-border-width: 0 0 0 4; /* 增加左侧边框宽度，使其更加明显 */
+    -fx-effect: dropshadow(gaussian, rgba(65, 105, 225, 0.2), 4, 0, 0, 0); /* 添加轻微阴影效果 */
+}
+
+/* 确保选中行中的文本颜色足够深 */
+.table-view .table-row-cell:selected .table-cell {
+     -fx-text-fill: #222;
+}
