@@ -136,11 +136,13 @@
     -fx-background-color: #45a049;
 }
 
-.course-table {
-    -fx-background-color: white;
-    -fx-padding: 20 0 0 0;
-}
 
+.course-table {
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: #ddd;
+}
 .course-table .column-header {
     -fx-background-color: #f9f9f9;
     -fx-padding: 12 10;
@@ -153,9 +155,28 @@
     -fx-text-fill: #333;
     -fx-font-size: 14px;
 }
-
+.course-table .text-field-table-cell .text-field {
+    -fx-background-color: #f9f9f9; /* Slightly different background when editing */
+    -fx-border-color: #ccc;
+    -fx-padding: 5px 8px;
+}
 .course-table .table-row-cell:hover {
-    -fx-background-color: #fdfdfd;
+    -fx-background-color: #e0f0ff; /* 使用更深的淡蓝色作为悬停颜色 */
+    -fx-transition: background-color 0.15s ease-in-out; /* 加快颜色过渡效果 */
+    -fx-cursor: hand;
+}
+
+/* 修改选中行的样式 */
+.course-table .table-row-cell:selected {
+    -fx-background-color: #d0e4ff; /* 使用更深的蓝色作为选中背景，增强对比度 */
+    -fx-border-color: #4169E1; /* 保持蓝色边框 */
+    -fx-border-width: 0 0 0 4; /* 增加左侧边框宽度，使其更加明显 */
+    -fx-effect: dropshadow(gaussian, rgba(65, 105, 225, 0.2), 4, 0, 0, 0); /* 添加轻微阴影效果 */
+}
+
+/* 确保选中行中的文本颜色足够深 */
+.course-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #222; /* 使用更深的灰色文本，增强可读性 */
 }
 
 .sortable-column {
