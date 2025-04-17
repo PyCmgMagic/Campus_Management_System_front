@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.StudentBaseViewController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.AdminBaseViewController">
 
     <!-- 顶部导航栏 -->
     <top>
@@ -44,7 +44,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="courseScheduleBtn" onAction="#switchToCourseSchedule" styleClass="menu-item" text="课表查询">
+                  <Button fx:id="studentMangementBtn" onAction="#switchTostudentMangement" styleClass="menu-item" text="学生管理">
                       <graphic>
                           <Region styleClass="course-icon" />
                       </graphic>
@@ -53,7 +53,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="courseSelectionBtn" onAction="#switchToCourseSelection" styleClass="menu-item" text="选课系统">
+                  <Button fx:id="courseManagementBtn" onAction="#switchTocourseManagement" styleClass="menu-item" text="课程管理">
                       <graphic>
                           <Region styleClass="select-course-icon" />
                       </graphic>
@@ -62,7 +62,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="gradeQueryBtn" onAction="#switchToGradeQuery" styleClass="menu-item" text="成绩查询">
+                  <Button fx:id="teacherManagementBtn" onAction="#switchToteacherManagement" styleClass="menu-item" text="教师管理">
                       <graphic>
                           <Region styleClass="grade-icon" />
                       </graphic>
@@ -71,7 +71,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="teachingEvaluationBtn" onAction="#switchToTeachingEvaluation" styleClass="menu-item" text="教学评价">
+                  <Button fx:id="manageCourseBtn" onAction="#switchTomanageCourse" styleClass="menu-item" text="排课管理">
                       <graphic>
                           <Region styleClass="evaluation-icon" />
                       </graphic>

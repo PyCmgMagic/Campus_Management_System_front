@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <VBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="400.0" prefWidth="600.0" spacing="20.0">
+      <Label alignment="CENTER" style="-fx-font-size: 24px;" text="个人中心（待实现）">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" style="-fx-font-size: 16px;" text="此功能正在开发中，敬请期待..." />
+   </VBox>
+</AnchorPane> 

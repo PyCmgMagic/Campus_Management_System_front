@@ -26,10 +26,16 @@ module com.work.javafx {
     exports com.work.javafx.controller;
     opens com.work.javafx.controller to javafx.fxml;
     
+    // 导出model包
+    exports com.work.javafx.model;
+    opens com.work.javafx.model to javafx.base;
+    
     // 导出util包
     exports com.work.javafx.util;
     exports com.work.javafx.controller.student;
     opens com.work.javafx.controller.student to javafx.fxml;
+    opens com.work.javafx.controller.admin to javafx.fxml;
     exports com.work.javafx.controller.teacher;
+    exports com.work.javafx.controller.admin;
     opens com.work.javafx.controller.teacher to javafx.fxml;
 }

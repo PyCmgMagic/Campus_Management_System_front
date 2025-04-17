@@ -1,0 +1,276 @@
+/* 管理员首页样式 */
+
+/* 基本容器样式 */
+.dashboard-container {
+    -fx-background-color: #f9f9f9;
+}
+
+.dashboard-content {
+    -fx-background-color: transparent;
+    -fx-spacing: 20;
+    -fx-padding: 20;
+}
+
+/* 页面标题 */
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10 0;
+}
+
+/* 卡片通用样式 */
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 20;
+    -fx-margin: 0 0 20 0;
+}
+
+.card-header {
+    -fx-padding: 0 0 15 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: center-left;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.card-action {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c70028;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.card-action:hover {
+    -fx-underline: true;
+}
+
+/* 数据统计卡片 */
+.stats-card {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.stat-item {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-alignment: center-left;
+}
+
+.stat-icon {
+    -fx-min-width: 48;
+    -fx-min-height: 48;
+    -fx-max-width: 48;
+    -fx-max-height: 48;
+    -fx-background-color:#c70028;
+    -fx-background-radius:
+    10px;
+}
+
+.student-icon {
+    -fx-shape: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z";
+    -fx-background-color:#c70028;
+    -fx-fill: #c70028;
+}
+
+.teacher-icon {
+    -fx-shape: "M20 17.17L18.83 16H4V4H20V17.17ZM20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H18L22 22V4C22 2.9 21.1 2 20 2Z";
+    -fx-background-color:#c70028;
+    -fx-fill: #c70028;
+}
+
+.stat-content {
+    -fx-spacing: 5;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+/* 公告列表样式 */
+.notice-list {
+    -fx-spacing: 10;
+    -fx-padding: 10 0 0 0;
+}
+
+.notice-item {
+    -fx-padding: 12 0 12 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+}
+
+.notice-icon {
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-background-color:#c70028;
+    -fx-background-radius: 50%;
+    -fx-shape: "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z";
+    -fx-fill: #c70028;
+}
+
+.notice-content {
+    -fx-spacing: 3;
+    -fx-pref-width: 100000; /* 使内容占据最大可用空间 */
+}
+
+.notice-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.notice-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+/* 公告按钮样式 */
+.notice-actions {
+    -fx-spacing: 8;
+    -fx-alignment: center;
+}
+
+.notice-btn {
+    -fx-font-size: 11px;
+    -fx-padding: 3 8 3 8;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-min-width: 40px;
+    -fx-min-height: 24px;
+    -fx-text-fill: #666666;
+}
+
+.edit-btn {
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #666666;
+}
+
+.delete-btn {
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #c70028;
+}
+
+.edit-btn:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.delete-btn:hover {
+    -fx-background-color: #ffcdd2;
+}
+
+/* 快速访问卡片样式 */
+.quickaccess-grid {
+    -fx-padding: 10 0 0 0;
+}
+
+.quickaccess-item {
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 8px;
+    -fx-alignment: center;
+    -fx-padding: 15;
+    -fx-spacing: 8;
+    -fx-cursor: hand;
+}
+
+.quickaccess-item:hover {
+    -fx-background-color: #ffebee;
+    -fx-translate-y: -3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.quickaccess-icon {
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-max-width: 40;
+    -fx-max-height: 40;
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+/* 各快速访问图标 */
+.student-management-icon {
+    -fx-shape: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.teacher-management-icon {
+    -fx-shape: "M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.course-management-icon {
+    -fx-shape: "M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.schedule-management-icon {
+    -fx-shape: "M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.exam-management-icon {
+    -fx-shape: "M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5 1.41-1.41L10 13.17l7.59-7.59L19 7l-7 7z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.notice-management-icon {
+    -fx-shape: "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12l-4-3.2V14H6V6h8v3.2L18 6v8z";
+    -fx-fill: #c70028;
+     -fx-background-color:#c70028;
+}
+
+.quickaccess-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555555;
+    -fx-text-alignment: center;
+}
+
+/* 统一使用原型中的主题色 */
+.student-icon,
+.teacher-icon,
+.notice-icon,
+.student-management-icon,
+.teacher-management-icon,
+.course-management-icon,
+.schedule-management-icon,
+.exam-management-icon,
+.notice-management-icon {
+    -fx-fill: #c70028;
+}
+
+.notice-badge,
+.delete-btn {
+    -fx-text-fill: #c70028;
+}
+
+.card-action {
+    -fx-text-fill: #c70028;
+}

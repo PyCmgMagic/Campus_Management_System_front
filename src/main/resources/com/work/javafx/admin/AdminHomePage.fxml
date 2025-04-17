@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" styleClass="dashboard-container" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.AdminHomePageController">
+
+    <VBox spacing="20" styleClass="dashboard-content">
+        <padding>
+            <Insets bottom="20" left="20" right="20" top="20" />
+        </padding>
+        
+        <!-- 页面标题 -->
+        <Label styleClass="page-title" text="首页" />
+        
+        <!-- 数据统计卡片 -->
+        <GridPane hgap="15" styleClass="stats-card" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            
+            <!-- 学生统计 -->
+            <HBox styleClass="stat-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <StackPane styleClass="stat-icon, student-icon" />
+                <VBox styleClass="stat-content">
+                    <Label fx:id="studentCountLabel" styleClass="stat-value" text="12,486" />
+                    <Label styleClass="stat-label" text="在校学生总数" />
+                </VBox>
+            </HBox>
+            
+            <!-- 教师统计 -->
+            <HBox styleClass="stat-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <StackPane styleClass="stat-icon, teacher-icon" />
+                <VBox styleClass="stat-content">
+                    <Label fx:id="teacherCountLabel" styleClass="stat-value" text="843" />
+                    <Label styleClass="stat-label" text="在职教师数量" />
+                </VBox>
+            </HBox>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+        
+        <!-- 公告管理卡片 -->
+        <VBox styleClass="dashboard-card, notice-card">
+            <HBox styleClass="card-header">
+                <Label styleClass="card-title" text="最近发布的公告" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#publishNewNotice" styleClass="card-action" text="发布新公告" />
+            </HBox>
+            
+            <VBox fx:id="noticeListContainer" styleClass="notice-list">
+                <!-- 第一条公告 -->
+                <HBox styleClass="notice-item">
+                    <StackPane styleClass="notice-icon" />
+                    <VBox styleClass="notice-content">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label styleClass="notice-title" text="关于2025年春季学期期末考试安排的通知" />
+                        </HBox>
+                        <Label styleClass="notice-time" text="发布时间：今天 10:30 | 发布人：教务处" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox styleClass="notice-actions">
+                        <Button styleClass="notice-btn, edit-btn" text="编辑" prefWidth="40" />
+                        <Button styleClass="notice-btn, delete-btn" text="删除" prefWidth="40" />
+                    </HBox>
+                </HBox>
+                
+                <!-- 第二条公告 -->
+                <HBox styleClass="notice-item">
+                    <StackPane styleClass="notice-icon" />
+                    <VBox styleClass="notice-content">
+                        <Label styleClass="notice-title" text="2025-2026学年学生注册须知" />
+                        <Label styleClass="notice-time" text="发布时间：昨天 14:15 | 发布人：学籍管理部" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox styleClass="notice-actions">
+                        <Button styleClass="notice-btn, edit-btn" text="编辑" prefWidth="40" />
+                        <Button styleClass="notice-btn, delete-btn" text="删除" prefWidth="40" />
+                    </HBox>
+                </HBox>
+                
+                <!-- 第三条公告 -->
+                <HBox styleClass="notice-item">
+                    <StackPane styleClass="notice-icon" />
+                    <VBox styleClass="notice-content">
+                        <Label styleClass="notice-title" text="关于暑期学校课程报名的通知" />
+                        <Label styleClass="notice-time" text="发布时间：3天前 | 发布人：教务处" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox styleClass="notice-actions">
+                        <Button styleClass="notice-btn, edit-btn" text="编辑" prefWidth="40" />
+                        <Button styleClass="notice-btn, delete-btn" text="删除" prefWidth="40" />
+                    </HBox>
+                </HBox>
+            </VBox>
+        </VBox>
+        
+        <!-- 快速访问卡片 -->
+        <VBox styleClass="dashboard-card, quickaccess-card">
+            <HBox styleClass="card-header">
+                <Label styleClass="card-title" text="快速访问" />
+            </HBox>
+            
+            <GridPane hgap="15" styleClass="quickaccess-grid" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                </columnConstraints>
+                
+                <!-- 学生信息管理 -->
+                <VBox onMouseClicked="#navigateToStudentManagement" styleClass="quickaccess-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <StackPane styleClass="quickaccess-icon, student-management-icon" />
+                    <Label styleClass="quickaccess-title" text="学生信息管理" />
+                </VBox>
+                
+                <!-- 教师信息管理 -->
+                <VBox onMouseClicked="#navigateToTeacherManagement" styleClass="quickaccess-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <StackPane styleClass="quickaccess-icon, teacher-management-icon" />
+                    <Label styleClass="quickaccess-title" text="教师信息管理" />
+                </VBox>
+                
+                <!-- 课程信息管理 -->
+                <VBox onMouseClicked="#navigateToCourseManagement" styleClass="quickaccess-item" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <StackPane styleClass="quickaccess-icon, course-management-icon" />
+                    <Label styleClass="quickaccess-title" text="课程信息管理" />
+                </VBox>
+                
+                <!-- 排课管理 -->
+                <VBox onMouseClicked="#navigateToScheduleManagement" styleClass="quickaccess-item" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <StackPane styleClass="quickaccess-icon, schedule-management-icon" />
+                    <Label styleClass="quickaccess-title" text="排课管理" />
+                </VBox>
+                
+                <!-- 考试管理 -->
+                <VBox onMouseClicked="#navigateToExamManagement" styleClass="quickaccess-item" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <StackPane styleClass="quickaccess-icon, exam-management-icon" />
+                    <Label styleClass="quickaccess-title" text="考试管理" />
+                </VBox>
+                
+                <!-- 公告发布 -->
+                <VBox onMouseClicked="#navigateToNoticeManagement" styleClass="quickaccess-item" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <StackPane styleClass="quickaccess-icon, notice-management-icon" />
+                    <Label styleClass="quickaccess-title" text="公告发布" />
+                </VBox>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
+        </VBox>
+    </VBox>
+    
+    <stylesheets>
+        <URL value="@../css/admin/AdminHomePage.css" />
+    </stylesheets>
+</ScrollPane>

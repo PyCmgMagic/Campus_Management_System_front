@@ -91,7 +91,7 @@ public class MainApplication extends Application {
                 changeView("teacher/TeacherBaseView.fxml", "css/teacher/TeacherBaseView.css");
                 break;
             case -1:
-                changeView("AdminBaseView.fxml", "css/BaseView.css");
+                changeView("admin/AdminBaseView.fxml", "css/admin/AdminBaseView.css");
                 break;
             default:
 
