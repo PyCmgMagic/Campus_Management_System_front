@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700" prefWidth="1000" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.UserInfoController">
+
+    <top>
+        <VBox spacing="10" styleClass="header-box">
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="user-info-bar">
+                <Label styleClass="avatar-circle" text="张" />
+                <VBox spacing="5">
+                    <Label styleClass="user-name" text="张同学" />
+                    <HBox spacing="10">
+                        <Label styleClass="user-id" text="学号：20250101" />
+                        <Label styleClass="user-id" text="入学年份：2025" />
+                        <Label styleClass="user-id" text="学习年限：4年" />
+                    </HBox>
+                </VBox>
+                <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+                <Button fx:id="editBtn" onAction="#UserInfo1" styleClass="primary-button" text="修改个人信息" />
+                <Button fx:id="changePwdBtn" styleClass="secondary-button" text="修改密码" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox alignment="TOP_CENTER" spacing="30" styleClass="info-section">
+            <VBox prefHeight="629.0" prefWidth="283.0" spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label prefHeight="15.0" prefWidth="287.0" styleClass="card-title" text="                            个人基本信息" />
+
+                <VBox spacing="8">
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="姓名" />
+                        <Label fx:id="nameLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="学号" />
+                        <Label fx:id="stuIdLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="性别" />
+                        <Label fx:id="genderLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="身份证号" />
+                        <Label fx:id="idLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="民族" />
+                        <Label fx:id="nationLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="政治面貌" />
+                        <Label fx:id="politicsLabel" styleClass="info-value" />
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <VBox prefHeight="665.0" prefWidth="259.0" spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label prefHeight="15.0" prefWidth="259.0" styleClass="card-title" text="                             学籍信息" />
+
+                <VBox prefHeight="138.0" prefWidth="259.0" spacing="8">
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="学院" />
+                        <Label fx:id="collegeLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="专业" />
+                        <Label fx:id="majorLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="班级" />
+                        <Label fx:id="classLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="学制" />
+                        <Label fx:id="durationLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="入学时间" />
+                        <Label fx:id="entryLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="毕业时间" />
+                        <Label fx:id="graduationLabel" styleClass="info-value" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

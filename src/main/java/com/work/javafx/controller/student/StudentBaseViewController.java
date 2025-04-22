@@ -109,6 +109,9 @@ public class StudentBaseViewController implements Initializable {
         } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
             return "/com/work/javafx/css/student/TeachingEvaluation.css";
         }
+        else if (fxmlPath.equals("UserInfo.fxml")) {
+            return "/com/work/javafx/css/student/UserInfo.css";
+        }
         return null;
     }
     
@@ -166,7 +169,7 @@ public class StudentBaseViewController implements Initializable {
     private void switchToPersonalCenter() {
         System.out.println("切换到个人中心");
         switchActiveButton(personalCenterBtn);
-        loadView("PersonalCenterContent.fxml");
+        loadView("UserInfo.fxml");
     }
     
     /**
