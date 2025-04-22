@@ -35,7 +35,7 @@
 
                 <VBox spacing="8">
                     <HBox spacing="10">
-                        <Label  styleClass="info-label" text="姓名" />
+                        <Label styleClass="info-label" text="姓名" />
                         <Label fx:id="nameLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
@@ -66,8 +66,8 @@
 
                 <VBox prefHeight="138.0" prefWidth="259.0" spacing="8">
                     <HBox spacing="10">
-                        <Label styleClass="info-label" text="学院" />
-                        <Label fx:id="collegeLabel" styleClass="info-value" />
+                        <Label prefHeight="15.0" prefWidth="29.0" styleClass="info-label" text="学院" />
+                        <Label fx:id="collegeLabel" styleClass="info-value" text="软件学院 " />
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="专业" />
@@ -78,8 +78,8 @@
                         <Label fx:id="classLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
-                        <Label styleClass="info-label" text="学制" />
-                        <Label fx:id="durationLabel" styleClass="info-value" />
+                        <Label prefHeight="15.0" prefWidth="27.0" styleClass="info-label" text="学制" />
+                        <Label fx:id="durationLabel" styleClass="info-value" text="四年制" />
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="入学时间" />

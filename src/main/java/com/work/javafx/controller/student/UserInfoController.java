@@ -27,6 +27,14 @@ import java.io.IOException;
 public class UserInfoController implements Initializable {
     @FXML private Label nameLabel;
     @FXML private Label stuIdLabel;
+    @FXML private Label genderLabel;
+    @FXML private Label idLabel;
+    @FXML private Label nationLabel;
+    @FXML private Label politicsLabel;
+    @FXML private Label majorLabel;
+    @FXML private Label classLabel;
+    @FXML private Label entryLabel;
+    @FXML private Label graduationLabel;
     Gson gson = new Gson();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -43,6 +51,13 @@ public class UserInfoController implements Initializable {
     public void loadUserInfo(){
         nameLabel.setText(UserSession.getInstance().getUsername());
         stuIdLabel.setText(UserSession.getInstance().getSduid());
+        genderLabel.setText(UserSession.getInstance().getSex());
+        idLabel.setText(UserSession.getInstance().getSection());
+        nationLabel.setText(UserSession.getInstance().getEthnic());
+        politicsLabel.setText(UserSession.getInstance().getPoliticsStatus());
+        majorLabel.setText(UserSession.getInstance().getMajor());
+        classLabel.setText(UserSession.getInstance().getSection());
+        //entryLabel.setText(UserSession.getInstance().);
     }
     //获取个人信息
     public void fetchUserInfo() throws IOException {
@@ -182,4 +197,7 @@ public class UserInfoController implements Initializable {
     }
 
 
+    public Label getGenderLabel() {
+        return genderLabel;
+    }
 }
