@@ -1,0 +1,51 @@
+/* 窗口表单容器样式 */
+.form-container {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.form-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9A1E1E;
+    -fx-padding: 0 0 10 0;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-pref-width: 80;
+}
+
+.text-field {
+    -fx-pref-width: 250;
+}
+
+.save-button {
+    -fx-background-color: #9A1E1E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5 15;
+    -fx-background-radius: 4;
+}
+
+.save-button:hover {
+    -fx-background-color: #b72727;
+}
+
+.cancel-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #9A1E1E;
+    -fx-text-fill: #9A1E1E;
+    -fx-padding: 5 15;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #fceeee;
+}
