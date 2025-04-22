@@ -6,6 +6,87 @@ public class UserSession {
     private String refreshToken;
     private String username;
     private Integer identity;
+    private String email;
+    private String phone;
+    private String sex;
+    private String section;
+    private String nation;
+    private String ethnic;
+    private String sduid;
+    private String major;
+    private String politicsStatus;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public String getNation() {
+        return nation;
+    }
+
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
+
+    public String getEthnic() {
+        return ethnic;
+    }
+
+    public void setEthnic(String ethnic) {
+        this.ethnic = ethnic;
+    }
+
+    public String getSduid() {
+        return sduid;
+    }
+
+    public void setSduid(String sduid) {
+        this.sduid = sduid;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getPoliticsStatus() {
+        return politicsStatus;
+    }
+
+    public void setPoliticsStatus(String politicsStatus) {
+        this.politicsStatus = politicsStatus;
+    }
+
 
     public Integer getIdentity() {
         return identity;
