@@ -3,11 +3,20 @@ package com.work.javafx.entity;
 public class UserSession {
     private static UserSession instance;
     private String token;
+    private String refreshToken;
     private String username;
     private Integer identity;
 
     public Integer getIdentity() {
         return identity;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void setIdentity(Integer identity) {

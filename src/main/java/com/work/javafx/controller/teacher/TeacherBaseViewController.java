@@ -1,6 +1,7 @@
 package com.work.javafx.controller.teacher;
 
 import com.work.javafx.MainApplication;
+import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -143,8 +144,8 @@ public class TeacherBaseViewController implements Initializable {
      */
     @FXML
     private void logout() {
-        // TODO: 清除token等登录信息
-        
+        //清除用户信息
+        UserSession.getInstance().clearSession();
         // 切换到登录页面
         try {
             MainApplication.changeView("Login.fxml", "css/Login.css");
