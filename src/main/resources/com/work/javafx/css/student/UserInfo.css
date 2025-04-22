@@ -1,0 +1,104 @@
+/* 主体背景 */
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+/* 顶部头部区域 */
+.header-box {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20 30 10 30;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
+}
+
+.user-info-bar {
+    -fx-spacing: 20;
+    -fx-alignment: center-left;
+}
+
+.avatar-circle {
+    -fx-background-color: #fde4e4;
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 80px;
+    -fx-pref-height: 80px;
+    -fx-alignment: center;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+}
+
+.user-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+}
+
+.user-id {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.primary-button {
+    -fx-background-color: #d32f2f;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 6 16;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #d32f2f;
+    -fx-text-fill: #d32f2f;
+    -fx-padding: 6 16;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #fdeeee;
+}
+
+/* 信息展示区域 */
+.info-section {
+    -fx-padding: 30;
+    -fx-background-color: #f8f8f8;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-pref-width: 440;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 5 0;
+}
+
+.card-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #999;
+    -fx-padding: 0 0 10 0;
+}
+
+.info-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-pref-width: 90;
+    -fx-alignment: center-right;
+}
+
+.info-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #222;
+    -fx-wrap-text: true;
+    -fx-max-width: 280px;
+    -fx-alignment: center-left;
+}
