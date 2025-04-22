@@ -1,0 +1,404 @@
+/* 主内容样式 */
+.main-container {
+    -fx-background-color: #f5f5f5;
+    -fx-min-width: 1000px;
+}
+
+/* 页面标题 */
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* 快速操作卡片 */
+.quick-actions {
+    -fx-spacing: 20px;
+}
+
+.quick-action-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 8px;
+    -fx-padding: 20px;
+    -fx-cursor: hand;
+}
+
+.quick-action-card:hover {
+    -fx-translate-y: -4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 16, 0, 0, 6);
+    -fx-border-color: #e8e8e8;
+}
+
+.quick-action-icon {
+    -fx-background-color: #ffebee;
+    -fx-background-radius: 50%;
+    -fx-min-width: 45px;
+    -fx-min-height: 45px;
+    -fx-max-width: 45px;
+    -fx-max-height: 45px;
+    -fx-alignment: center;
+}
+
+.icon-add-student {
+    -fx-background-image: url('/images/add-user-icon.png');
+    -fx-background-size: 22px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-min-width: 22px;
+    -fx-min-height: 22px;
+}
+
+.quick-action-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.quick-action-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #777777;
+}
+
+/* 搜索和筛选区域 */
+.search-filter-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 8px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.search-row {
+    -fx-spacing: 10px;
+    -fx-padding: 0 0 15px 0;
+}
+
+.search-input-container {
+    -fx-alignment: center-left;
+}
+
+.search-input {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 4px;
+    -fx-padding: 0 15px 0 40px;
+    -fx-prompt-text-fill: #999999;
+    -fx-font-size: 14px;
+    -fx-pref-height: 36px;
+    -fx-background-image: url('/images/search-icon.png');
+    -fx-background-size: 16px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 12px center;
+}
+
+.search-input:focused {
+    -fx-border-color: #a71d1d;
+    -fx-effect: dropshadow(gaussian, rgba(139, 28, 28, 0.1), 4, 0, 0, 0);
+}
+
+.filter-row {
+    -fx-spacing: 15px;
+}
+
+.filter-group {
+    -fx-spacing: 6px;
+}
+
+.filter-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+    -fx-font-weight: 500;
+}
+
+.filter-select {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 4px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-pref-height: 36px;
+}
+
+.filter-select:focused {
+    -fx-border-color: #a71d1d;
+    -fx-effect: dropshadow(gaussian, rgba(139, 28, 28, 0.1), 4, 0, 0, 0);
+}
+
+/* 按钮样式 */
+.btn {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-pref-height: 36px;
+    -fx-cursor: hand;
+}
+
+.primary-btn {
+    -fx-background-color: #8B1C1C;
+    -fx-text-fill: white;
+    -fx-padding: 0 15px;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #a71d1d;
+}
+
+.default-btn {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #555555;
+    -fx-border-color: #dddddd;
+    -fx-padding: 0 15px;
+}
+
+.default-btn:hover {
+    -fx-background-color: #eeeeee;
+    -fx-border-color: #cccccc;
+}
+
+.danger-btn {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #d32f2f;
+    -fx-border-color: #ffcdd2;
+    -fx-padding: 0 15px;
+}
+
+.danger-btn:hover {
+    -fx-background-color: #ffcdd2;
+    -fx-border-color: #ef9a9a;
+}
+
+/* 学生列表区域 */
+.student-list-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 0;
+}
+
+.list-header {
+    -fx-padding: 15px 20px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-background-color: #fafafa;
+}
+
+.list-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.list-actions {
+    -fx-spacing: 10px;
+}
+
+/* 表格样式 */
+.student-table {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: #f0f0f0;
+    -fx-min-height: 400px;
+    -fx-max-height: 800px;
+    -fx-padding: 0;
+}
+
+.student-table .column-header-background {
+    -fx-background-color: #fafafa;
+}
+
+.student-table .column-header, .student-table .filler {
+    -fx-background-color: #fafafa;
+    -fx-size: 35px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.student-table .column-header .label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+    -fx-alignment: center-left;
+    -fx-padding: 0 10px;
+}
+
+.student-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-padding: 0;
+}
+
+.student-table .table-row-cell:odd {
+    -fx-background-color: #fcfcfc;
+}
+
+.student-table .table-row-cell:hover {
+    -fx-background-color: #f1f1f1;
+}
+
+.student-table .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #444444;
+    -fx-border-color: transparent;
+}
+
+/* 选择框列样式 */
+.student-table .check-box-table-cell {
+    -fx-alignment: center;
+    -fx-padding: 0;
+}
+
+.student-table .check-box-table-cell > .check-box {
+    -fx-padding: 0;
+}
+
+.student-table .check-box-table-cell > .check-box > .box {
+    -fx-background-color: white;
+    -fx-background-radius: 3px;
+    -fx-border-color: #aaaaaa;
+    -fx-border-radius: 3px;
+    -fx-padding: 0;
+}
+
+.student-table .check-box-table-cell > .check-box:selected > .box {
+    -fx-background-color: #8B1C1C;
+    -fx-border-color: #8B1C1C;
+}
+
+.student-table .check-box-table-cell > .check-box:selected > .box > .mark {
+    -fx-background-color: white;
+    -fx-shape: "M 9.97498 1.22334L 4.6983 9.09834 L 4.52164 9.09834 L 0 5.19331 L 1.27664 3.52165 L 4.255 6.08833 L 8.33331 1.56667 L 9.97498 1.22334 Z";
+}
+
+/* 状态标签样式 */
+.status-badge {
+    -fx-background-radius: 16px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-border-radius: 16px;
+    -fx-border-width: 1px;
+}
+
+.status-active {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #388e3c;
+    -fx-border-color: #c8e6c9;
+}
+
+.status-suspended {
+    -fx-background-color: #fff8e1;
+    -fx-text-fill: #f57f17;
+    -fx-border-color: #ffecb3;
+}
+
+.status-graduated {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1565c0;
+    -fx-border-color: #bbdefb;
+}
+
+/* 表格操作按钮 */
+.action-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 4px;
+    -fx-min-width: 28px;
+    -fx-min-height: 28px;
+    -fx-max-width: 28px;
+    -fx-max-height: 28px;
+    -fx-cursor: hand;
+    -fx-border-radius: 4px;
+}
+
+.action-btn:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.view-btn {
+    -fx-shape: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
+    -fx-background-color: #1565c0;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.edit-btn {
+    -fx-shape: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
+    -fx-background-color: #f57f17;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.delete-btn {
+    -fx-shape: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
+    -fx-background-color: #d32f2f;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+/* 分页区域 */
+.pagination {
+    -fx-padding: 15px 20px;
+    -fx-border-color: #f0f0f0 transparent transparent transparent;
+    -fx-background-color: #fafafa;
+}
+
+.page-info {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+    -fx-padding: 0 0 0 20px;
+}
+
+.pagination .pagination-control {
+    -fx-padding: 0;
+}
+
+.pagination .pagination-control .page {
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.pagination .pagination-control .button {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+    -fx-cursor: hand;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.pagination .pagination-control .button:hover {
+    -fx-border-color: #a71d1d;
+    -fx-text-fill: #a71d1d;
+}
+
+.pagination .pagination-control .toggle-button {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+    -fx-cursor: hand;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.pagination .pagination-control .toggle-button:selected {
+    -fx-background-color: #8B1C1C;
+    -fx-border-color: #8B1C1C;
+    -fx-text-fill: white;
+    -fx-cursor: default;
+}
+
+/* 添加一个全选框样式 */
+.select-all-checkbox {
+    -fx-padding: 0 0 0 10px;
+}

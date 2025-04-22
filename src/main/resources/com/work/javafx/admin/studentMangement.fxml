@@ -1,14 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.admin.StudentMangementController"
-            prefHeight="400.0" prefWidth="600.0">
+<ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" stylesheets="@../css/admin/studentMangement.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.StudentMangementController">
+   <content>
+      <VBox spacing="20.0" styleClass="main-container">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <!-- 页面标题 -->
+            <Label styleClass="page-title" text="学生管理">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
 
-</AnchorPane>
+            <!-- 快速操作卡片 -->
+            <HBox spacing="20.0" styleClass="quick-actions">
+               <children>
+                  <StackPane fx:id="addStudentCard" onMouseClicked="#handleAddStudent" styleClass="quick-action-card" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="quick-action-icon">
+                                 <children>
+                                    <Label styleClass="icon-add-student" />
+                                 </children>
+                              </StackPane>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="quick-action-title" text="添加学生" />
+                                    <Label styleClass="quick-action-desc" text="创建新的学生账号" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+
+            <!-- 搜索和筛选区域 -->
+            <VBox spacing="15.0" styleClass="search-filter-container">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-row">
+                     <children>
+                        <HBox styleClass="search-input-container" HBox.hgrow="ALWAYS">
+                           <children>
+                              <TextField fx:id="searchField" promptText="搜索学生姓名、学号..." styleClass="search-input" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="primary-btn" text="搜索" />
+                        <Button mnemonicParsing="false" onAction="#handleReset" styleClass="default-btn" text="重置" />
+                     </children>
+                  </HBox>
+
+                  <HBox spacing="15.0" styleClass="filter-row">
+                     <children>
+                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="filter-label" text="院系" />
+                              <ComboBox fx:id="departmentComboBox" prefWidth="150.0" promptText="全部院系" styleClass="filter-select" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="filter-label" text="专业" />
+                              <ComboBox fx:id="majorComboBox" prefWidth="150.0" promptText="全部专业" styleClass="filter-select" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="filter-label" text="年级" />
+                              <ComboBox fx:id="gradeComboBox" prefWidth="150.0" promptText="全部年级" styleClass="filter-select" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="filter-label" text="状态" />
+                              <ComboBox fx:id="statusComboBox" prefWidth="150.0" promptText="全部状态" styleClass="filter-select" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+
+            <!-- 学生列表区域 -->
+            <VBox styleClass="student-list-container" VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT" styleClass="list-header">
+                     <children>
+                        <Label styleClass="list-title" text="学生列表" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="list-actions" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleBatchDelete" styleClass="danger-btn" text="批量删除" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="list-header" VBox.vgrow="ALWAYS">
+                     <children>
+
+                                    <TableView fx:id="studentTable" styleClass="student-table" HBox.hgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="idColumn" minWidth="160.0" prefWidth="160.0" text="学号" />
+                            <TableColumn fx:id="nameColumn" minWidth="120.0" prefWidth="120.0" text="姓名" />
+                            <TableColumn fx:id="genderColumn" maxWidth="80.0" minWidth="80.0" text="性别" />
+                            <TableColumn fx:id="departmentColumn" minWidth="120.0" prefWidth="120.0" text="院系" />
+                            <TableColumn fx:id="majorColumn" minWidth="160.0" prefWidth="160.0" text="专业" />
+                            <TableColumn fx:id="gradeColumn" minWidth="110.0" prefWidth="110.0" text="年级" />
+                            <TableColumn fx:id="classColumn" minWidth="100.0" prefWidth="100.0" text="班级" />
+                            <TableColumn fx:id="statusColumn" minWidth="110.0" prefWidth="110.0" text="状态" />
+                            <TableColumn fx:id="actionColumn" minWidth="300.0" prefWidth="300.0" text="                                   操作" />
+                          </columns>
+                          <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                          </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  
+                  <HBox alignment="CENTER" styleClass="pagination">
+                     <children>
+                        <Pagination fx:id="pagination" pageCount="1" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>
