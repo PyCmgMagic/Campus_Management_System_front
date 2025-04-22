@@ -29,7 +29,7 @@ public class NetworkUtils {
     private static final int TIMEOUT = 10000; // 超时时间，单位毫秒
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
-    
+    private static final String BaseUrl = "***REMOVED***" ;
     /**
      * 方法枚举
      */
@@ -56,10 +56,11 @@ public class NetworkUtils {
      */
     public static void request(String urlString, HttpMethod method, Map<String, String> headers,
                                String body, Callback<String> callback) {
+        String finalUrlString = BaseUrl + urlString;
         Task<String> task = new Task<>() {
             @Override
             protected String call() throws Exception {
-                return sendRequest(urlString, method, headers, body);
+                return sendRequest(finalUrlString, method, headers, body);
             }
         };
 
@@ -85,9 +86,10 @@ public class NetworkUtils {
      */
     public static CompletableFuture<String> requestAsync(String urlString, HttpMethod method,
                                                          Map<String, String> headers, String body) {
+        String finalUrlString = BaseUrl + urlString;
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return sendRequest(urlString, method, headers, body);
+                return sendRequest(finalUrlString, method, headers, body);
             } catch (IOException e) {
                 throw new RuntimeException("网络请求失败", e);
             }
