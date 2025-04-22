@@ -1,5 +1,6 @@
 package com.work.javafx.controller;
 
+import com.almasb.fxgl.core.util.Platform;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,6 +24,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginController {
     Gson gson = new Gson();
@@ -62,9 +65,9 @@ public class LoginController {
 
             adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
-        //缺省登录用户名和密码
-        usernameField.setText("admin");
-        passwordField.setText("admin123");
+//        //缺省登录用户名和密码
+//        usernameField.setText("student");
+//        passwordField.setText("student123");
     }
 
     /**
@@ -81,75 +84,8 @@ public class LoginController {
             return;
         }
         // 用户验证逻辑
-        if (authenticateUser(username, password)) {
-            //网络请求测试
-//            NetworkUtils.get("https://v.api.aa1.cn/api/zhihu-news/index.php?aa1=xiarou", new NetworkUtils.Callback<String>() {
-//                @Override
-//                public void onSuccess(String result) {
-//                    JsonObject res = gson.fromJson(result,JsonObject.class);
-//                    JsonArray data = res.getAsJsonArray("news");
-//                    for (int i = 0; i < data.size(); i++) {
-//                        JsonObject item = data.get(i).getAsJsonObject();
-//                        String content = item.get("title").getAsString();
-//                        String author = item.get("url").getAsString();
-//                        System.out.println("title:"+content);
-//                        System.out.println("url:"+author);
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Exception e) {
-//                    System.out.println(e);
-//                }
-//            });
-//            //网络请求test ————post
-//            Gson gson = new Gson();
-//            class Body {
-//                private String content ;
-//                public String getContent() {
-//                    return content;
-//                }
-//
-//                public void setContent(String content) {
-//                    this.content = content;
-//                }
-//            }
-//            Body body = new Body();
-//            body.setContent(username);
-//            String json = gson.toJson(body);
-//            String url = "https://uapis.cn/api/fanyi?text=" + username;
-//            NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
-//                @Override
-//                public void onSuccess(String result) {
-//                    Res res = gson.fromJson(result,Res.class);
-//                    System.out.println(res.getTranslate());
-//                }
-//                @Override
-//                public void onFailure(Exception e) {
-//                    System.out.println(e);
-//                }
-//            });
-            //网络请求
-//            NetworkUtils.get("https://uapis.cn/api/say", new NetworkUtils.Callback<String>() {
-//                @Override
-//                public void onSuccess(String result) {
-//                    System.out.println(result);
-//                    System.out.println("请求成功");
-//                }
-//
-//                @Override
-//                public void onFailure(Exception e) {
-//                    System.out.println(e);
-//                    System.out.println("请求失败");
-//                }
-//            });
-//             登录成功，跳转到主界面
-            navigateToMainPage();
-        } else {
-            // 登录失败，显示错误消息
-            showErrorMessage("用户名或密码错误，请重试");
-        }
+        authenticateUser(username, password);
+
     }
 /**
  * 处理管理员登录按钮点击事件
@@ -159,12 +95,12 @@ private void handleAdminButtonClicked(ActionEvent event){
     if(togglestate){
         usernameField.setPromptText("请输入学号或工号");
         passwordField.setPromptText("请输入密码");
-        adminLogin.setText("管理员登录");
+        adminLogin.setText("教工或管理员登录");
         togglestate = false;
     }else {
         usernameField.setPromptText("请输入管理员账号");
         passwordField.setPromptText("请输入管理员密码");
-        adminLogin.setText("学生或教职工登录");
+        adminLogin.setText("学生登录");
         togglestate = true;
     }
 
@@ -176,21 +112,58 @@ private void handleAdminButtonClicked(ActionEvent event){
      * @return 验证是否成功
      */
     private boolean authenticateUser(String username, String password) {
-        //TODO 登陆验证
-        if (username.equals("admin") && password.equals("admin123")) {
-            UserSession.getInstance().setIdentity(-1);
-            return true;
-        };
-        if (username.equals("teacher") && password.equals("teacher123")) {
-            UserSession.getInstance().setIdentity(1);
-            return true;
+        Map<String,String> requestBody = new HashMap<>();
+        requestBody.put("stuId",username);
+        requestBody.put("password",password);
+        String requetBodyJson = gson.toJson(requestBody);
+        NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        JsonObject dataJson = responseJson.getAsJsonObject("data");
+                        int identity = dataJson.get("permission").getAsInt();
+                        String token = dataJson.get("accessToken").getAsString();
+                        String username = dataJson.get("username").getAsString();
+                        String refreshToken = dataJson.get("refreshToken").getAsString();
+                         UserSession.getInstance().setIdentity(identity);
+                         UserSession.getInstance().setToken(token);
+                         UserSession.getInstance().setRefreshToken(refreshToken);
+                         UserSession.getInstance().setUsername(username);
+                        System.out.println("登录成功: " + result);
+                         navigateToMainPage(); // 导航到主页面
+                    } else {
+                        String message = responseJson.has("message") ? responseJson.get("message").getAsString() : "用户名或密码错误";
+                        showErrorMessage(message);
+                    }
+                } catch (Exception e) {
+                    // 处理 JSON 解析错误或其他处理响应时的问题
+                    System.err.println("处理登录响应时出错: " + e.getMessage());
+                    showErrorMessage("处理登录响应时出错");
+                }
+            }
 
-        }
-        if (username.equals("student") && password.equals("student123")) {
-            UserSession.getInstance().setIdentity(0);
-            return true;
-
-        }
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("登录失败: " + e.getMessage());
+                showErrorMessage("处理登录响应时出错");
+            }
+        });
+//        if (username.equals("admin") && password.equals("admin123")) {
+//            UserSession.getInstance().setIdentity(-1);
+//            return true;
+//        };
+//        if (username.equals("teacher") && password.equals("teacher123")) {
+//            UserSession.getInstance().setIdentity(1);
+//            return true;
+//
+//        }
+//        if (username.equals("student") && password.equals("student123")) {
+//            UserSession.getInstance().setIdentity(0);
+//            return true;
+//
+//        }
         return false;
     }
 

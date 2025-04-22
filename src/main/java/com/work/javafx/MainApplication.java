@@ -84,13 +84,13 @@ public class MainApplication extends Application {
      */
     public static void showMainView() throws IOException {
         switch (UserSession.getInstance().getIdentity()){
-            case 0:
+            case 2:
                 changeView("student/StudentBaseView.fxml", "css/student/BaseView.css");
                 break;
             case 1:
                 changeView("teacher/TeacherBaseView.fxml", "css/teacher/TeacherBaseView.css");
                 break;
-            case -1:
+            case 0:
                 changeView("admin/AdminBaseView.fxml", "css/admin/AdminBaseView.css");
                 break;
             default:
