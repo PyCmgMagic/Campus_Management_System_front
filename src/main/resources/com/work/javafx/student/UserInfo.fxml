@@ -35,7 +35,7 @@
 
                 <VBox spacing="8">
                     <HBox spacing="10">
-                        <Label styleClass="info-label" text="姓名" />
+                        <Label  styleClass="info-label" text="姓名" />
                         <Label fx:id="nameLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
