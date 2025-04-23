@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -68,6 +69,34 @@ public class LoginController {
 //        //缺省登录用户名和密码
 //        usernameField.setText("student");
 //        passwordField.setText("student123");
+        usernameField.setOnKeyPressed(event -> {
+            if(event.getCode()== KeyCode.ENTER){
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+
+                // 验证用户名和密码是否为空
+                if (StringUtil.isEmpty(username) || StringUtil.isEmpty(password)) {
+                    showErrorMessage("用户名和密码不能为空");
+                    return;
+                }
+                // 用户验证逻辑
+                authenticateUser(username, password);
+            }
+        });
+        passwordField.setOnKeyPressed(event -> {
+            if(event.getCode()== KeyCode.ENTER){
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+
+                // 验证用户名和密码是否为空
+                if (StringUtil.isEmpty(username) || StringUtil.isEmpty(password)) {
+                    showErrorMessage("用户名和密码不能为空");
+                    return;
+                }
+                // 用户验证逻辑
+                authenticateUser(username, password);
+            }
+        });
     }
 
     /**
@@ -87,7 +116,7 @@ public class LoginController {
         authenticateUser(username, password);
 
     }
-/**
+    /**
  * 处理管理员登录按钮点击事件
  * @param event 事件对象
  */
