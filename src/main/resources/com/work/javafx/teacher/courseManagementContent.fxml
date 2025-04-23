@@ -46,7 +46,7 @@
                 </HBox>
                 <Button styleClass="secondary" text="查询" />
             </HBox>
-            <Button styleClass="primary,propose-btn">
+            <Button onAction="#ApplyForNewCourse" fx:id="ApplyForNewCourse" styleClass="primary,propose-btn">
                 <graphic>
                     <Text text="➕" />
                 </graphic>

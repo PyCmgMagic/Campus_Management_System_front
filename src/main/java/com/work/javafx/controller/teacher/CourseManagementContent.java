@@ -1,12 +1,24 @@
 package com.work.javafx.controller.teacher;
 
+import com.work.javafx.controller.student.UserInfo1;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -21,6 +33,9 @@ public class CourseManagementContent implements Initializable {
 
     @FXML
     private TextField searchField;
+
+    @FXML
+    private Button ApplyForNewCourse;
 
     @FXML
     private TableView<Course> courseTable;
@@ -140,6 +155,38 @@ public class CourseManagementContent implements Initializable {
         Button button = new Button(text);
         button.getStyleClass().addAll(style, "action-btn");
         return button;
+    }
+
+    @FXML
+    public void ApplyForNewCourse(ActionEvent event) {
+        try {
+            // 加载新课程申请窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/ApplyNewCourse.fxml"));
+            Parent root = loader.load();
+            
+            // 获取控制器
+            ApplyNewCourseController controller = loader.getController();
+            
+            // 创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            popupStage.initStyle(StageStyle.DECORATED);
+            popupStage.setTitle("申请新课程");
+            popupStage.setScene(new Scene(root, 800, 600));
+            
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+            
+            // 将窗口引用传递给控制器
+            controller.setStage(popupStage);
+            
+            // 显示窗口
+            popupStage.showAndWait();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Course model class

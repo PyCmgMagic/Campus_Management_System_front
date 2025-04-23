@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" styleClass="main-container" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.LoginController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" styleClass="main-container" stylesheets="@css/Login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.LoginController">
 
     <!-- 左侧红色区域 -->
     <HBox prefWidth="400.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -81,7 +81,7 @@
                   </HBox>
                </children>
             </HBox>
-                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
+                <Hyperlink onAction="#handleClick"  fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
                <HBox.margin>
                   <Insets right="-5.0" />
                </HBox.margin></Hyperlink>
@@ -89,7 +89,7 @@
          <HBox alignment="CENTER">
             <children>
                         <!-- 登录按钮 -->
-                  <Button fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
+                  <Button  fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
             </children>
          </HBox>
         </VBox>

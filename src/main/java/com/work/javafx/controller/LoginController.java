@@ -64,23 +64,13 @@ public class LoginController {
         //管理员登陆按钮
         if (adminLogin != null) {
 
-            adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
 //        //缺省登录用户名和密码
 //        usernameField.setText("student");
 //        passwordField.setText("student123");
         usernameField.setOnKeyPressed(event -> {
-            if(event.getCode()== KeyCode.ENTER){
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-
-                // 验证用户名和密码是否为空
-                if (StringUtil.isEmpty(username) || StringUtil.isEmpty(password)) {
-                    showErrorMessage("用户名和密码不能为空");
-                    return;
-                }
-                // 用户验证逻辑
-                authenticateUser(username, password);
+            if(event.getCode()== KeyCode.ENTER || event.getCode()==KeyCode.DOWN){
+                passwordField.requestFocus();
             }
         });
         passwordField.setOnKeyPressed(event -> {
@@ -120,20 +110,7 @@ public class LoginController {
  * 处理管理员登录按钮点击事件
  * @param event 事件对象
  */
-private void handleAdminButtonClicked(ActionEvent event){
-    if(togglestate){
-        usernameField.setPromptText("请输入学号或工号");
-        passwordField.setPromptText("请输入密码");
-        adminLogin.setText("教工或管理员登录");
-        togglestate = false;
-    }else {
-        usernameField.setPromptText("请输入管理员账号");
-        passwordField.setPromptText("请输入管理员密码");
-        adminLogin.setText("学生登录");
-        togglestate = true;
-    }
 
-}
     /**
      * 验证用户凭据
      * @param username 用户名
@@ -224,5 +201,21 @@ private void handleAdminButtonClicked(ActionEvent event){
             e.printStackTrace();
             showErrorMessage("无法加载主界面");
         }
+    }
+
+
+    public void handleClick(ActionEvent actionEvent) {
+        if(togglestate){
+            usernameField.setPromptText("请输入学号或工号");
+            passwordField.setPromptText("请输入密码");
+            adminLogin.setText("教工或管理员登录");
+            togglestate = false;
+        }else {
+            usernameField.setPromptText("请输入管理员账号");
+            passwordField.setPromptText("请输入管理员密码");
+            adminLogin.setText("学生登录");
+            togglestate = true;
+        }
+
     }
 }

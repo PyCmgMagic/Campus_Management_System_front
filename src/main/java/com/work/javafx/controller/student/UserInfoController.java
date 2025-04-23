@@ -151,7 +151,7 @@ public class UserInfoController implements Initializable {
         });
     }
     public void UserInfo1(ActionEvent event) throws IOException {
-        // 创建新窗口（模态）
+        // 创建新窗口
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("修改个人信息");
@@ -173,9 +173,6 @@ public class UserInfoController implements Initializable {
         // 设置 Scene 与所属窗口
         popupStage.setScene(scene);
         popupStage.initOwner(((Node)event.getSource()).getScene().getWindow());
-
-        // 可选：添加图标
-        // popupStage.getIcons().add(new Image("/com/work/images/icon.png"));
 
         // 显示弹窗
         popupStage.show();

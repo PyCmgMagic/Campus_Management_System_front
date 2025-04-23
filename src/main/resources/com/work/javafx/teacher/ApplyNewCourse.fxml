@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.work.javafx.controller.teacher.ApplyNewCourseController"
+      stylesheets="@../css/teacher/ApplyNewCourse.css"
+      styleClass="form-container"
+      spacing="15">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox styleClass="page-header">
+        <Text styleClass="page-title" text="申请新课程"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="form-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="15">
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+            
+            <GridPane hgap="20" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+
+                <!-- 课程名称 & 课程小类 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label styleClass="form-label, required" text="课程名称"/>
+                    <TextField fx:id="courseNameField" promptText="请输入课程名称"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label styleClass="form-label" text="课程小类"/>
+                    <TextField fx:id="courseSubtypeField" promptText="选填，如：篮球、网球等"/>
+                </VBox>
+
+                <!-- 学分 & 课序号 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label styleClass="form-label, required" text="学分"/>
+                    <TextField fx:id="creditsField" promptText="如：3"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label styleClass="form-label, required" text="课序号"/>
+                    <TextField fx:id="courseCodeField" promptText="如：CS101"/>
+                </VBox>
+
+                <!-- 上课教室 & 课容量 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <Label styleClass="form-label, required" text="上课教室"/>
+                    <TextField fx:id="classroomField"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <Label styleClass="form-label, required" text="课容量"/>
+                    <TextField fx:id="capacityField"/>
+                </VBox>
+
+                <!-- 开始周 & 结束周 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <Label styleClass="form-label, required" text="开始周"/>
+                    <TextField fx:id="startWeekField"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <Label styleClass="form-label, required" text="结束周"/>
+                    <TextField fx:id="endWeekField"/>
+                </VBox>
+
+                <!-- 课时 & 开设学院 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <Label styleClass="form-label, required" text="课时"/>
+                    <TextField fx:id="classHoursField"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <Label styleClass="form-label, required" text="开设学院"/>
+                    <TextField fx:id="departmentField"/>
+                </VBox>
+
+                <!-- 学期 & 类型 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="5">
+                    <Label styleClass="form-label, required" text="学期"/>
+                    <ComboBox fx:id="semesterComboBox" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <Label styleClass="form-label, required" text="类型"/>
+                    <ComboBox fx:id="courseTypeComboBox" maxWidth="Infinity"/>
+                </VBox>
+
+                <!-- 考核方式 & 成绩比例 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="6">
+                    <Label styleClass="form-label, required" text="考核方式"/>
+                    <ComboBox fx:id="assessmentTypeComboBox" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox fx:id="gradeDistributionContainer" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                    <Label styleClass="form-label, required" text="成绩比例"/>
+                    <HBox spacing="10" styleClass="percentage-controls">
+                        <Label text="平时成绩："/>
+                        <TextField fx:id="regularPercentageField" prefWidth="80"/>
+                        <Label text="%%"/>
+                        <Label text="期末成绩："/>
+                        <TextField fx:id="finalPercentageField" prefWidth="80"/>
+                        <Label text="%%"/>
+                    </HBox>
+                </VBox>
+
+                <!-- 课程简介 -->
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2">
+                    <Label styleClass="form-label, required" text="课程简介"/>
+                    <TextArea fx:id="courseDescriptionField" wrapText="true" prefHeight="120"/>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </ScrollPane>
+
+    <!-- 操作按钮 -->
+    <HBox alignment="CENTER" spacing="15" styleClass="form-actions">
+        <Button fx:id="cancelButton" text="取消" styleClass="btn-secondary" onAction="#handleCancel"/>
+        <Button fx:id="submitButton" text="提交申请" styleClass="btn-primary" onAction="#handleSubmit"/>
+    </HBox>
+
+</VBox>
