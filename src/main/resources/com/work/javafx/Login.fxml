@@ -17,7 +17,7 @@
     <!-- 左侧红色区域 -->
     <HBox prefWidth="400.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 
-        <VBox alignment="CENTER_LEFT" spacing="20.0" styleClass="left-content">
+        <VBox alignment="CENTER_LEFT" spacing="20.0" styleClass="left-content" HBox.hgrow="ALWAYS">
             <padding>
                 <Insets left="40.0" />
             </padding>
@@ -51,7 +51,7 @@
     <!-- 右侧登录区域 -->
     <VBox alignment="CENTER" prefWidth="400.0" styleClass="right-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
-        <VBox maxWidth="350.0" spacing="20.0" styleClass="login-form">
+        <VBox spacing="20.0" styleClass="login-form">
             <!-- 登录标题 -->
             <Label styleClass="login-title" text="用户登录" />
 
@@ -81,7 +81,7 @@
                   </HBox>
                </children>
             </HBox>
-                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="管理员登录">
+                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
                <HBox.margin>
                   <Insets right="-5.0" />
                </HBox.margin></Hyperlink>
