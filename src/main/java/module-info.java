@@ -28,7 +28,7 @@ module com.work.javafx {
     
     // 导出model包
     exports com.work.javafx.model;
-    opens com.work.javafx.model to javafx.base;
+    opens com.work.javafx.model to javafx.base,com.google.gson;
     
     // 导出util包
     exports com.work.javafx.util;

@@ -1,10 +1,17 @@
 package com.work.javafx.controller.admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.work.javafx.controller.teacher.CourseManagementContent;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
+import com.work.javafx.util.NetworkUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -22,10 +29,12 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -96,19 +105,19 @@ public class CourseManagementController implements Initializable {
     private final int ROWS_PER_PAGE = 10;
     private int totalPages = 0;
     //
-
+    static Gson gson = new Gson();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化筛选器
         initFilters();
-        
+        // 加载数据
+        loadData();
+
         // 初始化表格
         initCourseTable();
         initPendingCourseTable();
         
-        // 加载模拟数据
-        loadMockData();
-        
+
         // 初始化分页
         initPagination();
         
@@ -147,11 +156,7 @@ public class CourseManagementController implements Initializable {
     
     // 初始化主课程表格
     private void initCourseTable() {
-//        // 设置选择列
-//        selectColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
-//        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
-//        selectColumn.setEditable(true);
-        
+
         // 设置其他列
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -175,7 +180,6 @@ public class CourseManagementController implements Initializable {
                     setGraphic(null);
                     setStyle("");
                 } else {
-                    // Create a more compact display
                     Label statusLabel = new Label(item);
                     statusLabel.getStyleClass().add("status-badge");
                     if ("开设中".equals(item)) {
@@ -252,13 +256,12 @@ public class CourseManagementController implements Initializable {
     // 初始化待审批课程表格
     private void initPendingCourseTable() {
         // 设置列数据绑定
-        pendingCodeColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
-        pendingNameColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        pendingDepartmentColumn.setCellValueFactory(new PropertyValueFactory<>("department"));
-        pendingApplicantColumn.setCellValueFactory(new PropertyValueFactory<>("applicantName"));
-        pendingDateColumn.setCellValueFactory(new PropertyValueFactory<>("applicationDate"));
-        pendingCreditColumn.setCellValueFactory(new PropertyValueFactory<>("credit"));
-        pendingTypeColumn.setCellValueFactory(new PropertyValueFactory<>("courseType"));
+        pendingCodeColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        pendingNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        pendingDepartmentColumn.setCellValueFactory(new PropertyValueFactory<>("college"));
+        pendingApplicantColumn.setCellValueFactory(new PropertyValueFactory<>("teacherId"));
+        pendingCreditColumn.setCellValueFactory(new PropertyValueFactory<>("point"));
+        pendingTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         
         // 操作列
         pendingActionColumn.setCellFactory(createPendingActionCellFactory());
@@ -316,7 +319,8 @@ public class CourseManagementController implements Initializable {
     }
     
     // 加载模拟数据
-    private void loadMockData() {
+    private void loadData() {
+
         // 添加课程数据
         allCourses.addAll(
             new Course("CS101", "计算机导论", "计算机学院", 3, "必修课", "张教授", true),
@@ -337,12 +341,37 @@ public class CourseManagementController implements Initializable {
         );
         
         // 添加待审批课程申请
+        //获取数据
+        NetworkUtils.get("/class/pending", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    Type courseListType = new TypeToken<List<CourseApplication>>() {}.getType();
+                    List<CourseApplication> loadedApplications = gson.fromJson(dataArray, courseListType);
+                    pendingCourses.clear();
+                    pendingCourses.addAll(loadedApplications);
+                    updatePendingPageInfo();
+                    updatePendingBadge();
+                    pendingCourseTable.setItems(pendingCourses);
+                    pendingCourseTable.refresh();
+                    pendingPagination.setPageCount((int) Math.ceil((double) pendingCourses.size() / ROWS_PER_PAGE));
+                    pendingPagination.setCurrentPageIndex(0);
+
+                    System.out.println("成功加载 " + pendingCourses.size() + " 条待审批课程。");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("加载待审批课程失败: " + e.getMessage());
+            }
+        });
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        pendingCourses.addAll(
-            new CourseApplication("CS601", "区块链技术", "计算机学院", "刘教授", LocalDate.now().format(formatter), 3, "选修课"),
-            new CourseApplication("CS602", "量子计算", "计算机学院", "何教授", LocalDate.now().minusDays(1).format(formatter), 4, "选修课"),
-            new CourseApplication("EC301", "金融科技", "经济管理学院", "梁教授", LocalDate.now().minusDays(2).format(formatter), 2, "选修课")
-        );
+
         
         // 初始显示所有课程
         filteredCourses.addAll(allCourses);
@@ -473,7 +502,7 @@ public class CourseManagementController implements Initializable {
                     course.getCode().toLowerCase().contains(searchTerm) ||
                     course.getName().toLowerCase().contains(searchTerm) ||
                     course.getTeacher().toLowerCase().contains(searchTerm))
-                .collect(Collectors.toList());
+                .toList();
         
         filteredCourses.clear();
         filteredCourses.addAll(searchResults);
@@ -508,23 +537,23 @@ public class CourseManagementController implements Initializable {
     @FXML
     private void searchPendingCourses() {
         String searchTerm = pendingSearchField.getText().toLowerCase().trim();
-        
+
         if (searchTerm.isEmpty()) {
             pendingCourseTable.setItems(pendingCourses);
             return;
         }
-        
-        ObservableList<CourseApplication> searchResults = pendingCourses.filtered(app -> 
-                app.getCourseName().toLowerCase().contains(searchTerm) ||
-                app.getApplicantName().toLowerCase().contains(searchTerm) ||
-                app.getCourseCode().toLowerCase().contains(searchTerm));
-        
+
+        ObservableList<CourseApplication> searchResults = pendingCourses.filtered(app ->
+                app.getName().toLowerCase().contains(searchTerm) ||
+                String.valueOf(app.getTeacherId()).contains(searchTerm) ||
+                String.valueOf(app.getId()).contains(searchTerm));
+
         pendingCourseTable.setItems(searchResults);
-        
+
         // 更新分页
         pendingPagination.setPageCount((int) Math.ceil((double) searchResults.size() / ROWS_PER_PAGE));
         pendingPagination.setCurrentPageIndex(0);
-        
+
         updatePendingPageInfo();
     }
     
@@ -546,8 +575,8 @@ public class CourseManagementController implements Initializable {
     
     @FXML
     private void showAddCourseView() {
-        // 显示添加课程对话框
-        showInfoDialog("功能提示", "添加课程功能将在后续版本开放");
+        CourseManagementContent courseManagementContent = new CourseManagementContent();
+        courseManagementContent.ApplyForNewCourse( new ActionEvent());
     }
     
     @FXML
@@ -627,50 +656,96 @@ public class CourseManagementController implements Initializable {
     // 待审批课程操作方法
     private void viewPendingCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
-        showInfoDialog("查看申请", "申请详情: " + application.getCourseName());
+
     }
     
     private void approveCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
         
-        if (showConfirmDialog("确认操作", "确定要通过课程 " + application.getCourseName() + " 的申请吗？")) {
-            // 添加到课程表
-            Course newCourse = new Course(
-                    application.getCourseCode(),
-                    application.getCourseName(),
-                    application.getDepartment(),
-                    application.getCredit(),
-                    application.getCourseType(),
-                    application.getApplicantName(),
-                    true
-            );
+        if (showConfirmDialog("确认操作", "确定要通过课程 " + application.getName() + " 的申请吗？")) {
+            // 发送批准请求到后端
+            JsonObject requestBody = new JsonObject();
+            requestBody.addProperty("id", application.getId());
+            requestBody.addProperty("approved", true);
             
-            allCourses.add(newCourse);
-            
-            // 从待审批列表中移除
-            pendingCourses.remove(application);
-            
-            // 刷新数据
-            applyFilters();
-            updatePendingBadge();
-            updatePendingPageInfo();
-            
-            showInfoDialog("操作成功", "已批准课程申请: " + application.getCourseName());
+            NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    JsonObject res = gson.fromJson(result, JsonObject.class);
+                    
+                    if (res.has("code") && res.get("code").getAsInt() == 200) {
+                        // 添加到课程表
+                        Course newCourse = new Course(
+                                String.valueOf(application.getId()),
+                                application.getName(),
+                                application.getCollege(),
+                                application.getPoint(),
+                                application.getType(),
+                                String.valueOf(application.getTeacherId()),
+                                true
+                        );
+                        
+                        allCourses.add(newCourse);
+                        
+                        // 从待审批列表中移除
+                        pendingCourses.remove(application);
+                        
+                        // 刷新数据
+                        applyFilters();
+                        updatePendingBadge();
+                        updatePendingPageInfo();
+                        pendingCourseTable.setItems(pendingCourses);
+                        pendingCourseTable.refresh();
+                        
+                        showInfoDialog("操作成功", "已批准课程申请: " + application.getName());
+                    } else {
+                        showErrorDialog("操作失败", "批准课程失败: " + res.get("msg").getAsString());
+                    }
+                }
+                
+                @Override
+                public void onFailure(Exception e) {
+                    showErrorDialog("操作失败", "网络错误: " + e.getMessage());
+                }
+            });
         }
     }
     
     private void rejectCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
         
-        if (showConfirmDialog("确认操作", "确定要拒绝课程 " + application.getCourseName() + " 的申请吗？")) {
-            // 从待审批列表中移除
-            pendingCourses.remove(application);
+        if (showConfirmDialog("确认操作", "确定要拒绝课程 " + application.getName() + " 的申请吗？")) {
+            // 发送拒绝请求到后端
+            JsonObject requestBody = new JsonObject();
+            requestBody.addProperty("id", application.getId());
+            requestBody.addProperty("approved", false);
             
-            // 更新页面
-            updatePendingBadge();
-            updatePendingPageInfo();
-            
-            showInfoDialog("操作成功", "已拒绝课程申请: " + application.getCourseName());
+            NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    JsonObject res = gson.fromJson(result, JsonObject.class);
+                    
+                    if (res.has("code") && res.get("code").getAsInt() == 200) {
+                        // 从待审批列表中移除
+                        pendingCourses.remove(application);
+                        
+                        // 更新页面
+                        updatePendingBadge();
+                        updatePendingPageInfo();
+                        pendingCourseTable.setItems(pendingCourses);
+                        pendingCourseTable.refresh();
+                        
+                        showInfoDialog("操作成功", "已拒绝课程申请: " + application.getName());
+                    } else {
+                        showErrorDialog("操作失败", "拒绝课程失败: " + res.get("msg").getAsString());
+                    }
+                }
+                
+                @Override
+                public void onFailure(Exception e) {
+                    showErrorDialog("操作失败", "网络错误: " + e.getMessage());
+                }
+            });
         }
     }
     
