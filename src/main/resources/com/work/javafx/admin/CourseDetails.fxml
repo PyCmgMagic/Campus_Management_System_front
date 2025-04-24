@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/admin/CourseDetails.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.CourseDetailsController">
+   <children>
+      <BorderPane layoutX="246.0" layoutY="102.0" prefHeight="600.0" prefWidth="800.0" styleClass="main-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="header-container" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackAction" styleClass="back-button" text="返回" />
+                  <Label styleClass="header-title" text="课程详情" />
+                  <Label fx:id="courseStatusLabel" styleClass="status-badge" text="已通过" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </HBox>
+         </top>
+         <center>
+            <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox spacing="25.0" styleClass="content-container">
+                     <children>
+                        <VBox spacing="10.0" styleClass="section-container">
+                           <children>
+                              <Label styleClass="section-title" text="基本信息">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Separator />
+                              <GridPane hgap="20.0" vgap="15.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="field-label" text="课程编号" />
+                                    <Label fx:id="courseIdLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" />
+                                    <Label styleClass="field-label" text="课程名称" GridPane.columnIndex="2" />
+                                    <Label fx:id="courseNameLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" />
+                                    <Label styleClass="field-label" text="开课院系" GridPane.rowIndex="1" />
+                                    <Label fx:id="collegeLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label styleClass="field-label" text="课程类型" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <Label fx:id="courseTypeLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <Label styleClass="field-label" text="学分" GridPane.rowIndex="2" />
+                                    <Label fx:id="creditLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label styleClass="field-label" text="授课教师ID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label fx:id="teacherIdLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" styleClass="section-container">
+                           <children>
+                              <Label styleClass="section-title" text="课程信息">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Separator />
+                              <GridPane hgap="20.0" vgap="15.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="field-label" text="教室" />
+                                    <Label fx:id="classroomLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" />
+                                    <Label styleClass="field-label" text="学期" GridPane.columnIndex="2" />
+                                    <Label fx:id="termLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" />
+                                    <Label styleClass="field-label" text="起始周" GridPane.rowIndex="1" />
+                                    <Label fx:id="weekRangeLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label styleClass="field-label" text="容量" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <Label fx:id="capacityLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <Label styleClass="field-label" text="总课时" GridPane.rowIndex="2" />
+                                    <Label fx:id="periodLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label styleClass="field-label" text="上课时间" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label fx:id="timeLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" styleClass="section-container">
+                           <children>
+                              <Label styleClass="section-title" text="考核信息">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Separator />
+                              <GridPane hgap="20.0" vgap="15.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="120.0" prefWidth="120.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="field-label" text="考试类型" />
+                                    <Label fx:id="examTypeLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" />
+                                    <Label styleClass="field-label" text="是否已发布" GridPane.columnIndex="2" />
+                                    <Label fx:id="publishStatusLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" />
+                                    <Label styleClass="field-label" text="平时成绩占比" GridPane.rowIndex="1" />
+                                    <Label fx:id="regularRatioLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label styleClass="field-label" text="期末成绩占比" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <Label fx:id="finalRatioLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" styleClass="section-container">
+                           <children>
+                              <Label styleClass="section-title" text="课程简介">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Separator />
+                              <VBox styleClass="intro-container">
+                                 <children>
+                                    <Label fx:id="introLabel" styleClass="intro-text" text="暂无课程简介" wrapText="true" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER_RIGHT" spacing="15.0" styleClass="footer-container" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="rejectButton" mnemonicParsing="false" onAction="#handleRejectAction" styleClass="reject-button" text="拒绝" />
+                  <Button fx:id="approveButton" mnemonicParsing="false" onAction="#handleApproveAction" styleClass="approve-button" text="通过" />
+                  <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseAction" styleClass="primary-button" text="关闭" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>

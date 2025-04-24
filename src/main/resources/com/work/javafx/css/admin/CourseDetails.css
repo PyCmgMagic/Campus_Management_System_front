@@ -1,0 +1,147 @@
+/* CourseDetails样式 */
+
+.main-container {
+    -fx-background-color: #f5f5f7;
+}
+
+/* 顶部样式 */
+.header-container {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e3033;
+}
+
+.back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+}
+
+.back-button:hover {
+    -fx-background-color: #e8f4fc;
+}
+
+.status-badge {
+    -fx-background-radius: 12px;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 3px 10px;
+}
+
+/* 不同状态的标签样式 */
+.status-approved {
+    -fx-background-color: #27ae60;
+}
+
+.status-pending {
+    -fx-background-color: #e67e22;
+}
+
+.status-rejected {
+    -fx-background-color: #e74c3c;
+}
+
+/* 内容区域样式 */
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.content-container {
+    -fx-background-color: transparent;
+}
+
+.section-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1);
+    -fx-padding: 20px;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e3033;
+}
+
+.field-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: bold;
+}
+
+.field-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.intro-container {
+    -fx-padding: 10px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 4px;
+    -fx-min-height: 80px;
+}
+
+.intro-text {
+    -fx-text-fill: #34495e;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+}
+
+/* 底部按钮栏 */
+.footer-container {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, -1);
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.approve-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+}
+
+.approve-button:hover {
+    -fx-background-color: #219952;
+}
+
+.reject-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+}
+
+.reject-button:hover {
+    -fx-background-color: #c0392b;
+}
