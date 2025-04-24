@@ -1,5 +1,10 @@
 package com.work.javafx.controller.teacher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.work.javafx.entity.UserSession;
+import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,11 +14,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ApplyNewCourseController implements Initializable {
     private Stage stage;
-
+    static Gson gson = new Gson();
     @FXML private TextField courseNameField;
     @FXML private TextField courseSubtypeField;
     @FXML private TextField creditsField;
@@ -38,7 +45,7 @@ public class ApplyNewCourseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化下拉菜单
         semesterComboBox.setItems(FXCollections.observableArrayList(
-                "2024-2025 秋季", "2024-2025 春季", "2025-2026 秋季", "2025-2026 春季"));
+                "2024-2025-1", "2024-2025-2", "2025-2026-1", "2025-2026-2"));
         semesterComboBox.getSelectionModel().selectFirst();
         
         courseTypeComboBox.setItems(FXCollections.observableArrayList(
@@ -99,7 +106,7 @@ public class ApplyNewCourseController implements Initializable {
         // 设置默认值
         startWeekField.setText("1");
         endWeekField.setText("16");
-        departmentField.setText("信息科学与技术学院");
+        departmentField.setText("软件学院");
     }
     
     /**
@@ -133,7 +140,6 @@ public class ApplyNewCourseController implements Initializable {
         alert.setTitle("确认取消");
         alert.setHeaderText(null);
         alert.setContentText("确定要取消申请吗？所有已填写的内容将丢失。");
-        
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 closeWindow();
@@ -147,9 +153,55 @@ public class ApplyNewCourseController implements Initializable {
     @FXML
     private void handleSubmit(ActionEvent event) {
         if (validateForm()) {
-            // 在实际应用中，这里会调用服务层保存课程申请
-            // 目前只显示成功消息
-            showAlert(Alert.AlertType.INFORMATION, "提交成功", "课程申请已提交，等待审核！");
+            Map<String,String> requestBody = new HashMap<>();
+            requestBody.put("name",courseNameField.getText());//课程名称
+            if(!isEmpty(courseSubtypeField)){
+                requestBody.put("category",courseSubtypeField.getText());//课程小类
+            }if(!isEmpty(courseDescriptionField)){
+                requestBody.put("intro",courseDescriptionField.getText());//课程简介
+            }
+            if(assessmentTypeComboBox.getValue().equals("考试")){
+                requestBody.put("examination","1");//考试
+                requestBody.put("regularRatio",(Integer.parseInt(regularPercentageField.getText())/100.0)+"");//平时分
+                requestBody.put("finalRatio",(Integer.parseInt(finalPercentageField.getText())/100.0)+"");//期末分
+            }else{
+                requestBody.put("examination","0");//考查
+            }
+            requestBody.put("point",creditsField.getText());//课程学分
+            requestBody.put("classNum",courseCodeField.getText());//课序号
+            requestBody.put("classroom",classroomField.getText());//上课教室
+            requestBody.put("weekStart",startWeekField.getText());//开始周
+            requestBody.put("weekEnd",endWeekField.getText());//结束周
+            requestBody.put("period",classHoursField.getText());//学时
+            requestBody.put("college",departmentField.getText());//学院
+            requestBody.put("term",semesterComboBox.getValue());//开设学期
+            requestBody.put("type",courseTypeComboBox.getValue());//类型
+            requestBody.put("capacity",capacityField.getText());//客容量
+            String requestJson = gson.toJson(requestBody);
+            System.out.println(requestJson);
+            NetworkUtils.post("/class/create", requestJson, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    JsonObject res = gson.fromJson(result,JsonObject.class);
+                    try{
+                    if(res.has("code") && res.get("code").getAsInt() == 200){
+                        ShowMessage.showInfoMessage("创建成功",res.get("msg").getAsString());
+                    }else if(res.has("code") && res.get("code").getAsInt() == 403){
+                        ShowMessage.showErrorMessage("创建失败",res.get("msg").getAsString());
+                    }
+                    else{
+                        ShowMessage.showInfoMessage("创建结果",res.get("msg").getAsString());
+                    }
+                    }catch (Exception e){
+                        ShowMessage.showInfoMessage("创建结果",res.get("msg").getAsString());
+                        System.out.println(e);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    System.out.println(e);
+                }
+            });
             closeWindow();
         }
     }
@@ -163,25 +215,20 @@ public class ApplyNewCourseController implements Initializable {
         // 必填字段验证
         if (isEmpty(courseNameField)) errorMessages.append("- 课程名称不能为空\n");
         if (isEmpty(creditsField)) errorMessages.append("- 学分不能为空\n");
-        if (isEmpty(courseCodeField)) errorMessages.append("- 课序号不能为空\n");
         if (isEmpty(classroomField)) errorMessages.append("- 上课教室不能为空\n");
         if (isEmpty(capacityField)) errorMessages.append("- 课容量不能为空\n");
         if (isEmpty(startWeekField)) errorMessages.append("- 开始周不能为空\n");
         if (isEmpty(endWeekField)) errorMessages.append("- 结束周不能为空\n");
         if (isEmpty(classHoursField)) errorMessages.append("- 课时不能为空\n");
         if (isEmpty(departmentField)) errorMessages.append("- 开设学院不能为空\n");
-        if (isEmpty(courseDescriptionField)) errorMessages.append("- 课程简介不能为空\n");
-        
-        // 课序号格式验证（通常是字母+数字格式）
-        if (!isEmpty(courseCodeField) && !courseCodeField.getText().matches("[A-Za-z]+\\d+")) {
-            errorMessages.append("- 课序号格式不正确，应为字母+数字格式（如CS101）\n");
-        }
+
+
         
         // 学分验证
         if (!isEmpty(creditsField)) {
             double credits = Double.parseDouble(creditsField.getText());
-            if (credits <= 0 || credits > 10) {
-                errorMessages.append("- 学分应在0-10之间\n");
+            if (credits <= 0 || credits > 20) {
+                errorMessages.append("- 学分应在0-20之间\n");
             }
         }
         
@@ -210,14 +257,14 @@ public class ApplyNewCourseController implements Initializable {
         // 课时验证
         if (!isEmpty(classHoursField)) {
             int hours = Integer.parseInt(classHoursField.getText());
-            if (hours <= 0 || hours > 20) {
-                errorMessages.append("- 课时应在1-20之间\n");
+            if (hours <= 0 || hours > 200) {
+                errorMessages.append("- 课时应在1-200之间\n");
             }
         }
         
         // 课程简介长度验证
-        if (!isEmpty(courseDescriptionField) && courseDescriptionField.getText().length() < 10) {
-            errorMessages.append("- 课程简介太短，至少需要10个字符\n");
+        if (courseDescriptionField.getText().length() > 200) {
+            errorMessages.append("- 请控制在200字以内\n");
         }
         
         // 显示错误信息
