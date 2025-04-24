@@ -9,9 +9,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CourseDetailsController implements Initializable {
@@ -203,20 +205,16 @@ public class CourseDetailsController implements Initializable {
     @FXML
     private void handleApproveAction() {
         if (courseData == null) return;
-        
+
         int id = courseData.get("id").getAsInt();
-        
-        // 构建请求体
-        JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("id", id);
-        requestBody.addProperty("approved", true);
-        
+        int classNum = courseData.get("classNum").getAsInt();
+        String url = "/class/approve/"+id+"?status=1&classNum="+classNum;
+
         // 发送审批请求
-        NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
+        NetworkUtils.post(url,"", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject response = gson.fromJson(result, JsonObject.class);
-                
                 if (response.has("code") && response.get("code").getAsInt() == 200) {
                     // 审批成功，关闭窗口
                     showSuccessDialog("课程审批成功");
@@ -241,36 +239,45 @@ public class CourseDetailsController implements Initializable {
     @FXML
     private void handleRejectAction() {
         if (courseData == null) return;
+        // 创建文本输入对话框
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("拒绝课程申请");
+        dialog.setHeaderText("请输入拒绝原因");
+        dialog.setContentText("拒绝原因:");
         
-        int id = courseData.get("id").getAsInt();
-        
-        // 构建请求体
-        JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("id", id);
-        requestBody.addProperty("approved", false);
-        
-        // 发送审批请求
-        NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                JsonObject response = gson.fromJson(result, JsonObject.class);
-                
-                if (response.has("code") && response.get("code").getAsInt() == 200) {
-                    // 拒绝成功，关闭窗口
-                    showSuccessDialog("已拒绝课程申请");
-                    closeWindow();
-                } else {
-                    // 显示错误信息
-                    String errorMsg = response.has("msg") ? response.get("msg").getAsString() : "拒绝课程申请失败";
-                    showError(errorMsg);
-                }
-            }
+        // 获取用户输入的拒绝原因
+        Optional<String> result = dialog.showAndWait();
+        // 只有当用户提供了拒绝原因时才继续
+        if (result.isPresent() && !result.get().trim().isEmpty()) {
+            String rejectReason = result.get().trim();
+            int id = courseData.get("id").getAsInt();
+            int classNum = courseData.get("classNum").getAsInt();
+            String url = "/class/approve/"+id+"?status=2&classNum="+classNum+"&reason="+rejectReason;
 
-            @Override
-            public void onFailure(Exception e) {
-                showError("网络错误: " + e.getMessage());
-            }
-        });
+            NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    JsonObject response = gson.fromJson(result, JsonObject.class);
+                    if (response.has("code") && response.get("code").getAsInt() == 200) {
+                        // 拒绝成功，关闭窗口
+                        showSuccessDialog("已拒绝课程申请");
+                        closeWindow();
+                    } else {
+                        // 显示错误信息
+                        String errorMsg = response.has("msg") ? response.get("msg").getAsString() : "拒绝课程申请失败";
+                        showError(errorMsg);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    showError("网络错误: " + e.getMessage());
+                }
+            });
+        } else {
+            // 如果用户没有提供拒绝原因，显示提示
+            showError("必须提供拒绝原因");
+        }
     }
     
     /**

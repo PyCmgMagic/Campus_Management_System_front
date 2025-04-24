@@ -8,6 +8,7 @@ import com.work.javafx.controller.teacher.CourseManagementContent;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +41,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -720,11 +722,8 @@ public class CourseManagementController implements Initializable {
         
         if (showConfirmDialog("确认操作", "确定要通过课程 " + application.getName() + " 的申请吗？")) {
             // 发送批准请求到后端
-            JsonObject requestBody = new JsonObject();
-            requestBody.addProperty("id", application.getId());
-            requestBody.addProperty("approved", true);
-            
-            NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
+            String url = "/class/approve/"+application.getId()+"?status=1&classNum="+application.getClassNum();
+            NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -761,7 +760,7 @@ public class CourseManagementController implements Initializable {
                 
                 @Override
                 public void onFailure(Exception e) {
-                    showErrorDialog("操作失败", "网络错误: " + e.getMessage());
+                    showErrorDialog("操作失败",   e.getMessage());
                 }
             });
         }
@@ -769,22 +768,28 @@ public class CourseManagementController implements Initializable {
     
     private void rejectCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
-        
+
         if (showConfirmDialog("确认操作", "确定要拒绝课程 " + application.getName() + " 的申请吗？")) {
+            // 创建文本输入对话框
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("拒绝课程申请");
+            dialog.setHeaderText("请输入拒绝原因");
+            dialog.setContentText("拒绝原因:");
+            // 获取用户输入的拒绝原因
+            Optional<String> result = dialog.showAndWait();
+            // 只有当用户提供了拒绝原因时才继续
+            if (result.isPresent() && !result.get().trim().isEmpty()) {
+                String rejectReason = result.get().trim();
             // 发送拒绝请求到后端
-            JsonObject requestBody = new JsonObject();
-            requestBody.addProperty("id", application.getId());
-            requestBody.addProperty("approved", false);
-            
-            NetworkUtils.post("/class/review", gson.toJson(requestBody), new NetworkUtils.Callback<String>() {
+            String url = "/class/approve/"+application.getId()+"?status=2&classNum="+application.getClassNum()+"&reason="+rejectReason;
+
+            NetworkUtils.post(url,"", new NetworkUtils.Callback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
-                    
                     if (res.has("code") && res.get("code").getAsInt() == 200) {
                         // 从待审批列表中移除
                         pendingCourses.remove(application);
-                        
                         // 更新页面
                         updatePendingBadge();
                         updatePendingPageInfo();
@@ -802,6 +807,10 @@ public class CourseManagementController implements Initializable {
                     showErrorDialog("操作失败", "网络错误: " + e.getMessage());
                 }
             });
+            }else {
+                // 如果用户没有提供拒绝原因，显示提示
+                ShowMessage.showErrorMessage("失败！","必须提供拒绝原因");
+            }
         }
     }
     
