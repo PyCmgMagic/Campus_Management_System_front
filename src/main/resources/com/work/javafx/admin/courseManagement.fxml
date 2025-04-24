@@ -24,7 +24,7 @@
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
         </padding>
-        <!-- Main Content Header -->
+
         <top>
             <VBox>
                 <HBox fx:id="mainTitleContainer" styleClass="page-title-container">
@@ -42,7 +42,7 @@
             <StackPane BorderPane.alignment="CENTER">
                 <!-- Main Courses View -->
                 <VBox fx:id="mainCoursesView">
-                    <!-- Quick Actions Cards -->
+                    <!-- 快捷按钮 -->
                     <GridPane styleClass="quick-actions">
                         <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
@@ -50,7 +50,6 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
                         </columnConstraints>
                         
-                        <!-- Review Pending Courses Card -->
                         <BorderPane fx:id="reviewPendingCard" onMouseClicked="#showPendingView" styleClass="quick-action-card,approval-card" GridPane.columnIndex="0">
                             <left>
                                 <Region styleClass="card-icon,approval-icon" BorderPane.alignment="CENTER" />
@@ -66,7 +65,6 @@
                             </right>
                         </BorderPane>
                         
-                        <!-- Add New Course Card -->
                         <BorderPane fx:id="addCourseCard" onMouseClicked="#showAddCourseView" styleClass="quick-action-card" GridPane.columnIndex="1">
                             <left>
                                 <Region styleClass="card-icon,add-icon" BorderPane.alignment="CENTER" />
@@ -79,7 +77,6 @@
                             </center>
                         </BorderPane>
                         
-                        <!-- Export Course Data Card -->
                         <BorderPane fx:id="exportCourseCard" onMouseClicked="#exportCourses" styleClass="quick-action-card" GridPane.columnIndex="2">
                             <left>
                                 <Region styleClass="card-icon,export-icon" BorderPane.alignment="CENTER" />
@@ -140,7 +137,6 @@
                         </GridPane>
                     </VBox>
                     
-                    <!-- Course List Container -->
                     <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="课程列表 (已开设/已停开)" />
@@ -175,7 +171,7 @@
                     </VBox>
                 </VBox>
                 
-                <!-- Pending Courses View -->
+                <!-- 审阅课程页面 -->
                 <VBox fx:id="pendingCoursesView" visible="false">
                     <!-- Search for Pending -->
                     <VBox styleClass="search-filter-container">
@@ -188,7 +184,7 @@
                         </HBox>
                     </VBox>
                     
-                    <!-- Pending Course List -->
+                    <!-- 审阅课程列表 -->
                     <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="待审批课程列表" />

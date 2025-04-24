@@ -158,7 +158,7 @@ public class CourseManagementContent implements Initializable {
     }
 
     @FXML
-    public void ApplyForNewCourse(ActionEvent event) {
+    public  void ApplyForNewCourse(ActionEvent event) {
         try {
             // 加载新课程申请窗口
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/ApplyNewCourse.fxml"));

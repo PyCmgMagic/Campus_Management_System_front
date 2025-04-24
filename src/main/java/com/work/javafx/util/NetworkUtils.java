@@ -31,6 +31,8 @@ public class NetworkUtils {
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
     private static final String BaseUrl = "***REMOVED***" ;
+    String token = "Bearer " + UserSession.getInstance().getToken();
+
     /**
      * 方法枚举
      */
@@ -106,6 +108,8 @@ public class NetworkUtils {
     public static void get(String urlString, Callback<String> callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+        headers.put("Authorization", token);
         request(urlString, HttpMethod.GET, headers, null, callback);
     }
     
@@ -119,6 +123,10 @@ public class NetworkUtils {
     public static void get(String urlString, Map<String, String> params, Callback<String> callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+
+        headers.put("Authorization", token);
+
         String fullUrl = appendQueryParams(urlString, params);
         request(fullUrl, HttpMethod.GET, headers, null, callback);
     }
@@ -146,6 +154,9 @@ public class NetworkUtils {
     public static CompletableFuture<String> getAsync(String urlString) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+
+        headers.put("Authorization", token);
         return requestAsync(urlString, HttpMethod.GET, headers, null);
     }
     
@@ -159,6 +170,10 @@ public class NetworkUtils {
     public static CompletableFuture<String> getAsync(String urlString, Map<String, String> params) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+
+        headers.put("Authorization", token);
+
         String fullUrl = appendQueryParams(urlString, params);
         return requestAsync(fullUrl, HttpMethod.GET, headers, null);
     }
@@ -174,6 +189,7 @@ public class NetworkUtils {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
         String token = "Bearer " + UserSession.getInstance().getToken();
+
         headers.put("Authorization", token);
         request(urlString, HttpMethod.POST, headers, body, callback);
     }
