@@ -13,9 +13,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,7 +28,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -630,7 +635,32 @@ public class CourseManagementController implements Initializable {
     // 课程操作方法
     private void viewCourse(int index) {
         Course course = courseTable.getItems().get(index);
-        showInfoDialog("查看课程", "课程详情: " + course.getName());
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/CourseDetails.fxml"));
+            Parent root = loader.load();
+            //获取控制器
+            CourseDetailsController controller = loader.getController();
+            //创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.NONE);//非模态
+            popupStage.initStyle(StageStyle.UNIFIED);
+            popupStage.setTitle("查看课程详情");
+            popupStage.setScene(new Scene(root,800,600));
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+            controller.setStage(popupStage);
+            
+            // 设置课程ID并加载数据
+            controller.loadCourseDetails(Integer.parseInt(course.getCode()));
+            // 设置为非审批页面
+            controller.setApplicable(false);
+            
+            //显示窗口
+            popupStage.showAndWait();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
     private void editCourse(int index) {
@@ -656,7 +686,33 @@ public class CourseManagementController implements Initializable {
     // 待审批课程操作方法
     private void viewPendingCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/CourseDetails.fxml"));
+            Parent root = loader.load();
+            //获取控制器
+            CourseDetailsController controller  = loader.getController();
+            //创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.NONE);//非模态
+            popupStage.initStyle(StageStyle.UNIFIED);
+            popupStage.setTitle("查看课程详情");
+            popupStage.setScene(new Scene(root,800,600));
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+            controller.setStage(popupStage);
+            
+            // 设置课程ID并加载数据
+            controller.loadCourseDetails(application.getId());
+            // 设置为审批页面
+            controller.setApplicable(true);
+            
+            //显示窗口
+            popupStage.showAndWait();
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
     private void approveCourse(int index) {
