@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.work.javafx.entity.UserSession;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
@@ -172,6 +173,8 @@ public class NetworkUtils {
     public static void post(String urlString, String body, Callback<String> callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+        headers.put("Authorization", token);
         request(urlString, HttpMethod.POST, headers, body, callback);
     }
     
