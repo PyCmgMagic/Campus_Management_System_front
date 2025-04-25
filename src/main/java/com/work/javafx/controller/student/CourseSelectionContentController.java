@@ -578,78 +578,79 @@ public class CourseSelectionContentController implements Initializable {
      * 选课操作
      */
     private void selectCourse(UltimateCourse course) {
-        // 构建选课请求参数
-        NetworkUtils.post("/course-selection/select", "{ \"courseId\": " + course.getId() + " }", 
-            new NetworkUtils.Callback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    try {
-                        Gson gson = new Gson();
-                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                        
-                        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                            // 选课成功，更新UI
-                            selectedCourseMap.put(course.getId(), true);
-                            courseTableView.refresh();
-                            ShowMessage.showInfoMessage("操作成功", "已成功选择课程：" + course.getName());
-                        } else {
-                            // 处理错误
-                            String message = responseJson.has("msg") ? 
-                                    responseJson.get("msg").getAsString() : "选课失败";
-                            ShowMessage.showErrorMessage("选课失败", message);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+        // 构建选课请求参数，使用RESTful风格的API端点
+        String url = "/course-selection/select/" + course.getId();
+        
+        // 发送选课请求
+        NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        selectedCourseMap.put(course.getId(), true);
+                        courseTableView.refresh();
+                        ShowMessage.showInfoMessage("操作成功", "已成功选择课程：" + course.getName());
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ? 
+                                responseJson.get("msg").getAsString() : "选课失败";
+                        ShowMessage.showErrorMessage("选课失败", message);
                     }
-                }
-                
-                @Override
-                public void onFailure(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
                 }
             }
-        );
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
     }
     
     /**
      * 退选操作
      */
     private void withdrawCourse(UltimateCourse course) {
-        // 构建退选请求参数
-        NetworkUtils.post("/course-selection/withdraw", "{ \"courseId\": " + course.getId() + " }",
-            new NetworkUtils.Callback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    try {
-                        Gson gson = new Gson();
-                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                        
-                        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                            // 退选成功，更新UI
-                            selectedCourseMap.put(course.getId(), false);
-                            courseTableView.refresh();
-                            ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getName());
-                        } else {
-                            // 处理错误
-                            String message = responseJson.has("msg") ? 
-                                    responseJson.get("msg").getAsString() : "退选失败";
-                            ShowMessage.showErrorMessage("退选失败", message);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+        // 构建退选请求参数，使用RESTful风格的API端点
+        String url = "/course-selection/withdraw/" + course.getId();
+        
+        // 发送退选请求
+        NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        // 退选成功，更新UI
+                        selectedCourseMap.put(course.getId(), false);
+                        courseTableView.refresh();
+                        ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getName());
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ? 
+                                responseJson.get("msg").getAsString() : "退选失败";
+                        ShowMessage.showErrorMessage("退选失败", message);
                     }
-                }
-                
-                @Override
-                public void onFailure(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
                 }
             }
-        );
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
     }
 
     /**
