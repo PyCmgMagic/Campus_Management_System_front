@@ -618,7 +618,7 @@ public class CourseSelectionContentController implements Initializable {
      */
     private void withdrawCourse(UltimateCourse course) {
         // 构建退选请求参数，使用RESTful风格的API端点
-        String url = "/course-selection/withdraw/" + course.getId();
+        String url = "/course-selection/drop/" + course.getId();
         
         // 发送退选请求
         NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
@@ -629,13 +629,11 @@ public class CourseSelectionContentController implements Initializable {
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
                     
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        // 退选成功，更新UI
                         selectedCourseMap.put(course.getId(), false);
                         courseTableView.refresh();
                         ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getName());
                     } else {
-                        // 处理错误
-                        String message = responseJson.has("msg") ? 
+                        String message = responseJson.has("msg") ?
                                 responseJson.get("msg").getAsString() : "退选失败";
                         ShowMessage.showErrorMessage("退选失败", message);
                     }
