@@ -59,20 +59,17 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <columns>
-                <TableColumn prefWidth="100" styleClass="sortable-column" text="课程代码">
-                    <cellValueFactory><PropertyValueFactory property="courseCode" /></cellValueFactory>
+                <TableColumn prefWidth="100" styleClass="sortable-column" text="课序号">
+                    <cellValueFactory><PropertyValueFactory property="classNum" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="150" text="课程名称">
-                    <cellValueFactory><PropertyValueFactory property="courseName" /></cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="120" text="其它教师/助教">
-                    <cellValueFactory><PropertyValueFactory property="otherTeachers" /></cellValueFactory>
+                    <cellValueFactory><PropertyValueFactory property="name" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="80" text="学期">
-                    <cellValueFactory><PropertyValueFactory property="semester" /></cellValueFactory>
+                    <cellValueFactory><PropertyValueFactory property="term" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="60" text="学分">
-                    <cellValueFactory><PropertyValueFactory property="credits" /></cellValueFactory>
+                    <cellValueFactory><PropertyValueFactory property="point" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="80" text="学生人数">
                     <cellValueFactory><PropertyValueFactory property="studentCount" /></cellValueFactory>
