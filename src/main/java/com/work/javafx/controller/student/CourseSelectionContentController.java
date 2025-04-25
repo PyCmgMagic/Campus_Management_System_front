@@ -507,7 +507,7 @@ public class CourseSelectionContentController implements Initializable {
      * 选课操作
      */
     private void selectCourse(UltimateCourse course) {
-        // 构建选课请求参数，使用RESTful风格的API端点
+
         String url = "/course-selection/select/" + course.getId();
         
         // 发送选课请求
@@ -546,7 +546,7 @@ public class CourseSelectionContentController implements Initializable {
      * 退选操作
      */
     private void withdrawCourse(UltimateCourse course) {
-        // 构建退选请求参数，使用RESTful风格的API端点
+
         String url = "/course-selection/drop/" + course.getId();
         
         // 发送退选请求
