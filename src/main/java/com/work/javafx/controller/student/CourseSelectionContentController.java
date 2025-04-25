@@ -394,75 +394,8 @@ public class CourseSelectionContentController implements Initializable {
         loadSampleCourses();
     }
 
-    /**
-     * 显示通识选修课
-     */
-    @FXML
-    private void showGeneralCourses() {
-        if (generalCourseBtn != null) {
-            switchActiveNavButton(generalCourseBtn);
-        }
-        System.out.println("显示通识选修课");
-        
-        // 构建查询参数
-        Map<String, String> params = new HashMap<>();
-        params.put("type", "通识课"); // 假设API支持按类型过滤
-        
-        // 发起网络请求
-        NetworkUtils.get("/course-selection/search", params, new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    processCoursesResponse(result);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
-                }
-            }
-            
-            @Override
-            public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
-                
-                // 出错时加载空列表
-                updateCourseTable(new ArrayList<>());
-            }
-        });
-    }
 
-    /**
-     * 显示已选课程
-     */
-    @FXML
-    private void showSelectedCourses() {
-        if (selectedCoursesBtn != null) {
-            switchActiveNavButton(selectedCoursesBtn);
-        }
-        System.out.println("显示已选课程");
-        
-        // 构建查询参数，假设API有专门获取已选课程的endpoint
-        NetworkUtils.get("/course-selection/selected", new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    processCoursesResponse(result);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
-                }
-            }
-            
-            @Override
-            public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
-                
-                // 出错时加载空列表
-                updateCourseTable(new ArrayList<>());
-            }
-        });
-    }
+
 
     /**
      * 显示选课结果
@@ -565,11 +498,7 @@ public class CourseSelectionContentController implements Initializable {
         // 根据当前活动的导航按钮加载对应的课程数据
         if (currentActiveNavButton == thisTermBtn) {
             searchCourses();
-        } else if (currentActiveNavButton == generalCourseBtn) {
-            showGeneralCourses();
-        } else if (currentActiveNavButton == selectedCoursesBtn) {
-            showSelectedCourses();
-        } else if (currentActiveNavButton == courseResultBtn) {
+        }  else if (currentActiveNavButton == courseResultBtn) {
             showCourseResults();
         }
     }
