@@ -21,8 +21,6 @@
             <!-- 选课系统导航 -->
             <HBox styleClass="course-selection-nav">
                 <Button fx:id="thisTermBtn" text="本学期选课" styleClass="nav-button, active-nav-button" onAction="#showThisTermCourses"/>
-                <Button fx:id="generalCourseBtn" text="通识选修课" styleClass="nav-button" onAction="#showGeneralCourses"/>
-                <Button fx:id="selectedCoursesBtn" text="已选课程" styleClass="nav-button" onAction="#showSelectedCourses"/>
                 <Button fx:id="courseResultBtn" text="选课结果" styleClass="nav-button" onAction="#showCourseResults"/>
             </HBox>
 
