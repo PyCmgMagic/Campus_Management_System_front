@@ -1,6 +1,11 @@
 package com.work.javafx.controller.teacher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.work.javafx.controller.student.UserInfo1;
+import com.work.javafx.util.NetworkUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,14 +22,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
+import com.work.javafx.model.UltimateCourse;
 public class CourseManagementContent implements Initializable {
-
+static Gson gson = new Gson();
     @FXML
     private ComboBox<String> semesterComboBox;
 
@@ -38,22 +44,22 @@ public class CourseManagementContent implements Initializable {
     private Button ApplyForNewCourse;
 
     @FXML
-    private TableView<Course> courseTable;
+    private TableView<UltimateCourse> courseTable;
 
-    private ObservableList<Course> courseList;
+    private ObservableList<UltimateCourse> courseList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupComboBoxes();
         setupTable();
-        loadSampleData();
+        loadData();
     }
 
     private void setupComboBoxes() {
         // Setup semester combo box
         ObservableList<String> semesters = FXCollections.observableArrayList(
-            "2024-2025 秋季",
-            "2024-2025 春季",
+            "2024-2025-1",
+            "2024-2025-2",
             "全部历史学期"
         );
         semesterComboBox.setItems(semesters);
@@ -81,32 +87,34 @@ public class CourseManagementContent implements Initializable {
         VBox.setVgrow(courseTable, Priority.ALWAYS);
     }
 
-    private void loadSampleData() {
-        // Add sample courses
-        courseList.add(new Course(
-            "CS101", "计算机导论", "王助教", "2024 秋", "3", "125", "✅", 
-            "当前授课", createActionButtons("active")
-        ));
-        
-        courseList.add(new Course(
-            "CS305", "数据结构", "刘博士 (合作)", "2024 秋", "3.5", "88", "✅", 
-            "当前授课", createActionButtons("active")
-        ));
-        
-        courseList.add(new Course(
-            "CS550", "机器学习导论 (新)", "-", "2025 春", "3", "(申请中)", "⏳", 
-            "申请待审", createActionButtons("proposed")
-        ));
-        
-        courseList.add(new Course(
-            "CS202", "程序设计基础", "张助教", "2024 春", "4", "150", "✅", 
-            "历史授课", createActionButtons("past")
-        ));
-        
-        courseList.add(new Course(
-            "CSXXX", "高级网络技术 (新)", "-", "2024 秋", "3", "(申请中)", "❌", 
-            "申请驳回", createActionButtons("rejected")
-        ));
+    private void loadData() {
+        String term = semesterComboBox.getValue();
+        Map<String,String> Param = new HashMap<>();
+        Param.put("term",term);
+        NetworkUtils.get("/class/list", Param, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
+                    List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
+                    courseList.clear();
+                    courseList.addAll(loadCourseList);
+                    setupTable();
+                }else{
+                    System.out.println("失败！"+ res.get("msg").getAsString());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+        });
+
+
     }
 
     private HBox createActionButtons(String status) {
