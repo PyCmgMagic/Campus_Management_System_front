@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -43,12 +44,27 @@ public class UserInfoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            fetchUserInfo();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        loadUserInfo();
+        // 先设置默认值或加载中状态
+        setDefaultValues();
+
+        // 异步获取个人信息
+        fetchUserInfo();
+    }
+
+    // 设置默认值
+    private void setDefaultValues() {
+        nameLabel.setText("加载中...");
+        stuIdLabel.setText("加载中...");
+        genderLabel.setText("加载中...");
+        nationLabel.setText("加载中...");
+        ethnicLabel.setText("加载中...");
+        politicsLabel.setText("加载中...");
+        majorLabel.setText("加载中...");
+        classLabel.setText("加载中...");
+        phoneLabel.setText("加载中...");
+        emailLabel.setText("加载中...");
+        userLabel.setText("加载中...");
+        useridLabel.setText("加载中...");
     }
 
     // 专业代码转换方法
@@ -71,24 +87,29 @@ public class UserInfoController implements Initializable {
         }
     }
 
-    public void loadUserInfo(){
-        nameLabel.setText(UserSession.getInstance().getUsername());
-        stuIdLabel.setText(UserSession.getInstance().getSduid());
-        genderLabel.setText(UserSession.getInstance().getSex());
-        nationLabel.setText(UserSession.getInstance().getNation());
-        ethnicLabel.setText(UserSession.getInstance().getEthnic());
-        politicsLabel.setText(UserSession.getInstance().getPoliticsStatus());
-        majorLabel.setText(convertMajorCode(UserSession.getInstance().getMajor())); // 使用转换后的专业名称
-        classLabel.setText(UserSession.getInstance().getSection());
-        phoneLabel.setText(UserSession.getInstance().getPhone());
-        emailLabel.setText(UserSession.getInstance().getEmail());
-        userLabel.setText(UserSession.getInstance().getUsername());
-        useridLabel.setText(UserSession.getInstance().getSduid());
+    // 加载用户信息到UI
+    private void loadUserInfo(){
+        Platform.runLater(() -> {
+            nameLabel.setText(UserSession.getInstance().getUsername());
+            stuIdLabel.setText(UserSession.getInstance().getSduid());
+            genderLabel.setText(UserSession.getInstance().getSex());
+            nationLabel.setText(UserSession.getInstance().getNation());
+            ethnicLabel.setText(UserSession.getInstance().getEthnic());
+            politicsLabel.setText(UserSession.getInstance().getPoliticsStatus());
+            majorLabel.setText(convertMajorCode(UserSession.getInstance().getMajor()));
+            classLabel.setText(UserSession.getInstance().getSection());
+            phoneLabel.setText(UserSession.getInstance().getPhone());
+            emailLabel.setText(UserSession.getInstance().getEmail());
+            userLabel.setText(UserSession.getInstance().getUsername());
+            useridLabel.setText(UserSession.getInstance().getSduid());
+        });
     }
 
-    public void fetchUserInfo() throws IOException {
+    // 获取用户信息
+    public void fetchUserInfo() {
         Map<String,String> header = new HashMap<>();
         header.put("Authorization","Bearer "+ UserSession.getInstance().getToken());
+
         NetworkUtils.post("/user/getInfo", "", header, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -97,97 +118,96 @@ public class UserInfoController implements Initializable {
                     int code = responseJson.get("code").getAsInt();
                     if(code == 200){
                         JsonObject dataJson = responseJson.getAsJsonObject("data");
-                        if(dataJson.has("phone")){
-                            try{
-                                String phone = dataJson.get("phone").getAsString();
-                                UserSession.getInstance().setPhone(phone);
-                            }catch (Exception e){
-                                UserSession.getInstance().setPhone("");
-                            }
-                        }
-                        if(dataJson.has("email")){
-                            try{
-                                String email = dataJson.get("email").getAsString();
-                                UserSession.getInstance().setEmail(email);
-                            }catch (Exception e){
-                                UserSession.getInstance().setEmail("");
-                            }
-                        }
-                        if(dataJson.has("username")){
-                            try {
-                                String username = dataJson.get("username").getAsString();
-                                UserSession.getInstance().setUsername(username);
-                            }catch (Exception e){
-                                UserSession.getInstance().setUsername("");
-                            }
-                        }
-                        if(dataJson.has("section")){
-                            try{
-                                String section = dataJson.get("section").getAsString();
-                                UserSession.getInstance().setSection(section);
-                            }catch (Exception e){
-                                UserSession.getInstance().setSection("");
-                            }
-                        }
-                        if(dataJson.has("politicsStatus")){
-                            try{
-                                String politicsStatus = dataJson.get("politicsStatus").getAsString();
-                                UserSession.getInstance().setPoliticsStatus(politicsStatus);
-                            }catch (Exception e){
-                                UserSession.getInstance().setPoliticsStatus("");
-                            }
-                        }
-                        if (dataJson.has("nation")){
-                            try {
-                                String nation = dataJson.get("nation").getAsString();
-                                UserSession.getInstance().setNation(nation);
-                            }catch (Exception e){
-                                UserSession.getInstance().setNation("");
-                            }
-                        }
-                        if(dataJson.has("ethnic")){
-                            try{
-                                String ethnic = dataJson.get("ethnic").getAsString();
-                                UserSession.getInstance().setEthnic(ethnic);
-                            }catch (Exception e){
-                                UserSession.getInstance().setEthnic("");
-                            }
-                        }
-                        if(dataJson.has("sex")){
-                            try{
-                                String sex = dataJson.get("sex").getAsString();
-                                UserSession.getInstance().setSex(sex);
-                            }catch (Exception e){
-                                UserSession.getInstance().setSex("");
-                            }
-                        }
-                        if(dataJson.has("major")){
-                            try{
-                                String major = dataJson.get("major").getAsString();
-                                UserSession.getInstance().setMajor(major);
-                            }catch (Exception e){
-                                UserSession.getInstance().setMajor("");
-                            }
-                        }
-                        if(dataJson.has("sduid")){
-                            try{
-                                String sduid = dataJson.get("sduid").getAsString();
-                                UserSession.getInstance().setSduid(sduid);
-                            }catch (Exception e){
-                                UserSession.getInstance().setSduid("");
-                            }
-                        }
+
+                        // 更新UserSession中的数据
+                        updateUserSession(dataJson);
+
+                        // 数据加载完成后更新UI
+                        loadUserInfo();
                     }
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                // 错误处理
+                Platform.runLater(() -> {
+                    // 显示错误信息
+                    nameLabel.setText("加载失败");
+                    stuIdLabel.setText("加载失败");
+                    // 其他标签...
+                });
             }
         });
     }
 
+    // 更新UserSession中的数据
+    private void updateUserSession(JsonObject dataJson) {
+        try {
+            if(dataJson.has("phone") && !dataJson.get("phone").isJsonNull()) {
+                UserSession.getInstance().setPhone(dataJson.get("phone").getAsString());
+            } else {
+                UserSession.getInstance().setPhone("");
+            }
+
+            if(dataJson.has("email") && !dataJson.get("email").isJsonNull()) {
+                UserSession.getInstance().setEmail(dataJson.get("email").getAsString());
+            } else {
+                UserSession.getInstance().setEmail("");
+            }
+
+            if(dataJson.has("username") && !dataJson.get("username").isJsonNull()) {
+                UserSession.getInstance().setUsername(dataJson.get("username").getAsString());
+            } else {
+                UserSession.getInstance().setUsername("");
+            }
+
+            if(dataJson.has("section") && !dataJson.get("section").isJsonNull()) {
+                UserSession.getInstance().setSection(dataJson.get("section").getAsString());
+            } else {
+                UserSession.getInstance().setSection("");
+            }
+
+            if(dataJson.has("politicsStatus") && !dataJson.get("politicsStatus").isJsonNull()) {
+                UserSession.getInstance().setPoliticsStatus(dataJson.get("politicsStatus").getAsString());
+            } else {
+                UserSession.getInstance().setPoliticsStatus("");
+            }
+
+            if(dataJson.has("nation") && !dataJson.get("nation").isJsonNull()) {
+                UserSession.getInstance().setNation(dataJson.get("nation").getAsString());
+            } else {
+                UserSession.getInstance().setNation("");
+            }
+
+            if(dataJson.has("ethnic") && !dataJson.get("ethnic").isJsonNull()) {
+                UserSession.getInstance().setEthnic(dataJson.get("ethnic").getAsString());
+            } else {
+                UserSession.getInstance().setEthnic("");
+            }
+
+            if(dataJson.has("sex") && !dataJson.get("sex").isJsonNull()) {
+                UserSession.getInstance().setSex(dataJson.get("sex").getAsString());
+            } else {
+                UserSession.getInstance().setSex("");
+            }
+
+            if(dataJson.has("major") && !dataJson.get("major").isJsonNull()) {
+                UserSession.getInstance().setMajor(dataJson.get("major").getAsString());
+            } else {
+                UserSession.getInstance().setMajor("");
+            }
+
+            if(dataJson.has("sduid") && !dataJson.get("sduid").isJsonNull()) {
+                UserSession.getInstance().setSduid(dataJson.get("sduid").getAsString());
+            } else {
+                UserSession.getInstance().setSduid("");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 修改个人信息弹窗
     public void UserInfo1(ActionEvent event) throws IOException {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
