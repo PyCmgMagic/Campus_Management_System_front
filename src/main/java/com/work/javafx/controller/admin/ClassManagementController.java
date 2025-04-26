@@ -1,5 +1,9 @@
 package com.work.javafx.controller.admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.work.javafx.util.NetworkUtils;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -20,7 +24,9 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -225,7 +231,25 @@ public class ClassManagementController implements Initializable {
     }
 
     private void loadData() {
-        // Replace with actual data loading logic (e.g., from API)
+        Map<String,String> param = new HashMap<>();
+        param.put("page",classPagination.getCurrentPageIndex()+"");
+        param.put("size","10");
+        NetworkUtils.get("/section/getSectionListAll", param, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                JsonObject res = gson.fromJson(result,JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt() == 200){
+                    JsonArray data = res.getAsJsonArray("data");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
         allClassInfo.addAll(
                 new ClassInfo("BJ001", "软件工程2101", "计算机学院", "2021级", "张老师", 55, "正常"),
                 new ClassInfo("BJ002", "网络工程2101", "计算机学院", "2021级", "李老师", 50, "正常"),

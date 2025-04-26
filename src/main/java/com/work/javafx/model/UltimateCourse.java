@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 public class UltimateCourse {
     private int id;
     private String name;
+    private String teacherName;
     private String category;
     private int point;
     private int teacherId;
@@ -15,6 +16,15 @@ public class UltimateCourse {
     private int period;
     private String time;
     private String college;
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     private String term;
     private String classNum;
     private String type;
@@ -26,7 +36,6 @@ public class UltimateCourse {
     private boolean published;
     private double regularRatio;
     private double finalRatio;
-    private HBox actions;
     public UltimateCourse() {
     }
 
