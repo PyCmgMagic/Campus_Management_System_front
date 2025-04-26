@@ -214,7 +214,6 @@ public class CourseSelectionContentController implements Initializable {
      * 加载数据
      */
     private void loadSampleCourses() {
-        // 使用网络请求获取真实数据
         load();
     }
 
@@ -267,11 +266,8 @@ public class CourseSelectionContentController implements Initializable {
     @FXML
     private void load() {
 
-        // 构建查询参数
-        Map<String, String> params = new HashMap<>();
-        params.put("term","2024-2025-1");
         // 发起网络请求
-        NetworkUtils.get("/course-selection/unChoose", params, new NetworkUtils.Callback<String>() {
+        NetworkUtils.get("/course-selection/unChoose", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 try {
