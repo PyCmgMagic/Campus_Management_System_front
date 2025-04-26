@@ -122,7 +122,7 @@ public class CourseSelectionContentController implements Initializable {
         classNumColumn.setCellValueFactory(new PropertyValueFactory<>("classNum"));
         teacherColumn.setCellValueFactory(data -> {
             UltimateCourse course = data.getValue();
-            return new SimpleStringProperty("教师" + course.getTeacherId());
+            return new SimpleStringProperty( course.getTeacherName());
         });
         timeLocationColumn.setCellValueFactory(data -> {
             UltimateCourse course = data.getValue();
@@ -211,7 +211,7 @@ public class CourseSelectionContentController implements Initializable {
     }
 
     /**
-     * 加载示例数据
+     * 加载数据
      */
     private void loadSampleCourses() {
         // 使用网络请求获取真实数据
@@ -266,6 +266,48 @@ public class CourseSelectionContentController implements Initializable {
                 ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
             }
         });
+    }    /**
+     * 获取未选课程列表
+     */
+    @FXML
+    private void load() {
+
+        // 构建查询参数
+        Map<String, String> params = new HashMap<>();
+        params.put("term","2024-2025-1");
+        // 发起网络请求
+        NetworkUtils.get("/course-selection/unChoose", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        // 获取课程数据
+                        JsonArray coursesArray = responseJson.getAsJsonArray("data");
+                        List<UltimateCourse> courses = parseCourseData(coursesArray);
+
+                        // 更新UI
+                        updateCourseTable(courses);
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ?
+                                responseJson.get("msg").getAsString() : "获取课程数据失败";
+                        ShowMessage.showErrorMessage("查询失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
     }
     
     /**
@@ -298,6 +340,9 @@ public class CourseSelectionContentController implements Initializable {
             
             if (courseJson.has("teacherId") && !courseJson.get("teacherId").isJsonNull()) 
                 course.setTeacherId(courseJson.get("teacherId").getAsInt());
+
+            if (courseJson.has("teacherName") && !courseJson.get("teacherName").isJsonNull())
+                course.setTeacherName(courseJson.get("teacherName").getAsString());
             
             if (courseJson.has("classroom") && !courseJson.get("classroom").isJsonNull()) 
                 course.setClassroom(courseJson.get("classroom").getAsString());
