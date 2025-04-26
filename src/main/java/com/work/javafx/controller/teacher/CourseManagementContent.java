@@ -29,6 +29,7 @@ import java.util.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import com.work.javafx.model.UltimateCourse;
+import javafx.scene.control.cell.PropertyValueFactory;
 public class CourseManagementContent implements Initializable {
 static Gson gson = new Gson();
     @FXML
@@ -79,6 +80,38 @@ static Gson gson = new Gson();
     private void setupTable() {
         courseList = FXCollections.observableArrayList();
         courseTable.setItems(courseList);
+
+        // --- Add TableColumn definitions ---
+        TableColumn<UltimateCourse, String> codeCol = new TableColumn<>("课程编号");
+        codeCol.setCellValueFactory(new PropertyValueFactory<>("courseCode")); // Assumes UltimateCourse has getCourseCode()
+
+        TableColumn<UltimateCourse, String> nameCol = new TableColumn<>("课程名称");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("courseName")); // Assumes UltimateCourse has getCourseName()
+
+        TableColumn<UltimateCourse, String> teachersCol = new TableColumn<>("其他教师");
+        teachersCol.setCellValueFactory(new PropertyValueFactory<>("otherTeachers")); // Assumes UltimateCourse has getOtherTeachers()
+
+        TableColumn<UltimateCourse, String> semesterCol = new TableColumn<>("开课学期");
+        semesterCol.setCellValueFactory(new PropertyValueFactory<>("semester")); // Assumes UltimateCourse has getSemester()
+
+        TableColumn<UltimateCourse, String> creditsCol = new TableColumn<>("学分");
+        creditsCol.setCellValueFactory(new PropertyValueFactory<>("credits")); // Assumes UltimateCourse has getCredits()
+
+        TableColumn<UltimateCourse, String> studentCountCol = new TableColumn<>("选课人数");
+        studentCountCol.setCellValueFactory(new PropertyValueFactory<>("studentCount")); // Assumes UltimateCourse has getStudentCount()
+
+        TableColumn<UltimateCourse, String> syllabusCol = new TableColumn<>("教学大纲");
+        syllabusCol.setCellValueFactory(new PropertyValueFactory<>("syllabusStatus")); // Assumes UltimateCourse has getSyllabusStatus()
+
+        TableColumn<UltimateCourse, String> statusCol = new TableColumn<>("课程状态");
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status")); // Assumes UltimateCourse has getStatus()
+
+        TableColumn<UltimateCourse, HBox> actionsCol = new TableColumn<>("操作");
+        actionsCol.setCellValueFactory(new PropertyValueFactory<>("actions")); // Assumes UltimateCourse has getActions() returning HBox
+
+        // Add columns to the table
+        courseTable.getColumns().addAll(codeCol, nameCol, teachersCol, semesterCol, creditsCol, studentCountCol, syllabusCol, statusCol, actionsCol);
+        // --- End of TableColumn definitions ---
         
         // 设置表格列宽策略为自适应填充可用空间
         courseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -101,7 +134,6 @@ static Gson gson = new Gson();
                     List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
                     courseList.clear();
                     courseList.addAll(loadCourseList);
-                    setupTable();
                 }else{
                     System.out.println("失败！"+ res.get("msg").getAsString());
                 }
@@ -113,8 +145,6 @@ static Gson gson = new Gson();
                 e.printStackTrace();
             }
         });
-
-
     }
 
     private HBox createActionButtons(String status) {
