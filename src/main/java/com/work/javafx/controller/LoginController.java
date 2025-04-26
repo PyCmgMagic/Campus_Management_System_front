@@ -216,6 +216,5 @@ public class LoginController {
             adminLogin.setText("学生登录");
             togglestate = true;
         }
-
     }
 }
