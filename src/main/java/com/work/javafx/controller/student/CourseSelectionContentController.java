@@ -215,7 +215,7 @@ public class CourseSelectionContentController implements Initializable {
      */
     private void loadSampleCourses() {
         // 使用网络请求获取真实数据
-        searchCourses();
+        load();
     }
 
     /**
@@ -242,12 +242,7 @@ public class CourseSelectionContentController implements Initializable {
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
                     
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        // 获取课程数据
-                        JsonArray coursesArray = responseJson.getAsJsonArray("data");
-                        List<UltimateCourse> courses = parseCourseData(coursesArray);
-                        
-                        // 更新UI
-                        updateCourseTable(courses);
+                        processCoursesResponse(result);
                     } else {
                         // 处理错误
                         String message = responseJson.has("msg") ? 
@@ -284,12 +279,7 @@ public class CourseSelectionContentController implements Initializable {
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
 
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        // 获取课程数据
-                        JsonArray coursesArray = responseJson.getAsJsonArray("data");
-                        List<UltimateCourse> courses = parseCourseData(coursesArray);
-
-                        // 更新UI
-                        updateCourseTable(courses);
+                        processCoursesResponse(result);
                     } else {
                         // 处理错误
                         String message = responseJson.has("msg") ?
