@@ -189,9 +189,23 @@ public class NetworkUtils {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
         String token = "Bearer " + UserSession.getInstance().getToken();
-
         headers.put("Authorization", token);
         request(urlString, HttpMethod.POST, headers, body, callback);
+    }    /**
+     * 发送HTTP POST请求
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @param callback 回调处理
+     * @param params 参数
+     */
+    public static void post(String urlString,Map<String,String> params, String body, Callback<String> callback) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+        headers.put("Authorization", token);
+        String fullUrl = appendQueryParams(urlString, params);
+        request(fullUrl, HttpMethod.POST, headers, body, callback);
     }
     
     /**

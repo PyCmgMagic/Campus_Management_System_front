@@ -1,0 +1,90 @@
+/* Add New Class Form Styles */
+
+/* Main container */
+.add-class-container {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+/* Form title */
+.form-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+}
+
+/* Form labels */
+.form-label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #34495e;
+}
+
+/* Text fields and combo boxes */
+.text-field, .combo-box {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #4e73df;
+    -fx-background-color: white;
+}
+
+/* Buttons */
+.button {
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.submit-button {
+    -fx-background-color: #4e73df;
+    -fx-text-fill: white;
+}
+
+.submit-button:hover {
+    -fx-background-color: #3756a4;
+}
+
+.cancel-button {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #ced4da;
+    -fx-text-fill: #6c757d;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #e9ecef;
+}
+
+/* Status label */
+.status-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+/* Separator */
+.separator {
+    -fx-opacity: 0.5;
+}
+
+/* Make ComboBox items match the style */
+.combo-box .list-cell {
+    -fx-padding: 6px 10px;
+    -fx-text-fill: #34495e;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected,
+.combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background-color: #4e73df;
+    -fx-text-fill: white;
+}

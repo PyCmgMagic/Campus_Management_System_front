@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<VBox fx:id="rootPane" spacing="15" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.work.javafx.controller.admin.AddNewClassController"
+      prefHeight="400.0" prefWidth="500.0" styleClass="add-class-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <stylesheets>
+        <URL value="@../css/admin/addNewClass.css" />
+    </stylesheets>
+
+    <Label text="添加新班级" styleClass="form-title">
+        <font>
+            <Font name="System Bold" size="18.0"/>
+        </font>
+    </Label>
+
+    <Separator />
+
+    <GridPane hgap="10" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="100" prefWidth="100" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
+        </columnConstraints>
+
+        <!-- Major Field -->
+        <Label text="专业:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <ComboBox fx:id="majorComboBox" promptText="选择专业" GridPane.rowIndex="0" GridPane.columnIndex="1" 
+                  maxWidth="Infinity" />
+
+        <!-- Grade Field -->
+        <Label text="年级:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <ComboBox fx:id="gradeComboBox" promptText="选择年级" GridPane.rowIndex="1" GridPane.columnIndex="1" 
+                  maxWidth="Infinity" />
+
+        <!-- Advisor ID Field -->
+        <Label text="导员ID:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <TextField fx:id="advisorIdField" promptText="输入导员ID" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <!-- Class Number Field -->
+        <Label text="班级编号:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <TextField fx:id="numberField" promptText="输入班级编号" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <Separator />
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Label fx:id="statusLabel" styleClass="status-label" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+        <Button fx:id="cancelButton" text="取消" styleClass="cancel-button" />
+        <Button fx:id="submitButton" text="保存" styleClass="submit-button" defaultButton="true" />
+    </HBox>
+
+</VBox>
