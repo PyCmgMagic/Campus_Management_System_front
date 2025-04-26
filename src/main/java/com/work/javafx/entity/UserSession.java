@@ -15,6 +15,8 @@ public class UserSession {
     private String sduid;
     private String major;
     private String politicsStatus;
+    private String getEmail;
+    private String getPhone;
     public String getEmail() {
         return email;
     }
@@ -126,6 +128,22 @@ public class UserSession {
         token = null;
         username = null;
         identity = null;
+    }
+
+    public String getGetEmail() {
+        return getEmail;
+    }
+
+    public void setGetEmail(String getEmail) {
+        this.getEmail = getEmail;
+    }
+
+    public String getGetPhone() {
+        return getPhone;
+    }
+
+    public void setGetPhone(String getPhone) {
+        this.getPhone = getPhone;
     }
 }
 //示例
