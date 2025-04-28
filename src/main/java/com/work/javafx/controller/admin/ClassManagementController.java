@@ -273,9 +273,9 @@ public class ClassManagementController implements Initializable {
                                     String counselor = classJson.has("advisor") ? classJson.get("advisor").getAsString() : "N/A";
                                     int studentCount = 0;
                                    try{
-                                       studentCount = classJson.has("studentNum") ? classJson.get("studentNum").getAsInt() : 0;
+                                       studentCount = classJson.has("studentCount") ? classJson.get("studentCount").getAsInt() : -1;
                                    }catch (Exception e){
-                                       studentCount = 0;
+                                       studentCount = -1;
                                    }
                                     String status = "正常";
 
