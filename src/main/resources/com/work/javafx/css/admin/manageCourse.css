@@ -1,0 +1,100 @@
+/* src/main/resources/com/work/javafx/css/admin/manageCourse.css */
+
+.manage-course-container {
+    -fx-background-color: #fdf6f6; /* 淡红色背景 */
+    -fx-font-family: "Microsoft YaHei UI", sans-serif;
+}
+
+.title-label {
+    -fx-font-size: 22px; /* 稍大字体 */
+    -fx-font-weight: bold;
+    -fx-text-fill: #c0392b; /* 深红色标题 */
+    -fx-padding: 0 0 15px 0; /* 增加底部间距 */
+}
+
+.label-bold {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px; /* 稍大字体 */
+    -fx-text-fill: #555;
+}
+
+/* 按钮通用样式 */
+.button {
+    -fx-pref-height: 38px; /* 稍高按钮 */
+    -fx-min-width: 90px; /* 稍宽按钮 */
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 1, 1); /* 添加轻微阴影 */
+    -fx-transition: background-color 0.2s ease-in-out;
+}
+
+/* 主要按钮样式 (红色主题) */
+.primary-button {
+    -fx-background-color: #e74c3c; /* 主红色 */
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: #c0392b; /* 深红色 */
+}
+
+/* 次要按钮样式 (淡红色或灰色) */
+.secondary-button {
+    -fx-background-color: #f1a9a0; /* 淡红色 */
+    -fx-text-fill: #58211a; /* 深红文字 */
+    /* 或者使用灰色 */
+    /* -fx-background-color: #bdc3c7; */
+    /* -fx-text-fill: #34495e; */
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e98b7c; /* 稍深淡红色 */
+    /* 或者 */
+    /* -fx-background-color: #95a5a6; */
+}
+
+/* 输入框和下拉框 */
+.text-field,
+.combo-box {
+    -fx-pref-height: 38px;
+    -fx-font-size: 14px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-prompt-text-fill: #aaa; /* 提示文字颜色 */
+    -fx-padding: 0 8px; /* 增加内边距 */
+}
+
+.combo-box .list-cell {
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #e74c3c; /* 箭头颜色与主色调一致 */
+}
+
+/* 分隔线 */
+.separator .line {
+    -fx-border-color: #f1a9a0; /* 淡红色分隔线 */
+    -fx-border-width: 1 0 0 0;
+}
+
+/* 状态标签 */
+.status-label {
+    -fx-font-size: 14px;
+    -fx-padding: 15px 0 0 0; /* 增加顶部间距 */
+    -fx-font-weight: bold;
+}
+
+/* 成功状态 - 绿色保持不变 */
+.status-label-success {
+    -fx-text-fill: green;
+}
+
+/* 失败状态 - 使用主题红色 */
+.status-label-error {
+    -fx-text-fill: #c0392b;
+}

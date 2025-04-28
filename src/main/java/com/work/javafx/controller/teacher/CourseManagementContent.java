@@ -80,38 +80,9 @@ static Gson gson = new Gson();
     private void setupTable() {
         courseList = FXCollections.observableArrayList();
         courseTable.setItems(courseList);
-
-        // --- Add TableColumn definitions ---
-        TableColumn<UltimateCourse, String> codeCol = new TableColumn<>("课程编号");
-        codeCol.setCellValueFactory(new PropertyValueFactory<>("courseCode")); // Assumes UltimateCourse has getCourseCode()
-
-        TableColumn<UltimateCourse, String> nameCol = new TableColumn<>("课程名称");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("courseName")); // Assumes UltimateCourse has getCourseName()
-
-        TableColumn<UltimateCourse, String> teachersCol = new TableColumn<>("其他教师");
-        teachersCol.setCellValueFactory(new PropertyValueFactory<>("otherTeachers")); // Assumes UltimateCourse has getOtherTeachers()
-
-        TableColumn<UltimateCourse, String> semesterCol = new TableColumn<>("开课学期");
-        semesterCol.setCellValueFactory(new PropertyValueFactory<>("semester")); // Assumes UltimateCourse has getSemester()
-
-        TableColumn<UltimateCourse, String> creditsCol = new TableColumn<>("学分");
-        creditsCol.setCellValueFactory(new PropertyValueFactory<>("credits")); // Assumes UltimateCourse has getCredits()
-
-        TableColumn<UltimateCourse, String> studentCountCol = new TableColumn<>("选课人数");
-        studentCountCol.setCellValueFactory(new PropertyValueFactory<>("studentCount")); // Assumes UltimateCourse has getStudentCount()
-
-        TableColumn<UltimateCourse, String> syllabusCol = new TableColumn<>("教学大纲");
-        syllabusCol.setCellValueFactory(new PropertyValueFactory<>("syllabusStatus")); // Assumes UltimateCourse has getSyllabusStatus()
-
-        TableColumn<UltimateCourse, String> statusCol = new TableColumn<>("课程状态");
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status")); // Assumes UltimateCourse has getStatus()
-
-        TableColumn<UltimateCourse, HBox> actionsCol = new TableColumn<>("操作");
-        actionsCol.setCellValueFactory(new PropertyValueFactory<>("actions")); // Assumes UltimateCourse has getActions() returning HBox
-
-        // Add columns to the table
-        courseTable.getColumns().addAll(codeCol, nameCol, teachersCol, semesterCol, creditsCol, studentCountCol, syllabusCol, statusCol, actionsCol);
-        // --- End of TableColumn definitions ---
+        
+        // 不需要重复添加列，因为FXML已经定义了列
+        // FXML已经设置了属性绑定，所以这里不需要再添加列定义
         
         // 设置表格列宽策略为自适应填充可用空间
         courseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -132,6 +103,13 @@ static Gson gson = new Gson();
                     JsonArray dataArray = res.getAsJsonArray("data");
                     Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
                     List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
+                    
+                    // 处理每个课程对象，添加操作按钮
+                    for (UltimateCourse course : loadCourseList) {
+                        // 转换属性名称以匹配前端要求
+                        setCourseProperties(course);
+                    }
+                    
                     courseList.clear();
                     courseList.addAll(loadCourseList);
                 }else{
@@ -145,6 +123,70 @@ static Gson gson = new Gson();
                 e.printStackTrace();
             }
         });
+    }
+    
+    // 为课程设置前端所需属性
+    private void setCourseProperties(UltimateCourse course) {
+        // 设置操作按钮，根据课程状态判断显示哪些按钮
+        String courseStatus = course.getStatus();
+        HBox actionButtons;
+        
+        if ("正在进行".equals(courseStatus)) {
+            actionButtons = createActionButtons("active");
+        } else if ("已申请".equals(courseStatus)) {
+            actionButtons = createActionButtons("proposed");
+        } else if ("已结课".equals(courseStatus)) {
+            actionButtons = createActionButtons("past");
+        } else if ("已驳回".equals(courseStatus)) {
+            actionButtons = createActionButtons("rejected");
+        } else {
+            actionButtons = createActionButtons("active"); // 默认状态
+        }
+        
+        // 使用反射设置actions属性
+        try {
+            java.lang.reflect.Field field = UltimateCourse.class.getDeclaredField("actions");
+            field.setAccessible(true);
+            field.set(course, actionButtons);
+        } catch (Exception e) {
+            System.out.println("设置actions失败: " + e.getMessage());
+        }
+        
+        // 设置其他属性用于前端显示
+        try {
+            // 课程编号使用classNum
+            java.lang.reflect.Field codeField = UltimateCourse.class.getDeclaredField("courseCode");
+            codeField.setAccessible(true);
+            codeField.set(course, course.getClassNum());
+            
+            // 课程名称使用name
+            java.lang.reflect.Field nameField = UltimateCourse.class.getDeclaredField("courseName");
+            nameField.setAccessible(true);
+            nameField.set(course, course.getName());
+            
+            // 学期使用term
+            java.lang.reflect.Field semesterField = UltimateCourse.class.getDeclaredField("semester");
+            semesterField.setAccessible(true);
+            semesterField.set(course, course.getTerm());
+            
+            // 学分使用point
+            java.lang.reflect.Field creditsField = UltimateCourse.class.getDeclaredField("credits");
+            creditsField.setAccessible(true);
+            creditsField.set(course, String.valueOf(course.getPoint()));
+            
+            // 选课人数默认设置为0或容量
+            java.lang.reflect.Field countField = UltimateCourse.class.getDeclaredField("studentCount");
+            countField.setAccessible(true);
+            countField.set(course, String.valueOf(course.getCapacity()));
+            
+            // 教学大纲状态默认设为"已提交"
+            java.lang.reflect.Field syllabusField = UltimateCourse.class.getDeclaredField("syllabusStatus");
+            syllabusField.setAccessible(true);
+            syllabusField.set(course, "已提交");
+            
+        } catch (Exception e) {
+            System.out.println("设置课程属性失败: " + e.getMessage());
+        }
     }
 
     private HBox createActionButtons(String status) {

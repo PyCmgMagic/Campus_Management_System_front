@@ -16,6 +16,16 @@ public class UltimateCourse {
     private int period;
     private String time;
     private String college;
+    
+    // 添加表格绑定需要的属性
+    private String courseCode;
+    private String courseName;
+    private String otherTeachers;
+    private String semester;
+    private String credits;
+    private String studentCount;
+    private String syllabusStatus;
+    private HBox actions;
 
     public String getTeacherName() {
         return teacherName;
@@ -242,5 +252,69 @@ public class UltimateCourse {
 
     public void setFinalRatio(double finalRatio) {
         this.finalRatio = finalRatio;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getOtherTeachers() {
+        return otherTeachers;
+    }
+
+    public void setOtherTeachers(String otherTeachers) {
+        this.otherTeachers = otherTeachers;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getCredits() {
+        return credits;
+    }
+
+    public void setCredits(String credits) {
+        this.credits = credits;
+    }
+
+    public String getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(String studentCount) {
+        this.studentCount = studentCount;
+    }
+
+    public String getSyllabusStatus() {
+        return syllabusStatus;
+    }
+
+    public void setSyllabusStatus(String syllabusStatus) {
+        this.syllabusStatus = syllabusStatus;
+    }
+
+    public HBox getActions() {
+        return actions;
+    }
+
+    public void setActions(HBox actions) {
+        this.actions = actions;
     }
 }
