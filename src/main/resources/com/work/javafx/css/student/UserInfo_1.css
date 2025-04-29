@@ -9,26 +9,28 @@
 }
 
 .form-title {
-    -fx-font-size: 18px;
+    -fx-font-size: 22px;  /* 增大字体 */
     -fx-font-weight: bold;
     -fx-text-fill: #9A1E1E;
     -fx-padding: 0 0 10 0;
 }
 
 .form-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-text-fill: #333;
     -fx-pref-width: 80;
 }
 
 .text-field {
     -fx-pref-width: 250;
+    -fx-font-size: 16px;  /* 增大字体 */
 }
 
 .save-button {
     -fx-background-color: #9A1E1E;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-padding: 5 15;
     -fx-background-radius: 4;
 }
@@ -41,6 +43,7 @@
     -fx-background-color: transparent;
     -fx-border-color: #9A1E1E;
     -fx-text-fill: #9A1E1E;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-padding: 5 15;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
@@ -49,3 +52,4 @@
 .cancel-button:hover {
     -fx-background-color: #fceeee;
 }
+
