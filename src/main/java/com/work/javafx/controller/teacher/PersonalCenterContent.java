@@ -28,6 +28,13 @@ import java.io.IOException;
 public class PersonalCenterContent implements Initializable {
     @FXML private Label nameLabel;
     @FXML private Label stuIdLabel;
+    @FXML private Label genderLabel;
+    @FXML private Label idLabel;
+    @FXML private Label nationLabel;
+    @FXML private Label politicsLabel;
+    @FXML private Label phone;
+    @FXML private Label email;
+
     Gson gson = new Gson();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -44,6 +51,12 @@ public class PersonalCenterContent implements Initializable {
     public void loadUserInfo(){
         nameLabel.setText(UserSession.getInstance().getUsername());
         stuIdLabel.setText(UserSession.getInstance().getSduid());
+        idLabel.setText(UserSession.getInstance().getIdentity()+"");
+        nationLabel.setText(UserSession.getInstance().getEthnic() );
+        politicsLabel.setText(UserSession.getInstance().getPoliticsStatus() );
+        phone.setText(UserSession.getInstance().getPhone() );
+        email.setText(UserSession.getInstance().getEmail());
+
     }
     //获取个人信息
     public void fetchUserInfo() throws IOException {
