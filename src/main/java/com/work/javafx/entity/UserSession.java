@@ -15,6 +15,7 @@ public class UserSession {
     private String sduid;
     private String major;
     private String politicsStatus;
+
     public String getEmail() {
         return email;
     }
@@ -104,22 +105,33 @@ public class UserSession {
         this.identity = identity;
     }
 
-    private UserSession() {}
+    private UserSession() {
+    }
 
     public static synchronized UserSession getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UserSession();
         }
         return instance;
     }
 
     // 设置/获取token的方法
-    public void setToken(String token) { this.token = token; }
-    public String getToken() { return token; }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
 
     // 设置/获取用户名的方法
-    public void setUsername(String username) { this.username = username; }
-    public String getUsername() { return username; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     // 清除会话
     public void clearSession() {
