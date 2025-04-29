@@ -104,6 +104,10 @@
             </children>
          </HBox>
         </VBox>
+      <Label alignment="TOP_LEFT" text="Version:1.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </Label>
     </VBox>
-   <Label alignment="TOP_LEFT" layoutX="408.0" layoutY="570.0" text="Version:1.0" />
 </AnchorPane>
