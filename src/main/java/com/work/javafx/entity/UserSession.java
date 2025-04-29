@@ -15,7 +15,6 @@ public class UserSession {
     private String sduid;
     private String major;
     private String politicsStatus;
-
     private String getEmail;
     private String getPhone;
     public String getEmail() {
@@ -130,6 +129,7 @@ public class UserSession {
     public void setUsername(String username) {
         this.username = username;
     }
+
 
     public String getUsername() {
         return username;
