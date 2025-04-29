@@ -29,11 +29,16 @@ public class PersonalCenterContent implements Initializable {
     @FXML private Label nameLabel;
     @FXML private Label stuIdLabel;
     @FXML private Label genderLabel;
-    @FXML private Label idLabel;
     @FXML private Label nationLabel;
     @FXML private Label politicsLabel;
     @FXML private Label phone;
     @FXML private Label email;
+    @FXML private Label name;
+    @FXML private Label idlabel;
+    @FXML private Label yearLabel;
+    @FXML private Label yearjoining;
+    @FXML private Label nation;
+    @FXML private Label firstname;
 
     Gson gson = new Gson();
     @Override
@@ -47,60 +52,108 @@ public class PersonalCenterContent implements Initializable {
         //显示用户信息
         loadUserInfo();
     }
+    public class YourController {
+        // 变量名从 name 改为 firstname
+        @FXML
+        private Label firstname; // 注意变量名和FXML的fx:id一致
+
+        public void initialize() {
+            // 初始化截取第一个字符
+            truncateToFirstCharacter();
+
+            // 添加监听器（变量名同步修改）
+            firstname.textProperty().addListener((obs, oldVal, newVal) -> {
+                truncateToFirstCharacter();
+            });
+        }
+
+        private void truncateToFirstCharacter() {
+            String text = firstname.getText(); // 变量名修改
+            if (text != null && !text.isEmpty()) {
+                String firstChar = text.substring(0, Math.min(1, text.length()));
+                if (!firstChar.equals(text)) {
+                    firstname.setText(firstChar); // 变量名修改
+                }
+            } else {
+                firstname.setText("");
+            }
+        }
+    }
+    // 提取名字的首字母并返回大写字母
+    private String getFirstLetter(String fullName) {
+        if (fullName != null && !fullName.isEmpty()) {
+            return fullName.substring(0, 1).toUpperCase();
+        }
+        return "";  // 如果名字为空，返回空字符串
+    }
     //加载用户信息
     public void loadUserInfo(){
+        System.out.println("测试点1");
+                    String fullName = UserSession.getInstance().getUsername();
+                    String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
+                    firstname.setText(firstLetter);  // 更新头像显示首字母
         nameLabel.setText(UserSession.getInstance().getUsername());
+        genderLabel.setText(UserSession.getInstance().getSex());
         stuIdLabel.setText(UserSession.getInstance().getSduid());
-        idLabel.setText(UserSession.getInstance().getIdentity()+"");
+        System.out.println(UserSession.getInstance().getSduid());
         nationLabel.setText(UserSession.getInstance().getEthnic() );
         politicsLabel.setText(UserSession.getInstance().getPoliticsStatus() );
         phone.setText(UserSession.getInstance().getPhone() );
         email.setText(UserSession.getInstance().getEmail());
+        name.setText(UserSession.getInstance().getUsername());
+        idlabel.setText(UserSession.getInstance().getSduid());
+        yearLabel.setText(UserSession.getInstance().getSection());
+       // yearjoining.setText(UserSession.getInstance().getSection());
+        nation.setText(UserSession.getInstance().getNation());
+
 
     }
+    //获取个人信息
     //获取个人信息
     public void fetchUserInfo() throws IOException {
         Map<String,String> header = new HashMap<>();
         header.put("Authorization","Bearer "+ UserSession.getInstance().getToken());
         NetworkUtils.post("/user/getInfo", "", header, new NetworkUtils.Callback<String>() {
-            @Override
+                @Override
             public void onSuccess(String result) {
                 JsonObject responseJson = gson.fromJson(result, JsonObject.class);
                 if(responseJson.has("code")){
                     int code = responseJson.get("code").getAsInt();
                     if(code == 200){
                         JsonObject dataJson = responseJson.getAsJsonObject("data");
-                        String username = dataJson.get("username").getAsString();
-                        String email = dataJson.get("email").getAsString();
-                        String phone = dataJson.get("phone").getAsString();
-//                        String sex = dataJson.get("sex").getAsString();
-                        String section = dataJson.get("section").getAsString();
-                        String nation = dataJson.get("nation").getAsString();
-                        String ethnic = dataJson.get("ethnic").getAsString();
-                        String sduid = dataJson.get("sduid").getAsString();
-                        String major = dataJson.get("major").getAsString();
-                        UserSession.getInstance().setUsername(username);
-                        UserSession.getInstance().setUsername(email);
-                        UserSession.getInstance().setUsername(phone);
-//                    UserSession.getInstance().setUsername(sex);
-                        UserSession.getInstance().setUsername(section);
-                        UserSession.getInstance().setUsername(nation);
-                        UserSession.getInstance().setUsername(ethnic);
-                        UserSession.getInstance().setUsername(sduid);
-                        UserSession.getInstance().setUsername(major);
+                        if (dataJson != null) {
+                            String username = dataJson.has("username") ? dataJson.get("username").getAsString() : "";
+                            String email = dataJson.has("email") ? dataJson.get("email").getAsString() : "";
+                            String phone = dataJson.has("phone") ? dataJson.get("phone").getAsString() : "";
+                            String sex = dataJson.has("sex") ? dataJson.get("sex").getAsString() : "";
+                            String section = dataJson.has("section") ? dataJson.get("section").getAsString() : "";
+                            String nation = dataJson.has("nation") ? dataJson.get("nation").getAsString() : "";
+                            String ethnic = dataJson.has("ethnic") ? dataJson.get("ethnic").getAsString() : "";
+                            String sduid = dataJson.has("sduid") ? dataJson.get("sduid").getAsString() : "";
+                            String major = dataJson.has("major") ? dataJson.get("major").getAsString() : "";
 
+                            UserSession.getInstance().setUsername(username);
+                            UserSession.getInstance().setEmail(email);
+                            UserSession.getInstance().setPhone(phone);
+                            UserSession.getInstance().setSex(sex);
+                            UserSession.getInstance().setSection(section);
+                            UserSession.getInstance().setNation(nation);
+                            UserSession.getInstance().setEthnic(ethnic);
+                            UserSession.getInstance().setSduid(sduid);
+                            UserSession.getInstance().setMajor(major);
+                        }
                     }
                 }
-
-
+                    loadUserInfo();
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                e.printStackTrace();
             }
         });
     }
+
     public void UserInfo1(ActionEvent event) throws IOException {
         // 创建新窗口（模态）
         Stage popupStage = new Stage();

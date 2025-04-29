@@ -29,6 +29,18 @@
     -fx-background-radius: 50%;     /* 圆形背景 */
     -fx-border-radius: 50%;         /* 边框圆角 */
 }
+#firstname {
+    -fx-background-color: #d32f2f;  /* 背景颜色 */
+    -fx-text-fill: white;           /* 字体颜色 */
+    -fx-font-size: 40px;            /* 字体大小 */
+    -fx-font-weight: bold;          /* 字体加粗 */
+    -fx-pref-width: 80px;           /* 宽度 */
+    -fx-pref-height: 80px;          /* 高度 */
+    -fx-min-width : 80px;
+    -fx-alignment: center;          /* 字体居中 */
+    -fx-background-radius: 50%;     /* 圆形背景 */
+    -fx-border-radius: 50%;         /* 边框圆角 */
+}
 
 /* 用户名样式 */
 .user-name {

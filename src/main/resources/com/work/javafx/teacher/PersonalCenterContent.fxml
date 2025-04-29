@@ -7,18 +7,24 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="700" prefWidth="1000" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.PersonalCenterContent">
+<BorderPane prefHeight="700" prefWidth="1000" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.PersonalCenterContent">
 
    <top>
       <VBox spacing="10" styleClass="header-box">
          <HBox alignment="CENTER_LEFT" spacing="20" styleClass="user-info-bar">
-            <Label styleClass="avatar-circle" text="李" />
             <VBox spacing="5">
-               <Label styleClass="user-name" text="李教授" />
+               <Label fx:id="firstname"   />
+            </VBox>
+         <VBox spacing="5">
+            <Label fx:id="name" style="-fx-font-weight: bold;" styleClass="info-value" />
                <HBox spacing="10">
-                  <Label styleClass="user-id" text="学工号：20250101" />
-                  <Label styleClass="user-id" text="入职年份：2021" />
+                  <Label styleClass="user-id" text="学工号" />
+                  <Label fx:id="idlabel" styleClass="info-value" />
+                  <Label styleClass="user-id" text="入职年份" />
+                  <Label fx:id="yearLabel" styleClass="info-value" />
                   <Label styleClass="user-id" text="入职时长：4年" />
+                  <Label fx:id="yearjoining" styleClass="info-value" />
+
                </HBox>
             </VBox>
             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
@@ -33,7 +39,7 @@
          <VBox prefHeight="629.0" prefWidth="283.0" spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
             <Label prefHeight="15.0" prefWidth="287.0" styleClass="card-title" text="                   个人基本信息" />
 
-            <VBox spacing="8">
+            <VBox prefHeight="127.0" prefWidth="497.0" spacing="8">
                <HBox spacing="10">
                   <Label styleClass="info-label" text="姓名" />
                   <Label fx:id="nameLabel" styleClass="info-value" />
@@ -47,16 +53,16 @@
                   <Label fx:id="genderLabel" styleClass="info-value" />
                </HBox>
                <HBox spacing="10">
-                  <Label styleClass="info-label" text="身份证号" />
-                  <Label fx:id="idLabel" styleClass="info-value" />
-               </HBox>
-               <HBox spacing="10">
                   <Label styleClass="info-label" text="民族" />
                   <Label fx:id="nationLabel" styleClass="info-value" />
                </HBox>
                <HBox spacing="10">
                   <Label styleClass="info-label" text="政治面貌" />
                   <Label fx:id="politicsLabel" styleClass="info-value" />
+               </HBox>
+               <HBox spacing="10">
+                  <Label styleClass="info-label" text="国籍" />
+                  <Label fx:id="nation" styleClass="info-value" />
                </HBox>
             </VBox>
          </VBox>
@@ -68,10 +74,6 @@
                <HBox spacing="10">
                   <Label styleClass="info-label" text="学院" />
                   <Label fx:id="collegeLabel" styleClass="info-value" text="软件学院" />
-               </HBox>
-               <HBox spacing="10">
-                  <Label styleClass="info-label" text="专业" />
-                  <Label fx:id="majorLabel" styleClass="info-value" text="软件工程" />
                </HBox>
                <HBox spacing="10">
                   <Label styleClass="info-label" text="手机号码" />
