@@ -1,0 +1,503 @@
+/* 基础样式 */
+.main-container {
+    -fx-background-color: #f5f5f5;
+}
+
+/* 页面标题样式 */
+.page-title-container {
+    -fx-alignment: center-left;
+}
+
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.back-link {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1565c0;
+    -fx-padding: 5px;
+    -fx-border-color: transparent;
+}
+
+.back-link:hover {
+    -fx-text-fill: #8B1C1C;
+}
+
+/* 快速操作卡片样式 */
+.quick-actions {
+    -fx-hgap: 20px;
+    -fx-vgap: 20px;
+    -fx-padding: 0 0 20px 0;
+}
+
+.quick-action-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-border-color: #eee;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.quick-action-card:hover {
+    -fx-translate-y: -4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 6);
+}
+
+/* Specific card icon background if needed */
+.approval-card .card-icon { /* Used for import */
+    -fx-background-color: #e3f2fd; /* Light blue background */
+}
+
+.card-icon {
+    -fx-min-width: 45px;
+    -fx-min-height: 45px;
+    -fx-max-width: 45px;
+    -fx-max-height: 45px;
+    -fx-background-radius: 50%;
+    -fx-background-color: #ffebee; /* Default icon background (light red) */
+    -fx-alignment: center;
+    -fx-shape: " "; /* Placeholder shape for background color */
+}
+
+.card-content {
+    -fx-spacing: 4px;
+}
+
+.card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.card-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #777;
+}
+
+/* Remove pending-badge if not used */
+/* .pending-badge { ... } */
+
+/* 搜索和筛选区域样式 */
+.search-filter-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-border-color: #eee;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-margin-bottom: 20px;
+}
+
+.search-row {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+.search-input-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 5px;
+    -fx-padding: 0 10px;
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.search-input-container:focused-within {
+    -fx-border-color: #a71d1d; /* Match primary color */
+    -fx-effect: dropshadow(gaussian, rgba(139, 28, 28, 0.1), 0, 0, 0, 2);
+}
+
+.search-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10px 5px;
+    -fx-prompt-text-fill: #999;
+}
+
+.search-icon {
+    -fx-min-width: 18px;
+    -fx-min-height: 18px;
+    -fx-max-width: 18px;
+    -fx-max-height: 18px;
+    -fx-opacity: 0.6;
+}
+
+.filter-row {
+    -fx-hgap: 15px;
+    -fx-vgap: 10px;
+    -fx-alignment: center-left;
+}
+
+.filter-group {
+    -fx-spacing: 6px;
+}
+
+.filter-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+    -fx-font-weight: normal;
+}
+
+.filter-select {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-max-width: infinity;
+}
+
+.filter-select:focused {
+    -fx-border-color: #a71d1d; /* Match primary color */
+    -fx-effect: dropshadow(gaussian, rgba(139, 28, 28, 0.1), 0, 0, 0, 2);
+}
+
+/* 列表容器样式 */
+.list-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-border-color: #eee;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-margin-top: 20px;
+}
+
+.list-header {
+    -fx-padding: 15px 20px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-alignment: center;
+}
+
+.list-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.list-actions {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+/* 表格样式 (Using course-table style for consistency) */
+.course-table { /* Keep name or rename, ensure FXML uses this class */
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-width: 100000; /* Fill available width */
+}
+
+.course-table .column-header {
+    -fx-background-color: #fafafa;
+    -fx-padding: 12px 15px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+
+.course-table .table-row-cell {
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0;
+}
+
+.course-table .table-row-cell:odd {
+    -fx-background-color: #fcfcfc;
+}
+
+.course-table .table-row-cell:hover {
+    -fx-background-color: #f1f1f1;
+}
+
+.course-table .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+}
+.course-table .table-row-cell:hover {
+    -fx-background-color: #e0f0ff;
+    -fx-transition: background-color 0.15s ease-in-out;
+    -fx-cursor: default;
+}
+
+/* Selected row style */
+.course-table .table-row-cell:selected {
+    -fx-background-color: #d0e4ff;
+    -fx-border-color: #4169E1;
+    -fx-border-width: 0 0 0 4px; /* Highlight left border */
+    -fx-effect: dropshadow(gaussian, rgba(65, 105, 225, 0.2), 4, 0, 0, 0);
+}
+
+.course-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #222;
+}
+
+/* 状态标签样式 */
+.status-badge {
+    -fx-background-radius: 12px;
+    -fx-font-size: 10px;
+    -fx-font-weight: normal;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-padding: 2px 8px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* Reusing status styles */
+.status-active { /* For 在职 */
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: #388e3c; /* Green */
+    -fx-border-color: #c8e6c9;
+    -fx-border-width: 1px;
+}
+
+.status-inactive { /* For 离职 */
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #757575; /* Grey */
+    -fx-border-color: #d91c38; /* Match danger border */
+    -fx-border-width: 1px;
+}
+
+.status-pending { /* For 休假 */
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1565c0; /* Blue */
+    -fx-border-color: #bbdefb;
+    -fx-border-width: 1px;
+}
+
+/* 按钮样式 */
+.btn {
+    -fx-background-radius: 4px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+.primary-btn {
+    -fx-background-color: #8B1C1C; /* Dark Red */
+    -fx-text-fill: white;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #a71d1d;
+}
+
+.default-btn {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #555;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+
+.default-btn:hover {
+    -fx-background-color: #eee;
+    -fx-border-color: #ccc;
+}
+
+.danger-btn {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #d32f2f;
+    -fx-border-color: #ffcdd2;
+    -fx-border-width: 1px;
+}
+
+.danger-btn:hover {
+    -fx-background-color: #ffcdd2;
+    -fx-border-color: #ef9a9a;
+}
+.success-btn {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #388e3c;
+    -fx-border-color: #c8e6c9;
+    -fx-border-width: 1px;
+}
+.success-btn:hover {
+    -fx-background-color: #c8e6c9;
+    -fx-border-color: #a5d6a7;
+}
+.warning-btn {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #ef6c00;
+    -fx-border-color: #ffe0b2;
+    -fx-border-width: 1px;
+}
+
+.warning-btn:hover {
+    -fx-background-color: #ffe0b2;
+    -fx-border-color: #ffcc80;
+}
+
+/* 表格中按钮样式 */
+.table-button {
+    -fx-background-radius: 4px;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-content-display: graphic-only;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Override hover backgrounds for table buttons */
+.table-button.default-btn:hover {
+    -fx-background-color: #eee;
+}
+.table-button.warning-btn:hover {
+     -fx-background-color: #ffe0b2;
+}
+.table-button.danger-btn:hover {
+     -fx-background-color: #ffcdd2;
+}
+.table-button.success-btn:hover {
+    -fx-background-color: #c8e6c9;
+}
+
+/* Ensure icons inside table buttons are visible */
+.table-button .view-icon {
+    -fx-background-color: #1565c0; /* Blue */
+}
+.table-button .edit-icon {
+    -fx-background-color: #f57f17; /* Orange */
+}
+.table-button .delete-icon {
+    -fx-background-color: #d32f2f; /* Red */
+}
+.table-button .approval-icon { /* Used for reset password icon */
+    -fx-background-color: #388e3c; /* Green */
+}
+
+/* 分页容器样式 */
+.pagination-container {
+    -fx-padding: 15px 20px;
+    -fx-border-color: #f0f0f0 transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 0 0 8px 8px;
+    -fx-alignment: center;
+}
+
+.page-info {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.table-pagination {
+    -fx-page-information-visible: false;
+    -fx-max-page-indicator-count: 5;
+}
+
+.table-pagination .pagination-control .button { /* Prev/Next buttons */
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+}
+
+.table-pagination .pagination-control .button:hover {
+    -fx-border-color: #a71d1d; /* Match primary */
+    -fx-text-fill: #a71d1d;
+}
+
+.table-pagination .pagination-control .page-number { /* Page number buttons */
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+    -fx-text-fill: #555;
+    -fx-min-width: 32px;
+}
+
+.table-pagination .pagination-control .page-number:selected {
+    -fx-background-color: #8B1C1C; /* Match primary */
+    -fx-border-color: #8B1C1C;
+    -fx-text-fill: white;
+}
+
+/* 图标样式 (Using SVG Paths) */
+.approval-icon { /* Green checkmark (Used for Import Card & Reset Pass Action)*/
+    -fx-shape: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z";
+    -fx-background-color: #388e3c; /* Green */
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.add-icon { /* Red plus */
+    -fx-shape: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z";
+    -fx-background-color: #d32f2f; /* Red */
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.export-icon { /* Blue download arrow */
+    -fx-shape: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z";
+    -fx-background-color: #1565c0; /* Blue */
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.search-icon {
+    -fx-shape: "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z";
+    -fx-background-color: #aaa;
+}
+
+.view-icon { /* Blue eye */
+    -fx-shape: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+    /* Color set in .table-button .view-icon */
+}
+
+.edit-icon { /* Orange pencil */
+    -fx-shape: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+     /* Color set in .table-button .edit-icon */
+}
+
+.delete-icon { /* Red trash can */
+    -fx-shape: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+     /* Color set in .table-button .delete-icon */
+}
+
+/* Approve and Reject icons might not be needed here unless teacher accounts need approval/rejection */
+/* .approve-icon { ... } */
+/* .reject-icon { ... } */

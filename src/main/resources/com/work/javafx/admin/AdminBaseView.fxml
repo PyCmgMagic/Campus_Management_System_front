@@ -46,7 +46,7 @@
             <children>
                   <Button fx:id="studentMangementBtn" onAction="#switchTostudentMangement" styleClass="menu-item" text="学生管理">
                       <graphic>
-                          <Region styleClass="course-icon" />
+                          <Region styleClass="student-icon" />
                       </graphic>
                   </Button>
             </children>
@@ -55,7 +55,7 @@
             <children>
                   <Button fx:id="courseManagementBtn" onAction="#switchTocourseManagement" styleClass="menu-item" text="课程管理">
                       <graphic>
-                          <Region styleClass="select-course-icon" />
+                          <Region styleClass="course-icon" />
                       </graphic>
                   </Button>
             </children>
@@ -64,16 +64,25 @@
             <children>
                   <Button fx:id="teacherManagementBtn" onAction="#switchToteacherManagement" styleClass="menu-item" text="教师管理">
                       <graphic>
-                          <Region styleClass="grade-icon" />
+                          <Region styleClass="teacher-icon" />
                       </graphic>
                   </Button>
             </children>
          </HBox>
+            <HBox prefHeight="25.0" prefWidth="32.0">
+                <children>
+                    <Button fx:id="classManagementBtn" onAction="#switchToclassManagement" styleClass="menu-item" text="班级管理">
+                        <graphic>
+                            <Region styleClass="class-icon" />
+                        </graphic>
+                    </Button>
+                </children>
+            </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="manageCourseBtn" onAction="#switchTomanageCourse" styleClass="menu-item" text="排课管理">
+                  <Button fx:id="manageCourseBtn" onAction="#switchTomanageCourse" styleClass="menu-item" text="学期管理">
                       <graphic>
-                          <Region styleClass="evaluation-icon" />
+                          <Region styleClass="term-icon" />
                       </graphic>
                   </Button>
             </children>

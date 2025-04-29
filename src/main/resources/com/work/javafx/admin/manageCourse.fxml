@@ -1,14 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.admin.ManageCourseController"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.work.javafx.controller.admin.ManageCourseController"
+      spacing="15" alignment="TOP_CENTER" styleClass="manage-course-container">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-</AnchorPane>
+    <stylesheets>
+        <URL value="@../css/admin/manageCourse.css"/>
+    </stylesheets>
+
+    <Label text="排课管理" styleClass="title-label"/>
+
+    <!-- 添加学期部分 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="添加新学期:" styleClass="label-bold"/>
+        <TextField fx:id="newSemesterField" promptText="例如: 2024-2025-1" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addSemesterButton" text="添加学期" onAction="#handleAddSemester" styleClass="primary-button"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- 操作部分 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="选择学期:" styleClass="label-bold"/>
+        <ComboBox fx:id="semesterComboBox" promptText="选择操作学期" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="startSelectionButton" text="开始选课" onAction="#handleStartSelection" styleClass="secondary-button"/>
+        <Button fx:id="endSelectionButton" text="结束选课" onAction="#handleEndSelection" styleClass="secondary-button"/>
+        <Button fx:id="arrangeCoursesButton" text="执行排课" onAction="#handleArrangeCourses" styleClass="primary-button"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+
+</VBox>

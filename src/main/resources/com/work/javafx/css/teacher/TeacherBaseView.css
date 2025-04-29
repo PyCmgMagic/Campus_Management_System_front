@@ -444,7 +444,7 @@
 
 /* 图标样式 */
 .home-icon, .user-icon, .course-icon, .select-course-icon,
-.grade-icon, .exam-icon, .notice-icon, .evaluation-icon, .location-icon,.course-management-icon,.exam-management-icon,.score-input-icon  {
+.grade-icon, .exam-icon, .notice-icon, .location-icon,.course-management-icon,.exam-management-icon,.score-input-icon  {
     -fx-min-width: 16px;
     -fx-min-height: 16px;
     -fx-background-color: white;

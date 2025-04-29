@@ -21,8 +21,6 @@
             <!-- 选课系统导航 -->
             <HBox styleClass="course-selection-nav">
                 <Button fx:id="thisTermBtn" text="本学期选课" styleClass="nav-button, active-nav-button" onAction="#showThisTermCourses"/>
-                <Button fx:id="generalCourseBtn" text="通识选修课" styleClass="nav-button" onAction="#showGeneralCourses"/>
-                <Button fx:id="selectedCoursesBtn" text="已选课程" styleClass="nav-button" onAction="#showSelectedCourses"/>
                 <Button fx:id="courseResultBtn" text="选课结果" styleClass="nav-button" onAction="#showCourseResults"/>
             </HBox>
 
@@ -79,8 +77,9 @@
                         <Label text="没有符合条件的课程" style="-fx-text-fill: #999; -fx-font-style: italic;"/>
                     </placeholder>
                     <columns>
-                        <TableColumn fx:id="numberColumn" text="序号" prefWidth="50"/>
-                        <TableColumn fx:id="courseCodeColumn" text="课程代码/名称" prefWidth="200"/>
+                        <TableColumn fx:id="numberColumn" text="课程id" prefWidth="50" minWidth="80"/>
+                        <TableColumn fx:id="classNumColumn" text="课序号" prefWidth="100"/>
+                        <TableColumn fx:id="courseCodeColumn" text="课程名称" prefWidth="200"/>
                         <TableColumn fx:id="creditColumn" text="学分" prefWidth="60"/>
                         <TableColumn fx:id="courseTypeColumn" text="课程性质" prefWidth="100"/>
                         <TableColumn fx:id="teacherColumn" text="任课教师" prefWidth="100"/>

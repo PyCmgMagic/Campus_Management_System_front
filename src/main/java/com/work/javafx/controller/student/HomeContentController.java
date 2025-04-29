@@ -46,8 +46,7 @@ public class HomeContentController implements Initializable {
      */
     @FXML
     private void switchToCourseSchedule() {
-        System.out.println("从首页切换到课表查询");
-        
+
         try {
             // 获取当前场景
             Scene scene = dateText.getScene();

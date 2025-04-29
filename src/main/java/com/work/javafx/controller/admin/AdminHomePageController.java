@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
  * 处理管理员控制台页面的交互逻辑
  */
 public class AdminHomePageController implements Initializable {
+    AdminBaseViewController controller = new AdminBaseViewController();
 
     @FXML
     private Label studentCountLabel;
@@ -155,7 +156,7 @@ public class AdminHomePageController implements Initializable {
      */
     @FXML
     private void navigateToStudentManagement() {
-        System.out.println("导航到学生管理界面");
+       controller.switchTostudentMangement();
     }
     
     /**

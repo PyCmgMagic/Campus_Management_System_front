@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,11 +64,29 @@ public class LoginController {
         //管理员登陆按钮
         if (adminLogin != null) {
 
-            adminLogin.setOnAction(this::handleAdminButtonClicked);
         }
 //        //缺省登录用户名和密码
 //        usernameField.setText("student");
 //        passwordField.setText("student123");
+        usernameField.setOnKeyPressed(event -> {
+            if(event.getCode()== KeyCode.ENTER || event.getCode()==KeyCode.DOWN){
+                passwordField.requestFocus();
+            }
+        });
+        passwordField.setOnKeyPressed(event -> {
+            if(event.getCode()== KeyCode.ENTER){
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+
+                // 验证用户名和密码是否为空
+                if (StringUtil.isEmpty(username) || StringUtil.isEmpty(password)) {
+                    showErrorMessage("用户名和密码不能为空");
+                    return;
+                }
+                // 用户验证逻辑
+                authenticateUser(username, password);
+            }
+        });
     }
 
     /**
@@ -87,24 +106,11 @@ public class LoginController {
         authenticateUser(username, password);
 
     }
-/**
+    /**
  * 处理管理员登录按钮点击事件
  * @param event 事件对象
  */
-private void handleAdminButtonClicked(ActionEvent event){
-    if(togglestate){
-        usernameField.setPromptText("请输入学号或工号");
-        passwordField.setPromptText("请输入密码");
-        adminLogin.setText("教工或管理员登录");
-        togglestate = false;
-    }else {
-        usernameField.setPromptText("请输入管理员账号");
-        passwordField.setPromptText("请输入管理员密码");
-        adminLogin.setText("学生登录");
-        togglestate = true;
-    }
 
-}
     /**
      * 验证用户凭据
      * @param username 用户名
@@ -134,36 +140,24 @@ private void handleAdminButtonClicked(ActionEvent event){
                         System.out.println("登录成功: " + result);
                          navigateToMainPage(); // 导航到主页面
                     } else {
-                        String message = responseJson.has("message") ? responseJson.get("message").getAsString() : "用户名或密码错误";
+                        String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
                         showErrorMessage(message);
                     }
                 } catch (Exception e) {
-                    // 处理 JSON 解析错误或其他处理响应时的问题
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    showErrorMessage(responseJson.get("msg").getAsString());
                     System.err.println("处理登录响应时出错: " + e.getMessage());
-                    showErrorMessage("处理登录响应时出错");
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 System.err.println("登录失败: " + e.getMessage());
-                showErrorMessage("处理登录响应时出错");
+                int i = e.getMessage().indexOf("msg");
+                showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
             }
         });
-//        if (username.equals("admin") && password.equals("admin123")) {
-//            UserSession.getInstance().setIdentity(-1);
-//            return true;
-//        };
-//        if (username.equals("teacher") && password.equals("teacher123")) {
-//            UserSession.getInstance().setIdentity(1);
-//            return true;
-//
-//        }
-//        if (username.equals("student") && password.equals("student123")) {
-//            UserSession.getInstance().setIdentity(0);
-//            return true;
-//
-//        }
+
         return false;
     }
 
@@ -195,5 +189,40 @@ private void handleAdminButtonClicked(ActionEvent event){
             e.printStackTrace();
             showErrorMessage("无法加载主界面");
         }
+    }
+
+
+    public void handleClick(ActionEvent actionEvent) {
+        if(togglestate){
+            usernameField.setPromptText("请输入学号或工号");
+            passwordField.setPromptText("请输入密码");
+            adminLogin.setText("教工或管理员登录");
+            togglestate = false;
+        }else {
+            usernameField.setPromptText("请输入管理员账号");
+            passwordField.setPromptText("请输入管理员密码");
+            adminLogin.setText("学生登录");
+            togglestate = true;
+        }
+    }
+//测试用快捷登录
+    public void studentlogin(ActionEvent actionEvent) {
+        usernameField.setText("202400000001");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+    }
+
+    public void teacherlogin(ActionEvent actionEvent) {
+        usernameField.setText("2401");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+
+    }
+
+    public void adminlogin(ActionEvent actionEvent) {
+        usernameField.setText("1");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+
     }
 }
