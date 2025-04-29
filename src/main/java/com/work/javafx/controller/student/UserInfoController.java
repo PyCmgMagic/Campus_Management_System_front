@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,10 +21,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class UserInfoController implements Initializable {
+    @FXML private Label surnameLabel;   // 姓名首字母标签
     @FXML private Label nameLabel;
     @FXML private Label stuIdLabel;
     @FXML private Label genderLabel;
@@ -40,7 +39,8 @@ public class UserInfoController implements Initializable {
     @FXML private Label graduationLabel;
     @FXML private Label userLabel;
     @FXML private Label useridLabel;
-    Gson gson = new Gson();
+
+    private Gson gson = new Gson();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,18 +53,31 @@ public class UserInfoController implements Initializable {
 
     // 设置默认值
     private void setDefaultValues() {
-        nameLabel.setText("加载中...");
-        stuIdLabel.setText("加载中...");
-        genderLabel.setText("加载中...");
-        nationLabel.setText("加载中...");
-        ethnicLabel.setText("加载中...");
-        politicsLabel.setText("加载中...");
-        majorLabel.setText("加载中...");
-        classLabel.setText("加载中...");
-        phoneLabel.setText("加载中...");
-        emailLabel.setText("加载中...");
-        userLabel.setText("加载中...");
-        useridLabel.setText("加载中...");
+        setLabels("加载中...");
+    }
+
+    // 设置多个标签的默认值
+    private void setLabels(String text) {
+        nameLabel.setText(text);
+        stuIdLabel.setText(text);
+        genderLabel.setText(text);
+        nationLabel.setText(text);
+        ethnicLabel.setText(text);
+        politicsLabel.setText(text);
+        majorLabel.setText(text);
+        classLabel.setText(text);
+        phoneLabel.setText(text);
+        emailLabel.setText(text);
+        userLabel.setText(text);
+        useridLabel.setText(text);
+    }
+
+    // 提取名字的首字母并返回大写字母
+    private String getFirstLetter(String fullName) {
+        if (fullName != null && !fullName.isEmpty()) {
+            return fullName.substring(0, 1).toUpperCase();
+        }
+        return "";  // 如果名字为空，返回空字符串
     }
 
     // 专业代码转换方法
@@ -88,8 +101,13 @@ public class UserInfoController implements Initializable {
     }
 
     // 加载用户信息到UI
-    private void loadUserInfo(){
+    private void loadUserInfo() {
         Platform.runLater(() -> {
+            // 设置头像的首字母
+            String fullName = UserSession.getInstance().getUsername();
+            String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
+            surnameLabel.setText(firstLetter);  // 更新头像显示首字母
+
             nameLabel.setText(UserSession.getInstance().getUsername());
             stuIdLabel.setText(UserSession.getInstance().getSduid());
             genderLabel.setText(UserSession.getInstance().getSex());
@@ -107,16 +125,16 @@ public class UserInfoController implements Initializable {
 
     // 获取用户信息
     public void fetchUserInfo() {
-        Map<String,String> header = new HashMap<>();
-        header.put("Authorization","Bearer "+ UserSession.getInstance().getToken());
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "Bearer " + UserSession.getInstance().getToken());
 
         NetworkUtils.post("/user/getInfo", "", header, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                if(responseJson.has("code")){
+                if (responseJson.has("code")) {
                     int code = responseJson.get("code").getAsInt();
-                    if(code == 200){
+                    if (code == 200) {
                         JsonObject dataJson = responseJson.getAsJsonObject("data");
 
                         // 更新UserSession中的数据
@@ -132,9 +150,7 @@ public class UserInfoController implements Initializable {
             public void onFailure(Exception e) {
                 Platform.runLater(() -> {
                     // 显示错误信息
-                    nameLabel.setText("加载失败");
-                    stuIdLabel.setText("加载失败");
-                    // 其他标签...
+                    setLabels("加载失败");
                 });
             }
         });
@@ -143,68 +159,28 @@ public class UserInfoController implements Initializable {
     // 更新UserSession中的数据
     private void updateUserSession(JsonObject dataJson) {
         try {
-            if(dataJson.has("phone") && !dataJson.get("phone").isJsonNull()) {
-                UserSession.getInstance().setPhone(dataJson.get("phone").getAsString());
-            } else {
-                UserSession.getInstance().setPhone("");
-            }
+            UserSession session = UserSession.getInstance();
 
-            if(dataJson.has("email") && !dataJson.get("email").isJsonNull()) {
-                UserSession.getInstance().setEmail(dataJson.get("email").getAsString());
-            } else {
-                UserSession.getInstance().setEmail("");
-            }
-
-            if(dataJson.has("username") && !dataJson.get("username").isJsonNull()) {
-                UserSession.getInstance().setUsername(dataJson.get("username").getAsString());
-            } else {
-                UserSession.getInstance().setUsername("");
-            }
-
-            if(dataJson.has("section") && !dataJson.get("section").isJsonNull()) {
-                UserSession.getInstance().setSection(dataJson.get("section").getAsString());
-            } else {
-                UserSession.getInstance().setSection("");
-            }
-
-            if(dataJson.has("politicsStatus") && !dataJson.get("politicsStatus").isJsonNull()) {
-                UserSession.getInstance().setPoliticsStatus(dataJson.get("politicsStatus").getAsString());
-            } else {
-                UserSession.getInstance().setPoliticsStatus("");
-            }
-
-            if(dataJson.has("nation") && !dataJson.get("nation").isJsonNull()) {
-                UserSession.getInstance().setNation(dataJson.get("nation").getAsString());
-            } else {
-                UserSession.getInstance().setNation("");
-            }
-
-            if(dataJson.has("ethnic") && !dataJson.get("ethnic").isJsonNull()) {
-                UserSession.getInstance().setEthnic(dataJson.get("ethnic").getAsString());
-            } else {
-                UserSession.getInstance().setEthnic("");
-            }
-
-            if(dataJson.has("sex") && !dataJson.get("sex").isJsonNull()) {
-                UserSession.getInstance().setSex(dataJson.get("sex").getAsString());
-            } else {
-                UserSession.getInstance().setSex("");
-            }
-
-            if(dataJson.has("major") && !dataJson.get("major").isJsonNull()) {
-                UserSession.getInstance().setMajor(dataJson.get("major").getAsString());
-            } else {
-                UserSession.getInstance().setMajor("");
-            }
-
-            if(dataJson.has("sduid") && !dataJson.get("sduid").isJsonNull()) {
-                UserSession.getInstance().setSduid(dataJson.get("sduid").getAsString());
-            } else {
-                UserSession.getInstance().setSduid("");
-            }
+            session.setPhone(getJsonValue(dataJson, "phone"));
+            session.setEmail(getJsonValue(dataJson, "email"));
+            session.setUsername(getJsonValue(dataJson, "username"));
+            session.setSection(getJsonValue(dataJson, "section"));
+            session.setPoliticsStatus(getJsonValue(dataJson, "politicsStatus"));
+            session.setNation(getJsonValue(dataJson, "nation"));
+            session.setEthnic(getJsonValue(dataJson, "ethnic"));
+            session.setSex(getJsonValue(dataJson, "sex"));
+            session.setMajor(getJsonValue(dataJson, "major"));
+            session.setSduid(getJsonValue(dataJson, "sduid"));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // 辅助方法：获取Json字段的值
+    private String getJsonValue(JsonObject dataJson, String key) {
+        return dataJson.has(key) && !dataJson.get(key).isJsonNull()
+                ? dataJson.get(key).getAsString()
+                : "";
     }
 
     // 修改个人信息弹窗
@@ -225,7 +201,7 @@ public class UserInfoController implements Initializable {
         controller.setStage(popupStage);
 
         popupStage.setScene(scene);
-        popupStage.initOwner(((Node)event.getSource()).getScene().getWindow());
+        popupStage.initOwner(((Node) event.getSource()).getScene().getWindow());
         popupStage.show();
         popupStage.setResizable(false);
     }
