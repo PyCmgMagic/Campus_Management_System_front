@@ -50,6 +50,17 @@
 
     <!-- 右侧登录区域 -->
     <VBox alignment="CENTER" prefWidth="400.0" styleClass="right-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Label text="测试用快捷登录按钮" />
+      <HBox alignment="CENTER" prefHeight="22.0" prefWidth="304.0" spacing="30.0" VBox.vgrow="NEVER">
+         <children>
+            <Button onAction="#studentlogin" styleClass="test-button" mnemonicParsing="false" text="学生登录" />
+            <Button onAction="#teacherlogin" styleClass="test-button" mnemonicParsing="false" text="教师登录" />
+            <Button onAction="#adminlogin" styleClass="test-button" graphicTextGap="20.0" mnemonicParsing="false" text="管理员登录" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
 
         <VBox spacing="20.0" styleClass="login-form">
             <!-- 登录标题 -->
@@ -81,7 +92,7 @@
                   </HBox>
                </children>
             </HBox>
-                <Hyperlink onAction="#handleClick"  fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
+                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleClick" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
                <HBox.margin>
                   <Insets right="-5.0" />
                </HBox.margin></Hyperlink>
@@ -89,7 +100,7 @@
          <HBox alignment="CENTER">
             <children>
                         <!-- 登录按钮 -->
-                  <Button  fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
+                  <Button fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
             </children>
          </HBox>
         </VBox>
