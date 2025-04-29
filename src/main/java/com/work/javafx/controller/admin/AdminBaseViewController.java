@@ -141,7 +141,7 @@ public class AdminBaseViewController implements Initializable {
      * 切换到学生管理
      */
     @FXML
-    private void switchTostudentMangement() {
+    protected void switchTostudentMangement() {
         if (!"studentMangement".equals(currentView)) {
             resetMenuButtons();
             studentMangementBtn.getStyleClass().add("active-menu-item");

@@ -140,36 +140,24 @@ public class LoginController {
                         System.out.println("登录成功: " + result);
                          navigateToMainPage(); // 导航到主页面
                     } else {
-                        String message = responseJson.has("message") ? responseJson.get("message").getAsString() : "用户名或密码错误";
+                        String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
                         showErrorMessage(message);
                     }
                 } catch (Exception e) {
-                    // 处理 JSON 解析错误或其他处理响应时的问题
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    showErrorMessage(responseJson.get("msg").getAsString());
                     System.err.println("处理登录响应时出错: " + e.getMessage());
-                    showErrorMessage("处理登录响应时出错");
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 System.err.println("登录失败: " + e.getMessage());
-                showErrorMessage("处理登录响应时出错");
+                int i = e.getMessage().indexOf("msg");
+                showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
             }
         });
-//        if (username.equals("admin") && password.equals("admin123")) {
-//            UserSession.getInstance().setIdentity(-1);
-//            return true;
-//        };
-//        if (username.equals("teacher") && password.equals("teacher123")) {
-//            UserSession.getInstance().setIdentity(1);
-//            return true;
-//
-//        }
-//        if (username.equals("student") && password.equals("student123")) {
-//            UserSession.getInstance().setIdentity(0);
-//            return true;
-//
-//        }
+
         return false;
     }
 
@@ -216,5 +204,25 @@ public class LoginController {
             adminLogin.setText("学生登录");
             togglestate = true;
         }
+    }
+//测试用快捷登录
+    public void studentlogin(ActionEvent actionEvent) {
+        usernameField.setText("202400000001");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+    }
+
+    public void teacherlogin(ActionEvent actionEvent) {
+        usernameField.setText("2401");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+
+    }
+
+    public void adminlogin(ActionEvent actionEvent) {
+        usernameField.setText("1");
+        passwordField.setText("123456");
+        handleLogin(actionEvent);
+
     }
 }
