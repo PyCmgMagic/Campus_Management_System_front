@@ -53,9 +53,9 @@
       <Label text="测试用快捷登录按钮" />
       <HBox alignment="CENTER" prefHeight="22.0" prefWidth="304.0" spacing="30.0" VBox.vgrow="NEVER">
          <children>
-            <Button onAction="#studentlogin" styleClass="test-button" mnemonicParsing="false" text="学生登录" />
-            <Button onAction="#teacherlogin" styleClass="test-button" mnemonicParsing="false" text="教师登录" />
-            <Button onAction="#adminlogin" styleClass="test-button" graphicTextGap="20.0" mnemonicParsing="false" text="管理员登录" />
+            <Button mnemonicParsing="false" onAction="#studentlogin" styleClass="test-button" text="学生登录" />
+            <Button mnemonicParsing="false" onAction="#teacherlogin" styleClass="test-button" text="教师登录" />
+            <Button graphicTextGap="20.0" mnemonicParsing="false" onAction="#adminlogin" styleClass="test-button" text="管理员登录" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -105,4 +105,5 @@
          </HBox>
         </VBox>
     </VBox>
+   <Label alignment="TOP_LEFT" layoutX="408.0" layoutY="570.0" text="Version:1.0" />
 </AnchorPane>
