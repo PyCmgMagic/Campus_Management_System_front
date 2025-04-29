@@ -67,11 +67,19 @@
             <VBox prefHeight="138.0" prefWidth="259.0" spacing="8">
                <HBox spacing="10">
                   <Label styleClass="info-label" text="学院" />
-                  <Label fx:id="collegeLabel" styleClass="info-value" />
+                  <Label fx:id="collegeLabel" styleClass="info-value" text="软件学院" />
                </HBox>
                <HBox spacing="10">
                   <Label styleClass="info-label" text="专业" />
-                  <Label fx:id="majorLabel" styleClass="info-value" />
+                  <Label fx:id="majorLabel" styleClass="info-value" text="软件工程" />
+               </HBox>
+               <HBox spacing="10">
+                  <Label styleClass="info-label" text="手机号码" />
+                  <Label fx:id="phone" styleClass="info-value" />
+               </HBox>
+               <HBox spacing="10">
+                  <Label styleClass="info-label" text="邮箱" />
+                  <Label fx:id="email" styleClass="info-value" />
                </HBox>
             </VBox>
          </VBox>
