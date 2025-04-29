@@ -25,7 +25,7 @@ public class UltimateCourse {
     private String credits;
     private String studentCount;
     private String syllabusStatus;
-    private HBox actions;
+    private transient HBox actions;
 
     public String getTeacherName() {
         return teacherName;

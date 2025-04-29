@@ -1,6 +1,7 @@
 package com.work.javafx.controller.teacher;
 
 import com.work.javafx.util.ShowMessage;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -24,7 +25,7 @@ public class CourseScheduleManagementContent implements Initializable {
     // 查询条件控件
     @FXML private ComboBox<String> academicYearComboBox;
     @FXML private ComboBox<String> semesterComboBox;
-    @FXML private ComboBox<String> scheduleTypeComboBox;
+    @FXML private Label semesterLabel;
     @FXML private Button queryButton;
 
     // 课表表格相关
@@ -73,17 +74,11 @@ public class CourseScheduleManagementContent implements Initializable {
 
         // 学期下拉框
         ObservableList<String> semesters = FXCollections.observableArrayList(
-                "第一学期", "第二学期", "暑期学期"
+                "第一学期", "第二学期"
         );
         semesterComboBox.setItems(semesters);
         semesterComboBox.setValue("第二学期");
 
-        // 课表类型下拉框
-        ObservableList<String> scheduleTypes = FXCollections.observableArrayList(
-                "教师课表", "班级课表", "教室课表"
-        );
-        scheduleTypeComboBox.setItems(scheduleTypes);
-        scheduleTypeComboBox.setValue("教师课表");
     }
 
     /**
@@ -243,7 +238,7 @@ public class CourseScheduleManagementContent implements Initializable {
     private void queryCourseSchedule() {
         String academicYear = academicYearComboBox.getValue();
         String semester = semesterComboBox.getValue();
-        String scheduleType = scheduleTypeComboBox.getValue();
+        String scheduleType = "教师课表";
 
         System.out.println("查询课表: 学年=" + academicYear + ", 学期=" + semester + ", 类型=" + scheduleType);
 
@@ -266,7 +261,7 @@ public class CourseScheduleManagementContent implements Initializable {
                 scheduleTableView, 
                 academicYearComboBox.getValue() + " " + 
                 semesterComboBox.getValue() + " " + 
-                scheduleTypeComboBox.getValue() + " 课表"
+                "教师课表"
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -289,7 +284,7 @@ public class CourseScheduleManagementContent implements Initializable {
                 scheduleTableView,
                 academicYearComboBox.getValue(),
                 semesterComboBox.getValue(),
-                scheduleTypeComboBox.getValue(),
+                "教师课表",
                 stage
             );
         } catch (Exception e) {
@@ -315,6 +310,11 @@ public class CourseScheduleManagementContent implements Initializable {
 
         // 更新当前活动按钮
         currentActiveButton = newActiveButton;
+    }
+
+    public void handleTermChange(ActionEvent actionEvent) {
+        semesterLabel.setText(academicYearComboBox.getValue()+"学年 "+semesterComboBox.getValue());
+
     }
 
     /**

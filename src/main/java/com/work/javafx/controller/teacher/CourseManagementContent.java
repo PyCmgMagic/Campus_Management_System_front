@@ -143,14 +143,8 @@ static Gson gson = new Gson();
             actionButtons = createActionButtons("active"); // 默认状态
         }
         
-        // 使用反射设置actions属性
-        try {
-            java.lang.reflect.Field field = UltimateCourse.class.getDeclaredField("actions");
-            field.setAccessible(true);
-            field.set(course, actionButtons);
-        } catch (Exception e) {
-            System.out.println("设置actions失败: " + e.getMessage());
-        }
+        // 直接调用setter方法设置actions
+        course.setActions(actionButtons);
         
         // 设置其他属性用于前端显示
         try {
