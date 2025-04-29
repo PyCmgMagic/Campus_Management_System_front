@@ -131,6 +131,9 @@ public class PersonalCenterContent implements Initializable {
                             String ethnic = dataJson.has("ethnic") ? dataJson.get("ethnic").getAsString() : "";
                             String sduid = dataJson.has("sduid") ? dataJson.get("sduid").getAsString() : "";
                             String major = dataJson.has("major") ? dataJson.get("major").getAsString() : "";
+                            String nationLabel = dataJson.has("nation") ? dataJson.get("nation").getAsString() : "";
+                            String politicsLabel = dataJson.has("politicsStatus") ? dataJson.get("politicsStatus").getAsString() : "";
+
 
                             UserSession.getInstance().setUsername(username);
                             UserSession.getInstance().setEmail(email);
@@ -141,6 +144,8 @@ public class PersonalCenterContent implements Initializable {
                             UserSession.getInstance().setEthnic(ethnic);
                             UserSession.getInstance().setSduid(sduid);
                             UserSession.getInstance().setMajor(major);
+                            UserSession.getInstance().setNation(nationLabel);
+                            UserSession.getInstance().setPoliticsStatus(politicsLabel);
                         }
                     }
                 }
