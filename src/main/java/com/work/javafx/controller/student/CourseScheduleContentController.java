@@ -79,10 +79,7 @@ public class CourseScheduleContentController implements Initializable {
         semesterComboBox.setItems(semesters);
         semesterComboBox.setValue("第二学期");
 
-        // 课表类型下拉框
-        ObservableList<String> scheduleTypes = FXCollections.observableArrayList(
-                "个人课表", "班级课表", "教师课表", "教室课表"
-        );
+
     }
 
     /**
@@ -324,7 +321,7 @@ public class CourseScheduleContentController implements Initializable {
     }
 
     public void handleTermChange(ActionEvent inputMethodEvent) {
-        semesterLabel.setText(academicYearComboBox.getValue()+" "+semesterComboBox.getValue());
+        semesterLabel.setText(academicYearComboBox.getValue()+"学年 "+semesterComboBox.getValue());
 
     }
 
