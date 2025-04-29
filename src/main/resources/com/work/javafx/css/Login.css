@@ -122,3 +122,21 @@
 .login-button:pressed {
     -fx-background-color: #8b0000;
 }
+/*测试按钮*/
+.test-button {
+    -fx-background-color: #c13232;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 4px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-min-width: 100%;
+    -fx-margin-top: 20px;
+}
+.test-button:hover {
+    -fx-background-color: #a52a2a;
+}
+
+.test-button:pressed {
+    -fx-background-color: #8b0000;
+}

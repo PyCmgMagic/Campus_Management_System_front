@@ -1,9 +1,14 @@
 package com.work.javafx.controller.student;
 
+import com.work.javafx.entity.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class UserInfo1 {
 
@@ -18,8 +23,23 @@ public class UserInfo1 {
     @FXML private TextField emailField;
     @FXML private TextField emergencyContactField;
     @FXML private TextField emergencyPhoneField;
-
+    
     private Stage stage;
+
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //获取个人信息
+        fetchUserInfo();
+        //显示用户信息
+        loadUserInfo_1();
+    }
+
+    private void fetchUserInfo() {
+    }
+
+    public void loadUserInfo_1(){
+        phoneField.setText(UserSession.getInstance().getPhone());
+        emailField.setText(UserSession.getInstance().getEmail());
+    }
 
     public void setStage(Stage stage) {
         this.stage = stage;

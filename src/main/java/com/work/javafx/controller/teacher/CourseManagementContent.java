@@ -1,18 +1,37 @@
 package com.work.javafx.controller.teacher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.work.javafx.controller.student.UserInfo1;
+import com.work.javafx.util.NetworkUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
+import com.work.javafx.model.UltimateCourse;
+import javafx.scene.control.cell.PropertyValueFactory;
 public class CourseManagementContent implements Initializable {
-
+static Gson gson = new Gson();
     @FXML
     private ComboBox<String> semesterComboBox;
 
@@ -23,22 +42,25 @@ public class CourseManagementContent implements Initializable {
     private TextField searchField;
 
     @FXML
-    private TableView<Course> courseTable;
+    private Button ApplyForNewCourse;
 
-    private ObservableList<Course> courseList;
+    @FXML
+    private TableView<UltimateCourse> courseTable;
+
+    private ObservableList<UltimateCourse> courseList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupComboBoxes();
         setupTable();
-        loadSampleData();
+        loadData();
     }
 
     private void setupComboBoxes() {
         // Setup semester combo box
         ObservableList<String> semesters = FXCollections.observableArrayList(
-            "2024-2025 秋季",
-            "2024-2025 春季",
+            "2024-2025-1",
+            "2024-2025-2",
             "全部历史学期"
         );
         semesterComboBox.setItems(semesters);
@@ -59,6 +81,9 @@ public class CourseManagementContent implements Initializable {
         courseList = FXCollections.observableArrayList();
         courseTable.setItems(courseList);
         
+        // 不需要重复添加列，因为FXML已经定义了列
+        // FXML已经设置了属性绑定，所以这里不需要再添加列定义
+        
         // 设置表格列宽策略为自适应填充可用空间
         courseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
@@ -66,32 +91,102 @@ public class CourseManagementContent implements Initializable {
         VBox.setVgrow(courseTable, Priority.ALWAYS);
     }
 
-    private void loadSampleData() {
-        // Add sample courses
-        courseList.add(new Course(
-            "CS101", "计算机导论", "王助教", "2024 秋", "3", "125", "✅", 
-            "当前授课", createActionButtons("active")
-        ));
+    private void loadData() {
+        String term = semesterComboBox.getValue();
+        Map<String,String> Param = new HashMap<>();
+        Param.put("term",term);
+        NetworkUtils.get("/class/list", Param, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
+                    List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
+                    
+                    // 处理每个课程对象，添加操作按钮
+                    for (UltimateCourse course : loadCourseList) {
+                        // 转换属性名称以匹配前端要求
+                        setCourseProperties(course);
+                    }
+                    
+                    courseList.clear();
+                    courseList.addAll(loadCourseList);
+                }else{
+                    System.out.println("失败！"+ res.get("msg").getAsString());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    // 为课程设置前端所需属性
+    private void setCourseProperties(UltimateCourse course) {
+        // 设置操作按钮，根据课程状态判断显示哪些按钮
+        String courseStatus = course.getStatus();
+        HBox actionButtons;
         
-        courseList.add(new Course(
-            "CS305", "数据结构", "刘博士 (合作)", "2024 秋", "3.5", "88", "✅", 
-            "当前授课", createActionButtons("active")
-        ));
+        if ("正在进行".equals(courseStatus)) {
+            actionButtons = createActionButtons("active");
+        } else if ("已申请".equals(courseStatus)) {
+            actionButtons = createActionButtons("proposed");
+        } else if ("已结课".equals(courseStatus)) {
+            actionButtons = createActionButtons("past");
+        } else if ("已驳回".equals(courseStatus)) {
+            actionButtons = createActionButtons("rejected");
+        } else {
+            actionButtons = createActionButtons("active"); // 默认状态
+        }
         
-        courseList.add(new Course(
-            "CS550", "机器学习导论 (新)", "-", "2025 春", "3", "(申请中)", "⏳", 
-            "申请待审", createActionButtons("proposed")
-        ));
+        // 使用反射设置actions属性
+        try {
+            java.lang.reflect.Field field = UltimateCourse.class.getDeclaredField("actions");
+            field.setAccessible(true);
+            field.set(course, actionButtons);
+        } catch (Exception e) {
+            System.out.println("设置actions失败: " + e.getMessage());
+        }
         
-        courseList.add(new Course(
-            "CS202", "程序设计基础", "张助教", "2024 春", "4", "150", "✅", 
-            "历史授课", createActionButtons("past")
-        ));
-        
-        courseList.add(new Course(
-            "CSXXX", "高级网络技术 (新)", "-", "2024 秋", "3", "(申请中)", "❌", 
-            "申请驳回", createActionButtons("rejected")
-        ));
+        // 设置其他属性用于前端显示
+        try {
+            // 课程编号使用classNum
+            java.lang.reflect.Field codeField = UltimateCourse.class.getDeclaredField("courseCode");
+            codeField.setAccessible(true);
+            codeField.set(course, course.getClassNum());
+            
+            // 课程名称使用name
+            java.lang.reflect.Field nameField = UltimateCourse.class.getDeclaredField("courseName");
+            nameField.setAccessible(true);
+            nameField.set(course, course.getName());
+            
+            // 学期使用term
+            java.lang.reflect.Field semesterField = UltimateCourse.class.getDeclaredField("semester");
+            semesterField.setAccessible(true);
+            semesterField.set(course, course.getTerm());
+            
+            // 学分使用point
+            java.lang.reflect.Field creditsField = UltimateCourse.class.getDeclaredField("credits");
+            creditsField.setAccessible(true);
+            creditsField.set(course, String.valueOf(course.getPoint()));
+            
+            // 选课人数默认设置为0或容量
+            java.lang.reflect.Field countField = UltimateCourse.class.getDeclaredField("studentCount");
+            countField.setAccessible(true);
+            countField.set(course, String.valueOf(course.getCapacity()));
+            
+            // 教学大纲状态默认设为"已提交"
+            java.lang.reflect.Field syllabusField = UltimateCourse.class.getDeclaredField("syllabusStatus");
+            syllabusField.setAccessible(true);
+            syllabusField.set(course, "已提交");
+            
+        } catch (Exception e) {
+            System.out.println("设置课程属性失败: " + e.getMessage());
+        }
     }
 
     private HBox createActionButtons(String status) {
@@ -140,6 +235,38 @@ public class CourseManagementContent implements Initializable {
         Button button = new Button(text);
         button.getStyleClass().addAll(style, "action-btn");
         return button;
+    }
+
+    @FXML
+    public  void ApplyForNewCourse(ActionEvent event) {
+        try {
+            // 加载新课程申请窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/ApplyNewCourse.fxml"));
+            Parent root = loader.load();
+            
+            // 获取控制器
+            ApplyNewCourseController controller = loader.getController();
+            
+            // 创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            popupStage.initStyle(StageStyle.DECORATED);
+            popupStage.setTitle("申请新课程");
+            popupStage.setScene(new Scene(root, 800, 600));
+            
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+            
+            // 将窗口引用传递给控制器
+            controller.setStage(popupStage);
+            
+            // 显示窗口
+            popupStage.showAndWait();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Course model class

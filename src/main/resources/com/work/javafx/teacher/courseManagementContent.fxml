@@ -46,7 +46,7 @@
                 </HBox>
                 <Button styleClass="secondary" text="查询" />
             </HBox>
-            <Button styleClass="primary,propose-btn">
+            <Button onAction="#ApplyForNewCourse" fx:id="ApplyForNewCourse" styleClass="primary,propose-btn">
                 <graphic>
                     <Text text="➕" />
                 </graphic>
@@ -59,13 +59,13 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <columns>
-                <TableColumn prefWidth="100" styleClass="sortable-column" text="课程代码">
+                <TableColumn prefWidth="100" styleClass="sortable-column" text="课序号">
                     <cellValueFactory><PropertyValueFactory property="courseCode" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="150" text="课程名称">
                     <cellValueFactory><PropertyValueFactory property="courseName" /></cellValueFactory>
                 </TableColumn>
-                <TableColumn prefWidth="120" text="其它教师/助教">
+                <TableColumn prefWidth="100" text="其他教师">
                     <cellValueFactory><PropertyValueFactory property="otherTeachers" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="80" text="学期">
@@ -76,6 +76,9 @@
                 </TableColumn>
                 <TableColumn prefWidth="80" text="学生人数">
                     <cellValueFactory><PropertyValueFactory property="studentCount" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="80" text="教学大纲">
+                    <cellValueFactory><PropertyValueFactory property="syllabusStatus" /></cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="88.80010986328125" text="状态">
                     <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>

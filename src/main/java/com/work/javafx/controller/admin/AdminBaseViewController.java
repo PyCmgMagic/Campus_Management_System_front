@@ -30,6 +30,7 @@ public class AdminBaseViewController implements Initializable {
     @FXML private Button studentMangementBtn;
     @FXML private Button courseManagementBtn;
     @FXML private Button teacherManagementBtn;
+    @FXML private Button classManagementBtn;
     @FXML private Button manageCourseBtn;
     // 当前活动的按钮
     private Button currentActiveButton;
@@ -101,8 +102,10 @@ public class AdminBaseViewController implements Initializable {
             return "/com/work/javafx/css/PersonalCenter.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
             return "/com/work/javafx/css/admin/ScoreSearch.css";
-        } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
-            return "/com/work/javafx/css/admin/TeachingEvaluation.css";
+        } else if (fxmlPath.equals("teacherManagement.fxml")) {
+            return "/com/work/javafx/css/admin/teacherManagement.css";
+        }else if (fxmlPath.equals("classManagement.fxml")) {
+            return "/com/work/javafx/css/admin/classManagement.css";
         }
         return null;
     }
@@ -138,7 +141,7 @@ public class AdminBaseViewController implements Initializable {
      * 切换到学生管理
      */
     @FXML
-    private void switchTostudentMangement() {
+    protected void switchTostudentMangement() {
         if (!"studentMangement".equals(currentView)) {
             resetMenuButtons();
             studentMangementBtn.getStyleClass().add("active-menu-item");
@@ -170,6 +173,17 @@ public class AdminBaseViewController implements Initializable {
             teacherManagementBtn.getStyleClass().add("active-menu-item");
             loadView("teacherManagement.fxml");
             currentView = "teacherManagement.fxml";
+        }
+    }  /**
+     * 切换班级管理
+     */
+    @FXML
+    private void switchToclassManagement() {
+        if (!"classManagement".equals(currentView)) {
+            resetMenuButtons();
+            classManagementBtn.getStyleClass().add("active-menu-item");
+            loadView("classManagement.fxml");
+            currentView = "classManagement.fxml";
         }
     }
 
@@ -211,5 +225,6 @@ public class AdminBaseViewController implements Initializable {
         courseManagementBtn.getStyleClass().remove("active-menu-item");
         teacherManagementBtn.getStyleClass().remove("active-menu-item");
         manageCourseBtn.getStyleClass().remove("active-menu-item");
+        classManagementBtn.getStyleClass().remove("active-menu-item");
     }
 }

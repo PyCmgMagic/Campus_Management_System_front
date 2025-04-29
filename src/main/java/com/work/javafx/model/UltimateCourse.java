@@ -1,8 +1,12 @@
 package com.work.javafx.model;
 
-public class CourseApplication {
+
+import javafx.scene.layout.HBox;
+
+public class UltimateCourse {
     private int id;
     private String name;
+    private String teacherName;
     private String category;
     private int point;
     private int teacherId;
@@ -10,8 +14,27 @@ public class CourseApplication {
     private int weekStart;
     private int weekEnd;
     private int period;
-    private Object time;
+    private String time;
     private String college;
+    
+    // 添加表格绑定需要的属性
+    private String courseCode;
+    private String courseName;
+    private String otherTeachers;
+    private String semester;
+    private String credits;
+    private String studentCount;
+    private String syllabusStatus;
+    private HBox actions;
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     private String term;
     private String classNum;
     private String type;
@@ -23,7 +46,38 @@ public class CourseApplication {
     private boolean published;
     private double regularRatio;
     private double finalRatio;
+    public UltimateCourse() {
+    }
 
+    public UltimateCourse(int id, String name, String category, int point, int teacherId, String classroom,
+                  int weekStart, int weekEnd, int period, String time, String college, String term,
+                  String classNum, String type, int capacity, String status, String intro,
+                  int examination, String f_reason, boolean published, double regularRatio, double finalRatio) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.point = point;
+        this.teacherId = teacherId;
+        this.classroom = classroom;
+        this.weekStart = weekStart;
+        this.weekEnd = weekEnd;
+        this.period = period;
+        this.time = time;
+        this.college = college;
+        this.term = term;
+        this.classNum = classNum;
+        this.type = type;
+        this.capacity = capacity;
+        this.status = status;
+        this.intro = intro;
+        this.examination = examination;
+        this.f_reason = f_reason;
+        this.published = published;
+        this.regularRatio = regularRatio;
+        this.finalRatio = finalRatio;
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -96,11 +150,11 @@ public class CourseApplication {
         this.period = period;
     }
 
-    public Object getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Object time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -200,13 +254,67 @@ public class CourseApplication {
         this.finalRatio = finalRatio;
     }
 
-    // 提供一个匹配 CourseManagementController 中使用的构造函数
-     public CourseApplication( String courseName, String department,
-                               int credit, String courseType) {
-         this.name = courseName;
-         this.college = department;
-         this.point = credit;
-         this.type = courseType;
+    public String getCourseCode() {
+        return courseCode;
+    }
 
-     }
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getOtherTeachers() {
+        return otherTeachers;
+    }
+
+    public void setOtherTeachers(String otherTeachers) {
+        this.otherTeachers = otherTeachers;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getCredits() {
+        return credits;
+    }
+
+    public void setCredits(String credits) {
+        this.credits = credits;
+    }
+
+    public String getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(String studentCount) {
+        this.studentCount = studentCount;
+    }
+
+    public String getSyllabusStatus() {
+        return syllabusStatus;
+    }
+
+    public void setSyllabusStatus(String syllabusStatus) {
+        this.syllabusStatus = syllabusStatus;
+    }
+
+    public HBox getActions() {
+        return actions;
+    }
+
+    public void setActions(HBox actions) {
+        this.actions = actions;
+    }
 }

@@ -1,6 +1,11 @@
 package com.work.javafx.controller.student;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.work.javafx.MainApplication;
+import com.work.javafx.model.UltimateCourse;
+import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,9 +20,14 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class CourseSelectionContentController implements Initializable {
+
     // 选课导航按钮
     @FXML private Button thisTermBtn;
     @FXML private Button generalCourseBtn;
@@ -31,15 +41,16 @@ public class CourseSelectionContentController implements Initializable {
     @FXML private Button searchButton;
 
     // 课程表格
-    @FXML private TableView<Course> courseTableView;
-    @FXML private TableColumn<Course, Integer> numberColumn;
-    @FXML private TableColumn<Course, String> courseCodeColumn;
-    @FXML private TableColumn<Course, Double> creditColumn;
-    @FXML private TableColumn<Course, String> courseTypeColumn;
-    @FXML private TableColumn<Course, String> teacherColumn;
-    @FXML private TableColumn<Course, String> timeLocationColumn;
-    @FXML private TableColumn<Course, String> capacityColumn;
-    @FXML private TableColumn<Course, String> actionColumn;
+    @FXML private TableView<UltimateCourse> courseTableView;
+    @FXML private TableColumn<UltimateCourse, Integer> numberColumn;
+    @FXML private TableColumn<UltimateCourse, String> classNumColumn;
+    @FXML private TableColumn<UltimateCourse, String> courseCodeColumn;
+    @FXML private TableColumn<UltimateCourse, Integer> creditColumn;
+    @FXML private TableColumn<UltimateCourse, String> courseTypeColumn;
+    @FXML private TableColumn<UltimateCourse, String> teacherColumn;
+    @FXML private TableColumn<UltimateCourse, String> timeLocationColumn;
+    @FXML private TableColumn<UltimateCourse, String> capacityColumn;
+    @FXML private TableColumn<UltimateCourse, String> actionColumn;
 
     // 分页控件
     @FXML private Label courseCountLabel;
@@ -51,6 +62,9 @@ public class CourseSelectionContentController implements Initializable {
     private int currentPage = 1;
     // 每页显示数量
     private final int PAGE_SIZE = 5;
+    
+    // 保存已选课程的映射表，用于标记课程状态
+    private Map<Integer, Boolean> selectedCourseMap = new HashMap<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,7 +82,7 @@ public class CourseSelectionContentController implements Initializable {
         // 初始化表格
         initTableView();
 
-        // 加载示例数据
+        // 加载数据
         loadSampleCourses();
 
         System.out.println("选课系统界面初始化成功");
@@ -98,21 +112,27 @@ public class CourseSelectionContentController implements Initializable {
      */
     private void initTableView() {
         // 设置列的值工厂
-        numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
+        numberColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         courseCodeColumn.setCellValueFactory(data -> {
-            Course course = data.getValue();
-            return new SimpleStringProperty(course.getCourseCode() + "\n" + course.getCourseName());
+            UltimateCourse course = data.getValue();
+            return new SimpleStringProperty(course.getName());
         });
-        creditColumn.setCellValueFactory(new PropertyValueFactory<>("credit"));
-        courseTypeColumn.setCellValueFactory(new PropertyValueFactory<>("courseType"));
-        teacherColumn.setCellValueFactory(new PropertyValueFactory<>("teacher"));
+        creditColumn.setCellValueFactory(new PropertyValueFactory<>("point"));
+        courseTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        classNumColumn.setCellValueFactory(new PropertyValueFactory<>("classNum"));
+        teacherColumn.setCellValueFactory(data -> {
+            UltimateCourse course = data.getValue();
+            return new SimpleStringProperty( course.getTeacherName());
+        });
         timeLocationColumn.setCellValueFactory(data -> {
-            Course course = data.getValue();
-            return new SimpleStringProperty(course.getTime() + "\n" + course.getLocation());
+            UltimateCourse course = data.getValue();
+            String timeStr = "第" + course.getWeekStart() + "-" + course.getWeekEnd() + "周";
+            return new SimpleStringProperty(timeStr + "\n" + course.getClassroom());
         });
         capacityColumn.setCellValueFactory(data -> {
-            Course course = data.getValue();
-            return new SimpleStringProperty(course.getSelected() + "/" + course.getCapacity());
+            UltimateCourse course = data.getValue();
+            // 这里暂时显示容量而非已选人数
+            return new SimpleStringProperty("0/" + course.getCapacity());
         });
 
         // 自定义操作列
@@ -120,17 +140,17 @@ public class CourseSelectionContentController implements Initializable {
 
         // 自定义行样式
         courseTableView.setRowFactory(tv -> {
-            TableRow<Course> row = new TableRow<Course>() {
+            TableRow<UltimateCourse> row = new TableRow<UltimateCourse>() {
                 @Override
-                protected void updateItem(Course course, boolean empty) {
+                protected void updateItem(UltimateCourse course, boolean empty) {
                     super.updateItem(course, empty);
                     if (course == null || empty) {
                         getStyleClass().removeAll("available-row", "selected-row", "full-row");
                     } else {
                         getStyleClass().removeAll("available-row", "selected-row", "full-row");
-                        if (course.isSelected()) {
+                        if (CourseSelectionContentController.this.isSelected(course)) {
                             getStyleClass().add("selected-row");
-                        } else if (course.getSelected() >= course.getCapacity()) {
+                        } else if (course.getCapacity() <= 0) {
                             getStyleClass().add("full-row");
                         } else {
                             getStyleClass().add("available-row");
@@ -143,10 +163,17 @@ public class CourseSelectionContentController implements Initializable {
     }
 
     /**
+     * 检查课程是否已选
+     */
+    private boolean isSelected(UltimateCourse course) {
+        return selectedCourseMap.getOrDefault(course.getId(), false);
+    }
+
+    /**
      * 创建自定义操作列工厂
      */
-    private Callback<TableColumn<Course, String>, TableCell<Course, String>> createActionCellFactory() {
-        return column -> new TableCell<Course, String>() {
+    private Callback<TableColumn<UltimateCourse, String>, TableCell<UltimateCourse, String>> createActionCellFactory() {
+        return column -> new TableCell<UltimateCourse, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -154,19 +181,16 @@ public class CourseSelectionContentController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Course course = getTableView().getItems().get(getIndex());
+                    UltimateCourse course = getTableView().getItems().get(getIndex());
 
                     Button actionButton = new Button();
-                    if (course.isSelected()) {
+                    if (CourseSelectionContentController.this.isSelected(course)) {
                         actionButton.setText("退选");
                         actionButton.getStyleClass().add("withdraw-button");
                         actionButton.setOnAction(event -> {
-                            course.setSelected(false);
-                            course.setSelectedCount(course.getSelected() - 1);
-                            getTableView().refresh();
-                            ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getCourseName());
+                            withdrawCourse(course);
                         });
-                    } else if (course.getSelected() >= course.getCapacity()) {
+                    } else if (course.getCapacity() <= 0) {
                         actionButton.setText("已满");
                         actionButton.getStyleClass().add("disabled-button");
                         actionButton.setDisable(true);
@@ -174,10 +198,7 @@ public class CourseSelectionContentController implements Initializable {
                         actionButton.setText("选课");
                         actionButton.getStyleClass().add("select-button");
                         actionButton.setOnAction(event -> {
-                            course.setSelected(true);
-                            course.setSelectedCount(course.getSelected() + 1);
-                            getTableView().refresh();
-                            ShowMessage.showInfoMessage("操作成功", "已成功选择课程：" + course.getCourseName());
+                            selectCourse(course);
                         });
                     }
 
@@ -190,19 +211,10 @@ public class CourseSelectionContentController implements Initializable {
     }
 
     /**
-     * 加载示例课程数据
+     * 加载数据
      */
     private void loadSampleCourses() {
-        ObservableList<Course> courses = FXCollections.observableArrayList(
-                new Course(1, "MATH2005", "高等数学(II)", 4.0, "必修课", "李明", "周一 08:00-09:40", "理科楼 A203", 45, 23, false),
-                new Course(2, "PHYS1003", "大学物理实验", 2.0, "必修课", "王华", "周六 10:10-11:50", "物理实验楼 B101", 30, 30, true),
-                new Course(3, "COMP2013", "数据结构", 3.0, "必修课", "张伟", "周三 14:00-15:40", "信息楼 C305", 60, 45, false),
-                new Course(4, "ENGL1002", "大学英语(II)", 3.0, "必修课", "Sarah Johnson", "周三 10:10-11:50", "外语楼 D201", 35, 25, true),
-                new Course(5, "COMP2022", "Java程序设计", 2.5, "选修课", "刘强", "周四 16:00-17:40", "信息楼 C202", 40, 38, false)
-        );
-
-        courseTableView.setItems(courses);
-        courseCountLabel.setText("共找到" + courses.size() + "门课程");
+        load();
     }
 
     /**
@@ -216,9 +228,189 @@ public class CourseSelectionContentController implements Initializable {
 
         System.out.println("查询课程: 学院=" + collegeName + ", 课程性质=" + courseType + ", 课程名称=" + courseName);
 
-        // 这里应该根据查询条件请求后端API获取课程数据
-        // 简单示例：重新加载示例数据
-        loadSampleCourses();
+        // 构建查询参数
+        Map<String, String> params = new HashMap<>();
+        params.put("keyword", courseName);
+        
+        // 发起网络请求
+        NetworkUtils.get("/course-selection/search", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        processCoursesResponse(result);
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ? 
+                                responseJson.get("msg").getAsString() : "获取课程数据失败";
+                        ShowMessage.showErrorMessage("查询失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
+    }    /**
+     * 获取未选课程列表
+     */
+    @FXML
+    private void load() {
+
+        // 发起网络请求
+        NetworkUtils.get("/course-selection/unChoose", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        processCoursesResponse(result);
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ?
+                                responseJson.get("msg").getAsString() : "获取课程数据失败";
+                        ShowMessage.showErrorMessage("查询失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
+    }
+    
+    /**
+     * 解析课程数据
+     */
+    private List<UltimateCourse> parseCourseData(JsonArray coursesArray) {
+        List<UltimateCourse> courses = new ArrayList<>();
+        
+        for (int i = 0; i < coursesArray.size(); i++) {
+            JsonObject courseJson = coursesArray.get(i).getAsJsonObject();
+            
+            // 创建UltimateCourse对象并设置属性
+            UltimateCourse course = new UltimateCourse();
+            
+            if (courseJson.has("id") && !courseJson.get("id").isJsonNull()) 
+                course.setId(courseJson.get("id").getAsInt());
+            
+            if (courseJson.has("name") && !courseJson.get("name").isJsonNull()) 
+                course.setName(courseJson.get("name").getAsString());
+            else
+                course.setName("");
+            
+            if (courseJson.has("category") && !courseJson.get("category").isJsonNull()) 
+                course.setCategory(courseJson.get("category").getAsString());
+            else
+                course.setCategory("");
+            
+            if (courseJson.has("point") && !courseJson.get("point").isJsonNull()) 
+                course.setPoint(courseJson.get("point").getAsInt());
+            
+            if (courseJson.has("teacherId") && !courseJson.get("teacherId").isJsonNull()) 
+                course.setTeacherId(courseJson.get("teacherId").getAsInt());
+
+            if (courseJson.has("teacherName") && !courseJson.get("teacherName").isJsonNull())
+                course.setTeacherName(courseJson.get("teacherName").getAsString());
+            
+            if (courseJson.has("classroom") && !courseJson.get("classroom").isJsonNull()) 
+                course.setClassroom(courseJson.get("classroom").getAsString());
+            else
+                course.setClassroom("");
+            
+            if (courseJson.has("weekStart") && !courseJson.get("weekStart").isJsonNull()) 
+                course.setWeekStart(courseJson.get("weekStart").getAsInt());
+            
+            if (courseJson.has("weekEnd") && !courseJson.get("weekEnd").isJsonNull()) 
+                course.setWeekEnd(courseJson.get("weekEnd").getAsInt());
+            
+            if (courseJson.has("period") && !courseJson.get("period").isJsonNull()) 
+                course.setPeriod(courseJson.get("period").getAsInt());
+            
+            if (courseJson.has("time") && !courseJson.get("time").isJsonNull()) 
+                course.setTime(courseJson.get("time").getAsString());
+            else
+                course.setTime("");
+            
+            if (courseJson.has("college") && !courseJson.get("college").isJsonNull()) 
+                course.setCollege(courseJson.get("college").getAsString());
+            else
+                course.setCollege("");
+            
+            if (courseJson.has("term") && !courseJson.get("term").isJsonNull()) 
+                course.setTerm(courseJson.get("term").getAsString());
+            else
+                course.setTerm("");
+            
+            if (courseJson.has("classNum") && !courseJson.get("classNum").isJsonNull()) 
+                course.setClassNum(courseJson.get("classNum").getAsString());
+            else
+                course.setClassNum("");
+            
+            if (courseJson.has("type") && !courseJson.get("type").isJsonNull()) 
+                course.setType(courseJson.get("type").getAsString());
+            else
+                course.setType("");
+            
+            if (courseJson.has("capacity") && !courseJson.get("capacity").isJsonNull()) 
+                course.setCapacity(courseJson.get("capacity").getAsInt());
+            
+            if (courseJson.has("status") && !courseJson.get("status").isJsonNull()) 
+                course.setStatus(courseJson.get("status").getAsString());
+            else
+                course.setStatus("");
+            
+            if (courseJson.has("intro") && !courseJson.get("intro").isJsonNull()) 
+                course.setIntro(courseJson.get("intro").getAsString());
+            else
+                course.setIntro("");
+            
+            if (courseJson.has("examination") && !courseJson.get("examination").isJsonNull()) 
+                course.setExamination(courseJson.get("examination").getAsInt());
+            
+            if (courseJson.has("f_reason") && !courseJson.get("f_reason").isJsonNull()) 
+                course.setF_reason(courseJson.get("f_reason").getAsString());
+            else
+                course.setF_reason("");
+            
+            if (courseJson.has("published") && !courseJson.get("published").isJsonNull()) 
+                course.setPublished(courseJson.get("published").getAsBoolean());
+            
+            if (courseJson.has("regularRatio") && !courseJson.get("regularRatio").isJsonNull()) 
+                course.setRegularRatio(courseJson.get("regularRatio").getAsDouble());
+            
+            if (courseJson.has("finalRatio") && !courseJson.get("finalRatio").isJsonNull()) 
+                course.setFinalRatio(courseJson.get("finalRatio").getAsDouble());
+            
+            courses.add(course);
+        }
+        
+        return courses;
+    }
+
+    /**
+     * 更新课程表格
+     */
+    private void updateCourseTable(List<UltimateCourse> courses) {
+        courseTableView.setItems(FXCollections.observableArrayList(courses));
+        courseCountLabel.setText("共找到" + courses.size() + "门课程");
     }
 
     /**
@@ -233,42 +425,8 @@ public class CourseSelectionContentController implements Initializable {
         loadSampleCourses();
     }
 
-    /**
-     * 显示通识选修课
-     */
-    @FXML
-    private void showGeneralCourses() {
-        if (generalCourseBtn != null) {
-            switchActiveNavButton(generalCourseBtn);
-        }
-        System.out.println("显示通识选修课");
-        // 这里应该加载通识选修课数据
-        ObservableList<Course> courses = FXCollections.observableArrayList(
-                new Course(1, "HUMA1001", "大学语文", 2.0, "通识课", "赵明", "周二 14:00-15:40", "文科楼 A101", 60, 45, false),
-                new Course(2, "ARTS1002", "艺术欣赏", 2.0, "通识课", "陈丽", "周四 10:10-11:50", "艺术楼 B202", 40, 40, true),
-                new Course(3, "HIST1003", "中国近代史", 2.0, "通识课", "吴强", "周一 16:00-17:40", "文科楼 A305", 50, 48, false)
-        );
-        courseTableView.setItems(courses);
-        courseCountLabel.setText("共找到" + courses.size() + "门课程");
-    }
 
-    /**
-     * 显示已选课程
-     */
-    @FXML
-    private void showSelectedCourses() {
-        if (selectedCoursesBtn != null) {
-            switchActiveNavButton(selectedCoursesBtn);
-        }
-        System.out.println("显示已选课程");
-        // 这里应该加载用户已选的课程数据
-        ObservableList<Course> courses = FXCollections.observableArrayList(
-                new Course(1, "PHYS1003", "大学物理实验", 2.0, "必修课", "王华", "周六 10:10-11:50", "物理实验楼 B101", 30, 30, true),
-                new Course(2, "ENGL1002", "大学英语(II)", 3.0, "必修课", "Sarah Johnson", "周三 10:10-11:50", "外语楼 D201", 35, 25, true)
-        );
-        courseTableView.setItems(courses);
-        courseCountLabel.setText("共选择" + courses.size() + "门课程");
-    }
+
 
     /**
      * 显示选课结果
@@ -279,14 +437,58 @@ public class CourseSelectionContentController implements Initializable {
             switchActiveNavButton(courseResultBtn);
         }
         System.out.println("显示选课结果");
-        // 这里应该加载选课结果数据
-        ObservableList<Course> courses = FXCollections.observableArrayList(
-                new Course(1, "MATH2005", "高等数学(II)", 4.0, "必修课", "李明", "周一 08:00-09:40", "理科楼 A203", 45, 23, true),
-                new Course(2, "PHYS1003", "大学物理实验", 2.0, "必修课", "王华", "周六 10:10-11:50", "物理实验楼 B101", 30, 30, true),
-                new Course(3, "ENGL1002", "大学英语(II)", 3.0, "必修课", "Sarah Johnson", "周三 10:10-11:50", "外语楼 D201", 35, 25, true)
-        );
-        courseTableView.setItems(courses);
-        courseCountLabel.setText("共" + courses.size() + "门课程");
+        
+        // 构建查询参数，假设API有专门获取选课结果的endpoint
+        NetworkUtils.get("/course-selection/results", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    processCoursesResponse(result);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                
+                // 出错时加载空列表
+                updateCourseTable(new ArrayList<>());
+            }
+        });
+    }
+    
+    /**
+     * 处理课程数据响应
+     */
+    private void processCoursesResponse(String result) {
+        // 解析JSON响应
+        Gson gson = new Gson();
+        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+        
+        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+            // 获取课程数据
+            JsonArray coursesArray = responseJson.getAsJsonArray("data");
+            List<UltimateCourse> courses = parseCourseData(coursesArray);
+            
+            // 如果是获取已选课程或选课结果，标记为已选
+            if (currentActiveNavButton == selectedCoursesBtn || currentActiveNavButton == courseResultBtn) {
+                for (UltimateCourse course : courses) {
+                    selectedCourseMap.put(course.getId(), true);
+                }
+            }
+            
+            // 更新UI
+            updateCourseTable(courses);
+        } else {
+            // 处理错误
+            String message = responseJson.has("msg") ? 
+                    responseJson.get("msg").getAsString() : "获取课程数据失败";
+            ShowMessage.showErrorMessage("查询失败", message);
+        }
     }
 
     /**
@@ -299,7 +501,8 @@ public class CourseSelectionContentController implements Initializable {
             if (currentPageLabel != null) {
                 currentPageLabel.setText(String.valueOf(currentPage));
             }
-            loadSampleCourses();
+            // 使用当前活动的导航按钮判断应该加载哪类课程
+            refreshCurrentView();
         }
         System.out.println("显示第" + currentPage + "页");
     }
@@ -309,15 +512,103 @@ public class CourseSelectionContentController implements Initializable {
      */
     @FXML
     private void nextPage() {
-        int totalPages = 3; // 假设总共有3页
-        if (currentPage < totalPages) {
-            currentPage++;
-            if (currentPageLabel != null) {
-                currentPageLabel.setText(String.valueOf(currentPage));
-            }
-            loadSampleCourses();
+        // 假设总页数是动态的，这里简单处理
+        currentPage++;
+        if (currentPageLabel != null) {
+            currentPageLabel.setText(String.valueOf(currentPage));
         }
+        // 使用当前活动的导航按钮判断应该加载哪类课程
+        refreshCurrentView();
         System.out.println("显示第" + currentPage + "页");
+    }
+    
+    /**
+     * 根据当前选中的导航刷新视图
+     */
+    private void refreshCurrentView() {
+        // 根据当前活动的导航按钮加载对应的课程数据
+        if (currentActiveNavButton == thisTermBtn) {
+            searchCourses();
+        }  else if (currentActiveNavButton == courseResultBtn) {
+            showCourseResults();
+        }
+    }
+    
+    /**
+     * 选课操作
+     */
+    private void selectCourse(UltimateCourse course) {
+
+        String url = "/course-selection/select/" + course.getId();
+        
+        // 发送选课请求
+        NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        selectedCourseMap.put(course.getId(), true);
+                        courseTableView.refresh();
+                        ShowMessage.showInfoMessage("操作成功", "已成功选择课程：" + course.getName());
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ? 
+                                responseJson.get("msg").getAsString() : "选课失败";
+                        ShowMessage.showErrorMessage("选课失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
+    }
+    
+    /**
+     * 退选操作
+     */
+    private void withdrawCourse(UltimateCourse course) {
+
+        String url = "/course-selection/drop/" + course.getId();
+        
+        // 发送退选请求
+        NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        selectedCourseMap.put(course.getId(), false);
+                        courseTableView.refresh();
+                        ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getName());
+                    } else {
+                        String message = responseJson.has("msg") ?
+                                responseJson.get("msg").getAsString() : "退选失败";
+                        ShowMessage.showErrorMessage("退选失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+            }
+        });
     }
 
     /**
@@ -352,55 +643,5 @@ public class CourseSelectionContentController implements Initializable {
             e.printStackTrace();
             ShowMessage.showErrorMessage("退出登录失败", null);
         }
-    }
-
-    /**
-     * 课程数据模型类
-     */
-    public static class Course {
-        private final int number;
-        private final String courseCode;
-        private final String courseName;
-        private final double credit;
-        private final String courseType;
-        private final String teacher;
-        private final String time;
-        private final String location;
-        private final int capacity;
-        private int selectedCount;
-        private boolean selected;
-
-        public Course(int number, String courseCode, String courseName, double credit,
-                      String courseType, String teacher, String time, String location,
-                      int capacity, int selectedCount, boolean selected) {
-            this.number = number;
-            this.courseCode = courseCode;
-            this.courseName = courseName;
-            this.credit = credit;
-            this.courseType = courseType;
-            this.teacher = teacher;
-            this.time = time;
-            this.location = location;
-            this.capacity = capacity;
-            this.selectedCount = selectedCount;
-            this.selected = selected;
-        }
-
-        // Getters
-        public int getNumber() { return number; }
-        public String getCourseCode() { return courseCode; }
-        public String getCourseName() { return courseName; }
-        public double getCredit() { return credit; }
-        public String getCourseType() { return courseType; }
-        public String getTeacher() { return teacher; }
-        public String getTime() { return time; }
-        public String getLocation() { return location; }
-        public int getCapacity() { return capacity; }
-        public int getSelected() { return selectedCount; }
-        public boolean isSelected() { return selected; }
-
-        // Setters
-        public void setSelectedCount(int selectedCount) { this.selectedCount = selectedCount; }
-        public void setSelected(boolean selected) { this.selected = selected; }
     }
 } 
