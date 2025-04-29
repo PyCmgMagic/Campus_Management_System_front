@@ -15,26 +15,30 @@
     -fx-alignment: center-left;
 }
 
-.avatar-circle {
-    -fx-background-color: #fde4e4;
-    -fx-text-fill: #d32f2f;
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-pref-width: 80px;
-    -fx-pref-height: 80px;
-    -fx-alignment: center;
-    -fx-background-radius: 50%;
-    -fx-border-radius: 50%;
+
+/* 姓名首字母标签的特殊样式 */
+#surnameLabel {
+    -fx-background-color: #d32f2f;  /* 背景颜色 */
+    -fx-text-fill: white;           /* 字体颜色 */
+    -fx-font-size: 40px;            /* 字体大小 */
+    -fx-font-weight: bold;          /* 字体加粗 */
+    -fx-pref-width: 80px;           /* 宽度 */
+    -fx-pref-height: 80px;          /* 高度 */
+    -fx-min-width : 80px;
+    -fx-alignment: center;          /* 字体居中 */
+    -fx-background-radius: 50%;     /* 圆形背景 */
+    -fx-border-radius: 50%;         /* 边框圆角 */
 }
 
+/* 用户名样式 */
 .user-name {
-    -fx-font-size: 20px;
+    -fx-font-size: 24px;  /* 增大字体 */
     -fx-font-weight: bold;
     -fx-text-fill: #222;
 }
 
 .user-id {
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-text-fill: #666;
 }
 
@@ -42,6 +46,7 @@
     -fx-background-color: #d32f2f;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-background-radius: 6;
     -fx-padding: 6 16;
 }
@@ -50,6 +55,7 @@
     -fx-background-color: transparent;
     -fx-border-color: #d32f2f;
     -fx-text-fill: #d32f2f;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-padding: 6 16;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
@@ -76,27 +82,27 @@
 }
 
 .card-title {
-    -fx-font-size: 16px;
+    -fx-font-size: 20px;  /* 增大字体 */
     -fx-font-weight: bold;
     -fx-text-fill: #333;
     -fx-padding: 0 0 5 0;
 }
 
 .card-subtitle {
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;  /* 增大字体 */
     -fx-text-fill: #999;
     -fx-padding: 0 0 10 0;
 }
 
 .info-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-text-fill: #555;
-    -fx-pref-width: 90;
+    -fx-pref-width: 100;
     -fx-alignment: center-right;
 }
 
 .info-value {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;  /* 增大字体 */
     -fx-text-fill: #222;
     -fx-wrap-text: true;
     -fx-max-width: 280px;
