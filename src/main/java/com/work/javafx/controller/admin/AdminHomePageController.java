@@ -1,5 +1,9 @@
 package com.work.javafx.controller.admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.work.javafx.util.NetworkUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -9,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -26,7 +32,7 @@ public class AdminHomePageController implements Initializable {
 
     @FXML
     private VBox noticeListContainer;
-
+    Gson gson = new Gson();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 确保CSS样式表已正确加载
@@ -51,10 +57,80 @@ public class AdminHomePageController implements Initializable {
      * 加载统计数据
      */
     private void loadStatistics() {
-        // 这里可以从服务或数据库加载真实数据
-        // 目前使用硬编码的演示数据
-        studentCountLabel.setText("12,486");
-        teacherCountLabel.setText("843");
+        Map<String,String> params = new HashMap<>();
+        //获取教师人数
+        params.put("permission","1");
+        NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+
+                JsonObject res  = gson.fromJson(result, JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    int data = res.get("data").getAsInt();
+                    teacherCountLabel.setText(data+"");
+                }else {
+                    System.out.print("获取教师人数失败：");
+                    System.out.println(res.get("msg").getAsString());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject err = gson.fromJson(e.getMessage(),JsonObject.class);
+                System.out.println(e);
+            }
+        });
+        //获取学生人数
+        params.put("permission","2");
+        NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+
+                JsonObject res  = gson.fromJson(result, JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    int data = res.get("data").getAsInt();
+                    studentCountLabel.setText(data+"");
+                }else {
+                    System.out.print("获取学生人数失败：");
+                    System.out.println(res.get("msg").getAsString());
+                }
+
+            }
+            @Override
+            public void onFailure(Exception e) {
+                String errorMessage = e.getMessage();
+                try {
+                    // Extract the JSON part from the error message
+                    int jsonStartIndex = errorMessage.indexOf('{');
+                    int jsonEndIndex = errorMessage.lastIndexOf('}');
+                    String jsonString = null;
+
+                    if (jsonStartIndex != -1 && jsonEndIndex != -1 && jsonStartIndex < jsonEndIndex) {
+                        jsonString = errorMessage.substring(jsonStartIndex, jsonEndIndex + 1);
+                    }
+
+                    if (jsonString != null) {
+                        JsonObject errorResponse = gson.fromJson(jsonString, JsonObject.class);
+                        if (errorResponse != null && errorResponse.has("msg")) {
+                            System.out.println(errorResponse.get("msg").getAsString());
+                        } else {
+                            System.out.println(errorMessage);
+                        }
+                    } else {
+                         System.out.println( errorMessage);
+                    }
+
+                } catch (JsonParseException jsonEx) {
+                   //json处理失败
+                    System.out.println("获取学生人数失败 (无法解析提取的 JSON): " + errorMessage);
+                } catch (Exception ex) {
+//                  其他
+                    System.out.println("处理获取学生人数失败时发生错误: " + ex.getMessage());
+                }
+            }
+        });
+
     }
 
     /**

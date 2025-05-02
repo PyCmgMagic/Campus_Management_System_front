@@ -1,7 +1,11 @@
 package com.work.javafx.util;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -460,5 +464,116 @@ public class NetworkUtils {
      */
     public static void shutdown() {
         EXECUTOR.shutdown();
+    }
+
+    /**
+     * 异步发送HTTP POST请求，用于上传文件 (multipart/form-data)
+     *
+     * @param urlString 请求URL (相对路径)
+     * @param file 要上传的文件
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> postMultipartFileAsync(String urlString, File file) {
+        String finalUrlString = BaseUrl + urlString;
+        String boundary = "===" + System.currentTimeMillis() + "==="; // 定义边界
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+
+        return CompletableFuture.supplyAsync(() -> {
+            HttpURLConnection connection = null;
+            DataOutputStream dos = null;
+            FileInputStream fileInputStream = null;
+            BufferedReader reader = null;
+
+            try {
+                URL url = new URL(finalUrlString);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true); // 允许输入流
+                connection.setDoOutput(true); // 允许输出流
+                connection.setUseCaches(false); // 不允许使用缓存
+                connection.setRequestMethod(HttpMethod.POST.name());
+                connection.setRequestProperty("Connection", "Keep-Alive");
+                connection.setRequestProperty("Cache-Control", "no-cache");
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                String token = "Bearer " + UserSession.getInstance().getToken();
+                if (token != null && !token.isEmpty() && !token.equals("Bearer null")) {
+                     connection.setRequestProperty("Authorization", token);
+                }
+
+                dos = new DataOutputStream(connection.getOutputStream());
+
+                // 文件部分
+                String filename = file.getName();
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + filename + "\"" + lineEnd);
+                 // 根据文件类型设置 Content-Type，这里简单处理 Excel
+                if (filename.endsWith(".xlsx")) {
+                    dos.writeBytes("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" + lineEnd);
+                } else if (filename.endsWith(".xls")) {
+                     dos.writeBytes("Content-Type: application/vnd.ms-excel" + lineEnd);
+                } else {
+                     dos.writeBytes("Content-Type: application/octet-stream" + lineEnd); // 默认类型
+                }
+                dos.writeBytes(lineEnd);
+
+                // 读取文件内容并写入输出流
+                fileInputStream = new FileInputStream(file);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    dos.write(buffer, 0, bytesRead);
+                }
+                dos.writeBytes(lineEnd);
+
+                // 结束标记
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                dos.flush();
+
+                // 获取响应 (复用部分 sendRequest 中的逻辑)
+                int responseCode = connection.getResponseCode();
+                StringBuilder response = new StringBuilder();
+
+                InputStream inputStream;
+                if (responseCode >= 200 && responseCode < 300) {
+                    inputStream = connection.getInputStream();
+                } else {
+                    inputStream = connection.getErrorStream();
+                    // 如果连错误流都没有，则直接抛出基础错误
+                    if (inputStream == null) {
+                         throw new IOException("HTTP请求失败，状态码: " + responseCode);
+                    }
+                }
+
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+                } // try-with-resources 会自动关闭 BufferedReader 和底层的 InputStream
+
+                // 在读取完响应体后再检查状态码决定是否抛出异常
+                if (responseCode >= 400) {
+                    throw new IOException("HTTP请求失败，状态码: " + responseCode + "，错误信息: " + response.toString());
+                }
+
+                return response.toString(); // Supplier 需要返回一个 String
+
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "文件上传异常: " + e.getMessage(), e);
+                // 将受检异常包装成运行时异常，以便 CompletableFuture 处理
+                 throw new RuntimeException("文件上传失败: " + e.getMessage(), e);
+            } finally {
+                // 关闭资源
+                 if (fileInputStream != null) {
+                    try { fileInputStream.close(); } catch (IOException e) { LOGGER.log(Level.WARNING, "关闭文件输入流失败", e); }
+                }
+                // dos (DataOutputStream) 会在 try-with-resources 或 connection.getOutputStream() 关闭时自动处理，一般无需手动关闭外部流
+                // reader 已经被 try-with-resources 处理
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }, EXECUTOR); // 在线程池中执行
     }
 }
