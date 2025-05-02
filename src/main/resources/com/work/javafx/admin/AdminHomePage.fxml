@@ -34,7 +34,7 @@
             <HBox styleClass="stat-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <StackPane styleClass="stat-icon, student-icon" />
                 <VBox styleClass="stat-content">
-                    <Label fx:id="studentCountLabel" styleClass="stat-value" text="12,486" />
+                    <Label fx:id="studentCountLabel" styleClass="stat-value" text="0" />
                     <Label styleClass="stat-label" text="在校学生总数" />
                 </VBox>
             </HBox>
@@ -43,7 +43,7 @@
             <HBox styleClass="stat-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <StackPane styleClass="stat-icon, teacher-icon" />
                 <VBox styleClass="stat-content">
-                    <Label fx:id="teacherCountLabel" styleClass="stat-value" text="843" />
+                    <Label fx:id="teacherCountLabel" styleClass="stat-value" text="0" />
                     <Label styleClass="stat-label" text="在职教师数量" />
                 </VBox>
             </HBox>

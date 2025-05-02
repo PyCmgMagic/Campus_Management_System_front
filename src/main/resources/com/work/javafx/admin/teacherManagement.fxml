@@ -147,7 +147,6 @@
                                 <TableColumn fx:id="idColumn" prefWidth="100.0" text="工号" />
                                 <TableColumn fx:id="nameColumn" prefWidth="120.0" text="姓名" />
                                 <TableColumn fx:id="departmentColumn" prefWidth="150.0" text="所属院系" />
-                                <TableColumn fx:id="titleColumn" prefWidth="100.0" text="职称" />
                                 <TableColumn fx:id="contactColumn" prefWidth="120.0" text="联系方式" />
                                 <TableColumn fx:id="statusColumn" prefWidth="80.0" text="状态" />
                                 <TableColumn fx:id="actionColumn" prefWidth="150.0" text="操作" />

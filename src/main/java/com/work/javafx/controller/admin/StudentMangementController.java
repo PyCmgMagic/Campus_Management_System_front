@@ -1,5 +1,7 @@
 package com.work.javafx.controller.admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +15,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import com.work.javafx.util.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,11 +27,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 
 public class StudentMangementController implements Initializable {
 
+    private static final Logger LOGGER = Logger.getLogger(StudentMangementController.class.getName());
+
     // FXML UI元素
     @FXML private StackPane addStudentCard;
+    @FXML private StackPane importStudentCard;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> departmentComboBox;
     @FXML private ComboBox<String> majorComboBox;
@@ -48,7 +61,7 @@ public class StudentMangementController implements Initializable {
     private ObservableList<Student> filteredData = FXCollections.observableArrayList();
     private int itemsPerPage = 10;
     private final SimpleBooleanProperty selectAll = new SimpleBooleanProperty(false);
-
+    static Gson gson =new Gson();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化筛选下拉框
@@ -370,6 +383,61 @@ public class StudentMangementController implements Initializable {
     private void handleAddStudent(MouseEvent event) {
         // 这里实现添加学生的逻辑
         showAlert(Alert.AlertType.INFORMATION, "功能提示", "添加学生功能尚未实现");
+    }
+
+    // Handle import students card click
+    @FXML
+    private void importStudents(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("选择学生信息文件");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Excel 文件", "*.xlsx", "*.xls")
+        );
+
+        // 获取当前窗口Stage，用于显示文件选择器
+        Stage stage = (Stage) importStudentCard.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            try {
+                 // 显示一个加载提示或禁用UI元素
+                showAlert(Alert.AlertType.INFORMATION, "提示", "正在上传文件: " + selectedFile.getName() + "...");
+
+                NetworkUtils.postMultipartFileAsync("/admin/upload", selectedFile)
+                    .thenAcceptAsync(response -> {
+                        // 在 UI 线程上更新
+                        Platform.runLater(() -> {
+
+                            JsonObject res = gson.fromJson(response,JsonObject.class);
+                            if(res.has("code") && res.get("code").getAsInt()==200){
+                                System.out.println( response); // 打印响应以供调试
+                                showAlert(Alert.AlertType.INFORMATION, "成功", "文件上传成功！");
+                                //刷新列表
+                                 loadMockData();
+                                 updateFilteredData();
+                            }
+
+                        });
+                    }, Platform::runLater) // 确保 thenAcceptAsync 的回调也在UI线程执行
+                    .exceptionally(ex -> {
+                        // 在 UI 线程上更新
+                        Platform.runLater(() -> {
+                            LOGGER.log(Level.SEVERE, "文件上传失败", ex);
+                            showAlert(Alert.AlertType.ERROR, "错误", "文件上传失败: " + ex.getMessage());
+                        });
+                        return null;
+                    });
+
+            } catch (Exception e) {
+                 // 处理调用 NetworkUtils 可能出现的直接异常（虽然异步调用本身不太可能在这里抛出）
+                LOGGER.log(Level.SEVERE, "启动文件上传时出错", e);
+                showAlert(Alert.AlertType.ERROR, "错误", "启动文件上传时出错: " + e.getMessage());
+            }
+        } else {
+            System.out.println("未选择文件。");
+            // 如果用户取消选择，显示提示
+             showAlert(Alert.AlertType.INFORMATION, "提示", "未选择任何文件。");
+        }
     }
 
     // 处理查看学生详情按钮点击

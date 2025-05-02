@@ -37,5 +37,5 @@ module com.work.javafx {
     opens com.work.javafx.controller.admin to javafx.fxml;
     exports com.work.javafx.controller.teacher;
     exports com.work.javafx.controller.admin;
-    opens com.work.javafx.controller.teacher to javafx.fxml;
+    opens com.work.javafx.controller.teacher to javafx.fxml,com.google.gson;
 }

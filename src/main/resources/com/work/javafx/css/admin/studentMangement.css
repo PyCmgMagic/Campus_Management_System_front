@@ -42,6 +42,11 @@
     -fx-alignment: center;
 }
 
+/* Set background for import card's icon container */
+#importStudentCard .quick-action-icon {
+    -fx-background-color: #e8f5e9; /* Light green */
+}
+
 .icon-add-student {
     -fx-background-image: url('/images/add-user-icon.png');
     -fx-background-size: 22px;
@@ -340,6 +345,19 @@
     -fx-scale-y: 0.7;
 }
 
+/* Icon for Batch Import (using export shape but green color like teacher import) */
+.export-icon {
+    -fx-shape: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"; /* Export shape */
+    -fx-background-color: #388e3c; /* Green color like teacher import */
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+.add-icon {
+    -fx-shape: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z";
+    -fx-background-color: #d32f2f;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
 /* 分页区域 */
 .pagination {
     -fx-padding: 15px 20px;
@@ -401,4 +419,12 @@
 /* 添加一个全选框样式 */
 .select-all-checkbox {
     -fx-padding: 0 0 0 10px;
+}
+
+/* Approval Icon (Used for Batch Import) */
+.approval-icon {
+    -fx-shape: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z";
+    -fx-background-color: #388e3c; /* Green */
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
 }

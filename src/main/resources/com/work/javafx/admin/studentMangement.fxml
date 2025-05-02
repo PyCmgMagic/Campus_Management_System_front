@@ -9,9 +9,11 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
 <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" stylesheets="@../css/admin/studentMangement.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.StudentMangementController">
@@ -37,13 +39,34 @@
                            <children>
                               <StackPane styleClass="quick-action-icon">
                                  <children>
-                                    <Label styleClass="icon-add-student" />
+                                    <Region styleClass="add-icon"/>
                                  </children>
                               </StackPane>
                               <VBox>
                                  <children>
                                     <Label styleClass="quick-action-title" text="添加学生" />
                                     <Label styleClass="quick-action-desc" text="创建新的学生账号" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </StackPane>
+
+                  <!-- Batch Import Card -->
+                  <StackPane fx:id="importStudentCard" onMouseClicked="#importStudents" styleClass="quick-action-card" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                           <children>
+                              <StackPane styleClass="quick-action-icon" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Region styleClass="export-icon"/>
+                                 </children>
+                              </StackPane>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="quick-action-title" text="批量导入" />
+                                    <Label styleClass="quick-action-desc" text="通过文件导入学生信息" />
                                  </children>
                               </VBox>
                            </children>

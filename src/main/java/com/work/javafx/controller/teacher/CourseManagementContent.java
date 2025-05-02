@@ -30,6 +30,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import com.work.javafx.model.UltimateCourse;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
 public class CourseManagementContent implements Initializable {
 static Gson gson = new Gson();
     @FXML
@@ -81,9 +82,6 @@ static Gson gson = new Gson();
         courseList = FXCollections.observableArrayList();
         courseTable.setItems(courseList);
         
-        // 不需要重复添加列，因为FXML已经定义了列
-        // FXML已经设置了属性绑定，所以这里不需要再添加列定义
-        
         // 设置表格列宽策略为自适应填充可用空间
         courseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
@@ -131,16 +129,14 @@ static Gson gson = new Gson();
         String courseStatus = course.getStatus();
         HBox actionButtons;
         
-        if ("正在进行".equals(courseStatus)) {
-            actionButtons = createActionButtons("active");
-        } else if ("已申请".equals(courseStatus)) {
-            actionButtons = createActionButtons("proposed");
-        } else if ("已结课".equals(courseStatus)) {
-            actionButtons = createActionButtons("past");
-        } else if ("已驳回".equals(courseStatus)) {
-            actionButtons = createActionButtons("rejected");
+        if ("已通过".equals(courseStatus)) {
+            actionButtons = createActionButtons("active", course);
+        } else if ("待审批".equals(courseStatus)) {
+            actionButtons = createActionButtons("proposed", course);
+        } else if ("已拒绝".equals(courseStatus)) {
+            actionButtons = createActionButtons("rejected", course);
         } else {
-            actionButtons = createActionButtons("active"); // 默认状态
+            actionButtons = createActionButtons("active", course);
         }
         
         // 直接调用setter方法设置actions
@@ -183,35 +179,50 @@ static Gson gson = new Gson();
         }
     }
 
-    private HBox createActionButtons(String status) {
+    private HBox createActionButtons(String status, UltimateCourse course) {
         HBox buttons = new HBox(5);
         
         switch (status) {
             case "active":
+                Button viewStudentsButton = createIconButton("👥", "查看学生名单");
+                Button enterGradesButton = createTextButton("成绩录入", "primary");
+
+                viewStudentsButton.setOnAction(event -> handleViewStudents(course));
+
                 buttons.getChildren().addAll(
-                    createIconButton("👥", "查看学生名单"),
-                    createIconButton("📢", "发布班级通知"),
-                    createTextButton("管理资料", "secondary"),
-                    createTextButton("成绩录入", "primary")
+                    viewStudentsButton,
+                    enterGradesButton
                 );
                 break;
             case "proposed":
+                Button viewApplicationButton = createTextButton("查看申请详情", "secondary");
+                Button cancelApplicationButton = createTextButton("撤销申请", "secondary");
+
                 buttons.getChildren().addAll(
-                    createTextButton("查看申请详情", "secondary"),
-                    createTextButton("撤销申请", "secondary")
+                    viewApplicationButton,
+                    cancelApplicationButton
                 );
                 break;
             case "past":
+                Button viewDetailsButton = createTextButton("查看详情", "secondary");
+                Button viewHistoryGradesButton = createTextButton("查看历史成绩", "secondary");
+
                 buttons.getChildren().addAll(
-                    createTextButton("查看详情", "secondary"),
-                    createTextButton("查看历史成绩", "secondary")
+                   viewDetailsButton,
+                   viewHistoryGradesButton
                 );
                 break;
             case "rejected":
+                Button viewRejectionReasonButton = createTextButton("查看驳回原因", "secondary");
+                Button reEditApplicationButton = createTextButton("重新编辑申请", "secondary");
+
                 buttons.getChildren().addAll(
-                    createTextButton("查看驳回原因", "secondary"),
-                    createTextButton("重新编辑申请", "secondary")
+                    viewRejectionReasonButton,
+                    reEditApplicationButton
                 );
+                break;
+            default:
+                System.out.println("未知的课程状态: " + status);
                 break;
         }
         
@@ -260,6 +271,65 @@ static Gson gson = new Gson();
             
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // 处理查看学生名单按钮点击事件
+    private void handleViewStudents(UltimateCourse course) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/StudentListView.fxml"));
+            Parent root = loader.load();
+
+            // 获取新窗口的控制器
+            StudentListViewController controller = loader.getController();
+
+            // 检查控制器是否成功获取
+            if (controller == null) {
+                 System.err.println("无法获取 StudentListViewController 控制器实例。");
+                 // 可以显示一个错误提示给用户
+                 Alert alert = new Alert(Alert.AlertType.ERROR);
+                 alert.setTitle("内部错误");
+                 alert.setHeaderText(null);
+                 alert.setContentText("无法加载学生列表界面控制器。");
+                 alert.showAndWait();
+                 return; // 提前退出
+            }
+            
+            // 将课程信息传递给新窗口的控制器并加载数据
+            // 假设 UltimateCourse 的 classNum 对应 API 需要的 courseId
+            controller.initializeData(course.getId()+"");
+
+            // 创建新窗口 (Stage)
+            Stage studentListStage = new Stage();
+            studentListStage.initModality(Modality.APPLICATION_MODAL);
+            studentListStage.initStyle(StageStyle.DECORATED);
+            studentListStage.setTitle("学生名单 - " + course.getName());
+            studentListStage.setScene(new Scene(root));
+
+             studentListStage.setMinWidth(600);
+             studentListStage.setMinHeight(400);
+
+            // 显示窗口并等待用户关闭它
+            studentListStage.showAndWait();
+
+        } catch (IOException e) {
+            System.err.println("无法加载学生名单窗口 FXML: " + e.getMessage());
+            e.printStackTrace();
+            // 向用户显示错误提示
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("加载错误");
+            alert.setHeaderText(null);
+            // 更具体的错误消息
+            alert.setContentText("加载学生名单界面文件时出错: " + e.getMessage()); 
+            alert.showAndWait();
+        } catch (Exception e) {
+             System.err.println("显示学生名单窗口时发生错误: " + e.getMessage());
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("运行时错误");
+            alert.setHeaderText(null);
+            alert.setContentText("显示学生名单时遇到未知错误: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 
