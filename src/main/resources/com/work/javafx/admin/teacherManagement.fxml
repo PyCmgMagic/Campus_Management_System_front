@@ -42,7 +42,6 @@
                         <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
                         </columnConstraints>
                         <rowConstraints>
                             <RowConstraints />
@@ -61,8 +60,9 @@
                         </BorderPane>
 
                         <BorderPane fx:id="importTeacherCard" onMouseClicked="#importTeachers" styleClass="quick-action-card" GridPane.columnIndex="1">
+
                             <left>
-                                <Region styleClass="card-icon,approval-icon" BorderPane.alignment="CENTER" /> <!-- Using approval icon for import -->
+                                <Region styleClass="card-icon,export-icon" BorderPane.alignment="CENTER" />
                             </left>
                             <center>
                                 <VBox styleClass="card-content">
@@ -72,17 +72,7 @@
                             </center>
                         </BorderPane>
 
-                        <BorderPane fx:id="exportTeacherCard" onMouseClicked="#exportTeachers" styleClass="quick-action-card" GridPane.columnIndex="2">
-                            <left>
-                                <Region styleClass="card-icon,export-icon" BorderPane.alignment="CENTER" />
-                            </left>
-                            <center>
-                                <VBox styleClass="card-content">
-                                    <Label styleClass="card-title" text="导出教师数据" />
-                                    <Label styleClass="card-desc" text="导出当前列表教师信息" />
-                                </VBox>
-                            </center>
-                        </BorderPane>
+                        
                     </GridPane>
 
                     <!-- Search and Filter Container -->
@@ -100,8 +90,6 @@
                              <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
                              </columnConstraints>
                              <rowConstraints>
                                 <RowConstraints />
@@ -110,16 +98,6 @@
                             <VBox styleClass="filter-group" GridPane.columnIndex="0">
                                 <Label styleClass="filter-label" text="所属院系" />
                                 <ComboBox fx:id="departmentFilter" prefWidth="150.0" promptText="全部院系" styleClass="filter-select" />
-                            </VBox>
-
-                            <VBox styleClass="filter-group" GridPane.columnIndex="1">
-                                <Label styleClass="filter-label" text="职称" />
-                                <ComboBox fx:id="titleFilter" prefWidth="150.0" promptText="全部职称" styleClass="filter-select" />
-                            </VBox>
-
-                            <VBox styleClass="filter-group" GridPane.columnIndex="2">
-                                <Label styleClass="filter-label" text="状态" />
-                                <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="全部状态" styleClass="filter-select" />
                             </VBox>
                             <!-- Add more filters if needed, e.g., Years of Service -->
                         </GridPane>
