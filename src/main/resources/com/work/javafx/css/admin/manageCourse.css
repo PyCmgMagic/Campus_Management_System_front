@@ -88,7 +88,11 @@
     -fx-padding: 15px 0 0 0; /* 增加顶部间距 */
     -fx-font-weight: bold;
 }
-
+/* 是否选课标签 */
+.status-label1 {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
 /* 成功状态 - 绿色保持不变 */
 .status-label-success {
     -fx-text-fill: green;

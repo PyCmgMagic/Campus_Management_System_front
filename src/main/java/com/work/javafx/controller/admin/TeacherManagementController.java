@@ -11,18 +11,21 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -267,7 +270,6 @@ public class TeacherManagementController implements Initializable {
 
                         if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200 && jsonResponse.has("data") && jsonResponse.get("data").isJsonArray()) {
                                 JsonArray dataArray = jsonResponse.getAsJsonArray("data"); // 获取 user 数组
-                            System.out.println("chengg");
                                 ObservableList<TeacherInfo> currentPageData = FXCollections.observableArrayList();
                                 for (JsonElement element : dataArray) {
                                     JsonObject teacherJson = element.getAsJsonObject();
@@ -472,22 +474,29 @@ public class TeacherManagementController implements Initializable {
          }
     }
 
-    // 表格操作 - 使用正确的 TeacherInfo 字段
+    // 表格操作
     private void viewTeacher(int rowIndex) {
         if (rowIndex < 0 || rowIndex >= teacherTable.getItems().size()) return;
         TeacherInfo selectedTeacher = teacherTable.getItems().get(rowIndex);
-         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("教师详情");
-        // 使用映射后的字段: id (sduid), name (username), college, contactInfo (email)
-        alert.setHeaderText("教师: " + selectedTeacher.getName() + " (工号: " + selectedTeacher.getSduid() + ")");
-        String content = String.format(
-            "工号: %s\n姓名: %s\n院系: %s\n联系方式 (Email): %s\n状态: %s",
-            selectedTeacher.getSduid(), selectedTeacher.getName(), selectedTeacher.getCollege(),
-            selectedTeacher.getContactInfo(), selectedTeacher.getStatus()
-        );
-        alert.setContentText(content);
-        alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
-        alert.showAndWait();
+       try{
+           FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/UserDetails_teacher.fxml"));
+           Parent root = loader.load();
+           //获取控制器
+           UserDetailsController_teacher controller = loader.getController();
+           //创建新窗口
+           Stage stage = new Stage();
+           stage.initStyle(StageStyle.DECORATED);
+           stage.setTitle("用户详情——"+selectedTeacher.getName());
+           stage.setScene(new Scene(root));
+           //窗口引用传递给控制器
+           controller.setStage(stage);
+           // 传递用户ID并加载数据
+           controller.loadUserData(selectedTeacher.getId());
+           //显示窗口
+           stage.showAndWait();
+       }catch (Exception e){
+           e.printStackTrace();
+       }
     }
 
     private void editTeacher(int rowIndex) {
