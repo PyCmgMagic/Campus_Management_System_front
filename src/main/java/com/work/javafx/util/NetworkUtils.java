@@ -234,9 +234,27 @@ public class NetworkUtils {
     public static CompletableFuture<String> postAsync(String urlString, String body) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+        headers.put("Authorization", token);
+
         return requestAsync(urlString, HttpMethod.POST, headers, body);
     }
-    
+        /**
+     * 异步发送HTTP POST请求(带params)
+     *
+     * @param urlString 请求URL
+     * @param body 请求体
+     * @return CompletableFuture对象，包含响应结果
+     */
+    public static CompletableFuture<String> postAsync(String urlString, String body,Map<String,String > params) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        String token = "Bearer " + UserSession.getInstance().getToken();
+        headers.put("Authorization", token);
+        String fullUrl = appendQueryParams(urlString, params);
+        return requestAsync(fullUrl, HttpMethod.POST, headers, body);
+    }
+
     /**
      * 发送HTTP PUT请求
      *

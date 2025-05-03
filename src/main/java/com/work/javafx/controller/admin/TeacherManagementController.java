@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
@@ -389,8 +390,22 @@ public class TeacherManagementController implements Initializable {
     // 快速操作
     @FXML
     private void showAddTeacherView(javafx.scene.input.MouseEvent event) {
-        System.out.println("Add Teacher Clicked");
-        showInfoDialog("功能开发中", "新增教师功能待实现。");
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewTeacher.fxml"));
+            Parent root = loader.load();
+            AddNewTeacherController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("添加教师");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root,800,600));
+            stage.setMinHeight(700);
+            stage.setMinWidth(550);
+            controller.setStage(stage);
+            stage.showAndWait();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
