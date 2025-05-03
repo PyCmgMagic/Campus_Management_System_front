@@ -1,0 +1,77 @@
+/* Main styles for User Details */
+.main-container {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}
+
+/* Header styles */
+.header-container {
+    -fx-background-color: #fff;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-text-fill: #4a4a4a;
+    -fx-font-weight: bold;
+}
+
+.id-label {
+    -fx-text-fill: #666;
+}
+
+/* Section styles */
+.info-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 0);
+}
+
+.section-title {
+    -fx-text-fill: #4a4a4a;
+    -fx-font-weight: bold;
+}
+
+/* Field styles */
+.field-label {
+    -fx-text-fill: #888;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.field-value {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+/* Button styles */
+.edit-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.edit-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.close-button {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #555;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.close-button:hover {
+    -fx-background-color: #d0d0d0;
+}

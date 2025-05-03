@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.work.javafx.util.NetworkUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -45,52 +46,220 @@ public class ManageCourseController implements Initializable {
 
     @FXML
     private Label statusLabel; // 状态显示标签
+    @FXML
+    private Label isOpenLabel; // 是否开始选课标签
 
     private ObservableList<String> semesterList; // 学期列表数据
+    
+    // 添加标记变量，防止无限循环
+    private boolean isUpdatingFromServer = false;
 
+
+    class term{
+        private String term;
+        private boolean open;
+
+        public term() {
+        }
+
+        public term(String term, boolean open) {
+            this.term = term;
+            this.open = open;
+        }
+
+        public String getTerm() {
+            return term;
+        }
+
+        public void setTerm(String term) {
+            this.term = term;
+        }
+
+        public boolean isOpen() {
+            return open;
+        }
+
+        public void setOpen(boolean open) {
+            this.open = open;
+        }
+    }
+    private List<term> termList = new ArrayList<>();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         semesterList = FXCollections.observableArrayList();
         semesterComboBox.setItems(semesterList);
-        loadSemesters(); // 初始化时加载已有学期
+        firstloadSemesters(); // 初始化时加载已有学期
     }
 
     /**
      * 加载学期列表
      */
-    private void loadSemesters() {
-        semesterList.add("2023-2024-1");
-        semesterList.add("2023-2024-2");
-        semesterList.add("2024-2025-1");
-        semesterList.add("2024-2025-2");
-//        NetworkUtils.get("/admin/listSemesters", null, new NetworkUtils.Callback<String>() {
-//            @Override
-//            public void onSuccess(String result) {
-//                JsonObject res = gson.fromJson(result, JsonObject.class);
-//                if (res.has("code") && res.get("code").getAsInt() == 200) {
-//                    JsonArray dataArray = res.getAsJsonArray("data");
-//                    List<String> loadedSemesters = new ArrayList<>();
-//                    for (int i = 0; i < dataArray.size(); i++) {
-//                        // 假设返回的数据是学期字符串列表
-//                        loadedSemesters.add(dataArray.get(i).getAsString());
-//                    }
-//                    semesterList.clear();
-//                    semesterList.addAll(loadedSemesters);
-//                    if (!semesterList.isEmpty()) {
-//                        semesterComboBox.getSelectionModel().selectFirst(); // 默认选中第一个
-//                    }
-//                    updateStatus("学期列表加载成功", true);
-//                } else {
-//                    updateStatus("加载学期列表失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"), false);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                updateStatus("加载学期列表异常: " + e.getMessage(), false);
-//                e.printStackTrace();
-//            }
-//        });
+    private void firstloadSemesters() {
+        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    List<String> loadedSemesters = new ArrayList<>();
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        // 假设返回的数据是学期字符串列表
+                        termList.add(new term(dataArray.get(i).getAsJsonObject().get("term").getAsString(),dataArray.get(i).getAsJsonObject().get("open").getAsBoolean()));
+                        loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
+                    }
+                    semesterList.clear();
+                    semesterList.addAll(loadedSemesters);
+                    if (!semesterList.isEmpty()) {
+                        isUpdatingFromServer = true; // 设置标记，避免触发无限循环
+                        semesterComboBox.getSelectionModel().selectFirst(); // 默认选中第一个
+                        // 更新初始选中项的状态显示
+                        if (!termList.isEmpty()) {
+                            updateTermStatus(termList.get(0));
+                        }
+                    }
+                    updateStatus("学期列表加载成功", true);
+                } else {
+                    updateStatus("加载学期列表失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"), false);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                updateStatus("加载学期列表异常: " + e.getMessage(), false);
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * 加载学期列表 - 删除此方法，用refreshCurrentTermStatus代替
+     */
+    /*
+    private void loadSemesters(int index) {
+        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    List<String> loadedSemesters = new ArrayList<>();
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        // 假设返回的数据是学期字符串列表
+                        termList.add(new term(dataArray.get(i).getAsJsonObject().get("term").getAsString(),dataArray.get(i).getAsJsonObject().get("open").getAsBoolean()));
+                        loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
+                    }
+                    semesterList.clear();
+                    semesterList.addAll(loadedSemesters);
+                    if (!semesterList.isEmpty()) {
+                        semesterComboBox.getSelectionModel().select(index);
+                    }
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println("加载学期列表异常: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+    */
+
+    /**
+     * 在状态变更后刷新当前学期信息
+     */
+    private void refreshCurrentTermStatus() {
+        isUpdatingFromServer = true;  // 设置标记，防止触发无限循环
+        
+        // 获取当前选中的学期
+        String currentTerm = semesterComboBox.getValue();
+        int currentIndex = semesterComboBox.getSelectionModel().getSelectedIndex();
+        
+        // 清空并重新加载数据
+        termList.clear();
+        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    List<String> loadedSemesters = new ArrayList<>();
+                    
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        term newTerm = new term(
+                            dataArray.get(i).getAsJsonObject().get("term").getAsString(),
+                            dataArray.get(i).getAsJsonObject().get("open").getAsBoolean()
+                        );
+                        termList.add(newTerm);
+                        loadedSemesters.add(newTerm.getTerm());
+                    }
+                    
+                    semesterList.clear();
+                    semesterList.addAll(loadedSemesters);
+                    
+                    // 恢复选择的学期
+                    if (currentIndex >= 0 && currentIndex < semesterList.size()) {
+                        semesterComboBox.getSelectionModel().select(currentIndex);
+                    } else if (!semesterList.isEmpty()) {
+                        // 如果索引无效，尝试找到相同名称的学期
+                        for (int i = 0; i < semesterList.size(); i++) {
+                            if (semesterList.get(i).equals(currentTerm)) {
+                                semesterComboBox.getSelectionModel().select(i);
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 更新当前选中学期的状态显示
+                    if (!termList.isEmpty() && semesterComboBox.getValue() != null) {
+                        for (term t : termList) {
+                            if (t.getTerm().equals(semesterComboBox.getValue())) {
+                                updateTermStatus(t);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    updateStatus("刷新学期列表失败", false);
+                }
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                updateStatus("刷新学期状态异常: " + e.getMessage(), false);
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /**
+     * 更新学期状态显示
+     */
+    private void updateTermStatus(term t) {
+        isOpenLabel.setText(t.isOpen() ? "已开始选课" : "未开始选课");
+        isOpenLabel.setTextFill(t.isOpen() ? Color.GREEN : Color.RED);
+    }
+
+    /**
+     * 处理学期变更事件
+     */
+    public void handleTermChange(ActionEvent actionEvent) {
+        // 如果是从服务器更新触发的，不要再次处理
+        if (isUpdatingFromServer) {
+            isUpdatingFromServer = false;
+            return;
+        }
+        
+        String selectedTerm = semesterComboBox.getValue();
+        if (selectedTerm == null) return;
+        
+        for (term t : termList) {
+            if (t.getTerm().equals(selectedTerm)) {
+                updateTermStatus(t);
+                break;
+            }
+        }
     }
 
     /**
@@ -120,7 +289,7 @@ public class ManageCourseController implements Initializable {
                 if (res.has("code") && res.get("code").getAsInt() == 200) {
                     updateStatus("学期 '" + newSemester + "' 添加成功", true);
                     newSemesterField.clear(); // 清空输入框
-                    loadSemesters(); // 重新加载学期列表
+                    refreshCurrentTermStatus(); // 刷新学期列表
                 } else {
                     updateStatus("添加学期失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"), false);
                 }
@@ -197,7 +366,8 @@ public class ManageCourseController implements Initializable {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
                 if (res.has("code") && res.get("code").getAsInt() == 200) {
                     updateStatus("学期 '" + semester + "' " + actionName + " 成功", true);
-
+                    // 操作成功后刷新学期状态
+                    refreshCurrentTermStatus();
                 } else {
                     updateStatus(actionName + " 失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"), false);
                 }
@@ -205,7 +375,8 @@ public class ManageCourseController implements Initializable {
 
             @Override
             public void onFailure(Exception e) {
-                updateStatus(actionName + " 异常: " + e.getMessage(), false);
+                JsonObject err = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                updateStatus(actionName + " 异常: " +err.get("msg").getAsString(),false);
                 e.printStackTrace();
             }
         });

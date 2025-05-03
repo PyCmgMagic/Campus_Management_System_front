@@ -337,6 +337,7 @@ public class StudentMangementController implements Initializable {
     // 处理搜索按钮点击
     @FXML
     private void handleSearch() {
+
         updateFilteredData();
     }
 
