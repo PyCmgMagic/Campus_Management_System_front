@@ -1,16 +1,14 @@
 package com.work.javafx.controller.teacher;
-
+import com.work.javafx.controller.admin.CourseDetailsController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.work.javafx.controller.student.UserInfo1;
 import com.work.javafx.util.NetworkUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -29,7 +27,6 @@ import java.util.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import com.work.javafx.model.UltimateCourse;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert;
 public class CourseManagementContent implements Initializable {
 static Gson gson = new Gson();
@@ -197,7 +194,13 @@ static Gson gson = new Gson();
             case "proposed":
                 Button viewApplicationButton = createTextButton("查看申请详情", "secondary");
                 Button cancelApplicationButton = createTextButton("撤销申请", "secondary");
-
+                viewApplicationButton.setOnAction(event -> {
+                    try {
+                        handleViewApplicationButton(course);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 buttons.getChildren().addAll(
                     viewApplicationButton,
                     cancelApplicationButton
@@ -331,6 +334,28 @@ static Gson gson = new Gson();
             alert.setContentText("显示学生名单时遇到未知错误: " + e.getMessage());
             alert.showAndWait();
         }
+    }
+    //查看课程详情
+    private void handleViewApplicationButton(UltimateCourse course) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/CourseDetails.fxml"));
+        Parent root = loader.load();
+        //获取控制器
+        CourseDetailsController controller = loader.getController();
+         //创建新窗口
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setTitle("课程详情——"+course.getName());
+        stage.setScene(new Scene(root));
+        // 设置最小窗口大小
+        stage.setMinWidth(700);
+        stage.setMinHeight(550);
+        // 设置课程ID并加载数据
+        controller.loadCourseDetails(course.getId());
+        // 设置为非审批页面
+        controller.setApplicable(false);
+
+        controller.setStage(stage);
+        stage.showAndWait();
     }
 
     // Course model class
