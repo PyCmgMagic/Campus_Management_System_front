@@ -46,8 +46,6 @@
                     <GridPane styleClass="quick-actions">
                         <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
                         </columnConstraints>
                         
                         <BorderPane fx:id="reviewPendingCard" onMouseClicked="#showPendingView" styleClass="quick-action-card,approval-card" GridPane.columnIndex="0">
@@ -61,32 +59,8 @@
                                 </VBox>
                             </center>
                             <right>
-                                <Label fx:id="pendingBadge" styleClass="pending-badge" text="3" />
+                                <Label fx:id="pendingBadge" styleClass="pending-badge" text="0" />
                             </right>
-                        </BorderPane>
-                        
-                        <BorderPane fx:id="addCourseCard" onMouseClicked="#showAddCourseView" styleClass="quick-action-card" GridPane.columnIndex="1">
-                            <left>
-                                <Region styleClass="card-icon,add-icon" BorderPane.alignment="CENTER" />
-                            </left>
-                            <center>
-                                <VBox styleClass="card-content">
-                                    <Label styleClass="card-title" text="新增课程" />
-                                    <Label styleClass="card-desc" text="直接创建新课程信息" />
-                                </VBox>
-                            </center>
-                        </BorderPane>
-                        
-                        <BorderPane fx:id="exportCourseCard" onMouseClicked="#exportCourses" styleClass="quick-action-card" GridPane.columnIndex="2">
-                            <left>
-                                <Region styleClass="card-icon,export-icon" BorderPane.alignment="CENTER" />
-                            </left>
-                            <center>
-                                <VBox styleClass="card-content">
-                                    <Label styleClass="card-title" text="导出课程数据" />
-                                    <Label styleClass="card-desc" text="导出当前列表课程信息" />
-                                </VBox>
-                            </center>
                         </BorderPane>
                   <rowConstraints>
                      <RowConstraints />
