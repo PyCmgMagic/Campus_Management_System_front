@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.work.javafx.controller.admin.AddNewTeacherController"
+            prefHeight="600.0" prefWidth="800.0"
+            stylesheets="@../css/admin/addNewTeacher.css">
+
+    <fx:define>
+        <ToggleGroup fx:id="sexGroup"/>
+    </fx:define>
+    
+    <VBox spacing="20" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" 
+          AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="main-container">
+        
+        <!-- Header -->
+        <HBox styleClass="header-container" alignment="CENTER_LEFT">
+            <Label text="添加新教师" styleClass="page-title">
+                <font>
+                    <Font name="System Bold" size="24.0"/>
+                </font>
+            </Label>
+        </HBox>
+        
+        <!-- Form Container -->
+        <ScrollPane fitToWidth="true" styleClass="form-scroll-pane">
+            <VBox spacing="15" styleClass="form-container">
+                
+                <!-- Teacher ID (SDU ID) -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="教师工号:" styleClass="field-label" minWidth="100"/>
+                    <TextField fx:id="sduIdField" promptText="请输入教师工号" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Teacher Name -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="教师姓名:" styleClass="field-label" minWidth="100"/>
+                    <TextField fx:id="usernameField" promptText="请输入教师姓名" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Gender -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="性别:" styleClass="field-label" minWidth="100"/>
+                    <ComboBox fx:id="sexComboBox" promptText="请选择性别" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Department/College -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="所属学院:" styleClass="field-label" minWidth="100"/>
+                    <ComboBox fx:id="collegeComboBox" promptText="请选择学院" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Email -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="电子邮箱:" styleClass="field-label" minWidth="100"/>
+                    <TextField fx:id="emailField" promptText="请输入电子邮箱" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Phone -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="联系电话:" styleClass="field-label" minWidth="100"/>
+                    <TextField fx:id="phoneField" promptText="请输入联系电话" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Ethnic -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="民族:" styleClass="field-label" minWidth="100"/>
+                    <ComboBox fx:id="ethnicComboBox" promptText="请选择民族" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Nation -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="国籍:" styleClass="field-label" minWidth="100"/>
+                    <ComboBox fx:id="nationComboBox" promptText="请选择国籍" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Politics Status -->
+                <HBox spacing="10" styleClass="form-field-container">
+                    <Label text="政治面貌:" styleClass="field-label" minWidth="100"/>
+                    <ComboBox fx:id="politicsStatusComboBox" promptText="请选择政治面貌" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- Buttons Container -->
+                <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="buttons-container">
+                    <Button fx:id="cancelButton" text="取消" styleClass="cancel-button" onAction="#handleCancel"/>
+                    <Button fx:id="submitButton" text="提交" styleClass="submit-button" onAction="#handleSubmit"/>
+                </HBox>
+                
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+</AnchorPane>
