@@ -385,7 +385,7 @@ public class StudentMangementController implements Initializable {
         showAlert(Alert.AlertType.INFORMATION, "功能提示", "添加学生功能尚未实现");
     }
 
-    // Handle import students card click
+
     @FXML
     private void importStudents(MouseEvent event) {
         FileChooser fileChooser = new FileChooser();
