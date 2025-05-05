@@ -240,9 +240,7 @@ public class ClassManagementController implements Initializable {
                                 if (response.has("data") && response.get("data").isJsonObject()) {
                                     JsonObject dataObject = response.getAsJsonObject("data");
 
-                                    if (dataObject.has("pages")) {
-                                        totalPages = dataObject.get("pages").getAsInt();
-                                    } else if (dataObject.has("page")) {
+                                   if (dataObject.has("page")) {
                                         totalPages = dataObject.get("page").getAsInt();
                                     }
 
@@ -475,9 +473,6 @@ public class ClassManagementController implements Initializable {
         loadTableData(0);
     }
 
-    private void applyFiltersAndSearch(String searchTerm) {
-        loadTableData(0);
-    }
 
     @FXML
     private void showAddClassView(javafx.scene.input.MouseEvent event) {
@@ -547,10 +542,36 @@ public class ClassManagementController implements Initializable {
         if (actualIndex < 0 || actualIndex >= filteredClassInfo.size()) return;
         ClassInfo selectedClass = filteredClassInfo.get(actualIndex);
         if (showConfirmDialog("确认删除", "确定要删除班级 " + selectedClass.getName() + " 吗？\n此操作可能无法恢复。")) {
-            showInfoDialog("操作成功", "已删除班级: " + selectedClass.getName() + "\n(模拟)");
+            Map<String,String> params = new HashMap<>();
+            params.put("id",selectedClass.getId());
+            NetworkUtils.post("/section/deleteSection", params, null, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    Gson gson = new Gson();
+                    JsonObject res = gson.fromJson(result,JsonObject.class);
+                    if(res.has("code") && res.get("code").getAsInt()==200){
+                        showInfoDialog("操作成功", "已删除班级: " + selectedClass.getName());
+                        int currentPage = classPagination.getCurrentPageIndex();
+                        loadTableData(currentPage);
+                    }else{
+                        String err = res.get("msg").getAsString();
+                        showInfoDialog("操作失败",err);
+                    }
+                }
 
-            int currentPage = classPagination.getCurrentPageIndex();
-            loadTableData(currentPage);
+                @Override
+                public void onFailure(Exception e) {
+                    Gson gson = new Gson();
+                        int index = e.getMessage().indexOf("{");
+                        JsonObject res = gson.fromJson(e.getMessage().substring(index),JsonObject.class);
+                        if(res.has("msg")){
+                            showInfoDialog("删除失败",res.get("msg").getAsString());
+                        }else{
+                            showInfoDialog("删除失败","原因未知");
+                        }
+                }
+            });
+
         }
     }
 
