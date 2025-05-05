@@ -120,9 +120,9 @@ public class UserDetailsController_teacher implements Initializable {
                                 String status = statusInfo.get("status").getAsString();
                                 String statusText;
                                 switch (status) {
-                                    case "STUDYING": statusText = "在校学习"; break;
-                                    case "GRADUATED": statusText = "已毕业"; break;
-                                    case "SUSPENDED": statusText = "休学"; break;
+                                    case "STUDYING": statusText = "在职"; break;
+//                                    case "GRADUATED": statusText = "已毕业"; break;
+//                                    case "SUSPENDED": statusText = "休学"; break;
                                     default: statusText = status;
                                 }
                                 statusLabel.setText(statusText);
