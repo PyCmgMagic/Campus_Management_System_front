@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,27 +31,15 @@ import javafx.application.Platform;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassManagementController implements Initializable {
 
     @FXML private ScrollPane rootPane;
-    @FXML private VBox mainClassesView;
-    @FXML private Label mainPageTitle;
-    @FXML private HBox mainTitleContainer;
-
-    @FXML private BorderPane addClassCard;
-    @FXML private BorderPane batchManageCard;
-    @FXML private BorderPane exportClassCard;
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> gradeFilter;
-
-    @FXML private Button batchDeleteBtn;
 
     @FXML private TableView<ClassInfo> classTable;
     @FXML private TableColumn<ClassInfo, String> idColumn;
@@ -68,6 +57,7 @@ public class ClassManagementController implements Initializable {
     private ObservableList<ClassInfo> filteredClassInfo = FXCollections.observableArrayList();
 
     private final int ROWS_PER_PAGE = 10;
+    static Gson gson = new Gson();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -500,23 +490,49 @@ public class ClassManagementController implements Initializable {
 
     @FXML
     private void batchManageClasses(javafx.scene.input.MouseEvent event) {
-        showInfoDialog("功能开发中", "批量管理功能将在后续版本开放。");
-    }
+        // 创建对话框
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("一键分班");
+        dialog.setHeaderText("年级格式：2024/2025");
+        dialog.setContentText("请输入你想执行分班的年级:");
 
-    @FXML
-    private void exportClasses(javafx.scene.input.MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("导出班级数据");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Excel文件", "*.xlsx"));
-        fileChooser.setInitialFileName("班级数据.xlsx");
+    // 显示对话框并等待用户响应
+        Optional<String> result = dialog.showAndWait();
+        // 处理结果
+        if (result.isPresent()) {
+            String input = result.get();
+            boolean isValid = input.matches("\\d{4}");
+            if(isValid){
+                Map<String,String> params = new HashMap<>();
+                params.put("grade",input);
+                    NetworkUtils.post("/section/assign", params, null, new NetworkUtils.Callback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            JsonObject res = gson.fromJson(result,JsonObject.class);
+                            if(res.has("code") && res.get("code").getAsInt() == 200){
+                                showInfoDialog("成功","智能分班成功");
+                            }else{
+                                showInfoDialog("失败",res.get("msg").getAsString());
+                            }
+                        }
 
-        File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
-        if (file != null) {
-            System.out.println("导出到: " + file.getAbsolutePath());
-            showInfoDialog("导出成功", "班级数据已成功导出到: " + file.getAbsolutePath());
+                        @Override
+                        public void onFailure(Exception e) {
+                            int index = e.getMessage().indexOf("{");
+                            JsonObject res= gson.fromJson(e.getMessage().substring(index), JsonObject.class);
+                            if(res.has("msg")){
+                                ShowMessage.showErrorMessage("操作失败",res.get("msg").getAsString());
+                            }else{
+                                ShowMessage.showErrorMessage("操作失败","未知错误");
+                            }
+                        }
+                    });
+            }else{
+                ShowMessage.showErrorMessage("格式错误","请输入4位数字");
+            }
         }
     }
+
 
     @FXML
     private void batchDeleteClasses() {
