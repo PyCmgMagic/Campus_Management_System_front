@@ -1,5 +1,6 @@
 package com.work.javafx;
 import com.work.javafx.entity.UserSession;
+import com.work.javafx.util.Refresh;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,6 +9,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainApplication extends Application {
     private static Stage stage;
@@ -29,9 +32,11 @@ public class MainApplication extends Application {
         // 初始加载登录页面
         changeView("Login.fxml","css/Login.css");
         stage.show();
+
     }
     @Override
     public void stop() {
+        stopTokenRefreshTimer(); // 停止定时器
         UserSession.getInstance().clearSession(); // 清理数据
         System.out.println("应用关闭，用户数据已清除");
     }
@@ -100,7 +105,30 @@ public class MainApplication extends Application {
 
 
     }
+    /**
+     * 定时刷新token
+     */
+    private static Timer tokenRefreshTimer;
 
+    public static void startTokenRefreshTimer() {
+        // 如果已有定时器，先取消
+        stopTokenRefreshTimer();
+
+        tokenRefreshTimer = new Timer();
+        tokenRefreshTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Refresh.refreshtoken();
+            }
+        }, 0, 29* 60 * 1000); // 每29分钟刷新一次
+    }
+
+    public static void stopTokenRefreshTimer() {
+        if (tokenRefreshTimer != null) {
+            tokenRefreshTimer.cancel();
+            tokenRefreshTimer = null;
+        }
+    }
     public static void main(String[] args) {
         launch(args);
     }

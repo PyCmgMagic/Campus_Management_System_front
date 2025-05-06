@@ -138,6 +138,7 @@ public class LoginController {
                          UserSession.getInstance().setRefreshToken(refreshToken);
                          UserSession.getInstance().setUsername(username);
                         System.out.println("登录成功: " + result);
+                        MainApplication.startTokenRefreshTimer();
                          navigateToMainPage(); // 导航到主页面
                     } else {
                         String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
