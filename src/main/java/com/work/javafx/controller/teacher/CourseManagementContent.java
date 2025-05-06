@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import com.work.javafx.model.UltimateCourse;
 import javafx.scene.control.Alert;
+
+import javax.swing.*;
+
 public class CourseManagementContent implements Initializable {
 static Gson gson = new Gson();
     @FXML
@@ -201,6 +205,13 @@ static Gson gson = new Gson();
                         throw new RuntimeException(e);
                     }
                 });
+                cancelApplicationButton.setOnAction(event -> {
+                    try {
+                        handlecancelApplicationButton(course);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
                 buttons.getChildren().addAll(
                     viewApplicationButton,
                     cancelApplicationButton
@@ -271,7 +282,7 @@ static Gson gson = new Gson();
             
             // 显示窗口
             popupStage.showAndWait();
-            
+            loadData();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -357,7 +368,34 @@ static Gson gson = new Gson();
         controller.setStage(stage);
         stage.showAndWait();
     }
-
+//撤销申请
+    private void handlecancelApplicationButton(UltimateCourse course){
+        if(ShowMessage.showConfirmMessage("确认撤销？","确认撤销 " + course.getName()+ " 的申请？")){
+            ShowMessage.showInfoMessage("撤销中","撤销中...请稍后...");
+            int courseid = course.getId();
+            String url = "/class/delete/" + courseid;
+            NetworkUtils.post(url, null, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    JsonObject res= gson.fromJson(result, JsonObject.class);
+                    if(res.has("code") && res.get("code").getAsInt()==200){
+                        ShowMessage.showInfoMessage("成功","撤销 " + course.getName()+" 课程成功");
+                    }else{
+                        ShowMessage.showErrorMessage("失败",res.get("msg").getAsString());
+                    }
+                    loadData();
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    int index  = e.getMessage().indexOf("{");
+                    JsonObject res = gson.fromJson(e.getMessage().substring(index), JsonObject.class);
+                    if(res.has("msg")){
+                        ShowMessage.showErrorMessage("失败",res.get("msg").getAsString());
+                    }
+                }
+            });
+        }
+    }
     // Course model class
     public static class Course {
         private final String courseCode;
