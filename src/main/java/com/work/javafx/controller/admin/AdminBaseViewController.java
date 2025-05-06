@@ -226,7 +226,7 @@ public class AdminBaseViewController implements Initializable {
     private void logout() {
         //清除用户信息
         UserSession.getInstance().clearSession();
-
+        MainApplication.stopTokenRefreshTimer();
         // 切换到登录页面
         try {
             MainApplication.changeView("Login.fxml", "css/Login.css");
