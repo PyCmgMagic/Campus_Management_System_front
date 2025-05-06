@@ -7,19 +7,14 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
 
 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll-pane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.ScoreInputController">
    <content>
@@ -67,45 +62,18 @@
                         <ComboBox fx:id="courseComboBox" promptText="选择课程" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="8.0">
-                     <children>
-                        <Label text="班级:" />
-                        <ComboBox fx:id="classComboBox" promptText="选择班级" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="8.0">
-                     <children>
-                        <Label text="考试类型:" />
-                        <ComboBox fx:id="examTypeComboBox" promptText="选择类型" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="8.0">
-                     <children>
-                        <Label text="日期:" />
-                        <DatePicker fx:id="datePicker" />
-                     </children>
-                  </HBox>
-                  <Button onAction="#handleQuery" styleClass="primary-button" text="查询" />
+                  <HBox alignment="CENTER_LEFT" spacing="8.0" />
+                  <HBox alignment="CENTER_LEFT" spacing="8.0" />
                </children>
             </FlowPane>
 
             <!-- 批量按钮行 -->
             <BorderPane styleClass="batch-button-row">
                <left>
-                  <HBox spacing="10.0">
-                     <children>
-                        <Button onAction="#handleBatchImport" styleClass="secondary-button" text="批量导入" />
-                        <Button onAction="#handleExportExcel" styleClass="secondary-button" text="导出Excel" />
-                     </children>
-                  </HBox>
+                  <HBox spacing="10.0" />
                </left>
                <right>
-                  <HBox spacing="10.0">
-                     <children>
-                        <Button onAction="#handleSortById" styleClass="secondary-button" text="按学号排序" />
-                        <Button onAction="#handleSortByScore" styleClass="secondary-button" text="按成绩排序" />
-                     </children>
-                  </HBox>
+                  <HBox spacing="10.0" />
                </right>
             </BorderPane>
 
@@ -116,11 +84,10 @@
                   <TableColumn fx:id="nameCol" prefWidth="80.0" text="姓名" />
                   <TableColumn fx:id="classCol" prefWidth="110.0" text="班级" />
                   <TableColumn fx:id="courseCol" prefWidth="120.0" text="课程" />
-                  <TableColumn fx:id="regularScoreCol" prefWidth="110.0" text="平时成绩(30%)" />
-                  <TableColumn fx:id="finalScoreCol" prefWidth="110.0" text="期末成绩(70%)" />
+                  <TableColumn fx:id="regularScoreCol" prefWidth="110.0" text="平时成绩" />
+                  <TableColumn fx:id="finalScoreCol" prefWidth="110.0" text="期末成绩" />
                   <TableColumn fx:id="totalScoreCol" prefWidth="80.0" text="总评成绩" />
                   <TableColumn fx:id="statusCol" prefWidth="70.0" text="状态" />
-                  <TableColumn fx:id="remarksCol" prefWidth="120.0" text="备注" />
                   <TableColumn fx:id="actionCol" prefWidth="80.0" text="操作" />
                </columns>
                <columnResizePolicy>
@@ -180,10 +147,10 @@
                            <Label styleClass="stats-box-title" text="成绩分布" />
                            <BarChart fx:id="gradeDistributionChart" legendVisible="false" title="">
                              <xAxis>
-                               <CategoryAxis side="BOTTOM" fx:id="barChartXAxis" />
+                               <CategoryAxis fx:id="barChartXAxis" side="BOTTOM" />
                              </xAxis>
                              <yAxis>
-                               <NumberAxis fx:id="barChartYAxis" side="LEFT" label="人数" />
+                               <NumberAxis fx:id="barChartYAxis" label="人数" side="LEFT" />
                              </yAxis>
                            </BarChart>
                         </VBox>
