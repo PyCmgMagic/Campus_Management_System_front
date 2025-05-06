@@ -199,7 +199,6 @@ public class ApplyNewCourseController implements Initializable {
                 }
                 @Override
                 public void onFailure(Exception e) {
-
                     JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
                     ShowMessage.showErrorMessage("操作失败",res.get("msg").getAsString());
                 }
