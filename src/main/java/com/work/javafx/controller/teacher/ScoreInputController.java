@@ -30,21 +30,18 @@ import java.util.stream.Collectors;
 
 public class ScoreInputController implements Initializable {
 
-    // --- FXML Injections ---
+    // --- FXML 注入 ---
 
-    // Info Cards Labels
+    // 信息卡标签
     @FXML private Label pendingClassesLabel;
     @FXML private Label enteredClassesLabel;
     @FXML private Label dueClassesLabel;
     @FXML private Label failedStudentsLabel;
 
-    // Filter Controls
+    // 筛选控件
     @FXML private ComboBox<String> courseComboBox;
-    @FXML private ComboBox<String> classComboBox;
-    @FXML private ComboBox<String> examTypeComboBox;
-    @FXML private DatePicker datePicker;
 
-    // TableView and Columns
+    // 表格视图和列
     @FXML private TableView<ScoreEntry> scoreTableView;
     @FXML private TableColumn<ScoreEntry, String> studentIdCol;
     @FXML private TableColumn<ScoreEntry, String> nameCol;
@@ -54,80 +51,73 @@ public class ScoreInputController implements Initializable {
     @FXML private TableColumn<ScoreEntry, Double> finalScoreCol;
     @FXML private TableColumn<ScoreEntry, Double> totalScoreCol;
     @FXML private TableColumn<ScoreEntry, String> statusCol;
-    @FXML private TableColumn<ScoreEntry, String> remarksCol;
     @FXML private TableColumn<ScoreEntry, Void> actionCol;
 
-    // Stats Labels
+    // 统计标签
     @FXML private Label avgScoreLabel;
     @FXML private Label maxScoreLabel;
     @FXML private Label minScoreLabel;
     @FXML private Label passRateLabel;
     @FXML private Label excellentRateLabel;
 
-    // Charts
+    // 图表
     @FXML private BarChart<String, Number> gradeDistributionChart;
     @FXML private CategoryAxis barChartXAxis;
     @FXML private NumberAxis barChartYAxis;
     @FXML private PieChart gradeLevelChart;
-    @FXML private VBox pieChartLegend; // VBox for custom legend
+    @FXML private VBox pieChartLegend; // 自定义图例的VBox
 
 
-    // --- Data ---
+    // --- 数据 ---
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
 
-    // --- Initialization ---
+    // --- 初始化 ---
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 1. Populate ComboBoxes
+        // 1. 填充下拉框
         setupComboBoxes();
 
-        // 2. Configure TableView Columns
+        // 2. 配置表格视图列
         setupTableView();
 
-        // 3. Load Initial Data (Example)
+        // 3. 加载初始数据（示例）
         loadSampleData();
 
-        // 4. Setup Charts
+        // 4. 设置图表
         setupCharts();
 
-        // 5. Calculate and Display Initial Stats
+        // 5. 计算并显示初始统计数据
         updateStatistics();
 
-        // 6. Set default date (optional)
-        datePicker.setValue(LocalDate.now()); // Set current date
     }
 
-    // --- Setup Methods ---
+    // --- 设置方法 ---
 
     private void setupComboBoxes() {
         courseComboBox.setItems(FXCollections.observableArrayList("高等数学 (II)", "程序设计基础", "数据结构", "计算机网络", "全部课程"));
-        classComboBox.setItems(FXCollections.observableArrayList("计算机系2班", "计算机系1班", "软件工程1班", "全部班级"));
-        examTypeComboBox.setItems(FXCollections.observableArrayList("期末考试", "期中考试", "平时测验", "全部类型"));
 
-        // Select default values if needed
+        // 如果需要，选择默认值
          courseComboBox.getSelectionModel().selectFirst();
-         classComboBox.getSelectionModel().selectFirst();
-         examTypeComboBox.getSelectionModel().selectFirst();
     }
 
     private void setupTableView() {
-        // Bind columns to ScoreEntry properties
+        // 将列绑定到ScoreEntry属性
         studentIdCol.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         classCol.setCellValueFactory(new PropertyValueFactory<>("className"));
         courseCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        totalScoreCol.setCellValueFactory(new PropertyValueFactory<>("totalScore")); // Calculated, not editable
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));     // Calculated, not editable
+        totalScoreCol.setCellValueFactory(new PropertyValueFactory<>("totalScore")); // 计算得出，不可编辑
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));     // 计算得出，不可编辑
 
-        // Make score columns editable with validation (using DoubleStringConverter)
+        // 使用验证功能使分数列可编辑（使用DoubleStringConverter）
         regularScoreCol.setCellValueFactory(new PropertyValueFactory<>("regularScore"));
         regularScoreCol.setCellFactory(TextFieldTableCell.forTableColumn(new ScoreStringConverter()));
         regularScoreCol.setOnEditCommit(event -> {
             ScoreEntry entry = event.getRowValue();
             entry.setRegularScore(event.getNewValue());
-            scoreTableView.refresh(); // Refresh row to show updated total and status
-            updateStatistics();     // Recalculate stats
+            scoreTableView.refresh(); // 刷新行以显示更新的总分和状态
+            updateStatistics();     // 重新计算统计数据
         });
 
         finalScoreCol.setCellValueFactory(new PropertyValueFactory<>("finalScore"));
@@ -139,16 +129,9 @@ public class ScoreInputController implements Initializable {
             updateStatistics();
         });
 
-        // Make remarks column editable
-        remarksCol.setCellValueFactory(new PropertyValueFactory<>("remarks"));
-        remarksCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        remarksCol.setOnEditCommit(event -> {
-            ScoreEntry entry = event.getRowValue();
-            entry.setRemarks(event.getNewValue());
-            // Potentially save remark change immediately or mark row as dirty
-        });
 
-        // Style the status column
+
+        // 样式化状态列
         statusCol.setCellFactory(column -> new TableCell<ScoreEntry, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -156,39 +139,39 @@ public class ScoreInputController implements Initializable {
                 if (item == null || empty) {
                     setText(null);
                     setStyle("");
-                    getStyleClass().removeAll("status-normal", "status-absent", "status-fail"); // Clear previous styles
+                    getStyleClass().removeAll("status-normal", "status-absent", "status-fail"); // 清除先前的样式
                 } else {
                     setText(item);
-                    // Remove old styles before adding new ones
+                    // 添加新样式前删除旧样式
                     getStyleClass().removeAll("status-normal", "status-absent", "status-fail");
                     if ("通过".equals(item)) {
-                        // Use CSS class for styling
+                        // 使用CSS类进行样式设置
                         getStyleClass().add("status-normal");
                     } else if ("不及格".equals(item)) {
-                        getStyleClass().add("status-fail"); // Match prototype name
+                        getStyleClass().add("status-fail"); // 匹配原型名称
                     } else {
-                         // Potentially handle other statuses like "缺考" (Absent)
-                         if("缺考".equals(item)) { // Example for absent status
+                         // 可能处理其他状态如"缺考"
+                         if("缺考".equals(item)) { // 缺考状态的示例
                             getStyleClass().add("status-absent");
                          }
-                        // Default style (no specific class)
+                        // 默认样式（无特定类）
                     }
                 }
             }
         });
 
 
-        // Add Save button to action column
+        // 添加保存按钮到操作列
         actionCol.setCellFactory(param -> new TableCell<ScoreEntry, Void>() {
             private final Button saveButton = new Button("保存");
             {
-                saveButton.getStyleClass().add("secondary-button"); // Apply CSS style
+                saveButton.getStyleClass().add("secondary-button"); // 应用CSS样式
                 saveButton.setOnAction(event -> {
                     ScoreEntry entry = getTableView().getItems().get(getIndex());
-                    System.out.println("Saving changes for: " + entry.getName());
-                    // --- Add actual save logic here ---
-                    // e.g., call a service to update the database
-                    // Indicate success/failure to the user
+                    System.out.println("正在保存修改：" + entry.getName());
+                    // --- 在此添加实际保存逻辑 ---
+                    // 例如，调用服务更新数据库
+                    // 向用户指示成功/失败
                 });
             }
 
@@ -203,64 +186,63 @@ public class ScoreInputController implements Initializable {
             }
         });
 
-        // Set the data source for the table
+        // 设置表格的数据源
         scoreTableView.setItems(scoreData);
     }
 
     private void setupCharts() {
-        // Bar Chart Setup
+        // 条形图设置
         barChartXAxis.setLabel("分数段");
         barChartYAxis.setLabel("人数");
         gradeDistributionChart.setTitle("");
         gradeDistributionChart.setLegendVisible(false);
 
-        // --- Configuration for Integer Ticks on Y-Axis ---
-        barChartYAxis.setAutoRanging(false); // Disable auto-ranging to manually control ticks
-        barChartYAxis.setLowerBound(0);      // Start axis at 0
-        // We'll set the upper bound and tick unit dynamically in updateBarChart
-        // based on the maximum value.
-        barChartYAxis.setMinorTickCount(0); // No minor ticks between integers
-        // Optional: Format tick labels to ensure they show as integers without decimals
+        // --- Y轴整数刻度的配置 ---
+        barChartYAxis.setAutoRanging(false); // 禁用自动范围以手动控制刻度
+        barChartYAxis.setLowerBound(0);      // 坐标轴从0开始
+        // 我们将根据最大值在updateBarChart中动态设置上限和刻度单位
+        barChartYAxis.setMinorTickCount(0); // 整数之间没有次要刻度
+        // 可选：格式化刻度标签以确保它们显示为没有小数的整数
         barChartYAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
-                // Only show integer values
+                // 只显示整数值
                  if (object.doubleValue() == object.intValue()) {
                     return String.valueOf(object.intValue());
                 }
-                return ""; // Hide non-integer tick labels if any appear
+                return ""; // 如有出现，隐藏非整数刻度标签
             }
 
             @Override
             public Number fromString(String string) {
-                // Not needed for formatting
+                // 不需要用于格式化
                 return null;
             }
         });
-        // --- End Y-Axis Configuration ---
+        // --- Y轴配置结束 ---
 
 
-        // Pie Chart Setup
+        // 饼图设置
         gradeLevelChart.setTitle("");
         gradeLevelChart.setLabelsVisible(false);
         gradeLevelChart.setLegendVisible(false);
     }
 
 
-    // --- Data Loading & Handling ---
+    // --- 数据加载和处理 ---
 
     private void loadSampleData() {
-        // In a real app, load this from a database or API based on filters
+        // 在实际应用中，根据筛选条件从数据库或API加载
         scoreData.addAll(
             new ScoreEntry("2025001", "张三", "计算机系2班", "高等数学 (II)", 85.0, 78.0, "-"),
             new ScoreEntry("2025015", "李四", "计算机系2班", "高等数学 (II)", 65.0, 56.0, ""),
             new ScoreEntry("2025022", "王五", "计算机系2班", "高等数学 (II)", 92.0, 88.0, "-"),
             new ScoreEntry("2025037", "赵六", "计算机系2班", "高等数学 (II)", 73.0, 81.0, "-"),
             new ScoreEntry("2025043", "孙七", "计算机系2班", "高等数学 (II)", 61.0, 50.0, "")
-            // Add more entries if needed
+            // 如需要可添加更多条目
         );
 
-        // Update Info Card Labels (Example - replace with real data)
+        // 更新信息卡标签（示例 - 使用实际数据替换）
         pendingClassesLabel.setText("5");
         enteredClassesLabel.setText("3");
         dueClassesLabel.setText("2");
@@ -281,7 +263,7 @@ public class ScoreInputController implements Initializable {
 
         List<Double> validScores = scoreData.stream()
                                             .map(ScoreEntry::getTotalScore)
-                                            .filter(score -> score != null) // Only consider entries with a calculated score
+                                            .filter(score -> score != null) // 只考虑有计算分数的条目
                                             .collect(Collectors.toList());
 
         if (validScores.isEmpty()) {
@@ -299,21 +281,21 @@ public class ScoreInputController implements Initializable {
         double avg = validScores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
         double max = validScores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
         double min = validScores.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
-        long totalCount = validScores.size(); // Count only those with valid scores
+        long totalCount = validScores.size(); // 只计算有效分数
         long passCount = validScores.stream().filter(score -> score >= 60.0).count();
-        long excellentCount = validScores.stream().filter(score -> score >= 90.0).count(); // Assuming 90+ is excellent
+        long excellentCount = validScores.stream().filter(score -> score >= 90.0).count(); // 假设90+是优秀
 
         avgScoreLabel.setText(String.format("%.1f", avg));
         maxScoreLabel.setText(String.format("%.1f", max));
         minScoreLabel.setText(String.format("%.1f", min));
         passRateLabel.setText(String.format("%.0f%%", totalCount == 0 ? 0 : (double) passCount / totalCount * 100));
-        excellentRateLabel.setText(String.format("%.0f%%", totalCount == 0 ? 0 : (double) excellentCount / totalCount * 100)); // Corrected calculation
+        excellentRateLabel.setText(String.format("%.0f%%", totalCount == 0 ? 0 : (double) excellentCount / totalCount * 100)); // 修正计算
 
-        // Update Charts
+        // 更新图表
         updateBarChart(validScores);
         updatePieChart(validScores);
 
-         // Update failed student count in info card
+         // 更新信息卡中的不及格学生数
          failedStudentsLabel.setText(String.valueOf(scoreData.stream().filter(s -> "不及格".equals(s.getStatus())).count()));
     }
 
@@ -324,13 +306,13 @@ public class ScoreInputController implements Initializable {
         long eightyToNinety = scores.stream().filter(s -> s >= 80 && s < 90).count();
         long ninetyToHundred = scores.stream().filter(s -> s >= 90 && s <= 100).count();
 
-        // Find the maximum count to set the upper bound of the axis
+        // 找出最大计数以设置坐标轴的上限
         long maxCount = Math.max(failCount, Math.max(sixtyToSeventy, Math.max(seventyToEighty, Math.max(eightyToNinety, ninetyToHundred))));
 
-        // --- Dynamically set Upper Bound and Tick Unit ---
-        barChartYAxis.setUpperBound(maxCount + 1); // Set upper bound slightly above max count
-        barChartYAxis.setTickUnit(1);            // Set tick step to 1
-        // --- End Dynamic Axis Update ---
+        // --- 动态设置上限和刻度单位 ---
+        barChartYAxis.setUpperBound(maxCount + 1); // 设置上限略高于最大计数
+        barChartYAxis.setTickUnit(1);            // 设置刻度步长为1
+        // --- 动态坐标轴更新结束 ---
 
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -340,9 +322,9 @@ public class ScoreInputController implements Initializable {
         series.getData().add(new XYChart.Data<>("80-90", eightyToNinety));
         series.getData().add(new XYChart.Data<>("90-100", ninetyToHundred));
 
-        gradeDistributionChart.getData().setAll(series); // Replace existing data
+        gradeDistributionChart.getData().setAll(series); // 替换现有数据
 
-         // Apply CSS Styles for bar colors
+         // 应用CSS样式设置条形颜色
          Platform.runLater(() -> {
             int i = 0;
             for(Node n: gradeDistributionChart.lookupAll(".chart-bar")) {
@@ -354,7 +336,7 @@ public class ScoreInputController implements Initializable {
     private void updatePieChart(List<Double> scores) {
          long excellentCount = scores.stream().filter(s -> s >= 90).count(); // 优秀 90+
          long goodCount = scores.stream().filter(s -> s >= 80 && s < 90).count(); // 良好 80-89
-         long passCount = scores.stream().filter(s -> s >= 60 && s < 80).count(); // 及格 60-79 (Adjusted range from prototype)
+         long passCount = scores.stream().filter(s -> s >= 60 && s < 80).count(); // 及格 60-79 (调整自原型的范围)
          long failCount = scores.stream().filter(s -> s < 60).count();      // 不及格 <60
 
          long totalValid = scores.size();
@@ -365,7 +347,7 @@ public class ScoreInputController implements Initializable {
          }
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
-        // Add slices only if count > 0 to avoid clutter
+        // 只添加计数>0的切片以避免混乱
         if (excellentCount > 0) pieData.add(new PieChart.Data(String.format("优秀 (%d)", excellentCount), excellentCount));
         if (goodCount > 0) pieData.add(new PieChart.Data(String.format("良好 (%d)", goodCount), goodCount));
         if (passCount > 0) pieData.add(new PieChart.Data(String.format("及格 (%d)", passCount), passCount));
@@ -373,10 +355,10 @@ public class ScoreInputController implements Initializable {
 
         gradeLevelChart.setData(pieData);
 
-         // Update Custom Legend
-         pieChartLegend.getChildren().clear(); // Clear old legend items
-         // Define colors corresponding to the order above (Excellent, Good, Pass, Fail)
-         String[] legendColors = {"#3F51B5", "#4CAF50", "#FFC107", "#FF9800"}; // Matches prototype colors
+         // 更新自定义图例
+         pieChartLegend.getChildren().clear(); // 清除旧图例项
+         // 定义与上述顺序对应的颜色（优秀，良好，及格，不及格）
+         String[] legendColors = {"#3F51B5", "#4CAF50", "#FFC107", "#FF9800"}; // 匹配原型颜色
          int colorIndex = 0;
          if (excellentCount > 0) pieChartLegend.getChildren().add(createLegendItem(legendColors[0], String.format("优秀(90+): %d人 (%.0f%%)", excellentCount, (double)excellentCount/totalValid*100)));
          if (goodCount > 0) pieChartLegend.getChildren().add(createLegendItem(legendColors[1], String.format("良好(80-89): %d人 (%.0f%%)", goodCount, (double)goodCount/totalValid*100)));
@@ -384,54 +366,48 @@ public class ScoreInputController implements Initializable {
          if (failCount > 0) pieChartLegend.getChildren().add(createLegendItem(legendColors[3], String.format("不及格(<60): %d人 (%.0f%%)", failCount, (double)failCount/totalValid*100)));
 
 
-        // Apply CSS Styles for pie colors after data is set
+        // 设置数据后应用CSS样式设置饼图颜色
         Platform.runLater(() -> {
             int i = 0;
             for (PieChart.Data data : gradeLevelChart.getData()) {
-                // Remove old styles
+                // 删除旧样式
                 data.getNode().getStyleClass().removeIf(style -> style.startsWith("pie-color-"));
-                // Add new style based on index
+                // 基于索引添加新样式
                 data.getNode().getStyleClass().add("pie-color-" + i++);
              }
          });
     }
 
-    // Helper to create legend items
+    // 创建图例项的辅助方法
     private Node createLegendItem(String color, String text) {
         HBox legendItem = new HBox(8);
         legendItem.setAlignment(Pos.CENTER_LEFT);
         Rectangle colorRect = new Rectangle(15, 15);
-        colorRect.setFill(Color.web(color)); // Use web color string
+        colorRect.setFill(Color.web(color)); // 使用web颜色字符串
         colorRect.setArcWidth(3);
         colorRect.setArcHeight(3);
         Label label = new Label(text);
-        label.getStyleClass().add("legend-label"); // Add class for styling if needed
+        label.getStyleClass().add("legend-label"); // 如需要添加样式类
         legendItem.getChildren().addAll(colorRect, label);
         return legendItem;
     }
 
 
-    // --- Event Handlers (from FXML onAction) ---
+    // --- 事件处理器（来自FXML onAction） ---
 
     @FXML
     void handleQuery(ActionEvent event) {
         String selectedCourse = courseComboBox.getValue();
-        String selectedClass = classComboBox.getValue();
-        String selectedExamType = examTypeComboBox.getValue();
-        LocalDate selectedDate = datePicker.getValue();
 
-        System.out.println("Querying with:");
-        System.out.println("  Course: " + selectedCourse);
-        System.out.println("  Class: " + selectedClass);
-        System.out.println("  Exam Type: " + selectedExamType);
-        System.out.println("  Date: " + selectedDate);
+        System.out.println("查询条件：");
+        System.out.println("  课程: " + selectedCourse);
 
-        // --- Add actual query logic here ---
-        // 1. Call a service/DAO to fetch data based on filter criteria.
-        // 2. Clear the existing scoreData: scoreData.clear();
-        // 3. Populate scoreData with the new results: scoreData.addAll(newResults);
-        // 4. Update statistics: updateStatistics();
-        // Example: Simulating a new query result
+        // --- 在此添加实际查询逻辑 ---
+        // 1. 调用服务/DAO根据筛选条件获取数据
+        // 2. 清除现有scoreData: scoreData.clear();
+        // 3. 用新结果填充scoreData: scoreData.addAll(newResults);
+        // 4. 更新统计: updateStatistics();
+        // 示例：模拟新查询结果
         scoreData.clear();
         if("数据结构".equals(selectedCourse)) {
              scoreData.addAll(
@@ -439,27 +415,27 @@ public class ScoreInputController implements Initializable {
                 new ScoreEntry("2025102", "小红", "软件工程1班", "数据结构", 95.0, 92.0, "优秀")
              );
         } else {
-            loadSampleData(); // Reload sample data if not data structure
+            loadSampleData(); // 如果不是数据结构则重新加载示例数据
         }
-        updateStatistics(); // Update stats for the new data
+        updateStatistics(); // 为新数据更新统计
     }
 
     @FXML
     void handleBatchImport(ActionEvent event) {
-        System.out.println("Batch Import button clicked");
-        // --- Add file chooser and import logic here ---
+        System.out.println("批量导入按钮已点击");
+        // --- 在此添加文件选择器和导入逻辑 ---
     }
 
     @FXML
     void handleExportExcel(ActionEvent event) {
-        System.out.println("Export Excel button clicked");
-        // --- Add Excel export logic here ---
+        System.out.println("导出Excel按钮已点击");
+        // --- 在此添加Excel导出逻辑 ---
     }
 
     @FXML
     void handleSortById(ActionEvent event) {
-        System.out.println("Sort by ID button clicked");
-        scoreTableView.getSortOrder().clear(); // Clear previous sorts
+        System.out.println("按学号排序按钮已点击");
+        scoreTableView.getSortOrder().clear(); // 清除先前的排序
         studentIdCol.setSortType(TableColumn.SortType.ASCENDING);
         scoreTableView.getSortOrder().add(studentIdCol);
         scoreTableView.sort();
@@ -467,57 +443,57 @@ public class ScoreInputController implements Initializable {
 
     @FXML
     void handleSortByScore(ActionEvent event) {
-        System.out.println("Sort by Score button clicked");
+        System.out.println("按分数排序按钮已点击");
          scoreTableView.getSortOrder().clear();
-         totalScoreCol.setSortType(TableColumn.SortType.DESCENDING); // Sort descending by default
+         totalScoreCol.setSortType(TableColumn.SortType.DESCENDING); // 默认降序排序
          scoreTableView.getSortOrder().add(totalScoreCol);
          scoreTableView.sort();
     }
 
     @FXML
     void handleCancel(ActionEvent event) {
-        System.out.println("Cancel button clicked");
-        // --- Add cancel logic here ---
-        // Maybe revert changes or reload original data
-         loadSampleData(); // Reload original sample data as example
+        System.out.println("取消按钮已点击");
+        // --- 在此添加取消逻辑 ---
+        // 可能是恢复更改或重新加载原始数据
+         loadSampleData(); // 重新加载原始示例数据作为示例
          updateStatistics();
     }
 
     @FXML
     void handleBatchSave(ActionEvent event) {
-        System.out.println("Batch Save button clicked");
-        // --- Add batch save logic here ---
-        // Iterate through scoreData, identify modified rows, and save them
-        System.out.println("Items to potentially save:");
+        System.out.println("批量保存按钮已点击");
+        // --- 在此添加批量保存逻辑 ---
+        // 遍历scoreData，识别已修改的行并保存
+        System.out.println("可能要保存的项目：");
         for(ScoreEntry entry : scoreData) {
-            // Here you might check an 'isDirty' flag if you implement one
+            // 如果实现了，这里可能检查'isDirty'标志
             System.out.println("  " + entry.getName() + ": " + entry.getTotalScore());
         }
-        // Show confirmation to user
+        // 向用户显示确认
     }
 
     @FXML
     void handleSubmitLock(ActionEvent event) {
-        System.out.println("Submit and Lock button clicked");
-        // --- Add submit and lock logic here ---
-        // 1. Perform final validation.
-        // 2. Save all data.
-        // 3. Potentially disable editing controls.
-        // 4. Show confirmation.
+        System.out.println("提交并锁定按钮已点击");
+        // --- 在此添加提交并锁定逻辑 ---
+        // 1. 执行最终验证
+        // 2. 保存所有数据
+        // 3. 可能禁用编辑控件
+        // 4. 显示确认
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "确定提交并锁定所有成绩吗？此操作可能无法撤销。", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                System.out.println("Submitting and locking...");
-                // ... actual submission logic ...
-                scoreTableView.setEditable(false); // Example: Disable table editing
-                // Disable other buttons if needed
+                System.out.println("正在提交并锁定...");
+                // ... 实际提交逻辑 ...
+                scoreTableView.setEditable(false); // 示例：禁用表格编辑
+                // 如需要禁用其他按钮
             }
         });
     }
 
 
-    // --- Inner Class for Data Model ---
-    // (Could be in its own file if preferred)
+    // --- 数据模型内部类 ---
+    // （如果偏好，可以放在自己的文件中）
     public static class ScoreEntry {
         private final String studentId;
         private final String name;
@@ -528,7 +504,7 @@ public class ScoreInputController implements Initializable {
         private Double totalScore;
         private String status;
         private String remarks;
-        // private boolean dirty = false; // Optional flag for tracking changes
+        // private boolean dirty = false; // 可选的用于跟踪更改的标志
 
         public ScoreEntry(String studentId, String name, String className, String courseName, Double regularScore, Double finalScore, String remarks) {
             this.studentId = studentId;
@@ -538,8 +514,8 @@ public class ScoreInputController implements Initializable {
             this.regularScore = regularScore;
             this.finalScore = finalScore;
             this.remarks = remarks;
-            calculateTotalScore(); // Initial calculation
-            updateStatus();        // Initial status update
+            calculateTotalScore(); // 初始计算
+            updateStatus();        // 初始状态更新
         }
 
         // --- Getters ---
@@ -580,11 +556,11 @@ public class ScoreInputController implements Initializable {
         // public void setDirty(boolean dirty) { this.dirty = dirty; }
 
 
-        // --- Calculation Logic ---
+        // --- 计算逻辑 ---
         private void calculateTotalScore() {
-            // Assuming 30% regular, 70% final. Handle nulls.
+            // 假设平时成绩占30%，期末成绩占70%。处理空值。
             if (regularScore != null && finalScore != null) {
-                 // Round to one decimal place for display consistency
+                 // 为显示一致性，四舍五入到一位小数
                 this.totalScore = Math.round((regularScore * 0.3 + finalScore * 0.7) * 10.0) / 10.0;
             } else {
                 this.totalScore = null;
@@ -593,45 +569,45 @@ public class ScoreInputController implements Initializable {
 
         private void updateStatus() {
              if (totalScore == null) {
-                this.status = "-"; // Or "未计算"
+                this.status = "-"; // 或 "未计算"
             } else if (totalScore >= 60) {
                 this.status = "通过";
             } else {
                 this.status = "不及格";
             }
-            // Could add "缺考" logic if specific input indicates absence
+            // 如果特定输入表明缺勤，可以添加"缺考"逻辑
         }
     }
 
 
-     // --- Helper Class for Score Input Validation ---
+     // --- 分数输入验证的辅助类 ---
     private static class ScoreStringConverter extends StringConverter<Double> {
         @Override
         public String toString(Double object) {
-            return object == null ? "" : String.format("%.1f", object); // Format to one decimal place
+            return object == null ? "" : String.format("%.1f", object); // 格式化为一位小数
         }
 
         @Override
         public Double fromString(String string) {
             if (string == null || string.trim().isEmpty()) {
-                return null; // Allow empty input (representing null score)
+                return null; // 允许空输入（表示空分数）
             }
             try {
                 double value = Double.parseDouble(string);
                 if (value < 0 || value > 100) {
-                    // Optionally show an error message to the user
-                    System.err.println("Score must be between 0 and 100: " + string);
+                    // 可选向用户显示错误消息
+                    System.err.println("分数必须在0到100之间: " + string);
                      showErrorAlert("输入错误", "分数必须在 0 到 100 之间。");
-                    // How to handle invalid input? Revert or keep?
-                    // Returning null might be safest to prevent invalid data propagation
-                     return null; // Indicate conversion failure
+                    // 如何处理无效输入？恢复或保留？
+                    // 返回null可能是最安全的，以防止无效数据传播
+                     return null; // 表示转换失败
                 }
-                 // Round to one decimal place upon input as well
+                 // 输入时也四舍五入到一位小数
                 return Math.round(value * 10.0) / 10.0;
             } catch (NumberFormatException e) {
-                System.err.println("Invalid number format for score: " + string);
+                System.err.println("分数格式无效: " + string);
                  showErrorAlert("输入错误", "请输入有效的分数数字。");
-                return null; // Indicate conversion failure
+                return null; // 表示转换失败
             }
         }
 

@@ -99,7 +99,13 @@ static Gson gson = new Gson();
             public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
                 if(res.has("code") && res.get("code").getAsInt()==200){
-                    JsonArray dataArray = res.getAsJsonArray("data");
+                    // 获取分页数据
+                    JsonObject dataObject = res.getAsJsonObject("data");
+                    JsonArray dataArray = dataObject.getAsJsonArray("list");
+                    int totalCourses = dataObject.get("total").getAsInt();
+                    int pageSize = dataObject.get("pageSize").getAsInt();
+                    int pageNum = dataObject.get("pageNum").getAsInt();
+                    
                     Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
                     List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
                     
@@ -229,7 +235,13 @@ static Gson gson = new Gson();
             case "rejected":
                 Button viewRejectionReasonButton = createTextButton("查看驳回原因", "secondary");
                 Button reEditApplicationButton = createTextButton("重新编辑申请", "secondary");
-
+                viewRejectionReasonButton.setOnAction(event -> {
+                    try {
+                        handleviewRejectionReasonButton(course);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
                 buttons.getChildren().addAll(
                     viewRejectionReasonButton,
                     reEditApplicationButton
@@ -287,7 +299,38 @@ static Gson gson = new Gson();
             e.printStackTrace();
         }
     }
+//处理查看驳回原因
+    private void handleviewRejectionReasonButton(UltimateCourse course){
+        int courseid = course.getId();
+        String url = "/class/getReason/" + courseid;
+        NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result,JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt() == 200){
+                    System.out.println("dsad");
+                    String rejectionReason =  res.get("data").getAsString()+"";
+                    if (rejectionReason == null || rejectionReason.isEmpty()) {
+                        rejectionReason = "未提供退回原因";
+                    }
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("驳回原因");
+                    alert.setHeaderText("课程：" + course.getCourseName());
+                    alert.setContentText("驳回原因：" + rejectionReason);
+                    alert.showAndWait();
+                }
 
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                ShowMessage.showErrorMessage("失败",res.get("msg").getAsString());
+            }
+        });
+
+        
+    }
     // 处理查看学生名单按钮点击事件
     private void handleViewStudents(UltimateCourse course) {
         try {
