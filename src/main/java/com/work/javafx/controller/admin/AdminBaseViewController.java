@@ -117,8 +117,8 @@ public class AdminBaseViewController implements Initializable {
             return "/com/work/javafx/css/admin/courseManagement.css";
         } else if (fxmlPath.equals("CourseSelectionContent.fxml")) {
             return "/com/work/javafx/css/admin/CourseSelection.css";
-        } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
-            return "/com/work/javafx/css/PersonalCenter.css";
+        } else if (fxmlPath.equals("personalCenter.fxml")) {
+            return "/com/work/javafx/css/admin/personalCenter.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
             return "/com/work/javafx/css/admin/ScoreSearch.css";
         } else if (fxmlPath.equals("teacherManagement.fxml")) {
