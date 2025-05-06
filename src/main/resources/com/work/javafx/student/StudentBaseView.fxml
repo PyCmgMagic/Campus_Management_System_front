@@ -16,7 +16,7 @@
         <HBox styleClass="top-bar">
             <Label styleClass="app-title" text="教务管理系统" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button styleClass="user-btn" text="谭同学" />
+            <Button  fx:id="userBtn" styleClass="user-btn" text="姓名" />
             <Button onAction="#logout" styleClass="logout-btn" text="退出登录" />
         </HBox>
     </top>

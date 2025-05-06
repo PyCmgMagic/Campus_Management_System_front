@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 public class AdminBaseViewController implements Initializable {
 
     @FXML private StackPane contentArea;
-
+    @FXML private Button userBtn;
     // 菜单按钮
     @FXML private Button homeBtn;
     @FXML private Button personalCenterBtn;
@@ -42,9 +42,28 @@ public class AdminBaseViewController implements Initializable {
         currentActiveButton = homeBtn;
         homeBtn.getStyleClass().add("active-menu-item");
         loadView("AdminHomePage.fxml");
-
+        loadUserName();
+        userBtn.setOnAction(event -> switchToPersonalCenter());
     }
-
+    //    加载右上角名称显示
+    private void loadUserName(){
+        int permission = UserSession.getInstance().getIdentity();
+        String username = UserSession.getInstance().getUsername();
+        String nameToShow = username.charAt(0) + "" ;
+        switch (permission){
+            case 0:
+                nameToShow += "管理";
+                break;
+            case 1:
+                nameToShow += " 老师";
+                break;
+            case 2:
+                nameToShow += "同学";
+                break;
+            default:
+        }
+        userBtn.setText(nameToShow);
+    }
     /**
      * 加载视图内容到内容区
      * @param fxmlPath FXML文件路径
