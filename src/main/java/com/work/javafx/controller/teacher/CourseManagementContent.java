@@ -396,7 +396,7 @@ static Gson gson = new Gson();
             });
         }
     }
-    // Course model class
+    // 课程类
     public static class Course {
         private final String courseCode;
         private final String courseName;

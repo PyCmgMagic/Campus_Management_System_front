@@ -51,6 +51,37 @@
     -fx-font-size: 14px;
 }
 
+/* Edit field styles */
+.field-edit {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-font-size: 14px;
+    -fx-padding: 4px 8px;
+}
+
+.field-edit:focused {
+    -fx-border-color: #3498db;
+    -fx-background-color: white;
+}
+
+.combo-box-edit {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-font-size: 14px;
+}
+
+.combo-box-edit:focused {
+    -fx-border-color: #3498db;
+    -fx-background-color: white;
+}
+
+.combo-box-edit .list-cell {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
 /* Button styles */
 .edit-button {
     -fx-background-color: #3498db;
@@ -74,4 +105,28 @@
 
 .close-button:hover {
     -fx-background-color: #d0d0d0;
+}
+
+.save-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.save-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.cancel-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #c0392b;
 }
