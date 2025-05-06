@@ -20,13 +20,16 @@
                     <HBox spacing="10">
                         <Label styleClass="user-id" text="学号" />
                         <Label fx:id="useridLabel" styleClass="info-value"/>
-                        <Label styleClass="user-id" text="入学年份：2025" />
+                        <HBox spacing="10">
+                            <Label styleClass="info-label" text="入学年份" />
+                            <Label fx:id="admissionLabel_1" styleClass="info-value" />
+                        </HBox>
                         <Label styleClass="user-id" text="学习年限：4年" />
                     </HBox>
                 </VBox>
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
                 <Button fx:id="editBtn" onAction="#UserInfo1" styleClass="primary-button" text="修改个人信息" />
-                <Button fx:id="changePwdBtn" styleClass="secondary-button" text="修改密码" />
+                <Button fx:id="changePwdBtn" onAction="#PasswordChange" styleClass="secondary-button" text="修改密码" />
             </HBox>
         </VBox>
     </top>
@@ -94,7 +97,7 @@
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="入学时间" />
-                        <Label fx:id="entryLabel" styleClass="info-value" />
+                        <Label fx:id="admissionLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="毕业时间" />

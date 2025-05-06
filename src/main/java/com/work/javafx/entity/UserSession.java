@@ -18,6 +18,24 @@ public class UserSession {
     private String getEmail;
     private String getPhone;
     private String college;
+    private String admission;
+    private String graduation;
+
+    public String getAdmission(){
+        return admission;
+    }
+
+    public void setAdmission(String admission){
+        this.admission = admission;
+    }
+
+    public String getGraduation(){
+        return graduation;
+    }
+
+    public void setGraduation(String graduation){
+        this.graduation = graduation;
+    }
     
     public String getCollege() {
         return college;
