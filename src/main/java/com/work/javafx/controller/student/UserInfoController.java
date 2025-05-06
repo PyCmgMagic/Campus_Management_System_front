@@ -6,25 +6,26 @@ import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class UserInfoController implements Initializable {
-    @FXML private Label surnameLabel;   // 姓名首字母标签
+    @FXML private Label admissionLabel_1;
+    @FXML private Label surnameLabel;
     @FXML private Label nameLabel;
     @FXML private Label stuIdLabel;
     @FXML private Label genderLabel;
@@ -35,7 +36,7 @@ public class UserInfoController implements Initializable {
     @FXML private Label classLabel;
     @FXML private Label phoneLabel;
     @FXML private Label emailLabel;
-    @FXML private Label entryLabel;
+    @FXML private Label admissionLabel;
     @FXML private Label graduationLabel;
     @FXML private Label userLabel;
     @FXML private Label useridLabel;
@@ -44,20 +45,16 @@ public class UserInfoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 先设置默认值或加载中状态
         setDefaultValues();
-
-        // 异步获取个人信息
         fetchUserInfo();
     }
 
-    // 设置默认值
     private void setDefaultValues() {
         setLabels("加载中...");
     }
 
-    // 设置多个标签的默认值
     private void setLabels(String text) {
+        admissionLabel_1.setText(text);
         nameLabel.setText(text);
         stuIdLabel.setText(text);
         genderLabel.setText(text);
@@ -70,22 +67,21 @@ public class UserInfoController implements Initializable {
         emailLabel.setText(text);
         userLabel.setText(text);
         useridLabel.setText(text);
+        admissionLabel.setText(text);
+        graduationLabel.setText(text);
     }
 
-    // 提取名字的首字母并返回大写字母
     private String getFirstLetter(String fullName) {
         if (fullName != null && !fullName.isEmpty()) {
             return fullName.substring(0, 1).toUpperCase();
         }
-        return "";  // 如果名字为空，返回空字符串
+        return "";
     }
 
-    // 专业代码转换方法
     private String convertMajorCode(String majorCode) {
         if (majorCode == null || majorCode.trim().isEmpty()) {
             return "未知专业";
         }
-
         try {
             int code = Integer.parseInt(majorCode);
             switch (code) {
@@ -96,19 +92,18 @@ public class UserInfoController implements Initializable {
                 default: return "未知专业";
             }
         } catch (NumberFormatException e) {
-            return majorCode; // 如果不是数字，直接返回原始值
+            return majorCode;
         }
     }
 
-    // 加载用户信息到UI
     private void loadUserInfo() {
         Platform.runLater(() -> {
-            // 设置头像的首字母
             String fullName = UserSession.getInstance().getUsername();
-            String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
-            surnameLabel.setText(firstLetter);  // 更新头像显示首字母
+            String firstLetter = getFirstLetter(fullName);
+            surnameLabel.setText(firstLetter);
 
-            nameLabel.setText(UserSession.getInstance().getUsername());
+            admissionLabel_1.setText("20" + UserSession.getInstance().getAdmission() + "年");
+            nameLabel.setText(fullName);
             stuIdLabel.setText(UserSession.getInstance().getSduid());
             genderLabel.setText(UserSession.getInstance().getSex());
             nationLabel.setText(UserSession.getInstance().getNation());
@@ -118,49 +113,41 @@ public class UserInfoController implements Initializable {
             classLabel.setText(UserSession.getInstance().getSection());
             phoneLabel.setText(UserSession.getInstance().getPhone());
             emailLabel.setText(UserSession.getInstance().getEmail());
-            userLabel.setText(UserSession.getInstance().getUsername());
+            userLabel.setText(fullName);
             useridLabel.setText(UserSession.getInstance().getSduid());
+            admissionLabel.setText("20" + UserSession.getInstance().getAdmission() + "年");
+            graduationLabel.setText("20" + UserSession.getInstance().getGraduation() + "年");
         });
     }
 
-    // 获取用户信息
     public void fetchUserInfo() {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + UserSession.getInstance().getToken());
 
-        NetworkUtils.post("/user/getInfo", "", header, new NetworkUtils.Callback<String>() {
+        NetworkUtils.post("/status/getStatusCard", "", header, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                if (responseJson.has("code")) {
-                    int code = responseJson.get("code").getAsInt();
-                    if (code == 200) {
-                        JsonObject dataJson = responseJson.getAsJsonObject("data");
-
-                        // 更新UserSession中的数据
-                        updateUserSession(dataJson);
-
-                        // 数据加载完成后更新UI
-                        loadUserInfo();
-                    }
+                if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                    JsonObject dataJson = responseJson.getAsJsonObject("data");
+                    JsonObject user = dataJson.getAsJsonObject("user");
+                    JsonObject status = dataJson.getAsJsonObject("status");
+                    updateUserSession(user);
+                    updateUserSessionforStatus(status);
+                    loadUserInfo();
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                Platform.runLater(() -> {
-                    // 显示错误信息
-                    setLabels("加载失败");
-                });
+                Platform.runLater(() -> setLabels("加载失败"));
             }
         });
     }
 
-    // 更新UserSession中的数据
     private void updateUserSession(JsonObject dataJson) {
         try {
             UserSession session = UserSession.getInstance();
-
             session.setPhone(getJsonValue(dataJson, "phone"));
             session.setEmail(getJsonValue(dataJson, "email"));
             session.setUsername(getJsonValue(dataJson, "username"));
@@ -176,14 +163,22 @@ public class UserInfoController implements Initializable {
         }
     }
 
-    // 辅助方法：获取Json字段的值
+    private void updateUserSessionforStatus(JsonObject dataJson) {
+        try {
+            UserSession session = UserSession.getInstance();
+            session.setAdmission(getJsonValue(dataJson, "admission"));
+            session.setGraduation(getJsonValue(dataJson, "graduation"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private String getJsonValue(JsonObject dataJson, String key) {
         return dataJson.has(key) && !dataJson.get(key).isJsonNull()
                 ? dataJson.get(key).getAsString()
                 : "";
     }
 
-    // 修改个人信息弹窗
     public void UserInfo1(ActionEvent event) throws IOException {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -199,12 +194,37 @@ public class UserInfoController implements Initializable {
 
         UserInfo1 controller = loader.getController();
         controller.setStage(popupStage);
+        controller.setOnSaveListener(() -> fetchUserInfo());
 
         popupStage.setScene(scene);
         popupStage.initOwner(((Node) event.getSource()).getScene().getWindow());
         popupStage.show();
         popupStage.setResizable(false);
     }
+
+    @FXML
+    public void PasswordChange(ActionEvent event) throws IOException {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("修改密码");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/student/PasswordChange.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/com/work/javafx/css/student/PasswordChange.css")).toExternalForm()
+        );
+
+        PasswordChangeController controller = loader.getController();
+        controller.setStage(popupStage);
+
+        popupStage.setScene(scene);
+        popupStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        popupStage.setResizable(false);
+        popupStage.show();
+    }
+
 
     public Label getGenderLabel() {
         return genderLabel;
