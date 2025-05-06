@@ -48,7 +48,7 @@ public class NetworkUtils {
      * 网络请求结果回调接口
      */
     public interface Callback<T> {
-        void onSuccess(T result);
+        void onSuccess(T result) throws IOException;
         void onFailure(Exception e);
     }
     
@@ -72,7 +72,13 @@ public class NetworkUtils {
         };
 
         task.setOnSucceeded(event -> {
-            Platform.runLater(() -> callback.onSuccess(task.getValue()));
+            Platform.runLater(() -> {
+                try {
+                    callback.onSuccess(task.getValue());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         });
 
         task.setOnFailed(event -> {
