@@ -17,6 +17,16 @@ public class UserSession {
     private String politicsStatus;
     private String getEmail;
     private String getPhone;
+    private String college;
+    
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+    
     public String getEmail() {
         return email;
     }
