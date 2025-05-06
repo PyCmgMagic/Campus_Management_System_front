@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/admin/UserDetails.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.UserDetailsController_teacher">
    <children>
@@ -84,6 +86,14 @@
                               <Label fx:id="phoneLabel" styleClass="field-value" text="未设置" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label fx:id="collegeLabel" styleClass="field-value" text="未设置" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label fx:id="permissionLabel" styleClass="field-value" text="教师" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              
+                              <TextField fx:id="usernameField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="sduidField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="sexComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="emailField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="phoneField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <TextField fx:id="collegeField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <ComboBox fx:id="permissionComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                            </children>
                         </GridPane>
                      </children>
@@ -121,6 +131,11 @@
                               <Label fx:id="admissionLabel" styleClass="field-value" text="2024" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="ethnicLabel" styleClass="field-value" text="汉族" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label fx:id="politicsStatusLabel" styleClass="field-value" text="群众" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              
+                              <ComboBox fx:id="statusComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="admissionField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="ethnicField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="politicsStatusField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                      </children>
@@ -129,6 +144,8 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="770.0" spacing="15.0">
                <children>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" styleClass="save-button" text="保存" visible="false" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" styleClass="cancel-button" text="取消" visible="false" />
                   <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEdit" styleClass="edit-button" text="编辑信息" />
                   <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleClose" styleClass="close-button" text="关闭" />
                </children>
