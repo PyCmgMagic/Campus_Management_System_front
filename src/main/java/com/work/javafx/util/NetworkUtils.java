@@ -246,7 +246,7 @@ public class NetworkUtils {
      * @param body 请求体
      * @return CompletableFuture对象，包含响应结果
      */
-    public static CompletableFuture<String> postAsync(String urlString, String body,Map<String,String > params) {
+    public static CompletableFuture<String> postAsync(String urlString,Map<String,String> params, String body ) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", DEFAULT_CONTENT_TYPE);
         String token = "Bearer " + UserSession.getInstance().getToken();

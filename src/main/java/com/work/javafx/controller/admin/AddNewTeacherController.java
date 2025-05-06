@@ -337,14 +337,14 @@ public class AddNewTeacherController implements Initializable {
         params.put("password", "123456");
         params.put("nation", nationComboBox.getValue());
         params.put("phone", phoneField.getText().trim());
-        params.put("politicsStatus", politicsStatusComboBox.getValue());
-        params.put("sduId", sduIdField.getText().trim());
+        params.put("PoliticsStatus", politicsStatusComboBox.getValue());
+        params.put("SDUId", sduIdField.getText().trim());
         params.put("sex",sexComboBox.getValue());
         params.put("permission", "1");
         
 
         // 调用API
-        NetworkUtils.postAsync("/admin/addUser", null)
+        NetworkUtils.postAsync("/admin/addUser", params, null )
             .thenAcceptAsync(response -> {
                 Platform.runLater(() -> {
                     try {
