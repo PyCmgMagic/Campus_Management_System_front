@@ -89,9 +89,9 @@ public class PersonalCenterContent implements Initializable {
     //加载用户信息
     public void loadUserInfo(){
         System.out.println("测试点1");
-                    String fullName = UserSession.getInstance().getUsername();
-                    String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
-                    firstname.setText(firstLetter);  // 更新头像显示首字母
+        String fullName = UserSession.getInstance().getUsername();
+        String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
+        firstname.setText(firstLetter);  // 更新头像显示首字母
         nameLabel.setText(UserSession.getInstance().getUsername());
         genderLabel.setText(UserSession.getInstance().getSex());
         stuIdLabel.setText(UserSession.getInstance().getSduid());
@@ -110,7 +110,7 @@ public class PersonalCenterContent implements Initializable {
     }
     //获取个人信息
     //获取个人信息
-    public void fetchUserInfo() throws IOException {
+    public  void fetchUserInfo() throws IOException {
         Map<String,String> header = new HashMap<>();
         header.put("Authorization","Bearer "+ UserSession.getInstance().getToken());
         NetworkUtils.post("/user/getInfo", "", header, new NetworkUtils.Callback<String>() {
@@ -177,17 +177,23 @@ public class PersonalCenterContent implements Initializable {
 
         // 获取控制器并传递 Stage
         UserInfo1 controller = loader.getController();
-        controller.setStage(popupStage);  // 你要在 ChangeUserInfo 类中加个 setStage(Stage) 方法
+        controller.setStage(popupStage);
+
+        // 设置回调监听器
+        controller.setOnSaveListener(new UserInfo1.OnSaveListener() {
+            @Override
+            public void onSaveSuccess() throws IOException {
+                // 刷新用户信息
+                fetchUserInfo();
+            }
+        });
 
         // 设置 Scene 与所属窗口
         popupStage.setScene(scene);
-        popupStage.initOwner(((Node)event.getSource()).getScene().getWindow());
-
-        // 可选：添加图标
-        // popupStage.getIcons().add(new Image("/com/work/images/icon.png"));
+        popupStage.initOwner(((Node) event.getSource()).getScene().getWindow());
 
         // 显示弹窗
-        popupStage.show();
+        popupStage.showAndWait();
 
         // 限制窗口大小
         popupStage.setResizable(false);
