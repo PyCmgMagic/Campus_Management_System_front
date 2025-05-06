@@ -1,17 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-   <VBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="400.0" prefWidth="600.0" spacing="20.0">
-      <Label alignment="CENTER" style="-fx-font-size: 24px;" text="个人中心（待实现）">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER" style="-fx-font-size: 16px;" text="此功能正在开发中，敬请期待..." />
-   </VBox>
-</AnchorPane> 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/admin/personalCenter.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.PersonalCenterController">
+
+        <VBox spacing="10" styleClass="header-box">
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="user-info-bar">
+                <VBox spacing="5">
+                    <Label fx:id="firstname" />
+                </VBox>
+                <VBox spacing="5">
+                    <Label fx:id="name" style="-fx-font-weight: bold;" styleClass="info-value" />
+
+                </VBox>
+                <Region fx:id="spacer" prefHeight="36.0" prefWidth="171.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="editBtn" onAction="#PersonalCenterController" styleClass="primary-button" text="修改个人信息" />
+                <Button fx:id="changePwdBtn" styleClass="secondary-button" text="修改密码" />
+            </HBox>
+        </VBox>
+
+
+
+        <HBox alignment="TOP_CENTER" spacing="30" styleClass="info-section">
+            <VBox prefHeight="629.0" prefWidth="283.0" spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label prefHeight="15.0" prefWidth="287.0" styleClass="card-title" text="                   个人基本信息" />
+
+                <VBox prefHeight="127.0" prefWidth="497.0" spacing="8">
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="姓名" />
+                        <Label fx:id="nameLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="学工号" />
+                        <Label fx:id="stuIdLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="性别" />
+                        <Label fx:id="genderLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="民族" />
+                        <Label fx:id="nationLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="政治面貌" />
+                        <Label fx:id="politicsLabel" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="国籍" />
+                        <Label fx:id="nation" styleClass="info-value" />
+                    </HBox>
+                </VBox>
+            </VBox>
+
+               <VBox prefHeight="665.0" prefWidth="259.0" spacing="15" styleClass="card" stylesheets="@../css/admin/personalCenter.css" HBox.hgrow="ALWAYS">
+                <Label prefHeight="15.0" prefWidth="259.0" styleClass="card-title" text="                        工籍信息" />
+
+                   <VBox prefHeight="138.0" prefWidth="259.0" spacing="8">
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="学院" />
+                        <Label fx:id="collegeLabel" styleClass="info-value" text="软件学院" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="手机号码" />
+                        <Label fx:id="phone" styleClass="info-value" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <Label styleClass="info-label" text="邮箱" />
+                        <Label fx:id="email" styleClass="info-value" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </HBox>
+
+</AnchorPane>
