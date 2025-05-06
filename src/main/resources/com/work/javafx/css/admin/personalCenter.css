@@ -6,30 +6,18 @@
 /* 顶部头部区域 */
 .header-box {
     -fx-background-color: #ffffff;
-    -fx-padding: 20 30 10 30;
+    -fx-padding: 20 30 20 30;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
 }
 
 .user-info-bar {
     -fx-spacing: 20;
     -fx-alignment: center-left;
+    -fx-padding: 0 20 0 20;
 }
-
 
 /* 姓名首字母标签的特殊样式 */
-#surnameLabel {
-    -fx-background-color: #d32f2f;  /* 背景颜色 */
-    -fx-text-fill: white;           /* 字体颜色 */
-    -fx-font-size: 40px;            /* 字体大小 */
-    -fx-font-weight: bold;          /* 字体加粗 */
-    -fx-pref-width: 80px;           /* 宽度 */
-    -fx-pref-height: 80px;          /* 高度 */
-    -fx-min-width : 80px;
-    -fx-alignment: center;          /* 字体居中 */
-    -fx-background-radius: 50%;     /* 圆形背景 */
-    -fx-border-radius: 50%;         /* 边框圆角 */
-}
-#firstname {
+.firstname-label {
     -fx-background-color: #d32f2f;  /* 背景颜色 */
     -fx-text-fill: white;           /* 字体颜色 */
     -fx-font-size: 40px;            /* 字体大小 */
@@ -86,7 +74,7 @@
 .card {
     -fx-background-color: white;
     -fx-padding: 20;
-    -fx-spacing: 10;
+    -fx-spacing: 15;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-pref-width: 440;
@@ -97,7 +85,9 @@
     -fx-font-size: 20px;  /* 增大字体 */
     -fx-font-weight: bold;
     -fx-text-fill: #333;
-    -fx-padding: 0 0 5 0;
+    -fx-padding: 5 0 15 0;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
 
 .card-subtitle {
