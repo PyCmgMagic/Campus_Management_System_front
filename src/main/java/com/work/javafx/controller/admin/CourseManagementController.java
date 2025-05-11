@@ -144,7 +144,7 @@ public class CourseManagementController implements Initializable {
         creditFilter.getSelectionModel().selectFirst();
         
         statusFilter.setItems(FXCollections.observableArrayList(
-                "全部状态", "开设中", "已停开"
+                "全部状态", "开设中", "已拒绝"
         ));
         statusFilter.getSelectionModel().selectFirst();
         
