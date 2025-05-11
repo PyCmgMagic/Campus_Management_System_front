@@ -3,6 +3,8 @@ package com.work.javafx.controller.admin;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.work.javafx.entity.Data;
+import com.work.javafx.model.term;
 import com.work.javafx.util.NetworkUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,34 +57,6 @@ public class ManageCourseController implements Initializable {
     private boolean isUpdatingFromServer = false;
 
 
-    class term{
-        private String term;
-        private boolean open;
-
-        public term() {
-        }
-
-        public term(String term, boolean open) {
-            this.term = term;
-            this.open = open;
-        }
-
-        public String getTerm() {
-            return term;
-        }
-
-        public void setTerm(String term) {
-            this.term = term;
-        }
-
-        public boolean isOpen() {
-            return open;
-        }
-
-        public void setOpen(boolean open) {
-            this.open = open;
-        }
-    }
     private List<term> termList = new ArrayList<>();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -109,6 +83,7 @@ public class ManageCourseController implements Initializable {
                     }
                     semesterList.clear();
                     semesterList.addAll(loadedSemesters);
+                    Data.getInstance().setSemesterList(semesterList);
                     if (!semesterList.isEmpty()) {
                         isUpdatingFromServer = true; // 设置标记，避免触发无限循环
                         semesterComboBox.getSelectionModel().selectFirst(); // 默认选中第一个

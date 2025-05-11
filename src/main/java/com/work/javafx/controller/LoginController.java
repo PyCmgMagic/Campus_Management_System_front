@@ -6,9 +6,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.DataResponse.Res;
 import com.work.javafx.MainApplication;
+import com.work.javafx.entity.Data;
 import com.work.javafx.entity.UserSession;
+import com.work.javafx.model.term;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -25,7 +30,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoginController {
@@ -110,9 +117,37 @@ public class LoginController {
 
     }
     /**
- * 处理管理员登录按钮点击事件
- * @param event 事件对象
- */
+     * 加载学期列表
+     */
+    private void fecthSemesters() {
+        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+            ObservableList<String> semesterList = FXCollections.observableArrayList();
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    List<String> loadedSemesters = new ArrayList<>();
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
+                    }
+                    if(semesterList != null){
+                        semesterList.clear();
+                    }
+                    semesterList.addAll(loadedSemesters);
+                    Data.getInstance().setSemesterList(semesterList);
+                } else {
+                    System.out.println("加载学期列表失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("加载学期列表错误");
+                e.printStackTrace();
+            }
+        });
+    }
 
     /**
      * 验证用户凭据
@@ -141,6 +176,7 @@ public class LoginController {
                             UserSession.getInstance().setToken(token);
                             UserSession.getInstance().setRefreshToken(refreshToken);
                             UserSession.getInstance().setUsername(username);
+                            fecthSemesters();
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -163,8 +199,6 @@ public class LoginController {
                 }
             });
         }else{
-
-
         NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -180,6 +214,8 @@ public class LoginController {
                          UserSession.getInstance().setToken(token);
                          UserSession.getInstance().setRefreshToken(refreshToken);
                          UserSession.getInstance().setUsername(username);
+                        fecthSemesters();
+
                         System.out.println("登录成功: " + result);
                         MainApplication.startTokenRefreshTimer();
                          navigateToMainPage(); // 导航到主页面

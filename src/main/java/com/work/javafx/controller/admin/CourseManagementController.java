@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.work.javafx.controller.teacher.CourseManagementContent;
+import com.work.javafx.entity.Data;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
 import com.work.javafx.util.NetworkUtils;
@@ -124,13 +125,11 @@ public class CourseManagementController implements Initializable {
     
     // 初始化筛选器
     private void initFilters() {
-        termFilter.setItems(FXCollections.observableArrayList(
-                "2024-2025-1","2024-2025-2","2025-2026-1" 
-        ));
+        termFilter.setItems(Data.getInstance().getSemesterList());
         termFilter.getSelectionModel().selectFirst();
         
         courseTypeFilter.setItems(FXCollections.observableArrayList(
-                "全部类型", "必修课", "选修课", "公共课", "专业课"
+                "全部类型", "必修课", "选修课"
         ));
         courseTypeFilter.getSelectionModel().selectFirst();
         
