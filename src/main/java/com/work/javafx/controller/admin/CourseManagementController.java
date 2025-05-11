@@ -168,7 +168,7 @@ public class CourseManagementController implements Initializable {
         // 状态列自定义显示
         statusColumn.setCellValueFactory(cellData -> {
             Boolean isActive = cellData.getValue().getIsActive();
-            return new SimpleStringProperty(isActive ? "开设中" : "已停开");
+            return new SimpleStringProperty(isActive ? "开设中" : "已拒绝");
         });
         statusColumn.setCellFactory(column -> new TableCell<Course, String>() {
             @Override
@@ -648,7 +648,7 @@ public class CourseManagementController implements Initializable {
         if (showConfirmDialog("确认操作", "确定要停开已选择的 " + selectedCourses.size() + " 门课程吗？")) {
             selectedCourses.forEach(course -> course.setIsActive(false));
             courseTable.refresh();
-            showInfoDialog("操作成功", "已停开 " + selectedCourses.size() + " 门课程");
+            showInfoDialog("操作成功", "已拒绝 " + selectedCourses.size() + " 门课程");
         }
     }
 
@@ -717,7 +717,7 @@ public class CourseManagementController implements Initializable {
         if (showConfirmDialog("确认操作", "确定要停开课程 " + course.getName() + " 吗？")) {
             course.setIsActive(false);
             courseTable.refresh();
-            showInfoDialog("操作成功", "已停开课程: " + course.getName());
+            showInfoDialog("操作成功", "已拒绝课程: " + course.getName());
         }
     }
 
