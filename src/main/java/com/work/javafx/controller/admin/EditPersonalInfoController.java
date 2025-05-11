@@ -51,15 +51,17 @@ public class EditPersonalInfoController implements Initializable {
         // 获取表单数据
         String phone = phoneField.getText().trim();
         String email = emailField.getText().trim();
-        
+
         // 构建请求参数
         Map<String, String> params = new HashMap<>();
         params.put("phone", phone);
+        params.put("email", email);
+
 
         // 构建请求头
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + UserSession.getInstance().getToken());
-        
+
         // 发送更新请求
         NetworkUtils.post("/user/updatePhone", params,null,  new NetworkUtils.Callback<String>() {
             @Override
@@ -91,6 +93,41 @@ public class EditPersonalInfoController implements Initializable {
                 }
             }
             
+            @Override
+            public void onFailure(Exception e) {
+                Platform.runLater(() -> ShowMessage.showErrorMessage("网络错误", "无法连接到服务器，请稍后再试"));
+            }
+        });
+        NetworkUtils.post("/user/updateEmail", params,null,  new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                if (responseJson.has("code")) {
+                    int code = responseJson.get("code").getAsInt();
+                    if (code == 200) {
+                        // 更新成功，更新本地数据
+                        UserSession.getInstance().setPhone(email);
+
+                        Platform.runLater(() -> {
+                            ShowMessage.showInfoMessage("修改成功", "个人信息已更新成功！");
+                            closeWindow();
+
+                            // 刷新主页面数据
+                            if (stage != null && stage.getOwner() != null) {
+                                Stage ownerStage = (Stage) stage.getOwner();
+                                if (ownerStage.getUserData() instanceof PersonalCenterController) {
+                                    PersonalCenterController controller = (PersonalCenterController) ownerStage.getUserData();
+                                    controller.fetchUserInfo();
+                                }
+                            }
+                        });
+                    } else {
+                        String msg = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "修改失败";
+                        Platform.runLater(() -> ShowMessage.showErrorMessage("修改失败", msg));
+                    }
+                }
+            }
+
             @Override
             public void onFailure(Exception e) {
                 Platform.runLater(() -> ShowMessage.showErrorMessage("网络错误", "无法连接到服务器，请稍后再试"));

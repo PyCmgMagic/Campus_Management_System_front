@@ -144,6 +144,7 @@ public class PersonalCenterController implements Initializable {
                 });
             }
         });
+
     }
     
     // 更新UserSession中的数据
