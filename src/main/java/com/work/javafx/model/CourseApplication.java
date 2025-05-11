@@ -2,6 +2,7 @@ package com.work.javafx.model;
 
 public class CourseApplication {
     private int id;
+    private String teacherName;
     private String name;
     private String category;
     private int point;
@@ -38,6 +39,14 @@ public class CourseApplication {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 
     public String getCategory() {
@@ -203,7 +212,7 @@ public class CourseApplication {
     // 提供一个匹配 CourseManagementController 中使用的构造函数
      public CourseApplication( String courseName, String department,
                                int credit, String courseType) {
-         this.name = courseName;
+         this.teacherName = courseName;
          this.college = department;
          this.point = credit;
          this.type = courseType;

@@ -128,7 +128,6 @@
                             <columns>
                                 <TableColumn fx:id="codeColumn" prefWidth="100.0" text="课程代码" />
                                 <TableColumn fx:id="nameColumn" prefWidth="150.0" text="课程名称" />
-                                <TableColumn fx:id="departmentColumn" prefWidth="120.0" text="开课院系" />
                                 <TableColumn fx:id="creditColumn" prefWidth="60.0" text="学分" />
                                 <TableColumn fx:id="typeColumn" prefWidth="100.0" text="课程类型" />
                                 <TableColumn fx:id="teacherColumn" prefWidth="120.0" text="主讲教师" />
@@ -174,7 +173,6 @@
                                 <TableColumn fx:id="pendingNameColumn" prefWidth="150.0" text="课程名称" />
                                 <TableColumn fx:id="pendingDepartmentColumn" prefWidth="120.0" text="申请院系" />
                                 <TableColumn fx:id="pendingApplicantColumn" prefWidth="100.0" text="申请人" />
-                                <TableColumn fx:id="pendingDateColumn" prefWidth="100.0" text="申请时间" />
                                 <TableColumn fx:id="pendingCreditColumn" prefWidth="60.0" text="学分" />
                                 <TableColumn fx:id="pendingTypeColumn" prefWidth="100.0" text="类型" />
                                 <TableColumn fx:id="pendingActionColumn" prefWidth="150.0" text="操作" />
