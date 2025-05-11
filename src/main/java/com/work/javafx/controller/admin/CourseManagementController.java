@@ -54,17 +54,13 @@ public class CourseManagementController implements Initializable {
     
     // 快捷操作卡片
     @FXML private BorderPane reviewPendingCard;
-    @FXML private BorderPane addCourseCard;
-    @FXML private BorderPane exportCourseCard;
     @FXML private Label pendingBadge;
     
     // 搜索和筛选组件
     @FXML private TextField searchField;
-    @FXML private ComboBox<String> departmentFilter;
+    @FXML private ComboBox<String> termFilter;
     @FXML private ComboBox<String> courseTypeFilter;
-    @FXML private ComboBox<String> creditFilter;
-    @FXML private ComboBox<String> statusFilter;
-    
+
     // 批量操作按钮
     @FXML private Button batchStopBtn;
     @FXML private Button batchEditBtn;
@@ -128,31 +124,21 @@ public class CourseManagementController implements Initializable {
     
     // 初始化筛选器
     private void initFilters() {
-        departmentFilter.setItems(FXCollections.observableArrayList(
-                "全部院系", "计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院"
+        termFilter.setItems(FXCollections.observableArrayList(
+                "2024-2025-1","2024-2025-2","2025-2026-1" 
         ));
-        departmentFilter.getSelectionModel().selectFirst();
+        termFilter.getSelectionModel().selectFirst();
         
         courseTypeFilter.setItems(FXCollections.observableArrayList(
                 "全部类型", "必修课", "选修课", "公共课", "专业课"
         ));
         courseTypeFilter.getSelectionModel().selectFirst();
         
-        creditFilter.setItems(FXCollections.observableArrayList(
-                "全部学分", "1学分", "2学分", "3学分", "4学分", "5学分"
-        ));
-        creditFilter.getSelectionModel().selectFirst();
-        
-        statusFilter.setItems(FXCollections.observableArrayList(
-                "全部状态", "开设中", "已拒绝"
-        ));
-        statusFilter.getSelectionModel().selectFirst();
-        
+
         // 添加筛选器监听器
-        departmentFilter.setOnAction(e -> applyFilters());
+        termFilter.setOnAction(e -> applyFilters());
         courseTypeFilter.setOnAction(e -> applyFilters());
-        creditFilter.setOnAction(e -> applyFilters());
-        statusFilter.setOnAction(e -> applyFilters());
+
     }
     
     // 初始化主课程表格
@@ -358,7 +344,7 @@ public class CourseManagementController implements Initializable {
     // 从后端获取课程列表
     private void fetchCourseList(int pageNum, int pageSize) {
         // 设置请求参数
-        String term = "2024-2025-1";
+        String term = termFilter.getValue();
         String url = "/class/list?term=" + term + "&pageNum=" + pageNum + "&pageSize=" + pageSize;
         
         NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
@@ -486,25 +472,9 @@ public class CourseManagementController implements Initializable {
     // 应用筛选器
     private void applyFilters() {
         // 目前仅在本地进行筛选，后续可修改为API筛选
-        final String department = departmentFilter.getValue().equals("全部院系") ? "" : departmentFilter.getValue();
+        final String department = termFilter.getValue().equals("全部院系") ? "" : termFilter.getValue();
         final String type = courseTypeFilter.getValue().equals("全部类型") ? "" : courseTypeFilter.getValue();
-        String creditStr = creditFilter.getValue().equals("全部学分") ? "" : creditFilter.getValue();
-        String status = statusFilter.getValue().equals("全部状态") ? "" : statusFilter.getValue();
-        
-        final Integer credit;
-        if (!creditStr.isEmpty()) {
-            credit = Integer.parseInt(creditStr.replace("学分", ""));
-        } else {
-            credit = null;
-        }
-        
-        final Boolean isActive;
-        if (!status.isEmpty()) {
-            isActive = status.equals("开设中");
-        } else {
-            isActive = null;
-        }
-        
+
         // 先从API获取所有数据
         fetchCourseList(1, ROWS_PER_PAGE);
         
@@ -512,8 +482,7 @@ public class CourseManagementController implements Initializable {
         List<Course> filteredList = allCourses.stream()
                 .filter(course -> (department.isEmpty() || course.getDepartment().equals(department))
                         && (type.isEmpty() || course.getType().equals(type))
-                        && (credit == null || course.getCredit() == credit)
-                        && (isActive == null || course.getIsActive() == isActive))
+                     )
                 .collect(Collectors.toList());
         
         filteredCourses.clear();
@@ -536,10 +505,9 @@ public class CourseManagementController implements Initializable {
         String searchTerm = searchField.getText().toLowerCase().trim();
         
         // 重置筛选器
-        departmentFilter.getSelectionModel().selectFirst();
+        termFilter.getSelectionModel().selectFirst();
         courseTypeFilter.getSelectionModel().selectFirst();
-        creditFilter.getSelectionModel().selectFirst();
-        statusFilter.getSelectionModel().selectFirst();
+
         
         // 使用 pageNum = 1 重新从API获取数据
         fetchCourseList(1, ROWS_PER_PAGE);
@@ -568,11 +536,8 @@ public class CourseManagementController implements Initializable {
     @FXML
     private void resetFilters() {
         searchField.clear();
-        departmentFilter.getSelectionModel().selectFirst();
+        termFilter.getSelectionModel().selectFirst();
         courseTypeFilter.getSelectionModel().selectFirst();
-        creditFilter.getSelectionModel().selectFirst();
-        statusFilter.getSelectionModel().selectFirst();
-
         // 重置后重新获取第一页数据
         fetchCourseList(1, ROWS_PER_PAGE);
     }
@@ -874,5 +839,9 @@ public class CourseManagementController implements Initializable {
         alert.setContentText(content);
         
         return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
+    }
+
+    public void handleTermChange(ActionEvent actionEvent) {
+        fetchCourseList(1,ROWS_PER_PAGE);
     }
 }
