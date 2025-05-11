@@ -9,17 +9,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -198,15 +199,29 @@ public class StudentMangementController implements Initializable {
             
             {
                 // 初始化按钮样式和提示
-                viewBtn.getStyleClass().addAll("action-btn", "view-btn");
-                viewBtn.setTooltip(new Tooltip("查看详情"));
-                
-                editBtn.getStyleClass().addAll("action-btn", "edit-btn");
-                editBtn.setTooltip(new Tooltip("编辑"));
-                
-                deleteBtn.getStyleClass().addAll("action-btn", "delete-btn");
+                viewBtn.getStyleClass().addAll("table-button", "default-btn");
+                editBtn.getStyleClass().addAll("table-button", "warning-btn");
+                deleteBtn.getStyleClass().addAll("table-button", "danger-btn");
+
+                // 添加图标
+                Region viewIcon = new Region();
+                viewIcon.getStyleClass().add("view-icon");
+                viewBtn.setGraphic(viewIcon);
+
+                Region editIcon = new Region();
+                editIcon.getStyleClass().add("edit-icon");
+                editBtn.setGraphic(editIcon);
+
+                Region deleteIcon = new Region();
+                deleteIcon.getStyleClass().add("delete-icon");
+                deleteBtn.setGraphic(deleteIcon);
+
+
+
                 deleteBtn.setTooltip(new Tooltip("删除"));
-                
+                editBtn.setTooltip(new Tooltip("编辑"));
+                viewBtn.setTooltip(new Tooltip("查看详情"));
+
                 actionsBox.setAlignment(Pos.CENTER);
             }
             
@@ -345,12 +360,15 @@ public class StudentMangementController implements Initializable {
                             String username = studentJson.get("username").getAsString();
                             String sex = studentJson.get("sex").getAsString();
                             String sduid = studentJson.get("sduid").getAsString();
-                            
+
                             String major = "未分配";
                             if (studentJson.has("major") && !studentJson.get("major").isJsonNull()) {
                                 major = studentJson.get("major").getAsString();
                             }
-                            
+                            int id = -1;
+                             if (studentJson.has("id") && !studentJson.get("id").isJsonNull()) {
+                                id = studentJson.get("id").getAsInt();
+                            }
                             if(major.equals("0")){
                                 major = "软件工程";
                             } else if (major.equals("1")) {
@@ -362,7 +380,6 @@ public class StudentMangementController implements Initializable {
                             } else if (major.equals("未分配")) {
                                 // Keep as "未分配"
                             } else {
-                                // If major is some other string not in the list, keep it or map to default
                             }
 
                             int gradeYear = 0;
@@ -397,6 +414,7 @@ public class StudentMangementController implements Initializable {
                             String displayStatus = mapStatusValue(studentApiStatus);
                             
                             Student student = new Student(
+                                    id+"",
                                 sduid, 
                                 username, 
                                 sex, 
@@ -631,15 +649,25 @@ public class StudentMangementController implements Initializable {
 
     // 处理查看学生详情按钮点击
     private void handleViewStudent(Student student) {
-        showAlert(Alert.AlertType.INFORMATION, "学生详情", 
-                "学号: " + student.getId() + "\n" +
-                "姓名: " + student.getName() + "\n" +
-                "性别: " + student.getGender() + "\n" +
-                "院系: " + student.getDepartment() + "\n" +
-                "专业: " + student.getMajor() + "\n" +
-                "年级: " + student.getGrade() + "\n" +
-                "班级: " + student.getClassName() + "\n" +
-                "状态: " + student.getStatus());
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/UserDetails_student.fxml"));
+            Parent root = loader.load();
+            //获取控制器
+            UserDetailsController_student controller = loader.getController();
+            //创建新窗口
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("用户详情——"+student.getName());
+            stage.setScene(new Scene(root));
+            //窗口引用传递给控制器
+            controller.setStage(stage);
+            // 传递用户ID并加载数据
+            controller.loadUserData(student.getId());
+            //显示窗口
+            stage.showAndWait();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     // 处理编辑学生按钮点击
@@ -674,6 +702,7 @@ public class StudentMangementController implements Initializable {
     // 学生数据模型类
     public static class Student {
         private final SimpleStringProperty id;
+        private final SimpleStringProperty sduid;
         private final SimpleStringProperty name;
         private final SimpleStringProperty gender;
         private final SimpleStringProperty department;
@@ -683,9 +712,10 @@ public class StudentMangementController implements Initializable {
         private final SimpleStringProperty status;
         private final SimpleBooleanProperty selected;
 
-        public Student(String id, String name, String gender, String department, 
+        public Student(String id, String sduid,String name, String gender, String department,
                        String major, String grade, String className, String status) {
             this.id = new SimpleStringProperty(id);
+            this.sduid = new SimpleStringProperty(sduid);
             this.name = new SimpleStringProperty(name);
             this.gender = new SimpleStringProperty(gender);
             this.department = new SimpleStringProperty(department);
@@ -700,6 +730,9 @@ public class StudentMangementController implements Initializable {
         public String getId() { return id.get(); }
         public SimpleStringProperty idProperty() { return id; }
         public void setId(String id) { this.id.set(id); }
+        public String getSduid() { return id.get(); }
+        public SimpleStringProperty sduidProperty() { return sduid; }
+        public void setSduid(String id) { this.id.set(id); }
 
         public String getName() { return name.get(); }
         public SimpleStringProperty nameProperty() { return name; }

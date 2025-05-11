@@ -157,11 +157,11 @@
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER" styleClass="pagination-container">
+                  <HBox alignment="CENTER" >
                      <children>
                         <Label fx:id="pageInfoLabel" styleClass="page-info" text="共 0 条记录，当前显示 0-0 条" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Pagination fx:id="pagination" pageCount="1" styleClass="table-pagination" />
+                        <Pagination fx:id="pagination" pageCount="1"  />
                      </children>
                   </HBox>
                </children>

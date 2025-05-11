@@ -287,13 +287,13 @@
     -fx-background-radius: 4px;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 8px 16px;
+    -fx-padding: 2px 4px;
     -fx-cursor: hand;
     -fx-alignment: center;
 }
 
 .primary-btn {
-    -fx-background-color: #8B1C1C; /* Dark Red */
+    -fx-background-color: #8B1C1C;
     -fx-text-fill: white;
 }
 
@@ -346,7 +346,8 @@
     -fx-border-color: #ffcc80;
 }
 
-/* 表格中按钮样式 */
+
+/* 表格操作按钮 */
 .table-button {
     -fx-background-radius: 4px;
     -fx-font-size: 12px;
@@ -355,38 +356,44 @@
     -fx-min-width: 30px;
     -fx-min-height: 30px;
     -fx-content-display: graphic-only;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
-/* Override hover backgrounds for table buttons */
-.table-button.default-btn:hover {
-    -fx-background-color: #eee;
-}
-.table-button.warning-btn:hover {
-     -fx-background-color: #ffe0b2;
-}
-.table-button.danger-btn:hover {
-     -fx-background-color: #ffcdd2;
-}
-.table-button.success-btn:hover {
-    -fx-background-color: #c8e6c9;
+.action-btn:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Ensure icons inside table buttons are visible */
-.table-button .view-icon {
-    -fx-background-color: #1565c0; /* Blue */
-}
-.table-button .edit-icon {
-    -fx-background-color: #f57f17; /* Orange */
-}
-.table-button .delete-icon {
-    -fx-background-color: #d32f2f; /* Red */
-}
-.table-button .approval-icon { /* Used for reset password icon */
-    -fx-background-color: #388e3c; /* Green */
+.view-icon {
+    -fx-shape: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
+    -fx-background-color: #1565c0;
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
 }
 
+.edit-icon {
+    -fx-shape: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
+    -fx-background-color: #f57f17;
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+.delete-icon {
+    -fx-shape: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
+    -fx-background-color: #d32f2f;
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
 /* 分页容器样式 */
 .pagination-container {
     -fx-padding: 15px 20px;
