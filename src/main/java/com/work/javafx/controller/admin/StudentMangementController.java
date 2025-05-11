@@ -1,6 +1,8 @@
 package com.work.javafx.controller.admin;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -23,7 +27,9 @@ import com.work.javafx.util.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -55,13 +61,23 @@ public class StudentMangementController implements Initializable {
     @FXML private TableColumn<Student, String> statusColumn;
     @FXML private TableColumn<Student, Student> actionColumn;
     @FXML private Pagination pagination;
+    @FXML private Label pageInfoLabel;
 
     // 数据模型
     private ObservableList<Student> masterData = FXCollections.observableArrayList();
-    private ObservableList<Student> filteredData = FXCollections.observableArrayList();
     private int itemsPerPage = 10;
+    private int totalPages = 1;
+    private int totalItems = 0;
+    private int currentPage = 1;
     private final SimpleBooleanProperty selectAll = new SimpleBooleanProperty(false);
-    static Gson gson =new Gson();
+    static Gson gson = new Gson();
+    
+    // 页码变化监听器
+    private javafx.beans.value.ChangeListener<Number> pageChangeListener;
+    
+    // 添加一个页面加载锁定标志
+    private volatile boolean isPageLoadingLocked = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化筛选下拉框
@@ -70,20 +86,11 @@ public class StudentMangementController implements Initializable {
         // 初始化表格列
         initializeTable();
         
-        // 加载测试数据
-        loadMockData();
-        
         // 初始化分页控件
         initializePagination();
         
-        // 更新表格和分页信息
-        updateFilteredData();
-        
-        // 确保表格直接显示数据
-        if (!filteredData.isEmpty()) {
-            studentTable.setItems(FXCollections.observableArrayList(
-                    filteredData.subList(0, Math.min(itemsPerPage, filteredData.size()))));
-        }
+        // 加载数据
+        loadStudentsFromApi(1);
     }
 
     // 初始化筛选下拉框选项
@@ -132,10 +139,10 @@ public class StudentMangementController implements Initializable {
         statusComboBox.setValue("全部状态");
         
         // 添加筛选监听器
-        departmentComboBox.setOnAction(e -> updateFilteredData());
-        majorComboBox.setOnAction(e -> updateFilteredData());
-        gradeComboBox.setOnAction(e -> updateFilteredData());
-        statusComboBox.setOnAction(e -> updateFilteredData());
+        departmentComboBox.setOnAction(e -> handleFilterChange());
+        majorComboBox.setOnAction(e -> handleFilterChange());
+        gradeComboBox.setOnAction(e -> handleFilterChange());
+        statusComboBox.setOnAction(e -> handleFilterChange());
     }
 
     // 初始化表格列和单元格工厂
@@ -246,99 +253,291 @@ public class StudentMangementController implements Initializable {
 
     // 初始化分页控件
     private void initializePagination() {
-        pagination.setPageCount(1);
         pagination.setCurrentPageIndex(0);
         pagination.setPageFactory(this::createPage);
         
-        // 设置分页样式
-        pagination.getStyleClass().add("pagination");
+        // 添加页码变化监听器
+        pageChangeListener = (obs, oldIndex, newIndex) -> {
+             // 添加额外的判断，确保新旧索引确实不同，且当前没有页面加载锁定
+             if (newIndex.intValue() != oldIndex.intValue() && !isPageLoadingLocked) {
+                 isPageLoadingLocked = true;
+                 loadStudentsFromApi(newIndex.intValue() + 1);
+             } else if (isPageLoadingLocked) {
+                 Platform.runLater(() -> {
+                     pagination.currentPageIndexProperty().removeListener(pageChangeListener);
+                     pagination.setCurrentPageIndex(oldIndex.intValue());
+                     pagination.currentPageIndexProperty().addListener(pageChangeListener);
+                 });
+             }
+        };
+        
+        pagination.currentPageIndexProperty().addListener(pageChangeListener);
+        updatePageInfo(); // Initial call
     }
 
     // 创建分页页面内容
-    private TableView<Student> createPage(int pageIndex) {
-        int fromIndex = pageIndex * itemsPerPage;
-        int toIndex = Math.min(fromIndex + itemsPerPage, filteredData.size());
-        
-        // 设置表格数据为当前页的数据
-        if (fromIndex <= toIndex && !filteredData.isEmpty()) {
-            ObservableList<Student> pageData = FXCollections.observableArrayList(
-                    filteredData.subList(fromIndex, toIndex));
-            studentTable.setItems(pageData);
+    private Node createPage(int pageIndex) {
+        return new VBox();
+    }
+    
+    private void updatePageInfo() {
+        if (pageInfoLabel == null) return;
+
+        int itemsOnCurrentPage = masterData.size(); 
+
+        if (totalItems == 0) {
+            pageInfoLabel.setText("共 0 条记录");
         } else {
-            studentTable.setItems(FXCollections.observableArrayList());
+            int fromIndex = (currentPage - 1) * itemsPerPage + 1;
+            int toIndex = Math.min(fromIndex + itemsOnCurrentPage - 1, totalItems);
+             if (itemsOnCurrentPage == 0 && currentPage > 1) {
+                 pageInfoLabel.setText(String.format("第 %d 页 (共 %d 页) 无记录", currentPage, totalPages));
+             } else if (itemsOnCurrentPage == 0 && totalItems > 0) {
+                 pageInfoLabel.setText(String.format("共 %d 条记录 (0 显示)", totalItems));
+             } else {
+                 pageInfoLabel.setText(String.format("显示 %d-%d 条，共 %d 条 (第 %d/%d 页)", 
+                                                 fromIndex, toIndex, totalItems, currentPage, totalPages));
+             }
         }
-        
-        // 重置全选状态
-        selectAll.set(false);
-        
-        return studentTable;
     }
 
+    private void loadStudentsFromApi(int pageNum) {
+        String gradeQueryParam = getSelectedGradeValue();
+        Map<String, String> params = new HashMap<>();
+        
+        if (gradeQueryParam != null && !gradeQueryParam.isEmpty()) {
+            params.put("grade", gradeQueryParam);
+        }
+        String majorFilter = majorComboBox.getValue();
+        if (majorFilter != null && !majorFilter.equals("全部专业")) {
+            params.put("major", majorFilter);
+        }
 
-    // 加载模拟测试数据
-    private void loadMockData() {
-        masterData.addAll(
-            new Student("202301001", "张三", "男", "计算机学院", "计算机科学与技术", "2023级", "计科2301", "在读"),
-            new Student("202202015", "李四", "女", "电子信息学院", "电子信息工程", "2022级", "电信2202", "在读"),
-            new Student("202103088", "王五", "男", "数学科学学院", "数学与应用数学", "2021级", "数学2101", "休学"),
-            new Student("202001032", "赵六", "女", "计算机学院", "软件工程", "2020级", "软工2002", "毕业"),
-            new Student("202301005", "孙七", "男", "计算机学院", "计算机科学与技术", "2023级", "计科2302", "在读"),
-            new Student("202204033", "周八", "女", "外国语学院", "英语", "2022级", "英语2201", "在读"),
-            new Student("202302011", "吴九", "男", "电子信息学院", "通信工程", "2023级", "通信2301", "在读"),
-            new Student("202305022", "郑十", "女", "计算机学院", "软件工程", "2023级", "软工2301", "在读"),
-            new Student("202102042", "钱十一", "男", "数学科学学院", "统计学", "2021级", "统计2102", "在读"),
-            new Student("202001015", "孙十二", "女", "计算机学院", "计算机科学与技术", "2020级", "计科2003", "毕业"),
-            new Student("202201023", "周十三", "男", "电子信息学院", "电子信息工程", "2022级", "电信2201", "在读"),
-            new Student("202304007", "吴十四", "女", "外国语学院", "英语", "2023级", "英语2302", "在读")
-        );
+        params.put("pageNum", String.valueOf(pageNum));
+        params.put("pageSize", String.valueOf(itemsPerPage));
+        
+        // 用户请求的页码，记录下来以便后续比较
+        final int requestedPage = pageNum;
+        
+        // 确保UI被禁用，显示加载状态
+        Platform.runLater(() -> {
+            studentTable.setDisable(true);
+            studentTable.getItems().clear(); 
+        });
+ 
+        NetworkUtils.getAsync("/admin/student/list", params)
+            .thenAcceptAsync(response -> {
+                try {
+                    JsonObject jsonResponse = gson.fromJson(response, JsonObject.class);
+                    
+                    if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200) {
+                        JsonObject data = jsonResponse.getAsJsonObject("data");
+                        int apiTotalItems = data.get("total").getAsInt();
+                        int apiTotalPages = data.get("pages").getAsInt();
+                        int apiCurrentPage = data.get("pageNum").getAsInt();
+                        
+                        // 转换学生数据
+                        ObservableList<Student> newData = FXCollections.observableArrayList();
+                        JsonArray studentList = data.getAsJsonArray("list");
+                        
+                        for (JsonElement element : studentList) {
+                            JsonObject studentJson = element.getAsJsonObject();
+                            String username = studentJson.get("username").getAsString();
+                            String sex = studentJson.get("sex").getAsString();
+                            String sduid = studentJson.get("sduid").getAsString();
+                            
+                            String major = "未分配";
+                            if (studentJson.has("major") && !studentJson.get("major").isJsonNull()) {
+                                major = studentJson.get("major").getAsString();
+                            }
+                            
+                            if(major.equals("0")){
+                                major = "软件工程";
+                            } else if (major.equals("1")) {
+                                major = "数媒";
+                            } else if (major.equals("2")) {
+                                major = "大数据";
+                            } else if (major.equals("3")) {
+                                major = "AI";
+                            } else if (major.equals("未分配")) {
+                                // Keep as "未分配"
+                            } else {
+                                // If major is some other string not in the list, keep it or map to default
+                            }
+
+                            int gradeYear = 0;
+                            if (studentJson.has("grade") && !studentJson.get("grade").isJsonNull()) {
+                                try {
+                                    gradeYear = studentJson.get("grade").getAsInt();
+                                } catch (NumberFormatException e) {
+                                    // gradeYear 保持默认值
+                                }
+                            }
+
+                            String sectionStr = "未分班";
+                            if (studentJson.has("section") && !studentJson.get("section").isJsonNull()) {
+                                try {
+                                    // 尝试将其作为数字获取，然后转换为字符串
+                                    sectionStr = studentJson.get("section").getAsInt() + ""; 
+                                } catch (NumberFormatException | UnsupportedOperationException e) {
+                                    // 如果不是数字，尝试直接作为字符串获取
+                                    try {
+                                        sectionStr = studentJson.get("section").getAsString();
+                                    } catch (UnsupportedOperationException e2){
+                                        // sectionStr 保持默认值 "未分班"
+                                    }
+                                }
+                            }
+                            String fullsection = major + sectionStr + "班";
+
+                            String studentApiStatus = "UNKNOWN_STATUS";
+                            if (studentJson.has("status") && !studentJson.get("status").isJsonNull()) {
+                                studentApiStatus = studentJson.get("status").getAsString();
+                            }
+                            String displayStatus = mapStatusValue(studentApiStatus);
+                            
+                            Student student = new Student(
+                                sduid, 
+                                username, 
+                                sex, 
+                                "软件学院",
+                                major, 
+                                gradeYear + "级",
+                                fullsection,
+                                displayStatus
+                            );
+                            
+                            newData.add(student);
+                        }
+                        
+                        // 最后在UI线程中更新界面
+                        Platform.runLater(() -> {
+                            try {
+                                // 保存API返回的数据到模型
+                                totalItems = apiTotalItems;
+                                totalPages = apiTotalPages;
+                                currentPage = apiCurrentPage;
+                                
+                                // 只有当当前页面的数据确实是我们请求的页面的数据时，才更新UI
+                                if (requestedPage == apiCurrentPage) {
+                                    // 临时禁用监听器
+                                    pagination.currentPageIndexProperty().removeListener(pageChangeListener);
+                                    
+                                    // 设置总页数
+                                    pagination.setPageCount(Math.max(1, totalPages));
+                                    
+                                    // 更新页码
+                                    pagination.setCurrentPageIndex(currentPage - 1);
+                                    
+                                    // 重新添加监听器
+                                    pagination.currentPageIndexProperty().addListener(pageChangeListener);
+                                    
+                                    // 更新表格数据
+                                    masterData.setAll(newData);
+                                    if (studentTable.getItems() != masterData) {
+                                        studentTable.setItems(masterData);
+                                    }
+                                }
+                            } finally {
+                                // 无论如何都要解除加载锁定，启用UI
+                                isPageLoadingLocked = false;
+                                studentTable.setDisable(false);
+                                updatePageInfo();
+                            }
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            try {
+                                String errorMsg = jsonResponse.has("msg") 
+                                    ? jsonResponse.get("msg").getAsString() 
+                                    : "加载学生数据失败";
+                                showAlert(Alert.AlertType.ERROR, "错误", errorMsg);
+                                masterData.clear();
+                            } finally {
+                                isPageLoadingLocked = false;
+                                studentTable.setDisable(false);
+                                updatePageInfo();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        try {
+                            LOGGER.log(Level.SEVERE, "解析API响应失败", e);
+                            showAlert(Alert.AlertType.ERROR, "错误", "解析API响应失败: " + e.getMessage());
+                            masterData.clear();
+                        } finally {
+                            isPageLoadingLocked = false;
+                            studentTable.setDisable(false);
+                            updatePageInfo();
+                        }
+                    });
+                }
+            }, Platform::runLater)
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    try {
+                        LOGGER.log(Level.SEVERE, "从API加载学生数据失败", ex);
+                        showAlert(Alert.AlertType.ERROR, "错误", "从API加载学生数据失败: " + ex.getMessage());
+                        masterData.clear();
+                    } finally {
+                        isPageLoadingLocked = false;
+                        studentTable.setDisable(false);
+                        updatePageInfo();
+                    }
+                });
+                return null;
+            });
+    }
+    
+    // 将API状态值映射为显示值
+    private String mapStatusValue(String apiStatus) {
+        switch (apiStatus) {
+            case "STUDYING":
+                return "在读";
+            case "SUSPENDED":
+                return "休学";
+            case "GRADUATED":
+                return "毕业";
+            default:
+                return apiStatus;
+        }
+    }
+    
+    // Map display status back to API value if needed for filtering
+    private String mapStatusToApiValue(String displayStatus) {
+        switch (displayStatus) {
+            case "在读":
+                return "STUDYING";
+            case "休学":
+                return "SUSPENDED";
+            case "毕业":
+                return "GRADUATED";
+            default:
+                return "";
+        }
     }
 
-    // 应用筛选条件并更新表格数据
-    private void updateFilteredData() {
-        String searchText = searchField.getText().toLowerCase().trim();
-        String department = departmentComboBox.getValue();
-        String major = majorComboBox.getValue();
-        String grade = gradeComboBox.getValue();
-        String status = statusComboBox.getValue();
-        
-        // 筛选数据
-        filteredData.clear();
-        for (Student student : masterData) {
-            boolean matchesSearch = searchText.isEmpty() || 
-                    student.getId().toLowerCase().contains(searchText) || 
-                    student.getName().toLowerCase().contains(searchText);
-                    
-            boolean matchesDepartment = "全部院系".equals(department) || 
-                    student.getDepartment().equals(department);
-                    
-            boolean matchesMajor = "全部专业".equals(major) || 
-                    student.getMajor().equals(major);
-                    
-            boolean matchesGrade = "全部年级".equals(grade) || 
-                    student.getGrade().equals(grade);
-                    
-            boolean matchesStatus = "全部状态".equals(status) || 
-                    student.getStatus().equals(status);
-                    
-            if (matchesSearch && matchesDepartment && matchesMajor && matchesGrade && matchesStatus) {
-                filteredData.add(student);
-            }
+    // 获取选中的年级值
+    private String getSelectedGradeValue() {
+        String gradeText = gradeComboBox.getValue();
+        if (gradeText == null || gradeText.equals("全部年级")) {
+            return "";
         }
         
-        // 更新分页控件
-        int pageCount = (int) Math.ceil((double) filteredData.size() / itemsPerPage);
-        pagination.setPageCount(Math.max(1, pageCount));
-        pagination.setCurrentPageIndex(0);
-        
-        // 创建第一页内容
-        createPage(0);
+        // 提取年级数字（例如：从 "2024级" 提取 "2024"）
+        return gradeText.replaceAll("[^0-9]", "");
+    }
+    
+    // 处理筛选条件变化
+    private void handleFilterChange() {
+        loadStudentsFromApi(1);
     }
 
     // 处理搜索按钮点击
     @FXML
     private void handleSearch() {
-
-        updateFilteredData();
+        loadStudentsFromApi(1);
     }
 
     // 处理重置按钮点击
@@ -349,7 +548,7 @@ public class StudentMangementController implements Initializable {
         majorComboBox.setValue("全部专业");
         gradeComboBox.setValue("全部年级");
         statusComboBox.setValue("全部状态");
-        updateFilteredData();
+        loadStudentsFromApi(1);
     }
 
     // 处理批量删除按钮点击
@@ -364,7 +563,6 @@ public class StudentMangementController implements Initializable {
             return;
         }
         
-        // 显示确认对话框
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("确认删除");
         alert.setHeaderText(null);
@@ -372,17 +570,15 @@ public class StudentMangementController implements Initializable {
         
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // 执行删除操作
-            masterData.removeAll(selectedStudents);
-            updateFilteredData();
-            showAlert(Alert.AlertType.INFORMATION, "成功", "已成功删除 " + selectedStudents.size() + " 个学生");
+            showAlert(Alert.AlertType.INFORMATION, "成功", "已成功删除 " + selectedStudents.size() + " 个学生（模拟）。请调用后端API实现真正删除。");
+            
+            loadStudentsFromApi(Math.max(1, currentPage));
         }
     }
 
     // 处理添加学生卡片点击
     @FXML
     private void handleAddStudent(MouseEvent event) {
-        // 这里实现添加学生的逻辑
         showAlert(Alert.AlertType.INFORMATION, "功能提示", "添加学生功能尚未实现");
     }
 
@@ -395,33 +591,27 @@ public class StudentMangementController implements Initializable {
                 new FileChooser.ExtensionFilter("Excel 文件", "*.xlsx", "*.xls")
         );
 
-        // 获取当前窗口Stage，用于显示文件选择器
         Stage stage = (Stage) importStudentCard.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
             try {
-                 // 显示一个加载提示或禁用UI元素
                 showAlert(Alert.AlertType.INFORMATION, "提示", "正在上传文件: " + selectedFile.getName() + "...");
 
                 NetworkUtils.postMultipartFileAsync("/admin/upload", selectedFile)
                     .thenAcceptAsync(response -> {
-                        // 在 UI 线程上更新
                         Platform.runLater(() -> {
 
                             JsonObject res = gson.fromJson(response,JsonObject.class);
                             if(res.has("code") && res.get("code").getAsInt()==200){
-                                System.out.println( response); // 打印响应以供调试
+                                System.out.println( response);
                                 showAlert(Alert.AlertType.INFORMATION, "成功", "文件上传成功！");
-                                //刷新列表
-                                 loadMockData();
-                                 updateFilteredData();
+                                loadStudentsFromApi(1);
                             }
 
                         });
-                    }, Platform::runLater) // 确保 thenAcceptAsync 的回调也在UI线程执行
+                    }, Platform::runLater)
                     .exceptionally(ex -> {
-                        // 在 UI 线程上更新
                         Platform.runLater(() -> {
                             LOGGER.log(Level.SEVERE, "文件上传失败", ex);
                             showAlert(Alert.AlertType.ERROR, "错误", "文件上传失败: " + ex.getMessage());
@@ -430,20 +620,17 @@ public class StudentMangementController implements Initializable {
                     });
 
             } catch (Exception e) {
-                 // 处理调用 NetworkUtils 可能出现的直接异常（虽然异步调用本身不太可能在这里抛出）
                 LOGGER.log(Level.SEVERE, "启动文件上传时出错", e);
                 showAlert(Alert.AlertType.ERROR, "错误", "启动文件上传时出错: " + e.getMessage());
             }
         } else {
             System.out.println("未选择文件。");
-            // 如果用户取消选择，显示提示
              showAlert(Alert.AlertType.INFORMATION, "提示", "未选择任何文件。");
         }
     }
 
     // 处理查看学生详情按钮点击
     private void handleViewStudent(Student student) {
-        // 这里实现查看学生详情的逻辑
         showAlert(Alert.AlertType.INFORMATION, "学生详情", 
                 "学号: " + student.getId() + "\n" +
                 "姓名: " + student.getName() + "\n" +
@@ -457,13 +644,11 @@ public class StudentMangementController implements Initializable {
 
     // 处理编辑学生按钮点击
     private void handleEditStudent(Student student) {
-        // 这里实现编辑学生的逻辑
         showAlert(Alert.AlertType.INFORMATION, "功能提示", "编辑学生功能尚未实现");
     }
 
     // 处理删除学生按钮点击
     private void handleDeleteStudent(Student student) {
-        // 显示确认对话框
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("确认删除");
         alert.setHeaderText(null);
@@ -471,10 +656,9 @@ public class StudentMangementController implements Initializable {
         
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // 执行删除操作
-            masterData.remove(student);
-            updateFilteredData();
-            showAlert(Alert.AlertType.INFORMATION, "成功", "已成功删除学生");
+            showAlert(Alert.AlertType.INFORMATION, "成功", "已成功删除学生 " + student.getName() + "（模拟）。请调用后端API实现真正删除。");
+            
+            loadStudentsFromApi(Math.max(1, currentPage));
         }
     }
 
@@ -486,7 +670,7 @@ public class StudentMangementController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-
+    
     // 学生数据模型类
     public static class Student {
         private final SimpleStringProperty id;
