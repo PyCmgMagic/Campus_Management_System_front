@@ -42,11 +42,14 @@ public class LoginController {
 
     @FXML
     private Hyperlink adminLogin;
+    @FXML
+    private Hyperlink sduLogin;
 
     @FXML
     private Label errorMessageLabel;
 
     private boolean togglestate = false;
+    private boolean togglestate1 = false;
     /**
      * 初始化控制器
      */
@@ -122,6 +125,46 @@ public class LoginController {
         requestBody.put("stuId",username);
         requestBody.put("password",password);
         String requetBodyJson = gson.toJson(requestBody);
+        if(togglestate1){
+            NetworkUtils.post("/login/SDULogin", requetBodyJson, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    try {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                            JsonObject dataJson = responseJson.getAsJsonObject("data");
+                            int identity = dataJson.get("permission").getAsInt();
+                            String token = dataJson.get("accessToken").getAsString();
+                            String username = dataJson.get("username").getAsString();
+                            String refreshToken = dataJson.get("refreshToken").getAsString();
+                            UserSession.getInstance().setIdentity(identity);
+                            UserSession.getInstance().setToken(token);
+                            UserSession.getInstance().setRefreshToken(refreshToken);
+                            UserSession.getInstance().setUsername(username);
+                            System.out.println("登录成功: " + result);
+                            MainApplication.startTokenRefreshTimer();
+                            navigateToMainPage(); // 导航到主页面
+                        } else {
+                            String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
+                            showErrorMessage(message);
+                        }
+                    } catch (Exception e) {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        showErrorMessage(responseJson.get("msg").getAsString());
+                        System.err.println("处理登录响应时出错: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    System.err.println("登录失败: " + e.getMessage());
+                    int i = e.getMessage().indexOf("msg");
+                    showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
+                }
+            });
+        }else{
+
+
         NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -158,6 +201,7 @@ public class LoginController {
                 showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
             }
         });
+        }
 
         return false;
     }
@@ -206,6 +250,20 @@ public class LoginController {
             togglestate = true;
         }
     }
+
+    public void handleSduloginClick(ActionEvent actionEvent) {
+        if(togglestate1){
+            usernameField.setPromptText("请输入学号或工号");
+            passwordField.setPromptText("请输入密码");
+            sduLogin.setText("山大统一认证登录");
+            togglestate1 = false;
+        }else {
+            usernameField.setPromptText("请输入山大账号");
+            passwordField.setPromptText("请输入密码");
+            sduLogin.setText("普通登录");
+            togglestate1 = true;
+        }
+    }
 //测试用快捷登录
     public void studentlogin(ActionEvent actionEvent) {
         usernameField.setText("202400000001");
@@ -226,4 +284,5 @@ public class LoginController {
         handleLogin(actionEvent);
 
     }
+
 }
