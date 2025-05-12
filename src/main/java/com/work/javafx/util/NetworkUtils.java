@@ -55,9 +55,11 @@ public class NetworkUtils {
             }
             else  {
                 LOGGER.warning("不存在配置文件，联系作者获取");
+                ShowMessage.showErrorMessage("无配置文件","不存在配置文件，联系作者获取");
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "加载配置失败", e);
+            ShowMessage.showErrorMessage("无配置文件","不存在配置文件，联系作者获取");
             LOGGER.warning("不存在配置文件，联系作者获取");
         }
     }
