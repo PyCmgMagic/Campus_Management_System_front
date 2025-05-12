@@ -95,12 +95,6 @@
                      <children>
                         <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label styleClass="filter-label" text="院系" />
-                              <ComboBox fx:id="departmentComboBox" prefWidth="150.0" promptText="全部院系" styleClass="filter-select" VBox.vgrow="ALWAYS" />
-                           </children>
-                        </VBox>
-                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
-                           <children>
                               <Label styleClass="filter-label" text="专业" />
                               <ComboBox fx:id="majorComboBox" prefWidth="150.0" promptText="全部专业" styleClass="filter-select" VBox.vgrow="ALWAYS" />
                            </children>

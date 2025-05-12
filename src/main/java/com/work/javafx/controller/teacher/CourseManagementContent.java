@@ -353,7 +353,6 @@ static Gson gson = new Gson();
             }
             
             // 将课程信息传递给新窗口的控制器并加载数据
-            // 假设 UltimateCourse 的 classNum 对应 API 需要的 courseId
             controller.initializeData(course.getId()+"");
 
             // 创建新窗口 (Stage)

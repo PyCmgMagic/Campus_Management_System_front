@@ -370,9 +370,9 @@ public class CourseManagementController implements Initializable {
                         Course course = new Course(
                             String.valueOf(courseItem.get("id").getAsInt()),
                             courseItem.get("name").getAsString(),
-                            "", // department不在API返回中，默认为空
+                            "",
                             courseItem.get("point").getAsInt(),
-                            "", // type不在API返回中，默认为空
+                            courseItem.get("type").getAsString(),
                             courseItem.get("teacherName").getAsString(),
                             isActive
                         );
@@ -382,7 +382,7 @@ public class CourseManagementController implements Initializable {
                         course.setPeopleNum(courseItem.get("peopleNum").getAsInt());
                         course.setTerm(courseItem.get("term").getAsString());
                         course.setStatus(courseItem.get("status").getAsString());
-                        
+
                         allCourses.add(course);
                     }
                     
