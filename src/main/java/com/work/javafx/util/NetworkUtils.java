@@ -34,8 +34,33 @@ public class NetworkUtils {
     private static final int TIMEOUT = 10000; // 超时时间，单位毫秒
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
-    private static final String BaseUrl = "http://110.42.38.155:8081" ;
+    private static String BaseUrl;
     String token = "Bearer " + UserSession.getInstance().getToken();
+    static {
+        loadConfiguration();
+    }
+    /**
+     * 从配置文件加载服务器配置
+     */
+    private static void loadConfiguration() {
+        try {
+            // 尝试从配置文件加载
+            File configFile = new File("config/application.properties");
+            if (configFile.exists()) {
+                java.util.Properties props = new java.util.Properties();
+                try (FileInputStream fis = new FileInputStream(configFile)) {
+                    props.load(fis);
+                    BaseUrl = props.getProperty("server.url");
+                }
+            }
+            else  {
+                LOGGER.warning("不存在配置文件，联系作者获取");
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "加载配置失败", e);
+            LOGGER.warning("不存在配置文件，联系作者获取");
+        }
+    }
 
     /**
      * 方法枚举
