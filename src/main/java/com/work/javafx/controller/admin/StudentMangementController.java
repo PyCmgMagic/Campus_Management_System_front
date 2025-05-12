@@ -194,14 +194,12 @@ public class StudentMangementController implements Initializable {
         actionColumn.setCellValueFactory(param -> new javafx.beans.property.ReadOnlyObjectWrapper<>(param.getValue()));
         actionColumn.setCellFactory(column -> new TableCell<Student, Student>() {
             private final Button viewBtn = new Button();
-            private final Button editBtn = new Button();
             private final Button deleteBtn = new Button();
-            private final HBox actionsBox = new HBox(10, viewBtn, editBtn, deleteBtn);
+            private final HBox actionsBox = new HBox(10, viewBtn, deleteBtn);
             
             {
                 // 初始化按钮样式和提示
                 viewBtn.getStyleClass().addAll("table-button", "default-btn");
-                editBtn.getStyleClass().addAll("table-button", "warning-btn");
                 deleteBtn.getStyleClass().addAll("table-button", "danger-btn");
 
                 // 添加图标
@@ -209,9 +207,6 @@ public class StudentMangementController implements Initializable {
                 viewIcon.getStyleClass().add("view-icon");
                 viewBtn.setGraphic(viewIcon);
 
-                Region editIcon = new Region();
-                editIcon.getStyleClass().add("edit-icon");
-                editBtn.setGraphic(editIcon);
 
                 Region deleteIcon = new Region();
                 deleteIcon.getStyleClass().add("delete-icon");
@@ -220,7 +215,6 @@ public class StudentMangementController implements Initializable {
 
 
                 deleteBtn.setTooltip(new Tooltip("删除"));
-                editBtn.setTooltip(new Tooltip("编辑"));
                 viewBtn.setTooltip(new Tooltip("查看详情"));
 
                 actionsBox.setAlignment(Pos.CENTER);
@@ -234,7 +228,6 @@ public class StudentMangementController implements Initializable {
                     setGraphic(null);
                 } else {
                     viewBtn.setOnAction(e -> handleViewStudent(student));
-                    editBtn.setOnAction(e -> handleEditStudent(student));
                     deleteBtn.setOnAction(e -> handleDeleteStudent(student));
                     setGraphic(actionsBox);
                 }
@@ -671,10 +664,7 @@ public class StudentMangementController implements Initializable {
         }
     }
 
-    // 处理编辑学生按钮点击
-    private void handleEditStudent(Student student) {
-        showAlert(Alert.AlertType.INFORMATION, "功能提示", "编辑学生功能尚未实现");
-    }
+
 
     // 处理删除学生按钮点击
     private void handleDeleteStudent(Student student) {
