@@ -48,7 +48,6 @@ public class StudentMangementController implements Initializable {
     @FXML private StackPane addStudentCard;
     @FXML private StackPane importStudentCard;
     @FXML private TextField searchField;
-    @FXML private ComboBox<String> departmentComboBox;
     @FXML private ComboBox<String> majorComboBox;
     @FXML private ComboBox<String> gradeComboBox;
     @FXML private ComboBox<String> statusComboBox;
@@ -97,16 +96,7 @@ public class StudentMangementController implements Initializable {
 
     // 初始化筛选下拉框选项
     private void initializeComboBoxes() {
-        // 添加院系选项
-        departmentComboBox.getItems().addAll(
-            "全部院系",
-            "计算机科学与技术学院",
-            "电子信息学院",
-            "数学科学学院",
-            "外国语学院"
-        );
-        departmentComboBox.setValue("全部院系");
-        
+
         // 添加专业选项
         majorComboBox.getItems().addAll(
             "全部专业",
@@ -141,7 +131,6 @@ public class StudentMangementController implements Initializable {
         statusComboBox.setValue("全部状态");
         
         // 添加筛选监听器
-        departmentComboBox.setOnAction(e -> handleFilterChange());
         majorComboBox.setOnAction(e -> handleFilterChange());
         gradeComboBox.setOnAction(e -> handleFilterChange());
         statusComboBox.setOnAction(e -> handleFilterChange());
@@ -313,7 +302,14 @@ public class StudentMangementController implements Initializable {
     private void loadStudentsFromApi(int pageNum) {
         String gradeQueryParam = getSelectedGradeValue();
         Map<String, String> params = new HashMap<>();
-        
+
+        params.put("pageNum", String.valueOf(pageNum));
+        params.put("pageSize", String.valueOf(itemsPerPage));
+
+        // 用户请求的页码，记录下来以便后续比较
+        final int requestedPage = pageNum;
+
+        if(searchField.getText().trim().isEmpty()){
         if (gradeQueryParam != null && !gradeQueryParam.isEmpty()) {
             params.put("grade", gradeQueryParam);
         }
@@ -322,18 +318,12 @@ public class StudentMangementController implements Initializable {
             params.put("major", majorFilter);
         }
 
-        params.put("pageNum", String.valueOf(pageNum));
-        params.put("pageSize", String.valueOf(itemsPerPage));
-        
-        // 用户请求的页码，记录下来以便后续比较
-        final int requestedPage = pageNum;
-        
         // 确保UI被禁用，显示加载状态
         Platform.runLater(() -> {
             studentTable.setDisable(true);
             studentTable.getItems().clear(); 
         });
- 
+
         NetworkUtils.getAsync("/admin/student/list", params)
             .thenAcceptAsync(response -> {
                 try {
@@ -500,6 +490,177 @@ public class StudentMangementController implements Initializable {
                 });
                 return null;
             });
+        }else{
+            params.put("permission","2");
+            params.put("keyword",searchField.getText());
+            NetworkUtils.getAsync("/admin/searchSdu", params)
+                    .thenAcceptAsync(response -> {
+                        try {
+                            JsonObject jsonResponse = gson.fromJson(response, JsonObject.class);
+
+                            if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200) {
+                                JsonObject data = jsonResponse.getAsJsonObject("data");
+                                int apiTotalItems = data.get("total").getAsInt();
+                                int apiCurrentPage = data.get("pageNum").getAsInt();
+                                int pageSize = data.get("pageSize").getAsInt();
+                                int apiTotalPages = apiTotalItems % pageSize == 0 ? apiTotalItems/pageSize : apiTotalItems /pageSize +1;
+
+                                        // 转换学生数据
+                                ObservableList<Student> newData = FXCollections.observableArrayList();
+                                JsonArray studentList = data.getAsJsonArray("list");
+
+                                for (JsonElement element : studentList) {
+                                    JsonObject studentJson = element.getAsJsonObject();
+                                    String username = studentJson.get("username").getAsString();
+                                    String sex = studentJson.get("sex").getAsString();
+                                    String sduid = studentJson.get("sduid").getAsString();
+
+                                    String major = "未分配";
+                                    if (studentJson.has("major") && !studentJson.get("major").isJsonNull()) {
+                                        major = studentJson.get("major").getAsString();
+                                    }
+                                    int id = -1;
+                                    if (studentJson.has("id") && !studentJson.get("id").isJsonNull()) {
+                                        id = studentJson.get("id").getAsInt();
+                                    }
+                                    if(major.equals("0")){
+                                        major = "软件工程";
+                                    } else if (major.equals("1")) {
+                                        major = "数媒";
+                                    } else if (major.equals("2")) {
+                                        major = "大数据";
+                                    } else if (major.equals("3")) {
+                                        major = "AI";
+                                    } else if (major.equals("未分配")) {
+                                        // Keep as "未分配"
+                                    } else {
+                                    }
+
+                                    int gradeYear = 0;
+                                    if (studentJson.has("grade") && !studentJson.get("grade").isJsonNull()) {
+                                        try {
+                                            gradeYear = studentJson.get("grade").getAsInt();
+                                        } catch (NumberFormatException e) {
+                                            // gradeYear 保持默认值
+                                        }
+                                    }
+
+                                    String sectionStr = "未分班";
+                                    if (studentJson.has("section") && !studentJson.get("section").isJsonNull()) {
+                                        try {
+                                            // 尝试将其作为数字获取，然后转换为字符串
+                                            sectionStr = studentJson.get("section").getAsInt() + "";
+                                        } catch (NumberFormatException | UnsupportedOperationException e) {
+                                            // 如果不是数字，尝试直接作为字符串获取
+                                            try {
+                                                sectionStr = studentJson.get("section").getAsString();
+                                            } catch (UnsupportedOperationException e2){
+                                                // sectionStr 保持默认值 "未分班"
+                                            }
+                                        }
+                                    }
+                                    String fullsection = major + sectionStr + "班";
+
+                                    String studentApiStatus = "UNKNOWN_STATUS";
+                                    if (studentJson.has("status") && !studentJson.get("status").isJsonNull()) {
+                                        studentApiStatus = studentJson.get("status").getAsString();
+                                    }
+                                    String displayStatus = mapStatusValue(studentApiStatus);
+
+                                    Student student = new Student(
+                                            id+"",
+                                            sduid,
+                                            username,
+                                            sex,
+                                            "软件学院",
+                                            major,
+                                            gradeYear + "级",
+                                            fullsection,
+                                            displayStatus
+                                    );
+
+                                    newData.add(student);
+                                }
+
+                                // 最后在UI线程中更新界面
+                                Platform.runLater(() -> {
+                                    try {
+                                        // 保存API返回的数据到模型
+                                        totalItems = apiTotalItems;
+                                        totalPages = apiTotalPages;
+                                        currentPage = apiCurrentPage;
+
+                                        // 只有当当前页面的数据确实是我们请求的页面的数据时，才更新UI
+                                        if (requestedPage == apiCurrentPage) {
+                                            // 临时禁用监听器
+                                            pagination.currentPageIndexProperty().removeListener(pageChangeListener);
+
+                                            // 设置总页数
+                                            pagination.setPageCount(Math.max(1, totalPages));
+
+                                            // 更新页码
+                                            pagination.setCurrentPageIndex(currentPage - 1);
+
+                                            // 重新添加监听器
+                                            pagination.currentPageIndexProperty().addListener(pageChangeListener);
+
+                                            // 更新表格数据
+                                            masterData.setAll(newData);
+                                            if (studentTable.getItems() != masterData) {
+                                                studentTable.setItems(masterData);
+                                            }
+                                        }
+                                    } finally {
+                                        // 无论如何都要解除加载锁定，启用UI
+                                        isPageLoadingLocked = false;
+                                        studentTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
+                            } else {
+                                Platform.runLater(() -> {
+                                    try {
+                                        String errorMsg = jsonResponse.has("msg")
+                                                ? jsonResponse.get("msg").getAsString()
+                                                : "加载学生数据失败";
+                                        showAlert(Alert.AlertType.ERROR, "错误", errorMsg);
+                                        masterData.clear();
+                                    } finally {
+                                        isPageLoadingLocked = false;
+                                        studentTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
+                            }
+                        } catch (Exception e) {
+                            Platform.runLater(() -> {
+                                try {
+                                    LOGGER.log(Level.SEVERE, "解析API响应失败", e);
+                                    showAlert(Alert.AlertType.ERROR, "错误", "解析API响应失败: " + e.getMessage());
+                                    masterData.clear();
+                                } finally {
+                                    isPageLoadingLocked = false;
+                                    studentTable.setDisable(false);
+                                    updatePageInfo();
+                                }
+                            });
+                        }
+                    }, Platform::runLater)
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            try {
+                                LOGGER.log(Level.SEVERE, "从API加载学生数据失败", ex);
+                                showAlert(Alert.AlertType.ERROR, "错误", "从API加载学生数据失败: " + ex.getMessage());
+                                masterData.clear();
+                            } finally {
+                                isPageLoadingLocked = false;
+                                studentTable.setDisable(false);
+                                updatePageInfo();
+                            }
+                        });
+                        return null;
+                    });
+        }
     }
     
     // 将API状态值映射为显示值
@@ -556,7 +717,6 @@ public class StudentMangementController implements Initializable {
     @FXML
     private void handleReset() {
         searchField.clear();
-        departmentComboBox.setValue("全部院系");
         majorComboBox.setValue("全部专业");
         gradeComboBox.setValue("全部年级");
         statusComboBox.setValue("全部状态");

@@ -13,9 +13,9 @@
 
     <TableView fx:id="studentTable" stylesheets="@../css/teacher/StudentListView.css" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="idColumn" prefWidth="100" text="学生ID" />
-            <TableColumn fx:id="usernameColumn" prefWidth="250" text="用户名" />
-            <TableColumn fx:id="sectionNumberColumn" prefWidth="150" text="学号" />
+            <TableColumn fx:id="idColumn" prefWidth="100" text="学号" />
+            <TableColumn fx:id="usernameColumn" prefWidth="250" text="姓名" />
+            <TableColumn fx:id="sectionNumberColumn" prefWidth="150" text="班级" />
         </columns>
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
