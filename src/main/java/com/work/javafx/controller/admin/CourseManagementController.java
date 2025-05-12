@@ -186,7 +186,7 @@ public class CourseManagementController implements Initializable {
         // 设置表格允许编辑
         courseTable.setEditable(true);
     }
-    
+
     // 创建操作列工厂
     private Callback<TableColumn<Course, Void>, TableCell<Course, Void>> createActionCellFactory() {
         return new Callback<>() {

@@ -11,9 +11,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
 <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" stylesheets="@../css/admin/studentMangement.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.StudentMangementController">
@@ -39,7 +39,7 @@
                            <children>
                               <StackPane styleClass="quick-action-icon">
                                  <children>
-                                    <Region styleClass="add-icon"/>
+                                    <Region styleClass="add-icon" />
                                  </children>
                               </StackPane>
                               <VBox>
@@ -60,7 +60,7 @@
                            <children>
                               <StackPane styleClass="quick-action-icon" BorderPane.alignment="CENTER">
                                  <children>
-                                    <Region styleClass="export-icon"/>
+                                    <Region styleClass="export-icon" />
                                  </children>
                               </StackPane>
                               <VBox>
@@ -142,11 +142,11 @@
                           <columns>
                             <TableColumn fx:id="idColumn" minWidth="160.0" prefWidth="160.0" text="学号" />
                             <TableColumn fx:id="nameColumn" minWidth="120.0" prefWidth="120.0" text="姓名" />
-                            <TableColumn fx:id="genderColumn" maxWidth="80.0" minWidth="80.0" text="性别" />
-                            <TableColumn fx:id="departmentColumn" minWidth="120.0" prefWidth="120.0" text="院系" />
-                            <TableColumn fx:id="majorColumn" minWidth="160.0" prefWidth="160.0" text="专业" />
-                            <TableColumn fx:id="gradeColumn" minWidth="110.0" prefWidth="110.0" text="年级" />
-                            <TableColumn fx:id="classColumn" minWidth="100.0" prefWidth="100.0" text="班级" />
+                            <TableColumn fx:id="genderColumn" maxWidth="80.0" minWidth="57.5999755859375" prefWidth="57.5999755859375" text="性别" />
+                            <TableColumn fx:id="departmentColumn" minWidth="110.4000244140625" prefWidth="110.4000244140625" text="院系" />
+                            <TableColumn fx:id="majorColumn" minWidth="152.79998779296875" prefWidth="152.79998779296875" text="专业" />
+                            <TableColumn fx:id="gradeColumn" minWidth="110.0" prefWidth="114.39996337890625" text="年级" />
+                            <TableColumn fx:id="classColumn" minWidth="100.0" prefWidth="136.0" text="班级" />
                             <TableColumn fx:id="statusColumn" minWidth="110.0" prefWidth="110.0" text="状态" />
                             <TableColumn fx:id="actionColumn" minWidth="300.0" prefWidth="300.0" text="                                   操作" />
                           </columns>
@@ -157,11 +157,11 @@
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER" >
+                  <HBox alignment="CENTER">
                      <children>
                         <Label fx:id="pageInfoLabel" styleClass="page-info" text="共 0 条记录，当前显示 0-0 条" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Pagination fx:id="pagination" pageCount="1"  />
+                        <Pagination fx:id="pagination" pageCount="1" />
                      </children>
                   </HBox>
                </children>
