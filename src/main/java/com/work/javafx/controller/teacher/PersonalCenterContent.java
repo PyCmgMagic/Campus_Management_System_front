@@ -139,7 +139,7 @@ public class PersonalCenterContent implements Initializable {
             int yearsOfWork = currentYear - inductionYearInt;
 
             // 设置计算结果到 yearjoining Label
-            yearjoining.setText(String.valueOf(yearsOfWork));
+            yearjoining.setText(String.valueOf(yearsOfWork)+"年" );
         } catch (NumberFormatException e) {
             yearjoining.setText("未知");
         }
