@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class PasswordChangeController {
 
-    @FXML private PasswordField oldpasswordField;
+    @FXML private PasswordField oldPasswordField;
     @FXML private PasswordField newPasswordField;
     @FXML private PasswordField confirmPasswordField;
 
@@ -29,7 +29,7 @@ public class PasswordChangeController {
 
     @FXML
     private void handleSave() {
-        String oldPwd = oldpasswordField.getText();
+        String oldPwd = oldPasswordField.getText();
         String newPwd = newPasswordField.getText();
         String confirmPwd = confirmPasswordField.getText();
 
@@ -50,7 +50,7 @@ public class PasswordChangeController {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + UserSession.getInstance().getToken());
 
-        NetworkUtils.post("/user/changePassword", body, headers.toString(), new NetworkUtils.Callback<String>() {
+        NetworkUtils.post("/user/updatePassword", body, headers.toString(), new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -80,4 +80,5 @@ public class PasswordChangeController {
 
     public void handleSaveRight(ActionEvent actionEvent) {
     }
+
 }

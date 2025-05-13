@@ -128,6 +128,7 @@ public class UserInfo1 {
         // 清空输入框
         phoneField.clear();
         emailField.clear();
+        closeWindow();
 
         // 可以添加提示信息，告知用户已取消操作
     }
