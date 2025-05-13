@@ -83,16 +83,8 @@
                         <Label fx:id="titleLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
-                        <Label styleClass="info-label" text="部门" />
-                        <Label fx:id="departmentLabel" styleClass="info-value" />
-                    </HBox>
-                    <HBox spacing="10">
                         <Label styleClass="info-label" text="入职时间" />
                         <Label fx:id="entryDateLabel" styleClass="info-value" />
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label styleClass="info-label" text="工作年限" />
-                        <Label fx:id="workYearsLabel" styleClass="info-value" />
                     </HBox>
                 </VBox>
             </VBox>

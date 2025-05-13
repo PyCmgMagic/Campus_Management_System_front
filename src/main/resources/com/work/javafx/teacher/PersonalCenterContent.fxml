@@ -22,7 +22,7 @@
                   <Label fx:id="idlabel" styleClass="info-value" />
                   <Label styleClass="user-id" text="入职年份" />
                   <Label fx:id="yearLabel" styleClass="info-value" />
-                  <Label styleClass="user-id" text="入职时长：4年" />
+                  <Label styleClass="user-id" text="入职时长：" />
                   <Label fx:id="yearjoining" styleClass="info-value" />
 
                </HBox>
