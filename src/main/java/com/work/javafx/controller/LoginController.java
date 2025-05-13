@@ -459,7 +459,7 @@ public class LoginController {
     }
 
     public void teacherlogin(ActionEvent actionEvent) {
-        usernameField.setText("190000000000");
+        usernameField.setText("190100000000");
         passwordField.setText("123456");
         handleLogin(actionEvent);
 
