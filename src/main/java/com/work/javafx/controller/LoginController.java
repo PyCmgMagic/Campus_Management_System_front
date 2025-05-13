@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LoginController {
+
     Gson gson = new Gson();
 
     @FXML
@@ -57,6 +58,7 @@ public class LoginController {
 
     private boolean togglestate = false;
     private boolean togglestate1 = false;
+
     /**
      * 初始化控制器
      */
@@ -79,12 +81,12 @@ public class LoginController {
 //        usernameField.setText("student");
 //        passwordField.setText("student123");
         usernameField.setOnKeyPressed(event -> {
-            if(event.getCode()== KeyCode.ENTER || event.getCode()==KeyCode.DOWN){
+            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.DOWN) {
                 passwordField.requestFocus();
             }
         });
         passwordField.setOnKeyPressed(event -> {
-            if(event.getCode()== KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
 
@@ -101,6 +103,7 @@ public class LoginController {
 
     /**
      * 处理登录按钮点击事件
+     *
      * @param event 事件对象
      */
     private void handleLogin(ActionEvent event) {
@@ -116,12 +119,14 @@ public class LoginController {
         authenticateUser(username, password);
 
     }
+
     /**
      * 加载学期列表
      */
     private void fecthSemesters() {
-        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+        NetworkUtils.get("/term/getTermList", new NetworkUtils.Callback<String>() {
             ObservableList<String> semesterList = FXCollections.observableArrayList();
+
             @Override
             public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -131,7 +136,7 @@ public class LoginController {
                     for (int i = 0; i < dataArray.size(); i++) {
                         loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
                     }
-                    if(semesterList != null){
+                    if (semesterList != null) {
                         semesterList.clear();
                     }
                     semesterList.addAll(loadedSemesters);
@@ -151,16 +156,17 @@ public class LoginController {
 
     /**
      * 验证用户凭据
+     *
      * @param username 用户名
      * @param password 密码
      * @return 验证是否成功
      */
     private boolean authenticateUser(String username, String password) {
-        Map<String,String> requestBody = new HashMap<>();
-        requestBody.put("stuId",username);
-        requestBody.put("password",password);
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("stuId", username);
+        requestBody.put("password", password);
         String requetBodyJson = gson.toJson(requestBody);
-        if(togglestate1){
+        if (togglestate1) {
             NetworkUtils.post("/login/SDULogin", requetBodyJson, new NetworkUtils.Callback<String>() {
                 @Override
                 public void onSuccess(String result) {
@@ -195,48 +201,48 @@ public class LoginController {
                 public void onFailure(Exception e) {
                     System.err.println("登录失败: " + e.getMessage());
                     int i = e.getMessage().indexOf("msg");
-                    showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
+                    showErrorMessage(e.getMessage().substring(i + 6, e.getMessage().length() - 2));
                 }
             });
-        }else{
-        NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        JsonObject dataJson = responseJson.getAsJsonObject("data");
-                        int identity = dataJson.get("permission").getAsInt();
-                        String token = dataJson.get("accessToken").getAsString();
-                        String username = dataJson.get("username").getAsString();
-                        String refreshToken = dataJson.get("refreshToken").getAsString();
-                         UserSession.getInstance().setIdentity(identity);
-                         UserSession.getInstance().setToken(token);
-                         UserSession.getInstance().setRefreshToken(refreshToken);
-                         UserSession.getInstance().setUsername(username);
-                        fecthSemesters();
+        } else {
+            NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    try {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                            JsonObject dataJson = responseJson.getAsJsonObject("data");
+                            int identity = dataJson.get("permission").getAsInt();
+                            String token = dataJson.get("accessToken").getAsString();
+                            String username = dataJson.get("username").getAsString();
+                            String refreshToken = dataJson.get("refreshToken").getAsString();
+                            UserSession.getInstance().setIdentity(identity);
+                            UserSession.getInstance().setToken(token);
+                            UserSession.getInstance().setRefreshToken(refreshToken);
+                            UserSession.getInstance().setUsername(username);
+                            fecthSemesters();
 
-                        System.out.println("登录成功: " + result);
-                        MainApplication.startTokenRefreshTimer();
-                         navigateToMainPage(); // 导航到主页面
-                    } else {
-                        String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
-                        showErrorMessage(message);
+                            System.out.println("登录成功: " + result);
+                            MainApplication.startTokenRefreshTimer();
+                            navigateToMainPage(); // 导航到主页面
+                        } else {
+                            String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
+                            showErrorMessage(message);
+                        }
+                    } catch (Exception e) {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        showErrorMessage(responseJson.get("msg").getAsString());
+                        System.err.println("处理登录响应时出错: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
-                    showErrorMessage(responseJson.get("msg").getAsString());
-                    System.err.println("处理登录响应时出错: " + e.getMessage());
                 }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                System.err.println("登录失败: " + e.getMessage());
-                int i = e.getMessage().indexOf("msg");
-                showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    System.err.println("登录失败: " + e.getMessage());
+                    int i = e.getMessage().indexOf("msg");
+                    showErrorMessage(e.getMessage().substring(i + 6, e.getMessage().length() - 2));
+                }
+            });
         }
 
         return false;
@@ -244,6 +250,7 @@ public class LoginController {
 
     /**
      * 显示错误消息
+     *
      * @param message 错误消息内容
      */
     private void showErrorMessage(String message) {
@@ -272,14 +279,13 @@ public class LoginController {
         }
     }
 
-
     public void handleClick(ActionEvent actionEvent) {
-        if(togglestate){
+        if (togglestate) {
             usernameField.setPromptText("请输入学号或工号");
             passwordField.setPromptText("请输入密码");
             adminLogin.setText("教工或管理员登录");
             togglestate = false;
-        }else {
+        } else {
             usernameField.setPromptText("请输入管理员账号");
             passwordField.setPromptText("请输入管理员密码");
             adminLogin.setText("学生登录");
@@ -288,12 +294,12 @@ public class LoginController {
     }
 
     public void handleSduloginClick(ActionEvent actionEvent) {
-        if(togglestate1){
+        if (togglestate1) {
             usernameField.setPromptText("请输入学号或工号");
             passwordField.setPromptText("请输入密码");
             sduLogin.setText("山大统一认证登录");
             togglestate1 = false;
-        }else {
+        } else {
             usernameField.setPromptText("请输入山大账号");
             passwordField.setPromptText("请输入密码");
             sduLogin.setText("普通登录");
@@ -301,6 +307,7 @@ public class LoginController {
         }
     }
 //测试用快捷登录
+
     public void studentlogin(ActionEvent actionEvent) {
         usernameField.setText("202400000001");
         passwordField.setText("123456");
