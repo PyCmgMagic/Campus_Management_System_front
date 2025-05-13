@@ -105,7 +105,7 @@
             </children>
          </HBox>
         </VBox>
-      <Label alignment="TOP_LEFT" text="Version:2.9.0">
+      <Label alignment="TOP_LEFT" text="Version:2.9.1">
          <VBox.margin>
             <Insets />
          </VBox.margin>
