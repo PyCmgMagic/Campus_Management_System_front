@@ -59,7 +59,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="8.0">
                      <children>
                         <Label text="课程:" />
-                        <ComboBox fx:id="courseComboBox" promptText="选择课程" />
+                        <ComboBox onAction="#handleQuery" fx:id="courseComboBox" promptText="选择课程" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="8.0" />

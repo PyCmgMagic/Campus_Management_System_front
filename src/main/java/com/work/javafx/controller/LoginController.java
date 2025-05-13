@@ -382,32 +382,42 @@ public class LoginController {
                             if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
                                 // 立即停止轮询
                                 isPolling.set(false);
-                                
-                                JsonObject dataJson = responseJson.getAsJsonObject("data");
-                                int identity = dataJson.get("permission").getAsInt();
-                                String token = dataJson.get("accessToken").getAsString();
-                                String username = dataJson.get("username").getAsString();
-                                String refreshToken = dataJson.get("refreshToken").getAsString();
-                                
-                                UserSession.getInstance().setIdentity(identity);
-                                UserSession.getInstance().setToken(token);
-                                UserSession.getInstance().setRefreshToken(refreshToken);
-                                UserSession.getInstance().setUsername(username);
-                                
-                                fecthSemesters();
-                                fetchCurrentTerm();
-                                
-                                MainApplication.startTokenRefreshTimer();
-                                
-                                Platform.runLater(() -> {
-                                    try {
-                                        navigateToMainPage();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                                
-                                System.out.println("登录成功");
+                                // 检查data是否存在且不是null
+                                if (responseJson.has("data") && !responseJson.get("data").isJsonNull()) {
+                                    JsonObject dataJson = responseJson.getAsJsonObject("data");
+                                    int identity = dataJson.get("permission").getAsInt();
+                                    String token = dataJson.get("accessToken").getAsString();
+                                    String username = dataJson.get("username").getAsString();
+                                    String refreshToken = dataJson.get("refreshToken").getAsString();
+                                    
+                                    UserSession.getInstance().setIdentity(identity);
+                                    UserSession.getInstance().setToken(token);
+                                    UserSession.getInstance().setRefreshToken(refreshToken);
+                                    UserSession.getInstance().setUsername(username);
+                                    
+                                    fecthSemesters();
+                                    fetchCurrentTerm();
+                                    
+                                    MainApplication.startTokenRefreshTimer();
+                                    
+                                    Platform.runLater(() -> {
+                                        try {
+                                            navigateToMainPage();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                    
+                                    System.out.println("登录成功");
+                                } else {
+                                    //code虽然为200，但是data为null
+                                    System.out.println("等待用户在浏览器中完成授权...");
+                                    isPolling.set(true);
+                                }
+                            } else {
+                                // 第一次请求时data可能为null，继续轮询
+                                System.out.println("等待第三方登录验证...");
+                                isPolling.set(true); // 继续轮询
                             }
                         }
                         
