@@ -24,7 +24,7 @@
                 </VBox>
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
                 <Button fx:id="editBtn" onAction="#handleEditInfo" styleClass="primary-button" text="修改个人信息" />
-                <Button fx:id="changePwdBtn" styleClass="secondary-button" text="修改密码" />
+                <Button onAction="#PasswordChange" fx:id="changePwdBtn" styleClass="secondary-button" text="修改密码" />
             </HBox>
         </VBox>
     </top>
