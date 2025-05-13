@@ -166,7 +166,7 @@ public class LoginController {
         requestBody.put("stuId", username);
         requestBody.put("password", password);
         String requetBodyJson = gson.toJson(requestBody);
-        if (togglestate1) {
+        if(togglestate1){
             NetworkUtils.post("/login/SDULogin", requetBodyJson, new NetworkUtils.Callback<String>() {
                 @Override
                 public void onSuccess(String result) {

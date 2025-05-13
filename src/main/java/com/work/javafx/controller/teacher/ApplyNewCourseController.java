@@ -166,6 +166,8 @@ public class ApplyNewCourseController implements Initializable {
                 requestBody.put("finalRatio",(Integer.parseInt(finalPercentageField.getText())/100.0)+"");//期末分
             }else{
                 requestBody.put("examination","0");//考查
+                requestBody.put("regularRatio","1");//平时分
+                requestBody.put("finalRatio","0");//期末分
             }
             requestBody.put("point",creditsField.getText());//课程学分
             requestBody.put("classNum",courseCodeField.getText());//课序号
