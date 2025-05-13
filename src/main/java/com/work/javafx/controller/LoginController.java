@@ -153,7 +153,32 @@ public class LoginController {
             }
         });
     }
+    /**
+     * 获取当前学期
+     * */
+    private  void fetchCurrentTerm(){
+        NetworkUtils.get("/term/getCurrentTerm", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if(res.has("code")&& res.get("code").getAsInt()==200){
+                    String currentTerm = res.get("data").getAsString();
+                    System.out.println(currentTerm);
+                    Data.getInstance().setCurrentTerm(currentTerm);
+                    System.out.println(res.get("msg").getAsString());
+                }else {
+                    System.err.println(res.get("msg").getAsString());
+                }
+            }
 
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+                System.out.println("错误");
+            }
+        });
+    }
     /**
      * 验证用户凭据
      *
@@ -182,7 +207,8 @@ public class LoginController {
                             UserSession.getInstance().setToken(token);
                             UserSession.getInstance().setRefreshToken(refreshToken);
                             UserSession.getInstance().setUsername(username);
-                            fecthSemesters();
+                            fecthSemesters();//获取学期列表
+                            fetchCurrentTerm();//获取当前学期
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -220,8 +246,8 @@ public class LoginController {
                             UserSession.getInstance().setToken(token);
                             UserSession.getInstance().setRefreshToken(refreshToken);
                             UserSession.getInstance().setUsername(username);
-                            fecthSemesters();
-
+                            fecthSemesters();//获取学期列表
+                            fetchCurrentTerm();//获取当前学期
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
