@@ -6,6 +6,7 @@ public  class Data {
     private static Data instance;
     private String currentTerm;
     private ObservableList<String> semesterList; // 学期列表数据
+    private String currentTerm;
 
 
     public static synchronized Data getInstance() {
@@ -22,9 +23,18 @@ public  class Data {
     public Data() {
     }
 
+    public String getCurrentTerm() {
+        return currentTerm;
+    }
+
+    public void setCurrentTerm(String currentTerm) {
+        this.currentTerm = currentTerm;
+    }
+
     public Data(ObservableList<String> semesterList) {
         this.semesterList = semesterList;
     }
+<<<<<<< Updated upstream
 
     public String getCurrentTerm() {
         return currentTerm;
@@ -34,6 +44,8 @@ public  class Data {
         this.currentTerm = currentTerm;
     }
 
+=======
+>>>>>>> Stashed changes
     public ObservableList<String> getSemesterList() {
         return semesterList;
     }

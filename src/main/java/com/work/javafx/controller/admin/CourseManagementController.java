@@ -364,7 +364,6 @@ public class CourseManagementController implements Initializable {
                     for (int i = 0; i < courseList.size(); i++) {
                         JsonObject courseItem = courseList.get(i).getAsJsonObject();
                         
-                        // 假设从API返回的数据中的status字段表示课程状态
                         boolean isActive = "已通过".equals(courseItem.get("status").getAsString());
                         
                         Course course = new Course(

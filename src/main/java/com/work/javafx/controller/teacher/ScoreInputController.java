@@ -2,6 +2,10 @@ package com.work.javafx.controller.teacher;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+<<<<<<< Updated upstream
+=======
+import com.google.gson.JsonElement;
+>>>>>>> Stashed changes
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
@@ -70,8 +74,12 @@ public class ScoreInputController implements Initializable {
     @FXML private NumberAxis barChartYAxis;
     @FXML private PieChart gradeLevelChart;
     @FXML private VBox pieChartLegend; // 自定义图例的VBox
+<<<<<<< Updated upstream
 
     Gson gson = new Gson();
+=======
+    Gson gson =new Gson();
+>>>>>>> Stashed changes
     // --- 数据 ---
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
 
@@ -102,9 +110,14 @@ public class ScoreInputController implements Initializable {
         ObservableList<String> courseList = FXCollections.observableArrayList();
         Map<String,String> params = new HashMap<>();
         params.put("term", Data.getInstance().getCurrentTerm());
+<<<<<<< Updated upstream
         System.out.println(Data.getInstance().getCurrentTerm());
         params.put("pageSize","100");
         params.put("pageNum","1");
+=======
+        params.put("pageSize","1");
+        params.put("pageNum","100");
+>>>>>>> Stashed changes
         NetworkUtils.get("/class/list", params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) throws IOException {
@@ -112,6 +125,7 @@ public class ScoreInputController implements Initializable {
                 if(res.has("code") && res.get("code").getAsInt()==200){
                     JsonObject data = res.getAsJsonObject("data");
                     JsonArray list = data.getAsJsonArray("list");
+<<<<<<< Updated upstream
                     System.out.println(list.size());
                     for(int i = 0 ;i < list.size();i++){
                         JsonObject c = list.get(i).getAsJsonObject();
@@ -125,6 +139,22 @@ public class ScoreInputController implements Initializable {
                 courseComboBox.setItems(courseList);
                 courseComboBox.getSelectionModel().selectFirst();
             }
+=======
+                    for(int i = 0 ;i < list.size();i++){
+                        JsonObject c = list.get(i).getAsJsonObject();
+                        courseList.add(c.get("name").getAsString());
+                    }
+                    courseComboBox.setItems(courseList);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+            }
+        });
+>>>>>>> Stashed changes
 
             @Override
             public void onFailure(Exception e) {

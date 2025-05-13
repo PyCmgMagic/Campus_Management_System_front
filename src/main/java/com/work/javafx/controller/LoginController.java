@@ -156,6 +156,7 @@ public class LoginController {
     /**
      * 获取当前学期
      * */
+<<<<<<< Updated upstream
     private  void fetchCurrentTerm(){
         NetworkUtils.get("/term/getCurrentTerm", new NetworkUtils.Callback<String>() {
             @Override
@@ -179,6 +180,31 @@ public class LoginController {
             }
         });
     }
+=======
+private  void fetchCurrentTerm(){
+    NetworkUtils.get("/term/getCurrentTerm", new NetworkUtils.Callback<String>() {
+        @Override
+        public void onSuccess(String result) throws IOException {
+            JsonObject res = gson.fromJson(result, JsonObject.class);
+            if(res.has("code")&& res.get("code").getAsInt()==200){
+                System.out.println("chenggong");
+                String currentTerm = res.get("data").getAsString();
+                System.out.println(currentTerm);
+                Data.getInstance().setCurrentTerm(currentTerm);
+                System.out.println(res.get("msg").getAsString());
+            }else {
+                System.err.println(res.get("msg").getAsString());
+            }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+            System.err.println(res.get("msg").getAsString());
+        }
+    });
+}
+>>>>>>> Stashed changes
     /**
      * 验证用户凭据
      *
@@ -207,7 +233,11 @@ public class LoginController {
                             UserSession.getInstance().setToken(token);
                             UserSession.getInstance().setRefreshToken(refreshToken);
                             UserSession.getInstance().setUsername(username);
+<<<<<<< Updated upstream
                             fecthSemesters();//获取学期列表
+=======
+                            fecthSemesters();//获取学期
+>>>>>>> Stashed changes
                             fetchCurrentTerm();//获取当前学期
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
