@@ -90,7 +90,7 @@ public class TeacherManagementController implements Initializable {
 
     private void initFilters() {
         departmentFilter.setItems(FXCollections.observableArrayList(
-                "全部院系", "计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院" // 保留 UI 显示的标签
+                "全部院系", "计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院"
         ));
         departmentFilter.getSelectionModel().selectFirst();
 
@@ -113,34 +113,29 @@ public class TeacherManagementController implements Initializable {
             public TableCell<TeacherInfo, Void> call(TableColumn<TeacherInfo, Void> param) {
                 return new TableCell<>() {
                     private final Button viewBtn = new Button();
-                    private final Button editBtn = new Button();
-                    private final Button resetPassBtn = new Button();
                     private final Button deleteBtn = new Button();
                     private final HBox actionBox = new HBox(5);
 
                     {
-                        Region viewIcon = new Region(); viewIcon.getStyleClass().add("view-icon"); viewBtn.setGraphic(viewIcon);
-                        viewBtn.setTooltip(new Tooltip("查看详情"));
                         viewBtn.getStyleClass().addAll("table-button", "default-btn");
-
-                        Region editIcon = new Region(); editIcon.getStyleClass().add("edit-icon"); editBtn.setGraphic(editIcon);
-                        editBtn.setTooltip(new Tooltip("编辑信息"));
-                        editBtn.getStyleClass().addAll("table-button", "warning-btn");
-
-                        Region resetIcon = new Region(); resetIcon.getStyleClass().add("approval-icon"); resetPassBtn.setGraphic(resetIcon);
-                        resetPassBtn.setTooltip(new Tooltip("重置密码"));
-                        resetPassBtn.getStyleClass().addAll("table-button", "success-btn");
-
-                        Region deleteIcon = new Region(); deleteIcon.getStyleClass().add("delete-icon"); deleteBtn.setGraphic(deleteIcon);
-                        deleteBtn.setTooltip(new Tooltip("删除教师"));
                         deleteBtn.getStyleClass().addAll("table-button", "danger-btn");
 
-                        actionBox.getChildren().addAll(viewBtn, editBtn, resetPassBtn, deleteBtn);
+                        // 添加图标
+                        Region viewIcon = new Region();
+                        viewIcon.getStyleClass().add("view-icon");
+                        viewBtn.setGraphic(viewIcon);
+
+                        Region editIcon = new Region();
+                        editIcon.getStyleClass().add("edit-icon");
+
+                        Region deleteIcon = new Region();
+                        deleteIcon.getStyleClass().add("delete-icon");
+                        deleteBtn.setGraphic(deleteIcon);
+
+                        actionBox.getChildren().addAll(viewBtn, deleteBtn);
                         actionBox.setAlignment(Pos.CENTER);
 
                         viewBtn.setOnAction(event -> viewTeacher(getTableRow().getIndex()));
-                        editBtn.setOnAction(event -> editTeacher(getTableRow().getIndex()));
-                        resetPassBtn.setOnAction(event -> resetPassword(getTableRow().getIndex()));
                         deleteBtn.setOnAction(event -> deleteTeacher(getTableRow().getIndex()));
                     }
 
@@ -296,12 +291,6 @@ public class TeacherManagementController implements Initializable {
 
                                 // 使用响应中的总页数更新分页控件
                                 int totalPages = 1; // 如果未提供，默认为 1
-//                                if (dataObject.has("page") && dataObject.get("page").isJsonPrimitive()) {
-//                                    totalPages = dataObject.get("page").getAsInt();
-//                                    if (totalPages <= 0) totalPages = 1; // 确保至少有 1 页
-//                                } else {
-//
-//                                }
                                 teacherPagination.setPageCount(totalPages);
 
                                 if (pageIndex >= totalPages) {
@@ -515,12 +504,6 @@ public class TeacherManagementController implements Initializable {
        }
     }
 
-    private void editTeacher(int rowIndex) {
-        if (rowIndex < 0 || rowIndex >= teacherTable.getItems().size()) return;
-        TeacherInfo selectedTeacher = teacherTable.getItems().get(rowIndex);
-        // TODO: 使用 selectedTeacher 的数据实现编辑视图/对话框
-        showInfoDialog("编辑教师", "编辑教师信息: " + selectedTeacher.getName() + "\n(编辑功能待实现)");
-    }
 
     private void resetPassword(int rowIndex) {
         if (rowIndex < 0 || rowIndex >= teacherTable.getItems().size()) return;

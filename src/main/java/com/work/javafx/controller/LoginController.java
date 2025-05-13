@@ -6,9 +6,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.DataResponse.Res;
 import com.work.javafx.MainApplication;
+import com.work.javafx.entity.Data;
 import com.work.javafx.entity.UserSession;
+import com.work.javafx.model.term;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -25,7 +30,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoginController {
@@ -42,11 +49,14 @@ public class LoginController {
 
     @FXML
     private Hyperlink adminLogin;
+    @FXML
+    private Hyperlink sduLogin;
 
     @FXML
     private Label errorMessageLabel;
 
     private boolean togglestate = false;
+    private boolean togglestate1 = false;
     /**
      * 初始化控制器
      */
@@ -107,9 +117,37 @@ public class LoginController {
 
     }
     /**
- * 处理管理员登录按钮点击事件
- * @param event 事件对象
- */
+     * 加载学期列表
+     */
+    private void fecthSemesters() {
+        NetworkUtils.get("/admin/getTermList", new NetworkUtils.Callback<String>() {
+            ObservableList<String> semesterList = FXCollections.observableArrayList();
+            @Override
+            public void onSuccess(String result) {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    JsonArray dataArray = res.getAsJsonArray("data");
+                    List<String> loadedSemesters = new ArrayList<>();
+                    for (int i = 0; i < dataArray.size(); i++) {
+                        loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
+                    }
+                    if(semesterList != null){
+                        semesterList.clear();
+                    }
+                    semesterList.addAll(loadedSemesters);
+                    Data.getInstance().setSemesterList(semesterList);
+                } else {
+                    System.out.println("加载学期列表失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("加载学期列表错误");
+                e.printStackTrace();
+            }
+        });
+    }
 
     /**
      * 验证用户凭据
@@ -122,6 +160,45 @@ public class LoginController {
         requestBody.put("stuId",username);
         requestBody.put("password",password);
         String requetBodyJson = gson.toJson(requestBody);
+        if(togglestate1){
+            NetworkUtils.post("/login/SDULogin", requetBodyJson, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    try {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                            JsonObject dataJson = responseJson.getAsJsonObject("data");
+                            int identity = dataJson.get("permission").getAsInt();
+                            String token = dataJson.get("accessToken").getAsString();
+                            String username = dataJson.get("username").getAsString();
+                            String refreshToken = dataJson.get("refreshToken").getAsString();
+                            UserSession.getInstance().setIdentity(identity);
+                            UserSession.getInstance().setToken(token);
+                            UserSession.getInstance().setRefreshToken(refreshToken);
+                            UserSession.getInstance().setUsername(username);
+                            fecthSemesters();
+                            System.out.println("登录成功: " + result);
+                            MainApplication.startTokenRefreshTimer();
+                            navigateToMainPage(); // 导航到主页面
+                        } else {
+                            String message = responseJson.has("msg") ? responseJson.get("msg").getAsString() : "用户名或密码错误";
+                            showErrorMessage(message);
+                        }
+                    } catch (Exception e) {
+                        JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                        showErrorMessage(responseJson.get("msg").getAsString());
+                        System.err.println("处理登录响应时出错: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    System.err.println("登录失败: " + e.getMessage());
+                    int i = e.getMessage().indexOf("msg");
+                    showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
+                }
+            });
+        }else{
         NetworkUtils.post("/login/simpleLogin", requetBodyJson, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -137,6 +214,8 @@ public class LoginController {
                          UserSession.getInstance().setToken(token);
                          UserSession.getInstance().setRefreshToken(refreshToken);
                          UserSession.getInstance().setUsername(username);
+                        fecthSemesters();
+
                         System.out.println("登录成功: " + result);
                         MainApplication.startTokenRefreshTimer();
                          navigateToMainPage(); // 导航到主页面
@@ -158,6 +237,7 @@ public class LoginController {
                 showErrorMessage(e.getMessage().substring(i+6,e.getMessage().length()-2));
             }
         });
+        }
 
         return false;
     }
@@ -206,6 +286,20 @@ public class LoginController {
             togglestate = true;
         }
     }
+
+    public void handleSduloginClick(ActionEvent actionEvent) {
+        if(togglestate1){
+            usernameField.setPromptText("请输入学号或工号");
+            passwordField.setPromptText("请输入密码");
+            sduLogin.setText("山大统一认证登录");
+            togglestate1 = false;
+        }else {
+            usernameField.setPromptText("请输入山大账号");
+            passwordField.setPromptText("请输入密码");
+            sduLogin.setText("普通登录");
+            togglestate1 = true;
+        }
+    }
 //测试用快捷登录
     public void studentlogin(ActionEvent actionEvent) {
         usernameField.setText("202400000001");
@@ -226,4 +320,5 @@ public class LoginController {
         handleLogin(actionEvent);
 
     }
+
 }

@@ -37,7 +37,7 @@ public class StudentListViewController {
     @FXML
     public void initialize() {
         // 初始化 TableView 列与 StudentInfo 属性的绑定
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("sduid"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         sectionNumberColumn.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
 
@@ -119,11 +119,19 @@ public class StudentListViewController {
     public static class StudentInfo {
         private int id;
         private String username;
-        private int sectionNumber; // 确保 API 返回的是整数或可以解析为整数
+        private int sectionNumber;
+        private String sduid;
 
-        // Getter 方法是 PropertyValueFactory 工作所必需的
         public int getId() {
             return id;
+        }
+
+        public String getSduid() {
+            return sduid;
+        }
+
+        public void setSduid(String sduid) {
+            this.sduid = sduid;
         }
 
         public String getUsername() {
@@ -134,7 +142,6 @@ public class StudentListViewController {
             return sectionNumber;
         }
 
-        // Setter 方法（如果需要手动创建实例）
         public void setId(int id) {
             this.id = id;
         }
@@ -147,11 +154,11 @@ public class StudentListViewController {
             this.sectionNumber = sectionNumber;
         }
         
-        // 可以添加构造函数方便创建
-        public StudentInfo(int id, String username, int sectionNumber) {
+        public StudentInfo(int id, String username, int sectionNumber,String sduid) {
             this.id = id;
             this.username = username;
             this.sectionNumber = sectionNumber;
+            this.sduid = sduid;
         }
         
         // Gson 需要无参构造函数（或者确保所有字段都有Setter）

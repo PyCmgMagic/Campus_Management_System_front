@@ -84,6 +84,7 @@
                <children>
                   <HBox prefHeight="22.0" prefWidth="214.0">
                      <children>
+                        <Hyperlink fx:id="sduLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleSduloginClick" prefHeight="20.0" prefWidth="130.0" styleClass="adminLogin" text="山东大学统一认证登录" />
                         <Label fx:id="errorMessageLabel" alignment="CENTER" prefHeight="43.0" prefWidth="200.0" textFill="RED" />
                      </children>
                      <opaqueInsets>
@@ -104,7 +105,7 @@
             </children>
          </HBox>
         </VBox>
-      <Label alignment="TOP_LEFT" text="Version:2.6.0">
+      <Label alignment="TOP_LEFT" text="Version:2.9.0">
          <VBox.margin>
             <Insets />
          </VBox.margin>

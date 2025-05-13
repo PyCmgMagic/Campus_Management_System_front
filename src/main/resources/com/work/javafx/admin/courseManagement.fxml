@@ -82,28 +82,16 @@
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
                             </columnConstraints>
                             
                             <VBox styleClass="filter-group" GridPane.columnIndex="0">
-                                <Label styleClass="filter-label" text="开课院系" />
-                                <ComboBox fx:id="departmentFilter" prefWidth="150.0" promptText="全部院系" styleClass="filter-select" />
+                                <Label styleClass="filter-label" text="学期" />
+                                <ComboBox onAction="#handleTermChange" fx:id="termFilter" prefWidth="150.0" promptText="学期" styleClass="filter-select" />
                             </VBox>
                             
                             <VBox styleClass="filter-group" GridPane.columnIndex="1">
                                 <Label styleClass="filter-label" text="课程类型" />
                                 <ComboBox fx:id="courseTypeFilter" prefWidth="150.0" promptText="全部类型" styleClass="filter-select" />
-                            </VBox>
-                            
-                            <VBox styleClass="filter-group" GridPane.columnIndex="2">
-                                <Label styleClass="filter-label" text="学分" />
-                                <ComboBox fx:id="creditFilter" prefWidth="150.0" promptText="全部学分" styleClass="filter-select" />
-                            </VBox>
-                            
-                            <VBox styleClass="filter-group" GridPane.columnIndex="3">
-                                <Label styleClass="filter-label" text="状态" />
-                                <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="全部状态" styleClass="filter-select" />
                             </VBox>
                      <rowConstraints>
                         <RowConstraints />
@@ -128,7 +116,6 @@
                             <columns>
                                 <TableColumn fx:id="codeColumn" prefWidth="100.0" text="课程代码" />
                                 <TableColumn fx:id="nameColumn" prefWidth="150.0" text="课程名称" />
-                                <TableColumn fx:id="departmentColumn" prefWidth="120.0" text="开课院系" />
                                 <TableColumn fx:id="creditColumn" prefWidth="60.0" text="学分" />
                                 <TableColumn fx:id="typeColumn" prefWidth="100.0" text="课程类型" />
                                 <TableColumn fx:id="teacherColumn" prefWidth="120.0" text="主讲教师" />
@@ -174,7 +161,6 @@
                                 <TableColumn fx:id="pendingNameColumn" prefWidth="150.0" text="课程名称" />
                                 <TableColumn fx:id="pendingDepartmentColumn" prefWidth="120.0" text="申请院系" />
                                 <TableColumn fx:id="pendingApplicantColumn" prefWidth="100.0" text="申请人" />
-                                <TableColumn fx:id="pendingDateColumn" prefWidth="100.0" text="申请时间" />
                                 <TableColumn fx:id="pendingCreditColumn" prefWidth="60.0" text="学分" />
                                 <TableColumn fx:id="pendingTypeColumn" prefWidth="100.0" text="类型" />
                                 <TableColumn fx:id="pendingActionColumn" prefWidth="150.0" text="操作" />
