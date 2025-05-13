@@ -102,7 +102,7 @@ public class UserInfoController implements Initializable {
             String firstLetter = getFirstLetter(fullName);
             surnameLabel.setText(firstLetter);
 
-            admissionLabel_1.setText("20" + UserSession.getInstance().getAdmission() + "年");
+            admissionLabel_1.setText( UserSession.getInstance().getAdmission() + "年");
             nameLabel.setText(fullName);
             stuIdLabel.setText(UserSession.getInstance().getSduid());
             genderLabel.setText(UserSession.getInstance().getSex());
