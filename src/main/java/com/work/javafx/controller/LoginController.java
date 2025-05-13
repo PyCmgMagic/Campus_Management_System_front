@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginController {
 
@@ -77,9 +78,7 @@ public class LoginController {
         if (adminLogin != null) {
 
         }
-//        //缺省登录用户名和密码
-//        usernameField.setText("student");
-//        passwordField.setText("student123");
+
         usernameField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.DOWN) {
                 passwordField.requestFocus();
@@ -321,24 +320,122 @@ public class LoginController {
             // 组合成最终设备码
             return osInfo + randomPart + timePart;
     }
+
     public void handleClick(ActionEvent actionEvent) {
-    String url = "http://110.42.38.155:8081/login/toLogin?deviceId=";
-    String deviceId = generateDeviceId();
-    String fullUrl = url + deviceId;
-    try {
-        // 使用默认浏览器打开URL
-        Platform.runLater(() -> {
-            try {
-                java.awt.Desktop.getDesktop().browse(java.net.URI.create(fullUrl));
-            } catch (IOException e) {
-                e.printStackTrace();
+        String url = "http://110.42.38.155:8081/login/toLogin?deviceId=";
+        String deviceId = generateDeviceId();
+        String fullUrl = url + deviceId;
+        try {
+            // 使用默认浏览器打开URL
+            Platform.runLater(() -> {
+                try {
+                    java.awt.Desktop.getDesktop().browse(java.net.URI.create(fullUrl));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            
+            // 启动轮询线程，检查OAuth登录状态
+            startPolling(deviceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorMessage("无法打开浏览器");
+        }
+    }
+
+    /**
+     * 启动轮询，检查第三方登录状态
+     * @param deviceId 设备ID
+     */
+    private void startPolling(String deviceId) {
+        // 创建一个volatile标志，用于控制轮询
+        final AtomicBoolean isPolling = new AtomicBoolean(true);
+        
+        Thread pollingThread = new Thread(() -> {
+            int attempts = 0;
+            final int MAX_ATTEMPTS = 600; // 最多轮询600次
+            
+            while (isPolling.get() && attempts < MAX_ATTEMPTS) {
+                try {
+                    Thread.sleep(1000); // 每1秒轮询一次
+                    
+                    // 如果已经停止轮询，则退出循环
+                    if (!isPolling.get()) {
+                        break;
+                    }
+                    
+                    Map<String, String> params = new HashMap<>();
+                    params.put("state", deviceId);
+                    
+                    // 使用final变量传递给匿名内部类
+                    final int currentAttempt = attempts;
+                    
+                    NetworkUtils.get("/login/getOAuthToken?state=" + deviceId, new NetworkUtils.Callback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            // 如果已经停止轮询，直接返回
+                            if (!isPolling.get()) {
+                                return;
+                            }
+                            
+                            JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                            if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                                // 立即停止轮询
+                                isPolling.set(false);
+                                
+                                JsonObject dataJson = responseJson.getAsJsonObject("data");
+                                int identity = dataJson.get("permission").getAsInt();
+                                String token = dataJson.get("accessToken").getAsString();
+                                String username = dataJson.get("username").getAsString();
+                                String refreshToken = dataJson.get("refreshToken").getAsString();
+                                
+                                UserSession.getInstance().setIdentity(identity);
+                                UserSession.getInstance().setToken(token);
+                                UserSession.getInstance().setRefreshToken(refreshToken);
+                                UserSession.getInstance().setUsername(username);
+                                
+                                fecthSemesters();
+                                fetchCurrentTerm();
+                                
+                                MainApplication.startTokenRefreshTimer();
+                                
+                                Platform.runLater(() -> {
+                                    try {
+                                        navigateToMainPage();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                
+                                System.out.println("登录成功");
+                            }
+                        }
+                        
+                        @Override
+                        public void onFailure(Exception e) {
+                            // 轮询失败不做特殊处理，继续下一次轮询
+                            if (currentAttempt % 10 == 0) {
+                                System.out.println("轮询等待中...已尝试" + currentAttempt + "次");
+                            }
+                        }
+                    });
+                    attempts++;
+                } catch (InterruptedException e) {
+                    isPolling.set(false);
+                    break;
+                }
+            }
+            
+            if (attempts >= MAX_ATTEMPTS && isPolling.get()) {
+                // 超时处理
+                isPolling.set(false);
+                Platform.runLater(() -> showErrorMessage("登录超时，请重试"));
             }
         });
-    } catch (Exception e) {
-        e.printStackTrace();
-        showErrorMessage("无法打开浏览器");
+        
+        pollingThread.setDaemon(true); // 设为守护线程，应用退出时自动结束
+        pollingThread.start();
     }
-}
 
     public void handleSduloginClick(ActionEvent actionEvent) {
         if (togglestate1) {
