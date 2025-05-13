@@ -115,8 +115,8 @@ public class UserInfoController implements Initializable {
             emailLabel.setText(UserSession.getInstance().getEmail());
             userLabel.setText(fullName);
             useridLabel.setText(UserSession.getInstance().getSduid());
-            admissionLabel.setText("20" + UserSession.getInstance().getAdmission() + "年");
-            graduationLabel.setText("20" + UserSession.getInstance().getGraduation() + "年");
+            admissionLabel.setText(UserSession.getInstance().getAdmission() + "年");
+            graduationLabel.setText(UserSession.getInstance().getGraduation() + "年");
         });
     }
 
