@@ -1,5 +1,10 @@
 package com.work.javafx.controller.teacher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.work.javafx.entity.Data;
+import com.work.javafx.util.NetworkUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,11 +26,10 @@ import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter; // 如果需要整数输入
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ScoreInputController implements Initializable {
@@ -67,7 +71,7 @@ public class ScoreInputController implements Initializable {
     @FXML private PieChart gradeLevelChart;
     @FXML private VBox pieChartLegend; // 自定义图例的VBox
 
-
+    Gson gson = new Gson();
     // --- 数据 ---
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
 
@@ -95,10 +99,39 @@ public class ScoreInputController implements Initializable {
     // --- 设置方法 ---
 
     private void setupComboBoxes() {
-        courseComboBox.setItems(FXCollections.observableArrayList("高等数学 (II)", "程序设计基础", "数据结构", "计算机网络", "全部课程"));
+        ObservableList<String> courseList = FXCollections.observableArrayList();
+        Map<String,String> params = new HashMap<>();
+        params.put("term", Data.getInstance().getCurrentTerm());
+        System.out.println(Data.getInstance().getCurrentTerm());
+        params.put("pageSize","100");
+        params.put("pageNum","1");
+        NetworkUtils.get("/class/list", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject res = gson.fromJson(result,JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt()==200){
+                    JsonObject data = res.getAsJsonObject("data");
+                    JsonArray list = data.getAsJsonArray("list");
+                    System.out.println(list.size());
+                    for(int i = 0 ;i < list.size();i++){
+                        JsonObject c = list.get(i).getAsJsonObject();
+                        courseList.add(c.get("name").getAsString());
+                        System.out.println(c.get("name").getAsString());
+                    }
+                }
+                for (int i = 0; i < courseList.size(); i++) {
+                    System.out.println(courseList.get(i));
+                }
+                courseComboBox.setItems(courseList);
+                courseComboBox.getSelectionModel().selectFirst();
+            }
 
-        // 如果需要，选择默认值
-         courseComboBox.getSelectionModel().selectFirst();
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+            }
+        });
     }
 
     private void setupTableView() {
