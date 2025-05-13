@@ -2,6 +2,7 @@ package com.work.javafx.controller.admin;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.work.javafx.controller.student.PasswordChangeController;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
 import javafx.application.Platform;
@@ -206,5 +207,27 @@ public class PersonalCenterController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void PasswordChange(ActionEvent event) throws IOException {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("修改密码");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/student/PasswordChange.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/com/work/javafx/css/student/PasswordChange.css")).toExternalForm()
+        );
+
+        PasswordChangeController controller = loader.getController();
+        controller.setStage(popupStage);
+
+        popupStage.setScene(scene);
+        popupStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        popupStage.setResizable(false);
+        popupStage.show();
     }
 }
