@@ -33,7 +33,7 @@ public class UserInfoController implements Initializable {
     @FXML private Label ethnicLabel;
     @FXML private Label politicsLabel;
     @FXML private Label majorLabel;
-    @FXML private Label classLabel;
+    @FXML private Label numberLabel;
     @FXML private Label phoneLabel;
     @FXML private Label emailLabel;
     @FXML private Label admissionLabel;
@@ -62,7 +62,7 @@ public class UserInfoController implements Initializable {
         ethnicLabel.setText(text);
         politicsLabel.setText(text);
         majorLabel.setText(text);
-        classLabel.setText(text);
+        numberLabel.setText(text);
         phoneLabel.setText(text);
         emailLabel.setText(text);
         userLabel.setText(text);
@@ -110,13 +110,13 @@ public class UserInfoController implements Initializable {
             ethnicLabel.setText(UserSession.getInstance().getEthnic());
             politicsLabel.setText(UserSession.getInstance().getPoliticsStatus());
             majorLabel.setText(convertMajorCode(UserSession.getInstance().getMajor()));
-            classLabel.setText(UserSession.getInstance().getSection());
             phoneLabel.setText(UserSession.getInstance().getPhone());
             emailLabel.setText(UserSession.getInstance().getEmail());
             userLabel.setText(fullName);
             useridLabel.setText(UserSession.getInstance().getSduid());
             admissionLabel.setText(UserSession.getInstance().getAdmission() + "年");
             graduationLabel.setText(UserSession.getInstance().getGraduation() + "年");
+            numberLabel.setText(convertMajorCode(UserSession.getInstance().getMajor()) + UserSession.getInstance().getNumber());
         });
     }
 
@@ -132,8 +132,10 @@ public class UserInfoController implements Initializable {
                     JsonObject dataJson = responseJson.getAsJsonObject("data");
                     JsonObject user = dataJson.getAsJsonObject("user");
                     JsonObject status = dataJson.getAsJsonObject("status");
+                    JsonObject section = dataJson.getAsJsonObject("section");
                     updateUserSession(user);
                     updateUserSessionforStatus(status);
+                    updateUserSessionforSection(section);
                     loadUserInfo();
                 }
             }
@@ -171,6 +173,15 @@ public class UserInfoController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateUserSessionforSection(JsonObject dataJson){
+       try{
+           UserSession session = UserSession.getInstance();
+           session.setNumber(getJsonValue(dataJson, "number"));
+       }catch (Exception e){
+           e.printStackTrace();
+       }
     }
 
     private String getJsonValue(JsonObject dataJson, String key) {
@@ -228,5 +239,9 @@ public class UserInfoController implements Initializable {
 
     public Label getGenderLabel() {
         return genderLabel;
+    }
+
+    public void setNumbleLabel(Label numbleLabel) {
+        this.numberLabel = numbleLabel;
     }
 }
