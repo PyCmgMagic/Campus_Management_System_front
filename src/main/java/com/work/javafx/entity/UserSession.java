@@ -20,6 +20,12 @@ public class UserSession {
     private String college;
     private String admission;
     private String graduation;
+    private String number;
+
+    public String getNumber(){return  number; }
+
+    public void  setNumber(String number) { this.number = number; }
+
     private String induction;
 
     public String getInduction() {
