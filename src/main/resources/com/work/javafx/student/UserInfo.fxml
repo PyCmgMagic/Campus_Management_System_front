@@ -89,7 +89,7 @@
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="班级" />
-                        <Label fx:id="classLabel" styleClass="info-value" />
+                        <Label fx:id="numberLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
                         <Label prefHeight="15.0" prefWidth="27.0" styleClass="info-label" text="学制" />
