@@ -2,6 +2,7 @@ package com.work.javafx.controller.teacher;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import com.work.javafx.controller.student.PasswordChangeController;
 import com.work.javafx.controller.student.UserInfo1;
 import com.work.javafx.entity.UserSession;
@@ -10,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +42,7 @@ public class PersonalCenterContent implements Initializable {
     @FXML private Label yearjoining;
     @FXML private Label nation;
     @FXML private Label firstname;
+
 
     Gson gson = new Gson();
     @Override
@@ -127,8 +130,21 @@ public class PersonalCenterContent implements Initializable {
         email.setText(UserSession.getInstance().getEmail());
         name.setText(UserSession.getInstance().getUsername());
         idlabel.setText(UserSession.getInstance().getSduid());
-        yearLabel.setText(UserSession.getInstance().getSection());
-       // yearjoining.setText(UserSession.getInstance().getSection());
+        // 获取 yearLabel 显示的内容（即 Induction 年份）
+        String inductionYear = UserSession.getInstance().getInduction();
+
+        try {
+            int currentYear = LocalDate.now().getYear();
+            int inductionYearInt = Integer.parseInt(inductionYear);
+            int yearsOfWork = currentYear - inductionYearInt;
+
+            // 设置计算结果到 yearjoining Label
+            yearjoining.setText(String.valueOf(yearsOfWork)+"年" );
+        } catch (NumberFormatException e) {
+            yearjoining.setText("未知");
+        }
+
+        yearLabel.setText(UserSession.getInstance().getInduction());
         nation.setText(UserSession.getInstance().getNation());
 
 
@@ -156,11 +172,13 @@ public class PersonalCenterContent implements Initializable {
                             String ethnic = dataJson.has("ethnic") ? dataJson.get("ethnic").getAsString() : "";
                             String sduid = dataJson.has("sduid") ? dataJson.get("sduid").getAsString() : "";
                             String major = dataJson.has("major") ? dataJson.get("major").getAsString() : "";
+                            String yearLabel= sduid.substring(0,4);
                             String nationLabel = dataJson.has("nation") ? dataJson.get("nation").getAsString() : "";
                             String politicsLabel = dataJson.has("politicsStatus") ? dataJson.get("politicsStatus").getAsString() : "";
 
 
                             UserSession.getInstance().setUsername(username);
+                            UserSession.getInstance().setInduction(yearLabel);
                             UserSession.getInstance().setEmail(email);
                             UserSession.getInstance().setPhone(phone);
                             UserSession.getInstance().setSex(sex);
