@@ -93,7 +93,7 @@
                   </HBox>
                </children>
             </HBox>
-                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleClick" prefWidth="110.0" styleClass="adminLogin" text="教工或管理员登录">
+                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleClick" prefHeight="20.0" prefWidth="71.0" styleClass="adminLogin" text="第三方登录">
                <HBox.margin>
                   <Insets right="-5.0" />
                </HBox.margin></Hyperlink>
@@ -105,7 +105,7 @@
             </children>
          </HBox>
         </VBox>
-      <Label alignment="TOP_LEFT" text="Version:2.9.1">
+      <Label alignment="TOP_LEFT" text="Version:2.9.2">
          <VBox.margin>
             <Insets />
          </VBox.margin>

@@ -1,6 +1,6 @@
 package com.work.javafx.controller;
 
-import com.almasb.fxgl.core.util.Platform;
+import javafx.application.Platform;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
+import java.util.UUID;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -304,20 +304,41 @@ public class LoginController {
             showErrorMessage("无法加载主界面");
         }
     }
+    /**
+     * 生成设备码，用于第三方登录认证
+     * @return 设备码
+     */
+        public static String generateDeviceId() {
+            // 生成一个随机UUID，截取其前12位字符
+            String randomPart = UUID.randomUUID().toString().substring(0, 12);
 
-    public void handleClick(ActionEvent actionEvent) {
-        if (togglestate) {
-            usernameField.setPromptText("请输入学号或工号");
-            passwordField.setPromptText("请输入密码");
-            adminLogin.setText("教工或管理员登录");
-            togglestate = false;
-        } else {
-            usernameField.setPromptText("请输入管理员账号");
-            passwordField.setPromptText("请输入管理员密码");
-            adminLogin.setText("学生登录");
-            togglestate = true;
-        }
+            //设备用户名首位
+            String osInfo = System.getProperty("user.name").substring(0, 1);
+
+            // 添加时间戳的最后5位
+            String timePart = String.valueOf(System.currentTimeMillis()).substring(8);
+
+            // 组合成最终设备码
+            return osInfo + randomPart + timePart;
     }
+    public void handleClick(ActionEvent actionEvent) {
+    String url = "http://110.42.38.155:8081/login/toLogin?deviceId=";
+    String deviceId = generateDeviceId();
+    String fullUrl = url + deviceId;
+    try {
+        // 使用默认浏览器打开URL
+        Platform.runLater(() -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(java.net.URI.create(fullUrl));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    } catch (Exception e) {
+        e.printStackTrace();
+        showErrorMessage("无法打开浏览器");
+    }
+}
 
     public void handleSduloginClick(ActionEvent actionEvent) {
         if (togglestate1) {
@@ -341,7 +362,7 @@ public class LoginController {
     }
 
     public void teacherlogin(ActionEvent actionEvent) {
-        usernameField.setText("2401");
+        usernameField.setText("190000000000");
         passwordField.setText("123456");
         handleLogin(actionEvent);
 
