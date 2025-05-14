@@ -2,6 +2,7 @@ package com.work.javafx;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.Refresh;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -39,6 +40,8 @@ public class MainApplication extends Application {
         stopTokenRefreshTimer(); // 停止定时器
         UserSession.getInstance().clearSession(); // 清理数据
         System.out.println("应用关闭，用户数据已清除");
+        Platform.exit();
+        System.exit(0);
     }
     /**
      * 切换视图方法
