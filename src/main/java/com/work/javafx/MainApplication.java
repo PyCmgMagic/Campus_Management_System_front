@@ -8,8 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,7 +32,13 @@ public class MainApplication extends Application {
         stage.setHeight(APP_HEIGHT);
         stage.setMinWidth(APP_WIDTH);
         stage.setMinHeight(APP_HEIGHT);
-        
+        InputStream iconStream = getClass().getResourceAsStream("/icons/favicon.png");
+        if (iconStream == null) {
+            System.err.println("图标加载失败：资源未找到！");
+        } else {
+            stage.getIcons().add(new Image(iconStream));
+        }
+
         // 初始加载登录页面
         changeView("Login.fxml","css/Login.css");
         stage.show();
