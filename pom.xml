@@ -150,6 +150,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
+                    <include>**/*</include>
                     <include>**/*.properties</include>
                     <include>**/*.css</include>
                     <include>**/*.fxml</include>
