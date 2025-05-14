@@ -1,120 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" styleClass="main-scroll-pane" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.work.javafx.controller.student.ScoreSearchContentController"
-            VBox.vgrow="ALWAYS">
+<ScrollPane fitToWidth="true" styleClass="main-scroll-pane" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.ScoreSearchContentController">
     <VBox styleClass="content-area" VBox.vgrow="ALWAYS">
         <HBox styleClass="content-header">
-            <Label text="成绩查询" styleClass="content-title"/>
+            <Label styleClass="content-title" text="成绩查询" />
         </HBox>
 
         <!-- 成绩查询标签页 -->
         <TabPane styleClass="score-tab-pane">
-            <Tab fx:id="currentSemesterTab" text="学期成绩" closable="false">
+            <Tab fx:id="currentSemesterTab" closable="false" text="学期成绩">
                 <VBox spacing="15">
                     <!-- 查询条件区域 -->
                     <VBox styleClass="query-container">
-                        <GridPane styleClass="query-form" hgap="20" vgap="15">
+                        <GridPane hgap="20" styleClass="query-form" vgap="15">
                             <padding>
-                                <Insets top="15" right="15" bottom="15" left="15"/>
+                                <Insets bottom="15" left="15" right="15" top="15" />
                             </padding>
                             
                             <!-- 学年 -->
-                            <Label text="学年：" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                            <ComboBox fx:id="academicYearComboBox" promptText="选择学年" 
-                                    prefWidth="200" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <Label text="学期：" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <ComboBox fx:id="academicYearComboBox" prefWidth="200" promptText="选择学期" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                             
-                            <!-- 学期 -->
-                            <Label text="学期：" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-                            <ComboBox fx:id="semesterComboBox" promptText="选择学期" 
-                                    prefWidth="200" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
-                            
-                            <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="0" 
-                                    GridPane.columnIndex="4">
-                                <Button fx:id="queryButton" text="查询" styleClass="primary-button" 
-                                        onAction="#queryScores"/>
-                            </HBox>
+                            <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                             <Button fx:id="queryButton" onAction="#queryScores" styleClass="primary-button" text="查询" GridPane.columnIndex="3" />
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints maxWidth="124.0" minWidth="10.0" prefWidth="124.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
                         </GridPane>
                     </VBox>
 
                     <!-- 成绩概览区域 -->
                     <VBox styleClass="summary-section">
                         <padding>
-                            <Insets top="15" right="15" bottom="15" left="15"/>
+                            <Insets bottom="15" left="15" right="15" top="15" />
                         </padding>
                         
-                        <Label text="学期成绩概览" styleClass="section-title"/>
+                        <Label styleClass="section-title" text="学期成绩概览" />
                         
-                        <GridPane styleClass="summary-grid" hgap="15" vgap="15">
+                        <GridPane hgap="15" styleClass="summary-grid" vgap="15">
                             <padding>
-                                <Insets top="15" right="0" bottom="15" left="0"/>
+                                <Insets bottom="15" left="0" right="0" top="15" />
                             </padding>
                             
                             <!-- 平均绩点 -->
-                            <VBox styleClass="summary-item" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                                <Label text="平均绩点" styleClass="summary-label"/>
-                                <Label fx:id="avgGpaLabel" text="3.72" styleClass="summary-value"/>
+                            <VBox styleClass="summary-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="summary-label" text="平均绩点" />
+                                <Label fx:id="avgGpaLabel" styleClass="summary-value" text="3.72" />
                             </VBox>
                             
                             <!-- 总学分 -->
-                            <VBox styleClass="summary-item" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                                <Label text="总学分" styleClass="summary-label"/>
-                                <Label fx:id="totalCreditsLabel" text="16.5" styleClass="summary-value"/>
+                            <VBox styleClass="summary-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="summary-label" text="总学分" />
+                                <Label fx:id="totalCreditsLabel" styleClass="summary-value" text="16.5" />
                             </VBox>
                             
                             <!-- 已修课程 -->
-                            <VBox styleClass="summary-item" GridPane.rowIndex="0" GridPane.columnIndex="2">
-                                <Label text="已修课程" styleClass="summary-label"/>
-                                <Label fx:id="completedCoursesLabel" text="6" styleClass="summary-value"/>
+                            <VBox styleClass="summary-item" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label styleClass="summary-label" text="已修课程" />
+                                <Label fx:id="completedCoursesLabel" styleClass="summary-value" text="6" />
                             </VBox>
                             
                             <!-- 排名 -->
-                            <VBox styleClass="summary-item" GridPane.rowIndex="0" GridPane.columnIndex="3">
-                                <Label text="排名" styleClass="summary-label"/>
-                                <Label fx:id="rankingLabel" text="15/78" styleClass="summary-value"/>
+                            <VBox styleClass="summary-item" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label styleClass="summary-label" text="排名" />
+                                <Label fx:id="rankingLabel" styleClass="summary-value" text="15/78" />
                             </VBox>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
                         </GridPane>
                         
                         <!-- 图表区域 -->
-                        <HBox styleClass="chart-container" spacing="20" minHeight="250">
+                        <HBox minHeight="250" spacing="20" styleClass="chart-container">
                             <!-- 成绩分布图 -->
                             <VBox styleClass="chart" HBox.hgrow="ALWAYS">
-                                <Label text="成绩分布" styleClass="chart-title"/>
-                                <BarChart fx:id="scoreDistributionChart" title="" 
-                                          legendVisible="false" animated="false"
-                                          minHeight="200" prefHeight="200"
-                                          VBox.vgrow="ALWAYS">
+                                <Label styleClass="chart-title" text="成绩分布" />
+                                <BarChart fx:id="scoreDistributionChart" animated="false" legendVisible="false" minHeight="200" prefHeight="200" title="" VBox.vgrow="ALWAYS">
                                     <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                     </xAxis>
                                     <yAxis>
-                                        <NumberAxis side="LEFT" label="课程数量" 
-                                                  autoRanging="false" lowerBound="0" upperBound="5"
-                                                  tickUnit="1" />
+                                        <NumberAxis autoRanging="false" label="课程数量" lowerBound="0" side="LEFT" tickUnit="1" upperBound="5" />
                                     </yAxis>
                                 </BarChart>
                             </VBox>
                             
                             <!-- GPA趋势图 -->
                             <VBox styleClass="chart" HBox.hgrow="ALWAYS">
-                                <Label text="GPA趋势" styleClass="chart-title"/>
-                                <LineChart fx:id="gpaLineChart" title="" 
-                                           legendVisible="false" animated="false"
-                                           minHeight="200" prefHeight="200"
-                                           VBox.vgrow="ALWAYS">
+                                <Label styleClass="chart-title" text="GPA趋势" />
+                                <LineChart fx:id="gpaLineChart" animated="false" legendVisible="false" minHeight="200" prefHeight="200" title="" VBox.vgrow="ALWAYS">
                                     <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                     </xAxis>
                                     <yAxis>
-                                        <NumberAxis side="LEFT" label="GPA" 
-                                                  autoRanging="false" lowerBound="0" upperBound="4"
-                                                  tickUnit="0.5" />
+                                        <NumberAxis autoRanging="false" label="GPA" lowerBound="0" side="LEFT" tickUnit="0.5" upperBound="4" />
                                     </yAxis>
                                 </LineChart>
                             </VBox>
@@ -125,35 +136,35 @@
                     <VBox styleClass="scores-table-container">
                         <HBox alignment="CENTER_RIGHT" spacing="10">
                             <padding>
-                                <Insets right="15" bottom="10"/>
+                                <Insets bottom="10" right="15" />
                             </padding>
-                            <Button fx:id="exportButton" text="导出Excel" styleClass="utility-button" 
-                                    onAction="#exportScores"/>
-                            <Button fx:id="printButton" text="打印成绩单" styleClass="utility-button" 
-                                    onAction="#printScores"/>
+                            <Button fx:id="exportButton" onAction="#exportScores" styleClass="utility-button" text="导出Excel" />
+                            <Button fx:id="printButton" onAction="#printScores" styleClass="utility-button" text="打印成绩单" />
                         </HBox>
                         
                         <TableView fx:id="scoreTableView" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="indexColumn" text="序号" prefWidth="50"/>
-                                <TableColumn fx:id="courseCodeColumn" text="课程代码" visible="false"/>
-                                <TableColumn fx:id="courseNameColumn" text="课程代码/名称" prefWidth="180"/>
-                                <TableColumn fx:id="creditColumn" text="学分" prefWidth="60"/>
-                                <TableColumn fx:id="courseTypeColumn" text="课程性质" prefWidth="100"/>
-                                <TableColumn fx:id="teacherColumn" text="任课教师" prefWidth="100"/>
-                                <TableColumn fx:id="scoreColumn" text="成绩" prefWidth="80"/>
-                                <TableColumn fx:id="gpaColumn" text="绩点" prefWidth="60"/>
-                                <TableColumn fx:id="rankColumn" text="排名" prefWidth="80"/>
+                                <TableColumn fx:id="indexColumn" prefWidth="50" text="序号" />
+                                <TableColumn fx:id="courseCodeColumn" text="课程代码" visible="false" />
+                                <TableColumn fx:id="courseNameColumn" prefWidth="180" text="课程代码/名称" />
+                                <TableColumn fx:id="creditColumn" prefWidth="60" text="学分" />
+                                <TableColumn fx:id="courseTypeColumn" prefWidth="100" text="课程性质" />
+                                <TableColumn fx:id="teacherColumn" prefWidth="100" text="任课教师" />
+                                <TableColumn fx:id="regularScoreColumn" prefWidth="80" text="平时成绩" />
+                                <TableColumn fx:id="finalScoreColumn" prefWidth="80" text="期末成绩" />
+                                <TableColumn fx:id="scoreColumn" prefWidth="80" text="总评成绩" />
+                                <TableColumn fx:id="gpaColumn" prefWidth="60" text="绩点" />
+                                <TableColumn fx:id="rankColumn" prefWidth="80" text="排名" />
                             </columns>
                         </TableView>
                     </VBox>
                 </VBox>
             </Tab>
 
-            <Tab fx:id="statisticsTab" text="成绩统计" closable="false">
+            <Tab fx:id="statisticsTab" closable="false" text="成绩统计">
                 <VBox spacing="15">
                 </VBox>
             </Tab>
         </TabPane>
     </VBox>
-</ScrollPane> 
+</ScrollPane>
