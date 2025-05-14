@@ -243,7 +243,7 @@ public class CourseScheduleManagementContent implements Initializable {
         String url = "/class/getClassSchedule/";
         url += weekComboBox.getValue();
         Map<String,String> params = new HashMap<>();
-        params.put("term", Data.getInstance().getCurrentTerm());
+        params.put("term", academicYearComboBox.getValue());
         NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) throws IOException {
@@ -356,11 +356,6 @@ public class CourseScheduleManagementContent implements Initializable {
         String academicYear = academicYearComboBox.getValue();
         String week = weekComboBox.getValue();
         String scheduleType = "教师课表";
-
-        System.out.println("查询课表: 学年=" + academicYear + ", 学期=" + week + ", 类型=" + scheduleType);
-
-        // 这里可以根据查询条件请求后端API获取课表数据
-        // 简单示例：模拟查询操作，重新加载数据
         loadData();
 
         ShowMessage.showInfoMessage("查询成功", "已加载" + academicYear + week + "的" + scheduleType);

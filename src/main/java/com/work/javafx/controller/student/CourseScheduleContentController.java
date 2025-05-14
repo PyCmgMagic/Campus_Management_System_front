@@ -242,7 +242,7 @@ public class CourseScheduleContentController implements Initializable {
         String url = "/class/getClassSchedule/";
         url += weekComboBox.getValue();
         Map<String,String> params = new HashMap<>();
-        params.put("term", Data.getInstance().getCurrentTerm());
+        params.put("term", academicYearComboBox.getValue());
         NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) throws IOException {
