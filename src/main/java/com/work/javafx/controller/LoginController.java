@@ -464,7 +464,7 @@ public class LoginController {
     }
 
     private String getAppVersion() {
-        try (InputStream in = getClass().getResourceAsStream("/application.properties")) {
+        try (InputStream in = getClass().getResourceAsStream("/version.properties")) {
             Properties props = new Properties();
             props.load(in);
             return props.getProperty("app.version", "unknown");
