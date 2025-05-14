@@ -28,12 +28,10 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import java.util.UUID;
+
+import java.io.InputStream;
+import java.util.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginController {
@@ -56,6 +54,9 @@ public class LoginController {
 
     @FXML
     private Label errorMessageLabel;
+
+    @FXML
+    private Label versionLabel;
 
     private boolean togglestate = false;
     private boolean togglestate1 = false;
@@ -98,6 +99,7 @@ public class LoginController {
                 authenticateUser(username, password);
             }
         });
+        versionLabel.setText("Version: " + getAppVersion());
     }
 
     /**
@@ -458,6 +460,16 @@ public class LoginController {
             passwordField.setPromptText("请输入密码");
             sduLogin.setText("普通登录");
             togglestate1 = true;
+        }
+    }
+
+    private String getAppVersion() {
+        try (InputStream in = getClass().getResourceAsStream("/application.properties")) {
+            Properties props = new Properties();
+            props.load(in);
+            return props.getProperty("app.version", "unknown");
+        } catch (Exception e) {
+            return "unknown";
         }
     }
 //测试用快捷登录
