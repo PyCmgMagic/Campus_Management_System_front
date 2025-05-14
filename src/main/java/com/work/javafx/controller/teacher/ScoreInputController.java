@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,9 +48,9 @@ public class ScoreInputController implements Initializable {
     @FXML private TableColumn<ScoreEntry, String> nameCol;
     @FXML private TableColumn<ScoreEntry, String> classCol;
     @FXML private TableColumn<ScoreEntry, String> courseCol;
-    @FXML private TableColumn<ScoreEntry, Double> regularScoreCol;
-    @FXML private TableColumn<ScoreEntry, Double> finalScoreCol;
-    @FXML private TableColumn<ScoreEntry, Double> totalScoreCol;
+    @FXML private TableColumn<ScoreEntry, Integer> regularScoreCol;
+    @FXML private TableColumn<ScoreEntry, Integer> finalScoreCol;
+    @FXML private TableColumn<ScoreEntry, Integer> totalScoreCol;
     @FXML private TableColumn<ScoreEntry, String> statusCol;
     @FXML private TableColumn<ScoreEntry, Void> actionCol;
 
@@ -128,18 +129,18 @@ public class ScoreInputController implements Initializable {
     private void setupTableView() {
         // 设置表格为可编辑
         scoreTableView.setEditable(true);
-        
+
         // 将列绑定到ScoreEntry属性
         studentIdCol.setCellValueFactory(new PropertyValueFactory<>("sduid"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         classCol.setCellValueFactory(new PropertyValueFactory<>("className"));
         courseCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        
+
         // 使用正确的属性绑定
         totalScoreCol.setCellValueFactory(cellData -> cellData.getValue().totalScoreProperty().asObject());
         statusCol.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
-        
-        // 使用验证功能使分数列可编辑（使用DoubleStringConverter）
+
+        // 使用验证功能使分数列可编辑（使用Integer ScoreStringConverter）
         regularScoreCol.setCellValueFactory(cellData -> cellData.getValue().regularScoreProperty().asObject());
         regularScoreCol.setCellFactory(TextFieldTableCell.forTableColumn(new ScoreStringConverter()));
         regularScoreCol.setOnEditCommit(event -> {
@@ -201,10 +202,33 @@ public class ScoreInputController implements Initializable {
                 saveButton.getStyleClass().add("secondary-button"); // 应用CSS样式
                 saveButton.setOnAction(event -> {
                     ScoreEntry entry = getTableView().getItems().get(getIndex());
-                    System.out.println("正在保存修改：" + entry.getName());
-                    // --- 在此添加实际保存逻辑 ---
-                    // 例如，调用服务更新数据库
-                    // 向用户指示成功/失败
+                    Map<String,String> params = new HashMap<>();
+                    params.put("studentId",entry.getStudentId());
+                    params.put("courseId",currentCourse.getId());
+                    params.put("regular", String.valueOf(entry.getRegularScore().intValue()));
+                    params.put("final_score", String.valueOf(entry.getFinalScore().intValue()));
+                    params.put("grade", String.valueOf(entry.getTotalScore().intValue()));
+                    params.put("rank","0");
+                    for (Map.Entry<String,String> entry1 : params.entrySet()) {
+                        System.out.println(entry1.getKey() + " : " + entry1.getValue());
+                    }
+                    NetworkUtils.post("/grade/setGrade", params, null, new NetworkUtils.Callback<String>() {
+                        @Override
+                        public void onSuccess(String result) throws IOException {
+                            JsonObject res = gson.fromJson(result,JsonObject.class);
+                            if(res.has("code") && res.get("code").getAsInt() ==200){
+                                ShowMessage.showInfoMessage("保存成功",res.get("msg").getAsString());
+                            }else{
+                                ShowMessage.showErrorMessage("保存失败",res.get("msg").getAsString());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                            ShowMessage.showErrorMessage("保存失败",res.get("msg").getAsString());
+                        }
+                    });
                 });
             }
 
@@ -275,7 +299,7 @@ public class ScoreInputController implements Initializable {
             return;
         }
 
-        List<Double> validScores = scoreData.stream()
+        List<Integer> validScores = scoreData.stream()
                                             .map(ScoreEntry::getTotalScore)
                                             .filter(score -> score != null) // 只考虑有计算分数的条目
                                             .collect(Collectors.toList());
@@ -292,16 +316,16 @@ public class ScoreInputController implements Initializable {
         }
 
 
-        double avg = validScores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        double max = validScores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-        double min = validScores.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
+        double avg = validScores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+        int max = validScores.stream().mapToInt(Integer::intValue).max().orElse(0);
+        int min = validScores.stream().mapToInt(Integer::intValue).min().orElse(0);
         long totalCount = validScores.size(); // 只计算有效分数
-        long passCount = validScores.stream().filter(score -> score >= 60.0).count();
-        long excellentCount = validScores.stream().filter(score -> score >= 90.0).count(); // 假设90+是优秀
+        long passCount = validScores.stream().filter(score -> score >= 60).count();
+        long excellentCount = validScores.stream().filter(score -> score >= 90).count(); // 假设90+是优秀
 
         avgScoreLabel.setText(String.format("%.1f", avg));
-        maxScoreLabel.setText(String.format("%.1f", max));
-        minScoreLabel.setText(String.format("%.1f", min));
+        maxScoreLabel.setText(String.format("%d", max));
+        minScoreLabel.setText(String.format("%d", min));
         passRateLabel.setText(String.format("%.0f%%", totalCount == 0 ? 0 : (double) passCount / totalCount * 100));
         excellentRateLabel.setText(String.format("%.0f%%", totalCount == 0 ? 0 : (double) excellentCount / totalCount * 100)); // 修正计算
 
@@ -313,7 +337,7 @@ public class ScoreInputController implements Initializable {
          failedStudentsLabel.setText(String.valueOf(scoreData.stream().filter(s -> "不及格".equals(s.getStatus())).count()));
     }
 
-    private void updateBarChart(List<Double> scores) {
+    private void updateBarChart(List<Integer> scores) {
         long failCount = scores.stream().filter(s -> s < 60).count();
         long sixtyToSeventy = scores.stream().filter(s -> s >= 60 && s < 70).count();
         long seventyToEighty = scores.stream().filter(s -> s >= 70 && s < 80).count();
@@ -347,7 +371,7 @@ public class ScoreInputController implements Initializable {
             }
         });
     }
-    private void updatePieChart(List<Double> scores) {
+    private void updatePieChart(List<Integer> scores) {
          long excellentCount = scores.stream().filter(s -> s >= 90).count(); // 优秀 90+
          long goodCount = scores.stream().filter(s -> s >= 80 && s < 90).count(); // 良好 80-89
          long passCount = scores.stream().filter(s -> s >= 60 && s < 80).count(); // 及格 60-79 (调整自原型的范围)
@@ -427,7 +451,7 @@ public class ScoreInputController implements Initializable {
                     scoreData.clear();
                     for (int i = 0; i < data.size(); i++) {
                         JsonObject element = data.get(i).getAsJsonObject();
-                        ScoreEntry entry = new ScoreEntry(element.get("id").getAsString(), element.get("sduid").getAsString(), element.get("username").getAsString(),"默认班级",selectedCourse.getName(),0.0,0.0,"");
+                        ScoreEntry entry = new ScoreEntry(element.get("id").getAsString(), element.get("sduid").getAsString(), element.get("username").getAsString(),"默认班级",selectedCourse.getName(),0,0,"");
                         // 设置当前课程的成绩比例
                         entry.setScoreRatios(selectedCourse.getRegularRatio(), selectedCourse.getFinalRatio());
                         // 设置控制器引用，以便更新统计
@@ -523,16 +547,16 @@ public class ScoreInputController implements Initializable {
         private final String name;
         private final String className;
         private final String courseName;
-        private javafx.beans.property.DoubleProperty regularScore = new javafx.beans.property.SimpleDoubleProperty(0.0);
-        private javafx.beans.property.DoubleProperty finalScore = new javafx.beans.property.SimpleDoubleProperty(0.0);
-        private javafx.beans.property.DoubleProperty totalScore = new javafx.beans.property.SimpleDoubleProperty();
+        private javafx.beans.property.IntegerProperty regularScore = new javafx.beans.property.SimpleIntegerProperty(0);
+        private javafx.beans.property.IntegerProperty finalScore = new javafx.beans.property.SimpleIntegerProperty(0);
+        private javafx.beans.property.IntegerProperty totalScore = new javafx.beans.property.SimpleIntegerProperty(0);
         private javafx.beans.property.StringProperty status = new javafx.beans.property.SimpleStringProperty("-");
         private String remarks;
         private double regularRatio = 0.3; // 默认平时成绩比例
         private double finalRatio = 0.7;   // 默认期末成绩比例
         private ScoreInputController controller; // 引用控制器以更新统计
         
-        public ScoreEntry(String studentId, String sduid, String name, String className, String courseName, Double regularScoreVal, Double finalScoreVal, String remarks) {
+        public ScoreEntry(String studentId, String sduid, String name, String className, String courseName, Integer regularScoreVal, Integer finalScoreVal, String remarks) {
             this.studentId = studentId;
             this.sduid = sduid;
             this.name = name;
@@ -575,7 +599,7 @@ public class ScoreInputController implements Initializable {
         }
 
         // 设置成绩比例
-        public void setScoreRatios(double regularRatio, double finalRatio) {
+        public void setScoreRatios(double regularRatio, double finalRatio) { // Changed parameters to double
             this.regularRatio = regularRatio;
             this.finalRatio = finalRatio;
             calculateTotalScore();
@@ -590,24 +614,20 @@ public class ScoreInputController implements Initializable {
         public String getCourseName() { return courseName; }
         
         // JavaFX 属性方法
-        public Double getRegularScore() { return regularScore.get(); }
-        public javafx.beans.property.DoubleProperty regularScoreProperty() { return regularScore; }
-        public void setRegularScore(Double value) { 
-            // 如果value为null（例如，来自转换器的无效输入），则将属性设置为0.0
-            // 否则，设置为提供的值。
-            this.regularScore.set(value != null ? value : 0.0);
+        public Integer getRegularScore() { return regularScore.get(); }
+        public javafx.beans.property.IntegerProperty regularScoreProperty() { return regularScore; }
+        public void setRegularScore(Integer value) { 
+            this.regularScore.set(value != null ? value : 0);
         }
         
-        public Double getFinalScore() { return finalScore.get(); }
-        public javafx.beans.property.DoubleProperty finalScoreProperty() { return finalScore; }
-        public void setFinalScore(Double value) { 
-            // 如果value为null（例如，来自转换器的无效输入），则将属性设置为0.0
-            // 否则，设置为提供的值。
-            this.finalScore.set(value != null ? value : 0.0);
+        public Integer getFinalScore() { return finalScore.get(); }
+        public javafx.beans.property.IntegerProperty finalScoreProperty() { return finalScore; }
+        public void setFinalScore(Integer value) { 
+            this.finalScore.set(value != null ? value : 0);
         }
         
-        public Double getTotalScore() { return totalScore.get(); }
-        public javafx.beans.property.DoubleProperty totalScoreProperty() { return totalScore; }
+        public Integer getTotalScore() { return totalScore.get(); }
+        public javafx.beans.property.IntegerProperty totalScoreProperty() { return totalScore; }
         
         public String getStatus() { return status.get(); }
         public javafx.beans.property.StringProperty statusProperty() { return status; }
@@ -619,12 +639,13 @@ public class ScoreInputController implements Initializable {
         private void calculateTotalScore() {
             double regScore = regularScore.get();
             double finScore = finalScore.get();
-            double total = Math.round((regScore * regularRatio + finScore * finalRatio) * 10.0) / 10.0;
+            // Calculate with double precision and then round to nearest integer
+            int total = (int) Math.round(regScore * regularRatio + finScore * finalRatio);
             totalScore.set(total);
         }
 
         private void updateStatus() {
-            double total = totalScore.get();
+            double total = totalScore.get(); // Keep as double for comparison consistency
             if (total >= 60) {
                 status.set("通过");
             } else {
@@ -648,12 +669,12 @@ public class ScoreInputController implements Initializable {
             this.regularRatio = regularRatio;
             this.finalRatio = finalRatio;
         }
-        
+
         public String getId() { return id; }
         public String getName() { return name; }
         public double getRegularRatio(){ return regularRatio; }
         public double getFinalRatio(){ return  finalRatio ;}
-        
+
         @Override
         public String toString() {
             return name;
@@ -661,32 +682,28 @@ public class ScoreInputController implements Initializable {
     }
 
      // --- 分数输入验证的辅助类 ---
-    private static class ScoreStringConverter extends StringConverter<Double> {
+    private static class ScoreStringConverter extends StringConverter<Integer> { // Changed to Integer
         @Override
-        public String toString(Double object) {
-            return object == null ? "" : String.format("%.1f", object); // 格式化为一位小数
+        public String toString(Integer object) {
+            return object == null ? "" : object.toString(); // Format for Integer
         }
 
         @Override
-        public Double fromString(String string) {
+        public Integer fromString(String string) {
             if (string == null || string.trim().isEmpty()) {
-                // 对于空输入，我们返回0.0，允许编辑提交一个默认值
-                System.err.println("Empty score input. Corrected to 0.0.");
-                return 0.0;
+                System.err.println("Empty score input. Corrected to 0.");
+                return 0;
             }
             try {
-                double value = Double.parseDouble(string);
+                int value = Integer.parseInt(string); // Parse as Integer
                 if (value < 0 || value > 100) {
-                    System.err.println("Score must be between 0 and 100: " + string + ". Corrected to 0.0.");
-                    // showErrorAlert("输入错误", "分数必须在 0 到 100 之间。"); // 移除阻塞性提示
-                    return 0.0; // 返回默认有效值，而不是null
+                    System.err.println("Score must be between 0 and 100: " + string + ". Corrected to 0.");
+                    return 0; 
                 }
-                 // 输入时也四舍五入到一位小数
-                return Math.round(value * 10.0) / 10.0;
+                return value;
             } catch (NumberFormatException e) {
-                System.err.println("Invalid score format: " + string + ". Corrected to 0.0.");
-                // showErrorAlert("输入错误", "请输入有效的分数数字。"); // 移除阻塞性提示
-                return 0.0; // 返回默认有效值，而不是null
+                System.err.println("Invalid score format: " + string + ". Corrected to 0.");
+                return 0;
             }
         }
 

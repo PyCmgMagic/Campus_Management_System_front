@@ -39,5 +39,6 @@ build/
 
 ### Application Configuration ###
 /config/
+/src/main/resources/application.properties
 /custom-runtime/
 /CampusSystem/
