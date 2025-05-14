@@ -39,3 +39,5 @@ build/
 
 ### Application Configuration ###
 /config/
+/custom-runtime/
+/CampusSystem/

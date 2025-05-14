@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.work.javafx.entity.UserSession;
+
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
@@ -43,24 +45,19 @@ public class NetworkUtils {
      * 从配置文件加载服务器配置
      */
     private static void loadConfiguration() {
-        try {
-            // 尝试从配置文件加载
-            File configFile = new File("config/application.properties");
-            if (configFile.exists()) {
-                java.util.Properties props = new java.util.Properties();
-                try (FileInputStream fis = new FileInputStream(configFile)) {
-                    props.load(fis);
-                    BaseUrl = props.getProperty("server.url");
-                }
+        try (InputStream in = ClassLoader.getSystemResourceAsStream("application.properties")) {
+            if (in != null) {
+                Properties props = new Properties();
+                props.load(in);
+                BaseUrl = props.getProperty("server.url");
+                System.out.println("从 resources 中加载配置成功，BaseUrl = " + BaseUrl);
+            } else {
+                LOGGER.warning("application.properties 未包含在资源路径中");
+                ShowMessage.showErrorMessage("无配置文件", "找不到内置配置，请联系作者");
             }
-            else  {
-                LOGGER.warning("不存在配置文件，联系作者获取");
-                ShowMessage.showErrorMessage("无配置文件","不存在配置文件，联系作者获取");
-            }
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "加载配置失败", e);
-            ShowMessage.showErrorMessage("无配置文件","不存在配置文件，联系作者获取");
-            LOGGER.warning("不存在配置文件，联系作者获取");
+            ShowMessage.showErrorMessage("配置错误", "加载配置失败：" + e.getMessage());
         }
     }
 
