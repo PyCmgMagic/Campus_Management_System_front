@@ -1,5 +1,6 @@
 package com.work.javafx;
 import com.work.javafx.entity.UserSession;
+import com.work.javafx.util.AutoUpdater;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.Refresh;
 import javafx.application.Application;
@@ -24,6 +25,7 @@ public class MainApplication extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        AutoUpdater.checkAndUpdate(stage);
         MainApplication.stage = stage;
         stage.setTitle("教务管理系统");
         
