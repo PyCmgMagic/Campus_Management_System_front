@@ -1,5 +1,12 @@
 package com.work.javafx.controller.teacher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.work.javafx.controller.student.CourseScheduleContentController;
+import com.work.javafx.entity.Data;
+import com.work.javafx.model.CourseRow;
+import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +20,10 @@ import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -24,7 +34,7 @@ public class CourseScheduleManagementContent implements Initializable {
 
     // 查询条件控件
     @FXML private ComboBox<String> academicYearComboBox;
-    @FXML private ComboBox<String> semesterComboBox;
+    @FXML private ComboBox<String> weekComboBox;
     @FXML private Label semesterLabel;
     @FXML private Button queryButton;
 
@@ -45,7 +55,7 @@ public class CourseScheduleManagementContent implements Initializable {
 
     // 当前活动的按钮
     private Button currentActiveButton;
-
+    Gson gson  =new Gson();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -56,8 +66,9 @@ public class CourseScheduleManagementContent implements Initializable {
         initTableView();
 
         // 加载示例课表数据
-        loadSampleData();
-
+        loadData();
+        //初始化右上角显示
+        handleTermChange(new ActionEvent());
         System.out.println("课表管理界面初始化成功");
     }
 
@@ -66,18 +77,20 @@ public class CourseScheduleManagementContent implements Initializable {
      */
     private void initComboBoxes() {
         // 学年下拉框
-        ObservableList<String> academicYears = FXCollections.observableArrayList(
-                "2023-2024", "2024-2025", "2025-2026"
-        );
+        ObservableList<String> academicYears = Data.getInstance().getSemesterList();
         academicYearComboBox.setItems(academicYears);
-        academicYearComboBox.setValue("2024-2025");
-
-        // 学期下拉框
-        ObservableList<String> semesters = FXCollections.observableArrayList(
-                "第一学期", "第二学期"
+        // 选择第一个选项
+        if (academicYears != null && !academicYears.isEmpty()) {
+            academicYearComboBox.setValue(academicYears.getFirst());
+        }
+        //周下拉框
+        ObservableList<String> weeks = FXCollections.observableArrayList(
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18"
         );
-        semesterComboBox.setItems(semesters);
-        semesterComboBox.setValue("第二学期");
+        weekComboBox.setItems(weeks);
+        weekComboBox.setValue("1");
+       
 
     }
 
@@ -215,38 +228,142 @@ public class CourseScheduleManagementContent implements Initializable {
     }
 
     /**
-     * 加载示例课表数据
+     * 加载课表数据
      */
-    private void loadSampleData() {
-        // 创建示例课表数据
-        ObservableList<CourseRow> scheduleData = FXCollections.observableArrayList(
-                new CourseRow("第1-2节\n08:00-09:40", "高等数学(II)\n理科楼A203\n李明", "", "数据结构\n信息楼C305\n张伟", "", "Java程序设计\n信息楼C202\n刘强", "", ""),
-                new CourseRow("第3-4节\n10:10-11:50", "", "英语(II)\n外语楼D201\nSarah", "", "Java程序设计\n信息楼C202\n刘强", "", "大学物理实验\n物理实验楼B101\n王华", ""),
-                new CourseRow("第5-6节\n14:00-15:40", "", "", "数据结构\n信息楼C305\n张伟", "高等数学(II)\n理科楼A203\n李明", "", "", ""),
-                new CourseRow("第7-8节\n16:00-17:40", "英语(II)\n外语楼D201\nSarah", "", "", "", "大学物理\n理科楼B101\n王强", "", ""),
-                new CourseRow("第9-10节\n19:00-20:40", "", "大学物理\n理科楼B101\n王强", "", "", "", "", "")
-        );
+    private void loadData() {
+        // 设置课程列的单元格工厂
+        setCourseColumnCellFactory(mondayColumn);
+        setCourseColumnCellFactory(tuesdayColumn);
+        setCourseColumnCellFactory(wednesdayColumn);
+        setCourseColumnCellFactory(thursdayColumn);
+        setCourseColumnCellFactory(fridayColumn);
+        setCourseColumnCellFactory(saturdayColumn);
+        setCourseColumnCellFactory(sundayColumn);
+//获取课程数据
+        String url = "/class/getClassSchedule/";
+        url += weekComboBox.getValue();
+        Map<String,String> params = new HashMap<>();
+        params.put("term", Data.getInstance().getCurrentTerm());
+        NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                ObservableList<CourseRow> scheduleList = FXCollections.observableArrayList();
+                JsonObject res = gson.fromJson(result,JsonObject.class);
+                if(res.has("code") && res.get("code").getAsInt() == 200){
+                    JsonArray data = res.getAsJsonArray("data");
+                    CourseRow First = new CourseRow();
+                    First.setTime("第1-2节\n08:00-09:50");
+                    CourseRow Second = new CourseRow();
+                    Second.setTime("第3-4节\n10:10-12:00");CourseRow Third = new CourseRow();
+                    Third.setTime("第5-6节\n14:00-15:50");
+                    CourseRow Fourth = new CourseRow();
+                    Fourth.setTime("第7-8节\n16:10-18:00");
+                    CourseRow Fifth = new CourseRow();
+                    Fifth.setTime("第9-10节\n19:00-20:50");
+                    for (int i = 0; i < data.size(); i++) {
+                        JsonObject course = data.get(i).getAsJsonObject();
+                        int index = course.get("time").getAsInt();
 
-        // 将数据设置到表格
-        scheduleTableView.setItems(scheduleData);
+                        String courseName = course.get("name").getAsString();
+                        String classroom = course.get("classroom").getAsString();
+                        switch (index % 5){
+                            case 1:
+                                if(index / 5 ==0){
+                                    First.setMonday(courseName + "\n"+classroom);
+                                } else if (index /5 == 1) {
+                                    First.setTuesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 2) {
+                                    First.setWednesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 3) {
+                                    First.setThursday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 4) {
+                                    First.setFriday(courseName + "\n" + classroom);
+                                }
+                                break;
+                            case 2:
+                                if(index / 5 ==0){
+                                    Second.setMonday(courseName + "\n"+classroom);
+                                } else if (index /5 == 1) {
+                                    Second.setTuesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 2) {
+                                    Second.setWednesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 3) {
+                                    Second.setThursday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 4) {
+                                    Second.setFriday(courseName + "\n" + classroom);
+                                }
+                                break;
+                            case 3:
+                                if(index / 5 ==0){
+                                    Third.setMonday(courseName + "\n"+classroom);
+                                } else if (index /5 == 1) {
+                                    Third.setTuesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 2) {
+                                    Third.setWednesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 3) {
+                                    Third.setThursday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 4) {
+                                    Third.setFriday(courseName + "\n" + classroom);
+                                }
+                                break;
+                            case 4:
+                                if(index / 5 ==0){
+                                    Fourth.setMonday(courseName + "\n"+classroom);
+                                } else if (index /5 == 1) {
+                                    Fourth.setTuesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 2) {
+                                    Fourth.setWednesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 3) {
+                                    Fourth.setThursday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 4) {
+                                    Fourth.setFriday(courseName + "\n" + classroom);
+                                }
+                                break;
+                            case 0:
+                                if(index / 5 ==0){
+                                    Fifth.setMonday(courseName + "\n"+classroom);
+                                } else if (index /5 == 1) {
+                                    Fifth.setTuesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 2) {
+                                    Fifth.setWednesday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 3) {
+                                    Fifth.setThursday(courseName + "\n" + classroom);
+                                } else if (index / 5 == 4) {
+                                    Fifth.setFriday(courseName + "\n" + classroom);
+                                }
+                                break;
+
+                        }
+
+                    }
+                    scheduleList.addAll(First,Second,Third,Fourth,Fifth);
+                    scheduleTableView.setItems(scheduleList);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
-
     /**
      * 查询课表
      */
     @FXML
     private void queryCourseSchedule() {
         String academicYear = academicYearComboBox.getValue();
-        String semester = semesterComboBox.getValue();
+        String week = weekComboBox.getValue();
         String scheduleType = "教师课表";
 
-        System.out.println("查询课表: 学年=" + academicYear + ", 学期=" + semester + ", 类型=" + scheduleType);
+        System.out.println("查询课表: 学年=" + academicYear + ", 学期=" + week + ", 类型=" + scheduleType);
 
         // 这里可以根据查询条件请求后端API获取课表数据
         // 简单示例：模拟查询操作，重新加载数据
-        loadSampleData();
+        loadData();
 
-        ShowMessage.showInfoMessage("查询成功", "已加载" + academicYear + semester + "的" + scheduleType);
+        ShowMessage.showInfoMessage("查询成功", "已加载" + academicYear + week + "的" + scheduleType);
     }
 
     /**
@@ -259,8 +376,8 @@ public class CourseScheduleManagementContent implements Initializable {
             // 导入我们新创建的工具类
             com.work.javafx.util.ExportUtils.printNode(
                 scheduleTableView, 
-                academicYearComboBox.getValue() + " " + 
-                semesterComboBox.getValue() + " " + 
+                academicYearComboBox.getValue() + " " +
+                        weekComboBox.getValue() + " " +
                 "教师课表"
             );
         } catch (Exception e) {
@@ -283,7 +400,7 @@ public class CourseScheduleManagementContent implements Initializable {
             com.work.javafx.util.ExportUtils.exportToExcelForTeacher(
                 scheduleTableView,
                 academicYearComboBox.getValue(),
-                semesterComboBox.getValue(),
+                    weekComboBox.getValue(),
                 "教师课表",
                 stage
             );
@@ -313,43 +430,10 @@ public class CourseScheduleManagementContent implements Initializable {
     }
 
     public void handleTermChange(ActionEvent actionEvent) {
-        semesterLabel.setText(academicYearComboBox.getValue()+"学年 "+semesterComboBox.getValue());
+        semesterLabel.setText(academicYearComboBox.getValue() + " 第 " + weekComboBox.getValue()+ " 周 ");
+
 
     }
 
-    /**
-     * 课表行数据模型
-     */
-    public static class CourseRow {
-        private final String time;
-        private final String monday;
-        private final String tuesday;
-        private final String wednesday;
-        private final String thursday;
-        private final String friday;
-        private final String saturday;
-        private final String sunday;
 
-        public CourseRow(String time, String monday, String tuesday, String wednesday,
-                         String thursday, String friday, String saturday, String sunday) {
-            this.time = time;
-            this.monday = monday;
-            this.tuesday = tuesday;
-            this.wednesday = wednesday;
-            this.thursday = thursday;
-            this.friday = friday;
-            this.saturday = saturday;
-            this.sunday = sunday;
-        }
-
-        // Getters
-        public String getTime() { return time; }
-        public String getMonday() { return monday; }
-        public String getTuesday() { return tuesday; }
-        public String getWednesday() { return wednesday; }
-        public String getThursday() { return thursday; }
-        public String getFriday() { return friday; }
-        public String getSaturday() { return saturday; }
-        public String getSunday() { return sunday; }
-    }
 }

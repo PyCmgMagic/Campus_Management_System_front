@@ -25,7 +25,7 @@
             <HBox>
                 <Label styleClass="section-title" text="查询条件" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label fx:id="semesterLabel" styleClass="current-semester-label" text="2024-2025学年 第二学期" />
+                <Label fx:id="semesterLabel" styleClass="current-semester-label" text="" />
             </HBox>
             
             <GridPane hgap="20" styleClass="query-form" vgap="15">
@@ -35,7 +35,7 @@
                 
                 <!-- 学期 -->
                 <Label text="学期:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <ComboBox fx:id="academicYearComboBox" onAction="#handleTermChange" prefWidth="200" promptText="2024-2025-1" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <ComboBox fx:id="academicYearComboBox" onAction="#handleTermChange" prefWidth="200" promptText="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 
                 <!-- 周 -->
                 <Label text="周:" GridPane.columnIndex="2" GridPane.rowIndex="0" />

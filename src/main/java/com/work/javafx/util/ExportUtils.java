@@ -1,6 +1,6 @@
 package com.work.javafx.util;
 
-import com.work.javafx.controller.student.CourseScheduleContentController.CourseRow;
+import com.work.javafx.model.CourseRow;
 import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
@@ -109,7 +109,7 @@ public class ExportUtils {
      * @param scheduleType  课表类型
      * @param parentStage   父窗口Stage
      */
-    public static void exportToExcelForTeacher(TableView<com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow> tableView, 
+    public static void exportToExcelForTeacher(TableView<CourseRow> tableView, 
                                     String academicYear, 
                                     String semester, 
                                     String scheduleType,
@@ -133,12 +133,12 @@ public class ExportUtils {
                 createExcelFolderStructure(tempDir);
                 
                 // 表格数据 - 转换为学生端的CourseRow格式
-                List<com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow> teacherRows = tableView.getItems();
+                List<CourseRow> teacherRows = tableView.getItems();
                 List<CourseRow> convertedRows = new ArrayList<>();
-                
+
                 // 转换教师端的CourseRow到学生端的CourseRow
-                for (com.work.javafx.controller.teacher.CourseScheduleManagementContent.CourseRow teacherRow : teacherRows) {
-                    com.work.javafx.controller.student.CourseScheduleContentController.CourseRow convertedRow = new com.work.javafx.controller.student.CourseScheduleContentController.CourseRow(
+                for (CourseRow teacherRow : teacherRows) {
+                    CourseRow convertedRow = new CourseRow(
                         teacherRow.getTime(),
                         teacherRow.getMonday(),
                         teacherRow.getTuesday(),

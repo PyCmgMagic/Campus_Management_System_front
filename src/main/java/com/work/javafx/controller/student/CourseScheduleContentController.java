@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.Data;
+import com.work.javafx.model.CourseRow;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
@@ -63,9 +64,10 @@ public class CourseScheduleContentController implements Initializable {
         // 初始化表格
         initTableView();
 
-        // 加载示例课表数据
+        // 加载课表数据
         loadData();
-
+        //初始化右上角显示
+        handleTermChange(new ActionEvent());
         System.out.println("课表查询界面初始化成功");
     }
 
@@ -74,11 +76,12 @@ public class CourseScheduleContentController implements Initializable {
      */
     private void initComboBoxes() {
         // 学年下拉框
-        ObservableList<String> academicYears = FXCollections.observableArrayList(
-                "2023-2024", "2024-2025", "2025-2026"
-        );
+        ObservableList<String> academicYears = Data.getInstance().getSemesterList();
         academicYearComboBox.setItems(academicYears);
-        academicYearComboBox.setValue("2024-2025");
+        // 选择第一个选项
+        if (academicYears != null && !academicYears.isEmpty()) {
+            academicYearComboBox.setValue(academicYears.getFirst());
+        }
 
         //周下拉框
         ObservableList<String> weeks = FXCollections.observableArrayList(
@@ -426,79 +429,8 @@ public class CourseScheduleContentController implements Initializable {
     }
 
     public void handleTermChange(ActionEvent inputMethodEvent) {
-        semesterLabel.setText(academicYearComboBox.getValue()+"学年 "+weekComboBox.getValue());
+        semesterLabel.setText(academicYearComboBox.getValue() + " 第 " + weekComboBox.getValue()+ " 周 ");
 
     }
 
-    /**
-     * 课表行数据模型
-     */
-    public static class CourseRow {
-        private  String time = "";
-        private  String monday = "";
-        private  String tuesday = "";
-        private  String wednesday = "";
-        private  String thursday = "";
-        private  String friday = "";
-        private  String saturday = "";
-        private  String sunday = "";
-
-        public CourseRow(String time, String monday, String tuesday, String wednesday,
-                         String thursday, String friday, String saturday, String sunday) {
-            this.time = time;
-            this.monday = monday;
-            this.tuesday = tuesday;
-            this.wednesday = wednesday;
-            this.thursday = thursday;
-            this.friday = friday;
-            this.saturday = saturday;
-            this.sunday = sunday;
-        }
-
-        public CourseRow() {
-        }
-
-        // Getters
-        public String getTime() { return time; }
-        public String getMonday() { return monday; }
-        public String getTuesday() { return tuesday; }
-        public String getWednesday() { return wednesday; }
-        public String getThursday() { return thursday; }
-        public String getFriday() { return friday; }
-        public String getSaturday() { return saturday; }
-        public String getSunday() { return sunday; }
-        //Setter
-
-        public void setTime(String time) {
-            this.time = time;
-        }
-
-        public void setMonday(String monday) {
-            this.monday = monday;
-        }
-
-        public void setTuesday(String tuesday) {
-            this.tuesday = tuesday;
-        }
-
-        public void setWednesday(String wednesday) {
-            this.wednesday = wednesday;
-        }
-
-        public void setThursday(String thursday) {
-            this.thursday = thursday;
-        }
-
-        public void setFriday(String friday) {
-            this.friday = friday;
-        }
-
-        public void setSaturday(String saturday) {
-            this.saturday = saturday;
-        }
-
-        public void setSunday(String sunday) {
-            this.sunday = sunday;
-        }
-    }
 } 
