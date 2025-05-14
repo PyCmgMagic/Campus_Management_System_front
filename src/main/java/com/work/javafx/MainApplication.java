@@ -1,5 +1,6 @@
 package com.work.javafx;
 import com.work.javafx.entity.UserSession;
+import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.Refresh;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -40,6 +41,7 @@ public class MainApplication extends Application {
         stopTokenRefreshTimer(); // 停止定时器
         UserSession.getInstance().clearSession(); // 清理数据
         System.out.println("应用关闭，用户数据已清除");
+        NetworkUtils.shutdown();
         Platform.exit();
         System.exit(0);
     }
