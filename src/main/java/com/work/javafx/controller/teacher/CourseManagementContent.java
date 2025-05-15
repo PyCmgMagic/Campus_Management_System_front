@@ -42,6 +42,8 @@ static Gson gson = new Gson();
 
     @FXML
     private TextField searchField;
+    @FXML
+    private Label totalCourseLabel;
 
     @FXML
     private Button ApplyForNewCourse;
@@ -105,7 +107,8 @@ static Gson gson = new Gson();
                     int totalCourses = dataObject.get("total").getAsInt();
                     int pageSize = dataObject.get("pageSize").getAsInt();
                     int pageNum = dataObject.get("pageNum").getAsInt();
-                    
+                    //设置底部总记录数显示
+                    totalCourseLabel.setText("共"+ totalCourses + "条记录");
                     Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
                     List<UltimateCourse> loadCourseList = gson.fromJson(dataArray,couserListType);
                     

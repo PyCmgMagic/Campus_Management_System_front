@@ -19,13 +19,13 @@
         <VBox styleClass="info-card,success" HBox.hgrow="ALWAYS">
             <VBox styleClass="card-content">
                 <Text styleClass="info-card-title" text="本学期授课" />
-                <Text styleClass="info-card-value" text="3" />
+                <Text styleClass="info-card-value" text="0" />
             </VBox>
         </VBox>
         <VBox styleClass="info-card,warning" HBox.hgrow="ALWAYS">
             <VBox styleClass="card-content" VBox.vgrow="ALWAYS">
                 <Text styleClass="info-card-title" text="待审课程申请" />
-                <Text styleClass="info-card-value" text="1" />
+                <Text styleClass="info-card-value" text="0" />
             </VBox>
         </VBox>
     </HBox>
@@ -46,7 +46,7 @@
                 </HBox>
                 <Button styleClass="secondary" text="查询" />
             </HBox>
-            <Button onAction="#ApplyForNewCourse" fx:id="ApplyForNewCourse" styleClass="primary,propose-btn">
+            <Button fx:id="ApplyForNewCourse" onAction="#ApplyForNewCourse" styleClass="primary,propose-btn">
                 <graphic>
                     <Text text="➕" />
                 </graphic>
@@ -90,7 +90,7 @@
         </TableView>
         
         <HBox styleClass="pagination">
-            <Label text="共 5 条记录" />
+            <Label fx:id="totalCourseLabel" text="共 0 条记录" />
             <Button disable="true" styleClass="secondary">
                 <text>上一页</text>
             </Button>
