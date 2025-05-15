@@ -65,7 +65,7 @@ public class AutoUpdater {
                         if (result.isPresent() && result.get() == ButtonType.OK) {
                             stage.hide(); // 隐藏主窗口
 
-                            File outputFile = new File(System.getProperty("java.io.tmpdir"), "CampusManageSystemInstaller.exe");
+                            File outputFile = new File(System.getProperty("java.io.tmpdir"), "CampusManageSystemInstaller.msi");
                             DownloadTask task = new DownloadTask(downloadUrl, outputFile);
 
                             ProgressBar progressBar = new ProgressBar();
