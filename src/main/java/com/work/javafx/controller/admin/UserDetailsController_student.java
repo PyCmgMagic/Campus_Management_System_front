@@ -118,7 +118,7 @@ public class UserDetailsController_student implements Initializable {
                             setLabelText(usernameLabel, userInfo, "username");
                             setLabelText(sduidLabel, userInfo, "sduid");
                             if (userInfo.has("sduid") && !userInfo.get("sduid").isJsonNull()) {
-                                idLabel.setText("工号: " + userInfo.get("sduid").getAsString());
+                                idLabel.setText("学号: " + userInfo.get("sduid").getAsString());
                             }
                             setLabelText(sexLabel, userInfo, "sex");
                             setLabelText(emailLabel, userInfo, "email");
