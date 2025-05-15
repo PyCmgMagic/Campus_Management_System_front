@@ -452,7 +452,7 @@ public class ScoreInputController implements Initializable {
                     scoreData.clear();
                     for (int i = 0; i < data.size(); i++) {
                         JsonObject element = data.get(i).getAsJsonObject();
-                        ScoreEntry entry = new ScoreEntry(element.get("id").getAsString(), element.get("sduid").getAsString(), element.get("username").getAsString(),"默认班级",selectedCourse.getName(),0,0,"");
+                        ScoreEntry entry = new ScoreEntry(element.get("id").getAsString(), element.get("sduid").getAsString(), element.get("username").getAsString(),element.get("major").getAsString()+element.get("number").getAsString(),selectedCourse.getName(),element.get("regular").getAsInt(),element.get("finalScore").getAsInt(),"");
                         // 设置当前课程的成绩比例
                         entry.setScoreRatios(selectedCourse.getRegularRatio(), selectedCourse.getFinalRatio());
                         // 设置控制器引用，以便更新统计
