@@ -1,10 +1,17 @@
 package com.work.javafx.util;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONObject;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.geometry.Insets;
 
 import java.awt.*;
 import java.io.*;
@@ -82,18 +89,68 @@ public class AutoUpdater {
 
                         Optional<ButtonType> result = alert.showAndWait();
                         if (result.isPresent() && result.get() == ButtonType.OK) {
-                            try {
-                                stage.hide(); // 隐藏主窗口
-                                File installer = downloadInstaller(downloadUrl);
-                                if (installer != null) {
-                                    Desktop.getDesktop().open(installer);
-                                    Platform.exit();
-                                    System.exit(0);
+                            stage.hide(); // 隐藏主窗口
+
+                            File outputFile = new File(System.getProperty("java.io.tmpdir"), "CampusManageSystemInstaller.exe");
+                            DownloadTask task = new DownloadTask(downloadUrl, outputFile);
+
+                            ProgressBar progressBar = new ProgressBar();
+                            progressBar.progressProperty().bind(task.progressProperty());
+
+                            Label label = new Label("正在下载更新...");
+                            label.textProperty().bind(task.messageProperty());
+
+                            Label percentLabel = new Label("0%");
+
+                            task.progressProperty().addListener((obs, oldVal, newVal) -> {
+                                if (newVal != null) {
+                                    double progress = newVal.doubleValue();
+                                    if (progress >= 0 && progress <= 1) {
+                                        int percent = (int) (progress * 100);
+                                        percentLabel.setText(percent + "%");
+                                    }
                                 }
-                            } catch (Exception ex) {
-                                showError("更新失败", "下载或安装新版本时出错：" + ex.getMessage());
-                            }
+                            });
+
+                            Button cancelBtn = new Button("取消");
+                            cancelBtn.setOnAction(e -> task.cancel());
+
+                            VBox vbox = new VBox(10, label, progressBar, percentLabel, cancelBtn);
+                            vbox.setAlignment(Pos.CENTER);
+                            vbox.setPadding(new Insets(20));
+
+                            Stage progressStage = new Stage();
+                            progressStage.setTitle("下载更新中");
+                            progressStage.setScene(new Scene(vbox, 350, 180)); // 调整高度以容纳百分比
+                            progressStage.show();
+
+                            task.setOnSucceeded(e -> {
+                                progressStage.close();
+                                File file = task.getValue();
+                                if (file != null && file.exists()) {
+                                    try {
+                                        Desktop.getDesktop().open(file);
+                                        Platform.exit();
+                                        System.exit(0);
+                                    } catch (IOException ex) {
+                                        showError("安装失败", "无法启动安装程序：" + ex.getMessage());
+                                    }
+                                }
+                            });
+
+                            task.setOnFailed(e -> {
+                                progressStage.close();
+                                showError("下载失败", "更新下载过程中发生错误：" + task.getException().getMessage());
+                            });
+
+                            task.setOnCancelled(e -> {
+                                progressStage.close();
+                                showError("取消下载", "您已取消了更新下载。");
+                            });
+
+                            new Thread(task).start();
                         }
+
                     });
 
                 } else {
