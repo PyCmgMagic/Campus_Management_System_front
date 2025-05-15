@@ -40,20 +40,6 @@ public class AutoUpdater {
         }
     }
 
-    public static int compareVersion(String v1, String v2) {
-        String[] parts1 = v1.split("\\.");
-        String[] parts2 = v2.split("\\.");
-
-        int length = Math.max(parts1.length, parts2.length);
-        for (int i = 0; i < length; i++) {
-            int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
-            int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
-            if (num1 != num2) return num1 - num2;
-        }
-        return 0;
-    }
-
-
     public static void checkAndUpdate(Stage stage) {
         new Thread(() -> {
             try {
@@ -64,28 +50,15 @@ public class AutoUpdater {
 
                 String latest = json.getString("latestVersion");
                 String downloadUrl = json.getString("downloadUrl");
-                String changelog = json.getString("changelog");
-                String committer = json.getString("committer");
-                String commitDate = json.getString("commitDate");
 
-                int cmp = compareVersion(LOCAL_VERSION, latest);
-
-                if (cmp < 0) {
+                if (!LOCAL_VERSION.equals(latest)) {
                     System.out.println("发现新版本: " + latest);
 
                     Platform.runLater(() -> {
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setTitle("发现新版本");
                         alert.setHeaderText("当前版本：" + LOCAL_VERSION + " → " + latest);
-
-                        String content = "更新日志：" + changelog + "\n\n" +
-                                "提交者：" + committer + "\n" +
-                                "提交日期：" + commitDate + "\n" +
-                                "是否立即下载并安装更新？";
-
-
-                        alert.setContentText(content);
-
+                        alert.setContentText("是否立即下载并安装更新？");
 
                         Optional<ButtonType> result = alert.showAndWait();
                         if (result.isPresent() && result.get() == ButtonType.OK) {
