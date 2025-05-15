@@ -60,6 +60,8 @@ public class LoginController {
 
     private boolean togglestate = false;
     private boolean togglestate1 = false;
+    private Thread pollingThread;
+    private final AtomicBoolean isPolling = new AtomicBoolean(false);
 
     /**
      * 初始化控制器
@@ -350,9 +352,14 @@ public class LoginController {
      * @param deviceId 设备ID
      */
     private void startPolling(String deviceId) {
-        // 创建一个volatile标志，用于控制轮询
-        final AtomicBoolean isPolling = new AtomicBoolean(true);
-        
+        if (isPolling.get()) {
+            isPolling.set(false); // 终止旧线程
+            if (pollingThread != null && pollingThread.isAlive()) {
+                pollingThread.interrupt();
+            }
+        }
+
+        isPolling.set(true);
         Thread pollingThread = new Thread(() -> {
             int attempts = 0;
             final int MAX_ATTEMPTS = 600; // 最多轮询600次
