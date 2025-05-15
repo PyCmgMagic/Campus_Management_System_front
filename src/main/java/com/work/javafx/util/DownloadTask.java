@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 public class DownloadTask extends Task<File> {
@@ -21,7 +22,8 @@ public class DownloadTask extends Task<File> {
 
     @Override
     protected File call() throws Exception {
-        URL url = new URL(downloadUrl);
+        URI uri = URI.create(downloadUrl);
+        URL url = uri.toURL();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         int contentLength = conn.getContentLength();
 
