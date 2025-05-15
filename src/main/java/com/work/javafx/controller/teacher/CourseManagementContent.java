@@ -37,8 +37,7 @@ static Gson gson = new Gson();
     @FXML
     private ComboBox<String> semesterComboBox;
 
-    @FXML
-    private ComboBox<String> statusComboBox;
+
 
     @FXML
     private TextField searchField;
@@ -51,13 +50,24 @@ static Gson gson = new Gson();
     @FXML
     private TableView<UltimateCourse> courseTable;
 
+    @FXML
+    private Button prevPageButton;
+
+    @FXML
+    private Button nextPageButton;
+
+    @FXML
+    private Button pageButton;
+
     private ObservableList<UltimateCourse> courseList;
+    private int currentPage = 1;
+    private int totalPages = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupComboBoxes();
         setupTable();
-        loadData();
+        loadData(currentPage,"/class/list");
     }
 
     private void setupComboBoxes() {
@@ -70,15 +80,7 @@ static Gson gson = new Gson();
         semesterComboBox.setItems(semesters);
         semesterComboBox.getSelectionModel().selectFirst();
 
-        // Setup status combo box
-        ObservableList<String> statuses = FXCollections.observableArrayList(
-            "全部",
-            "当前授课",
-            "历史授课",
-            "我的申请"
-        );
-        statusComboBox.setItems(statuses);
-        statusComboBox.getSelectionModel().selectFirst();
+
     }
 
     private void setupTable() {
@@ -92,11 +94,25 @@ static Gson gson = new Gson();
         VBox.setVgrow(courseTable, Priority.ALWAYS);
     }
 
-    private void loadData() {
+
+
+    private void loadData(int pageNum , String url) {
         String term = semesterComboBox.getValue();
-        Map<String,String> Param = new HashMap<>();
-        Param.put("term",term);
-        NetworkUtils.get("/class/list", Param, new NetworkUtils.Callback<String>() {
+        String search = searchField.getText();
+        
+        Map<String,String> param = new HashMap<>();
+        param.put("term", term);
+        param.put("pageNum", String.valueOf(pageNum));
+        param.put("pageSize", "10");
+        
+        if (search != null && !search.trim().isEmpty()) {
+            param.put("keyword", search);
+        }
+        for (Map.Entry<String,String> e : param.entrySet()){
+            System.out.println(e.getKey() + " : " + e.getValue());
+        }
+        System.out.println(url);
+        NetworkUtils.get(url, param, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -106,7 +122,9 @@ static Gson gson = new Gson();
                     JsonArray dataArray = dataObject.getAsJsonArray("list");
                     int totalCourses = dataObject.get("total").getAsInt();
                     int pageSize = dataObject.get("pageSize").getAsInt();
-                    int pageNum = dataObject.get("pageNum").getAsInt();
+                    currentPage = dataObject.get("pageNum").getAsInt();
+                    totalPages = dataObject.get("pages").getAsInt();
+                    
                     //设置底部总记录数显示
                     totalCourseLabel.setText("共"+ totalCourses + "条记录");
                     Type couserListType = new TypeToken<List<UltimateCourse>>(){}.getType();
@@ -120,6 +138,9 @@ static Gson gson = new Gson();
                     
                     courseList.clear();
                     courseList.addAll(loadCourseList);
+                    
+                    // 更新分页控件状态
+                    updatePaginationControls();
                 }else{
                     System.out.println("失败！"+ res.get("msg").getAsString());
                 }
@@ -297,7 +318,7 @@ static Gson gson = new Gson();
             
             // 显示窗口
             popupStage.showAndWait();
-            loadData();
+            loadData(currentPage,"/class/list");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -428,7 +449,7 @@ static Gson gson = new Gson();
                     }else{
                         ShowMessage.showErrorMessage("失败",res.get("msg").getAsString());
                     }
-                    loadData();
+                    loadData(currentPage,url);
                 }
                 @Override
                 public void onFailure(Exception e) {
@@ -441,6 +462,54 @@ static Gson gson = new Gson();
             });
         }
     }
+//查询课程
+    public void handlequery(ActionEvent actionEvent) {
+        currentPage = 1;
+        loadData(currentPage,"/class/searchTeacherCourses");
+        System.out.println("cahxun");
+    }
+
+    // 更新分页控件状态
+    private void updatePaginationControls() {
+        if (prevPageButton != null) {
+            prevPageButton.setDisable(currentPage <= 1);
+        }
+        
+        if (nextPageButton != null) {
+            nextPageButton.setDisable(currentPage >= totalPages);
+        }
+        
+        if (pageButton != null) {
+            pageButton.setText(String.valueOf(currentPage));
+        }
+    }
+
+    // 处理上一页按钮点击
+    @FXML
+    private void handlePrevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            if(searchField.getText() == null || searchField.getText().trim().isEmpty()){
+            loadData(currentPage,"/class/list");
+            } else  {
+                loadData(currentPage,"/class/searchTeacherCourses");
+            }
+        }
+    }
+
+    // 处理下一页按钮点击
+    @FXML
+    private void handleNextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            if(searchField.getText() == null || searchField.getText().trim().isEmpty()){
+                loadData(currentPage,"/class/list");
+            } else  {
+                loadData(currentPage,"/class/searchTeacherCourses");
+            }
+        }
+    }
+
     // 课程类
     public static class Course {
         private final String courseCode;

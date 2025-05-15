@@ -37,14 +37,11 @@
                     <Label text="学期:" />
                     <ComboBox fx:id="semesterComboBox" styleClass="filter-combo" />
                 </HBox>
-                <HBox styleClass="filter-item">
-                    <Label text="状态:" />
-                    <ComboBox fx:id="statusComboBox" styleClass="filter-combo" />
-                </HBox>
+                <HBox styleClass="filter-item" />
                 <HBox styleClass="filter-item">
                     <TextField fx:id="searchField" promptText="搜索我的课程..." styleClass="search-field" />
                 </HBox>
-                <Button styleClass="secondary" text="查询" />
+                <Button onAction="#handlequery" styleClass="secondary" text="查询" />
             </HBox>
             <Button fx:id="ApplyForNewCourse" onAction="#ApplyForNewCourse" styleClass="primary,propose-btn">
                 <graphic>
@@ -91,13 +88,13 @@
         
         <HBox styleClass="pagination">
             <Label fx:id="totalCourseLabel" text="共 0 条记录" />
-            <Button disable="true" styleClass="secondary">
+            <Button fx:id="prevPageButton" onAction="#handlePrevPage" styleClass="secondary">
                 <text>上一页</text>
             </Button>
-            <Button styleClass="secondary active">
+            <Button fx:id="pageButton" styleClass="secondary active">
                 <text>1</text>
             </Button>
-            <Button styleClass="secondary">
+            <Button fx:id="nextPageButton" onAction="#handleNextPage" styleClass="secondary">
                 <text>下一页</text>
             </Button>
         </HBox>
