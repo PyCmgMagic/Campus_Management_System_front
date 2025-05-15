@@ -8,7 +8,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.geometry.Insets;
@@ -46,10 +47,10 @@ public class AutoUpdater {
                 System.out.println("正在检查更新...");
                 System.setProperty("https.protocols", "TLSv1.2");
                 String jsonStr = fetch(VERSION_JSON_URL);
-                JSONObject json = new JSONObject(jsonStr);
+                JsonObject json = JsonParser.parseString(jsonStr).getAsJsonObject();
 
-                String latest = json.getString("latestVersion");
-                String downloadUrl = json.getString("downloadUrl");
+                String latest = json.get("latestVersion").getAsString();
+                String downloadUrl = json.get("downloadUrl").getAsString();
 
                 if (!LOCAL_VERSION.equals(latest)) {
                     System.out.println("发现新版本: " + latest);
@@ -177,4 +178,4 @@ public class AutoUpdater {
             return "unknown";
         }
     }
-}
+} 
