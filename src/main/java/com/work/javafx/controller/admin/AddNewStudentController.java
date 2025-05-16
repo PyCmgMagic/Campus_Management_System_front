@@ -10,7 +10,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,14 +26,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-public class AddNewTeacherController implements Initializable {
-    private static final Logger LOGGER = Logger.getLogger(AddNewTeacherController.class.getName());
+public class AddNewStudentController implements Initializable {
+    private static final Logger LOGGER = Logger.getLogger(AddNewStudentController.class.getName());
     private static final Gson gson = new Gson();
 
     @FXML private TextField sduIdField;
     @FXML private TextField usernameField;
     @FXML private ComboBox<String> sexComboBox;
     @FXML private ComboBox<String> collegeComboBox;
+    @FXML private ComboBox<String> majorComboBox;
     @FXML private TextField emailField;
     @FXML private TextField phoneField;
     @FXML private ComboBox<String> ethnicComboBox;
@@ -53,7 +57,7 @@ public class AddNewTeacherController implements Initializable {
     }
 
     /**
-     * 初始化学院选项
+     * 初始化学院和专业选项
      */
     private void initializeCollegeOptions() {
         ObservableList<String> colleges = FXCollections.observableArrayList(
@@ -61,6 +65,10 @@ public class AddNewTeacherController implements Initializable {
                 "文学院", "历史学院", "法学院", "医学院", "生命科学学院"
         );
         collegeComboBox.setItems(colleges);
+        ObservableList<String> majors = FXCollections.observableArrayList(
+                "软件工程","大数据","数字媒体技术","人工智能国际班"
+        );
+        majorComboBox.setItems(majors);
     }
       /**
      * 初始化学院选项
@@ -294,7 +302,12 @@ public class AddNewTeacherController implements Initializable {
             ShowMessage.showErrorMessage("验证失败", "请选择所属学院");
             isValid = false;
         }
-        
+          // 验证专业选择
+        if (majorComboBox.getValue() == null) {
+            ShowMessage.showErrorMessage("验证失败", "请选择所属专业");
+            isValid = false;
+        }
+
         // 验证民族选择
         if (ethnicComboBox.getValue() == null) {
             ShowMessage.showErrorMessage("验证失败", "请选择民族");
@@ -315,6 +328,23 @@ public class AddNewTeacherController implements Initializable {
         
         return isValid;
     }
+    /***
+     * 处理专业转换
+     */
+    private int transMajor(String major){
+        switch (major){
+            case "软件工程":
+                return 0;
+            case "数字媒体技术":
+                return 1;
+            case "大数据":
+                return 2;
+            case "人工智能国际班" :
+                return 3;
+            default:
+                return -1;
+        }
+    }
     
     /**
      * 处理提交按钮点击事件
@@ -332,6 +362,7 @@ public class AddNewTeacherController implements Initializable {
         Map<String, String> params = new HashMap<>();
         params.put("username", usernameField.getText().trim());
         params.put("college", collegeComboBox.getValue());
+        params.put("major", transMajor(majorComboBox.getValue())+"");
         params.put("email", emailField.getText().trim());
         params.put("ethnic", ethnicComboBox.getValue());
         params.put("password", "123456");
@@ -340,7 +371,7 @@ public class AddNewTeacherController implements Initializable {
         params.put("PoliticsStatus", politicsStatusComboBox.getValue());
         params.put("SDUId", sduIdField.getText().trim());
         params.put("sex",sexComboBox.getValue());
-        params.put("permission","1");
+        params.put("permission","2");
 
         
 
@@ -352,10 +383,10 @@ public class AddNewTeacherController implements Initializable {
                         JsonObject jsonResponse = gson.fromJson(response, JsonObject.class);
                         
                         if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200) {
-                            ShowMessage.showInfoMessage("成功", "成功添加教师：" + usernameField.getText());
+                            ShowMessage.showInfoMessage("成功", "成功添加学生：" + usernameField.getText());
                             stage.close(); // 关闭窗口
                         } else {
-                            String errorMsg = "添加教师失败";
+                            String errorMsg = "添加学生失败";
                             if (jsonResponse.has("msg")) {
                                 errorMsg += ": " + jsonResponse.get("msg").getAsString();
                             }
@@ -363,7 +394,7 @@ public class AddNewTeacherController implements Initializable {
                             submitButton.setDisable(false);
                         }
                     } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "处理添加教师响应失败", e);
+                        LOGGER.log(Level.SEVERE, "处理添加学生响应失败", e);
                         ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应：" + e.getMessage());
                         submitButton.setDisable(false);
                     }
@@ -371,8 +402,8 @@ public class AddNewTeacherController implements Initializable {
             })
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    LOGGER.log(Level.SEVERE, "添加教师请求失败", ex);
-                    ShowMessage.showErrorMessage("网络错误", "添加教师请求失败：" + ex.getMessage());
+                    LOGGER.log(Level.SEVERE, "添加学生请求失败", ex);
+                    ShowMessage.showErrorMessage("网络错误", "添加学生请求失败：" + ex.getMessage());
                     submitButton.setDisable(false);
                 });
                 return null;

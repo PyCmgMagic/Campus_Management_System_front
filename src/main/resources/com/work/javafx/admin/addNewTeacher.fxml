@@ -28,6 +28,7 @@
                     <Font name="System Bold" size="24.0"/>
                 </font>
             </Label>
+            <Label fx:id="permissionLabel" text="1" visible="false" />
         </HBox>
         
         <!-- Form Container -->

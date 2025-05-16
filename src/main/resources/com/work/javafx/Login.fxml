@@ -49,73 +49,78 @@
     </HBox>
 
     <!-- 右侧登录区域 -->
-    <VBox alignment="CENTER" prefWidth="400.0" styleClass="right-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <Label text="测试用快捷登录按钮" />
-      <HBox alignment="CENTER" prefHeight="22.0" prefWidth="304.0" spacing="30.0" VBox.vgrow="NEVER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#studentlogin" styleClass="test-button" text="学生登录" />
-            <Button mnemonicParsing="false" onAction="#teacherlogin" styleClass="test-button" text="教师登录" />
-            <Button graphicTextGap="20.0" mnemonicParsing="false" onAction="#adminlogin" styleClass="test-button" text="管理员登录" />
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </HBox>
-
-        <VBox spacing="20.0" styleClass="login-form">
-            <!-- 登录标题 -->
-            <Label styleClass="login-title" text="用户登录" />
-
-            <!-- 用户名输入框 -->
-            <VBox spacing="10.0">
-                <Label styleClass="field-label" text="用户名" />
-                <TextField fx:id="usernameField" promptText="请输入学号/工号" styleClass="input-field" />
-            </VBox>
-
-            <!-- 密码输入框 -->
-            <VBox spacing="10.0">
-                <Label styleClass="field-label" text="密码" />
-                <PasswordField fx:id="passwordField" promptText="请输入密码" styleClass="input-field" />
-            </VBox>
-
-            <!-- 管理员登录-->
-            <HBox alignment="CENTER_RIGHT">
-            <HBox alignment="CENTER" prefHeight="6.0" prefWidth="200.0">
-               <children>
-                  <HBox prefHeight="22.0" prefWidth="214.0">
-                     <children>
-                        <Hyperlink fx:id="sduLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleSduloginClick" prefHeight="20.0" prefWidth="130.0" styleClass="adminLogin" text="山东大学统一认证登录" />
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </HBox>
-               </children>
-            </HBox>
-                <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleClick" prefHeight="20.0" prefWidth="71.0" styleClass="adminLogin" text="第三方登录">
-               <HBox.margin>
-                  <Insets right="-5.0" />
-               </HBox.margin></Hyperlink>
-            </HBox>
-         <HBox prefHeight="26.0" prefWidth="280.0">
-            <VBox.margin>
-               <Insets bottom="-20.0" top="-20.0" />
-            </VBox.margin>
-            <children>
-               <Label fx:id="errorMessageLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="281.0" textFill="RED" />
-            </children>
-         </HBox>
-         <HBox alignment="CENTER">
-            <children>
-                        <!-- 登录按钮 -->
-                  <Button fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
-            </children>
-         </HBox>
-        </VBox>
-        <Label fx:id="versionLabel" alignment="TOP_LEFT" text="Version">
-            <VBox.margin>
+    <StackPane styleClass="right-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" maxWidth="450.0">
+          <Label text="测试用快捷登录按钮" />
+          <HBox alignment="CENTER" prefHeight="22.0" spacing="30.0" VBox.vgrow="NEVER">
+             <children>
+                <Button mnemonicParsing="false" onAction="#studentlogin" styleClass="test-button" text="学生登录" />
+                <Button mnemonicParsing="false" onAction="#teacherlogin" styleClass="test-button" text="教师登录" />
+                <Button graphicTextGap="20.0" mnemonicParsing="false" onAction="#adminlogin" styleClass="test-button" text="管理员登录" />
+             </children>
+             <opaqueInsets>
                 <Insets />
-            </VBox.margin>
-        </Label>
-    </VBox>
+             </opaqueInsets>
+          </HBox>
+
+            <VBox spacing="20.0" styleClass="login-form">
+                <!-- 登录标题 -->
+                <Label styleClass="login-title" text="用户登录" />
+
+                <!-- 用户名输入框 -->
+                <VBox spacing="10.0">
+                    <Label styleClass="field-label" text="用户名" />
+                    <TextField fx:id="usernameField" promptText="请输入学号/工号" styleClass="input-field" />
+                </VBox>
+
+                <!-- 密码输入框 -->
+                <VBox spacing="10.0">
+                    <Label styleClass="field-label" text="密码" />
+                    <PasswordField fx:id="passwordField" promptText="请输入密码" styleClass="input-field" />
+                </VBox>
+
+                <!-- 管理员登录-->
+                <HBox alignment="CENTER_RIGHT">
+                <HBox prefHeight="20.0" prefWidth="265.0">
+                   <children>
+                      <HBox prefHeight="22.0" prefWidth="214.0">
+                         <children>
+                            <Hyperlink fx:id="sduLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleSduloginClick" prefHeight="20.0" prefWidth="133.0" styleClass="adminLogin" text="山东大学统一认证登录" />
+                         </children>
+                         <opaqueInsets>
+                            <Insets />
+                         </opaqueInsets>
+                      </HBox>
+                   </children>
+                </HBox>
+                    <Hyperlink fx:id="adminLogin" ellipsisString="" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleClick" prefHeight="20.0" prefWidth="71.0" styleClass="adminLogin" text="第三方登录">
+                   <HBox.margin>
+                      <Insets right="-5.0" />
+                   </HBox.margin></Hyperlink>
+                </HBox>
+             <HBox prefHeight="26.0" prefWidth="280.0">
+                <VBox.margin>
+                   <Insets bottom="-20.0" top="-20.0" />
+                </VBox.margin>
+                <children>
+                   <Label fx:id="errorMessageLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="281.0" textFill="RED" />
+                </children>
+             </HBox>
+             <HBox alignment="CENTER">
+                <children>
+                            <!-- 登录按钮 -->
+                      <Button fx:id="loginButton" prefHeight="23.0" prefWidth="142.0" styleClass="login-button" text="登 录" />
+                </children>
+             </HBox>
+            </VBox>
+            <Label fx:id="versionLabel" alignment="TOP_LEFT" text="Version">
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </Label>
+          <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+          </padding>
+      </VBox>
+    </StackPane>
 </AnchorPane>

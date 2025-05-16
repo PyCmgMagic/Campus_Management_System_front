@@ -21,6 +21,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.stage.FileChooser;
@@ -751,7 +752,22 @@ public class StudentMangementController implements Initializable {
     // 处理添加学生卡片点击
     @FXML
     private void handleAddStudent(MouseEvent event) {
-        showAlert(Alert.AlertType.INFORMATION, "功能提示", "添加学生功能尚未实现");
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewStudent.fxml"));
+            Parent root = loader.load();
+            AddNewStudentController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("添加学生");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root,800,600));
+            stage.setMinHeight(700);
+            stage.setMinWidth(550);
+            controller.setStage(stage);
+            stage.showAndWait();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

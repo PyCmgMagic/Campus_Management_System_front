@@ -7,6 +7,8 @@
 .left-panel {
     -fx-background-color: #c13232;
     -fx-background-radius: 0;
+    -fx-min-width: 400px;
+    -fx-pref-width: 400px;
 }
 
 .left-content {
@@ -56,11 +58,12 @@
 /* 右侧登录面板样式 */
 .right-panel {
     -fx-background-color: white;
-    -fx-padding: 40px;
+    -fx-alignment: center;
 }
 
 .login-form {
     -fx-padding: 20px;
+    -fx-max-width: 380px;
 }
 
 .login-title {
@@ -130,7 +133,7 @@
     -fx-padding: 4px;
     -fx-background-radius: 5px;
     -fx-cursor: hand;
-    -fx-min-width: 100%;
+    -fx-min-width: 80px;
     -fx-margin-top: 20px;
 }
 .test-button:hover {
