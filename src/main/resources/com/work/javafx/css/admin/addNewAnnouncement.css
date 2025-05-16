@@ -1,0 +1,199 @@
+/* --- 全局样式 --- */
+.root-pane {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f9f0f0);
+    -fx-font-family: "Microsoft YaHei UI", "Segoe UI", sans-serif;
+    -fx-font-smoothing-type: lcd;
+}
+
+/* --- 卡片容器 --- */
+.form-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
+    -fx-padding: 25px;
+}
+
+/* --- 头部标题 --- */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c0392b;
+    -fx-padding: 0 0 20px 0;
+    -fx-border-color: transparent transparent #f0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-insets: 0 0 15px 0;
+}
+
+/* --- 表单标签 --- */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-font-weight: normal;
+    -fx-padding: 5px 0;
+}
+
+/* --- 文本输入框 (TextField, TextArea) --- */
+.text-field, .text-area {
+    -fx-font-size: 14px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px 6px;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-highlight-fill: #e74c3c;
+    -fx-highlight-text-fill: white;
+
+}
+
+.text-field:hover, .text-area:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #d0d0d0;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-background-color: white;
+    -fx-border-color: #e74c3c;
+    -fx-effect: dropshadow(gaussian, rgba(231, 76, 60, 0.2), 4, 0, 0, 0);
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-padding: 1px;
+}
+
+.text-area .content {
+    -fx-padding: 8px 12px;
+}
+
+/* --- 单选按钮和复选框 --- */
+.form-radio-button, .form-checkbox {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-padding: 5px 0;
+}
+
+.form-radio-button .radio, .form-checkbox .box {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
+    -fx-border-radius: 100%;
+    -fx-padding: 1px;
+}
+
+.form-checkbox .box {
+    -fx-border-radius: 3px;
+}
+
+.form-radio-button:hover .radio, .form-checkbox:hover .box {
+    -fx-border-color: #e74c3c;
+}
+
+.form-radio-button:selected .radio, .form-checkbox:selected .box {
+    -fx-background-color: white;
+    -fx-border-color: #e74c3c;
+}
+
+.form-radio-button:selected .dot {
+    -fx-background-color: #e74c3c;
+    -fx-padding: 4px;
+}
+
+.form-checkbox:selected .mark {
+    -fx-background-color: #e74c3c;
+    -fx-shape: "M4.914,10.967l-3.26-3.239c-0.293-0.292-0.293-0.767,0-1.061 c0.293-0.292,0.768-0.292,1.061,0l2.729,2.715l6.541-6.51c0.293-0.292,0.768-0.292,1.061,0c0.293,0.292,0.293,0.767,0,1.061 L4.914,10.967z";
+}
+
+/* --- 按钮容器 --- */
+.button-container {
+    -fx-spacing: 15px;
+}
+
+/* --- 按钮 --- */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 24px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.submit-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+}
+
+.submit-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.submit-button:pressed {
+    -fx-background-color: #a93226;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.cancel-button {
+    -fx-background-color: white;
+    -fx-text-fill: #555555;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.cancel-button:pressed {
+    -fx-background-color: #eeeeee;
+    -fx-translate-y: 1px;
+}
+
+/* --- 标题栏 --- */
+.title-bar {
+    -fx-padding: 0 0 15px 0;
+    -fx-alignment: center-left;
+}
+
+.title-icon {
+    -fx-fill: #e74c3c;
+    -fx-font-size: 18px;
+}
+
+/* --- 分隔线 --- */
+.separator {
+    -fx-background-color: #f0e0e0;
+    -fx-pref-height: 1px;
+    -fx-opacity: 0.8;
+}
+
+/* --- 表单组 --- */
+.form-group {
+    -fx-spacing: 20px;
+    -fx-padding: 5px 0;
+}
+
+/* --- 表单行 --- */
+.form-row {
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+/* --- 表单字段容器 --- */
+.field-container {
+    -fx-spacing: 8px;
+}
+
+/* --- 必填标记 --- */
+.required-mark {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+}

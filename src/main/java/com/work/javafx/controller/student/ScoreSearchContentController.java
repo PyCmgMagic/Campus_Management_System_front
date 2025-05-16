@@ -315,7 +315,6 @@ public class ScoreSearchContentController implements Initializable {
                         isLoading = false;
                         queryButton.setDisable(false);
                         queryButton.setText("查询");
-                        ShowMessage.showInfoMessage("查询成功", "已加载" + term + "的成绩");
                     });
                     
                 } catch (Exception e) {

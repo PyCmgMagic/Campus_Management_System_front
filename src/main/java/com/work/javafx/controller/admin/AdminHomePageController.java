@@ -1,18 +1,33 @@
 package com.work.javafx.controller.admin;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.work.javafx.MainApplication;
+import com.work.javafx.controller.teacher.ApplyNewCourseController;
 import com.work.javafx.util.NetworkUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
+import javafx.stage.Modality;
 
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -22,256 +37,367 @@ import java.util.ResourceBundle;
  * 处理管理员控制台页面的交互逻辑
  */
 public class AdminHomePageController implements Initializable {
+    // AdminBaseViewController的实例，用于页面切换等基础操作
     AdminBaseViewController controller = new AdminBaseViewController();
 
     @FXML
-    private Label studentCountLabel;
+    private Label studentCountLabel; // 显示学生总数的标签
 
     @FXML
-    private Label teacherCountLabel;
+    private Label teacherCountLabel; // 显示教师总数的标签
 
     @FXML
-    private VBox noticeListContainer;
+    private VBox noticeListContainer; // 显示公告列表的VBox容器
     Gson gson = new Gson();
+
+    /**
+     * 初始化控制器，在FXML加载完成后调用。
+     * @param location FXML文件的位置
+     * @param resources FXML文件使用的资源包
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 确保CSS样式表已正确加载
         ensureStylesheetsLoaded();
         
-        // 加载数据
+        // 加载初始数据
         loadStatistics();
-        loadNotices();
+        loadNotices();    // 加载公告列表
     }
 
     /**
-     * 确保CSS样式表已正确加载
+     * 确保相关的CSS样式表已加载到场景中。
+     * 如果未加载，则添加AdminHomePage.css。
      */
     private void ensureStylesheetsLoaded() {
-        if (noticeListContainer.getScene() != null && 
-            !noticeListContainer.getScene().getStylesheets().contains("/css/admin-home.css")) {
-            noticeListContainer.getScene().getStylesheets().add("/css/admin-home.css");
-        }
+        // 延迟检查，确保场景已附加到noticeListContainer
+        Platform.runLater(() -> {
+            if (noticeListContainer.getScene() != null && 
+                !noticeListContainer.getScene().getStylesheets().contains("/css/admin-home.css")) {
+                noticeListContainer.getScene().getStylesheets().add("/css/admin-home.css");
+            }
+        });
     }
 
     /**
-     * 加载统计数据
+     * 从服务器加载统计数据（学生和教师的数量）并更新UI。
      */
     private void loadStatistics() {
         Map<String,String> params = new HashMap<>();
-        //获取教师人数
-        params.put("permission","1");
+        
+        // 获取教师人数
+        params.put("permission","1"); // 参数"permission"为"1"表示查询教师
         NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
-
-                JsonObject res  = gson.fromJson(result, JsonObject.class);
-                if(res.has("code") && res.get("code").getAsInt()==200){
-                    int data = res.get("data").getAsInt();
-                    teacherCountLabel.setText(data+"");
-                }else {
-                    System.out.print("获取教师人数失败：");
-                    System.out.println(res.get("msg").getAsString());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                JsonObject err = gson.fromJson(e.getMessage(),JsonObject.class);
-                System.out.println(e);
-            }
-        });
-        //获取学生人数
-        params.put("permission","2");
-        NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-
-                JsonObject res  = gson.fromJson(result, JsonObject.class);
-                if(res.has("code") && res.get("code").getAsInt()==200){
-                    int data = res.get("data").getAsInt();
-                    studentCountLabel.setText(data+"");
-                }else {
-                    System.out.print("获取学生人数失败：");
-                    System.out.println(res.get("msg").getAsString());
-                }
-
-            }
-            @Override
-            public void onFailure(Exception e) {
-                String errorMessage = e.getMessage();
-                try {
-                    // Extract the JSON part from the error message
-                    int jsonStartIndex = errorMessage.indexOf('{');
-                    int jsonEndIndex = errorMessage.lastIndexOf('}');
-                    String jsonString = null;
-
-                    if (jsonStartIndex != -1 && jsonEndIndex != -1 && jsonStartIndex < jsonEndIndex) {
-                        jsonString = errorMessage.substring(jsonStartIndex, jsonEndIndex + 1);
-                    }
-
-                    if (jsonString != null) {
-                        JsonObject errorResponse = gson.fromJson(jsonString, JsonObject.class);
-                        if (errorResponse != null && errorResponse.has("msg")) {
-                            System.out.println(errorResponse.get("msg").getAsString());
+                // 确保UI更新在JavaFX应用线程执行
+                Platform.runLater(() -> {
+                    try {
+                        JsonObject res  = gson.fromJson(result, JsonObject.class); // 解析JSON响应
+                        if(res.has("code") && res.get("code").getAsInt()==200){ // 检查响应码是否为200 (成功)
+                            int data = res.get("data").getAsInt(); // 获取数据
+                            teacherCountLabel.setText(String.valueOf(data)); // 更新教师数量标签
                         } else {
-                            System.out.println(errorMessage);
+                            System.out.print("获取教师人数失败：");
+                            if (res.has("msg")) {
+                                System.out.println(res.get("msg").getAsString()); // 打印错误信息
+                            } else {
+                                System.out.println("未知错误");
+                            }
                         }
-                    } else {
-                         System.out.println( errorMessage);
+                    } catch (JsonParseException e) {
+                        System.err.println("获取教师人数失败：JSON解析错误 - " + e.getMessage());
+                    } catch (Exception e) {
+                        System.err.println("获取教师人数失败：处理响应时发生未知错误 - " + e.getMessage());
                     }
+                });
+            }
 
-                } catch (JsonParseException jsonEx) {
-                   //json处理失败
-                    System.out.println("获取学生人数失败 (无法解析提取的 JSON): " + errorMessage);
-                } catch (Exception ex) {
-//                  其他
-                    System.out.println("处理获取学生人数失败时发生错误: " + ex.getMessage());
-                }
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("获取教师人数网络请求失败: " + e.getMessage());
+                // 可选：在此处更新UI以显示错误信息
             }
         });
+        
+        // 获取学生人数
+        params.put("permission","2"); // 参数"permission"为"2"表示查询学生
+        NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Platform.runLater(() -> {
+                    try {
+                        JsonObject res  = gson.fromJson(result, JsonObject.class);
+                        if(res.has("code") && res.get("code").getAsInt()==200){ // 检查响应码
+                            int data = res.get("data").getAsInt(); // 获取数据
+                            studentCountLabel.setText(String.valueOf(data)); // 更新学生数量标签
+                        } else {
+                            System.out.print("获取学生人数失败：");
+                            if (res.has("msg")) {
+                                System.out.println(res.get("msg").getAsString()); // 打印错误信息
+                            } else {
+                                System.out.println("未知错误");
+                            }
+                        }
+                    } catch (JsonParseException e) {
+                        System.err.println("获取学生人数失败：JSON解析错误 - " + e.getMessage());
+                    } catch (Exception e) {
+                        System.err.println("获取学生人数失败：处理响应时发生未知错误 - " + e.getMessage());
+                    }
+                });
+            }
+            @Override
+            public void onFailure(Exception e) {
+                 System.err.println("获取学生人数网络请求失败: " + e.getMessage());
 
+            }
+        });
     }
 
     /**
-     * 加载公告列表
+     * 从服务器加载公告列表并更新UI。
      */
     private void loadNotices() {
-        // 清空容器
-        noticeListContainer.getChildren().clear();
-        
-        // 添加示例公告 (在实际应用中应该从数据库加载)
-        addNoticeItem(
-            "关于2025年春季学期期末考试安排的通知", 
-            "发布时间：今天 10:30 | 发布人：教务处"
-        );
-        
-        addNoticeItem(
-            "2025-2026学年学生注册须知", 
-            "发布时间：昨天 14:15 | 发布人：学籍管理部"
-        );
-        
-        addNoticeItem(
-            "关于暑期学校课程报名的通知", 
-            "发布时间：3天前 | 发布人：教务处"
-        );
+        // 首先在JavaFX线程清空现有公告，准备加载新的
+        Platform.runLater(() -> noticeListContainer.getChildren().clear());
+        Map<String,String> params =  new HashMap<>();
+        params.put("Status","0");
+        // 发起网络请求获取公告列表
+        NetworkUtils.get("/notice/getAdminNoticeList", params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Platform.runLater(() -> {
+                    try {
+                        JsonObject res = gson.fromJson(result, JsonObject.class);
+                        if (res.has("code") && res.get("code").getAsInt() == 200) {
+                            if (res.has("data") && res.get("data").isJsonArray()) {
+                                JsonArray noticesArray = res.get("data").getAsJsonArray();
+                                if (noticesArray.isEmpty()) {
+                                    displayInfoMessage("当前没有公告。");
+                                    return;
+                                }
+                                noticeListContainer.getChildren().clear();
+
+                                // 定义日期时间格式化器
+                                DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // 输入格式 (ISO标准)
+                                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // 输出格式
+
+                                // 遍历公告数组，为每条公告创建UI元素
+                                for (JsonElement noticeElement : noticesArray) {
+                                    JsonObject noticeObject = noticeElement.getAsJsonObject();
+                                    String title = noticeObject.has("title") ? noticeObject.get("title").getAsString() : "无标题";
+                                    String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
+                                    // String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "管理员";
+                                    String creatorInfo = "发布人: 管理员";
+
+                                    String formattedPublishTime = "";
+
+                                    
+                                    // 组合时间和创建者信息
+                                    String timeAndCreatorInfo = "发布时间：" + formattedPublishTime + " | " + creatorInfo;
+                                    addNoticeItem(title, timeAndCreatorInfo);
+                                }
+                            } else {
+                                System.out.println("获取公告列表失败：响应中没有data字段或data不是有效的数组");
+                                displayErrorMessage("公告列表为空");
+                            }
+                        } else {
+                            String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
+                            System.out.println("获取公告列表失败：" + msg);
+                            displayErrorMessage("获取公告列表失败: " + msg);
+                        }
+                    } catch (JsonParseException e) {
+                        System.err.println("获取公告列表失败：JSON解析错误 - " + e.getMessage());
+                        displayErrorMessage("获取公告列表失败: 服务器响应格式错误。");
+                    } catch (Exception e) {
+                        JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                        String msg = res.get("msg").getAsString();
+                        System.err.println("获取公告列表失败： - " + msg);
+                        displayErrorMessage("获取公告列表失败: " +msg);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                String msg = res.get("msg").getAsString();
+                System.err.println("获取公告列表失败： - " + msg);
+                displayErrorMessage("获取公告列表失败: " +msg);
+            }
+        });
+    }
+
+    /**
+     * 在公告列表容器中显示错误信息。
+     * @param message 要显示的错误消息文本
+     */
+    private void displayErrorMessage(String message) {
+        Platform.runLater(() -> {
+            noticeListContainer.getChildren().clear(); // 清空容器
+            Label errorLabel = new Label(message); // 创建错误标签
+            errorLabel.getStyleClass().add("error-message"); // 添加CSS类名，用于样式定义
+            errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10px; -fx-alignment: center;"); // 直接设置样式
+            noticeListContainer.getChildren().add(errorLabel); // 添加到容器
+        });
+    }
+
+    /**
+     * 在公告列表容器中显示普通提示信息。
+     * @param message 要显示的提示消息文本
+     */
+    private void displayInfoMessage(String message) {
+        Platform.runLater(() -> {
+            noticeListContainer.getChildren().clear(); // 清空容器
+            Label infoLabel = new Label(message); // 创建信息标签
+            infoLabel.getStyleClass().add("info-message"); // 添加CSS类名
+            infoLabel.setStyle("-fx-padding: 10px; -fx-alignment: center;"); // 直接设置样式
+            noticeListContainer.getChildren().add(infoLabel); // 添加到容器
+        });
     }
     
     /**
-     * 添加一个公告项到列表
+     * 根据提供的标题和时间信息，创建一个公告条目并添加到UI列表中。
+     * @param title 公告标题
+     * @param timeInfo 公告的时间和发布者信息字符串
      */
     private void addNoticeItem(String title, String timeInfo) {
-        HBox noticeItem = new HBox();
+        HBox noticeItem = new HBox(); // 公告条目的根容器
         noticeItem.getStyleClass().add("notice-item");
         
-        // 公告图标
-        StackPane icon = new StackPane();
+        StackPane icon = new StackPane(); // 图标容器
         icon.getStyleClass().add("notice-icon");
         
-        // 公告内容
-        VBox content = new VBox();
+        VBox content = new VBox(); // 内容容器 (标题和时间)
         content.getStyleClass().add("notice-content");
         
-        // 标题行
-        HBox titleBox = new HBox();
-        Label titleLabel = new Label(title);
+        HBox titleBox = new HBox(); // 标题行容器
+        Label titleLabel = new Label(title); // 标题标签
         titleLabel.getStyleClass().add("notice-title");
         titleBox.getChildren().add(titleLabel);
 
-        
-        // 时间信息
-        Label timeLabel = new Label(timeInfo);
+        Label timeLabel = new Label(timeInfo); // 时间信息标签
         timeLabel.getStyleClass().add("notice-time");
         
-        content.getChildren().addAll(titleBox, timeLabel);
+        content.getChildren().addAll(titleBox, timeLabel); // 将标题和时间添加到内容VBox
         
-        // 操作按钮
-        HBox actions = new HBox();
+        HBox actions = new HBox(); // 操作按钮容器 (编辑/删除)
         actions.getStyleClass().add("notice-actions");
         
         Button editBtn = new Button("编辑");
         editBtn.getStyleClass().addAll("notice-btn", "edit-btn");
-        editBtn.setOnAction(e -> editNotice(title));
+        editBtn.setOnAction(e -> editNotice(title)); // 设置编辑按钮的点击事件
         
         Button deleteBtn = new Button("删除");
         deleteBtn.getStyleClass().addAll("notice-btn", "delete-btn");
-        deleteBtn.setOnAction(e -> deleteNotice(title));
+        deleteBtn.setOnAction(e -> deleteNotice(title)); // 设置删除按钮的点击事件
         
-        actions.getChildren().addAll(editBtn, deleteBtn);
+        actions.getChildren().addAll(editBtn, deleteBtn); // 将按钮添加到操作HBox
         
-        // 组合所有元素
-        noticeItem.getChildren().addAll(icon, content, actions);
+        noticeItem.getChildren().addAll(icon, content, actions); // 组合图标、内容和操作到公告条目HBox
+        
+        // 此方法通常在Platform.runLater的 onSuccess 回调中调用，所以可以直接添加
         noticeListContainer.getChildren().add(noticeItem);
     }
     
     /**
-     * 发布新公告按钮处理程序
+     * "发布新公告"按钮的事件处理程序。
+     * 打开一个新的模态窗口用于发布公告。
      */
     @FXML
     private void publishNewNotice() {
-        // 打开发布新公告的界面
-        System.out.println("打开发布新公告界面");
+        try {
+            // 加载发布新公告的FXML文件
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewAnnouncement.fxml"));
+            Parent root = loader.load(); // 加载根节点
+
+            AddNewAnnouncementController controller = loader.getController(); // 获取新窗口的控制器
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口，阻止与父窗口交互
+            popupStage.initStyle(StageStyle.DECORATED); // 设置窗口样式 (带标题栏和边框)
+            popupStage.setTitle("发布公告");
+            popupStage.setScene(new Scene(root, 800, 600)); // 设置场景和初始大小
+
+            popupStage.setMinWidth(700); // 设置最小宽度
+            popupStage.setMinHeight(550); // 设置最小高度
+
+            controller.setStage(popupStage); // 将舞台实例传递给新窗口的控制器
+
+            popupStage.showAndWait(); // 显示窗口并等待其关闭
+        } catch (IOException e) {
+            e.printStackTrace(); // 打印加载FXML时的IO异常
+        }
     }
     
     /**
-     * 编辑公告
+     * 编辑公告的占位符方法。
+     * @param noticeTitle 被编辑公告的标题
      */
     private void editNotice(String noticeTitle) {
         System.out.println("编辑公告: " + noticeTitle);
+        // TODO: 在此实现实际的编辑逻辑
     }
     
     /**
-     * 删除公告
+     * 删除公告的占位符方法。
+     * @param noticeTitle 被删除公告的标题
      */
     private void deleteNotice(String noticeTitle) {
         System.out.println("删除公告: " + noticeTitle);
+        // TODO: 在此实现实际的删除逻辑，可能需要在成功后调用 loadNotices() 刷新列表
     }
     
     /**
-     * 导航到学生管理界面
+     * 导航到学生管理界面的事件处理程序。
      */
     @FXML
     private void navigateToStudentManagement() {
-       controller.switchTostudentMangement();
+       controller.switchTostudentMangement(); // 调用基础控制器的方法切换视图
     }
     
     /**
-     * 导航到教师管理界面
+     * 导航到教师管理界面的事件处理程序。
      */
     @FXML
     private void navigateToTeacherManagement() {
         System.out.println("导航到教师管理界面");
+        // controller.switchToTeacherMangement(); // 此前版本中的切换逻辑，已注释
     }
     
     /**
-     * 导航到课程管理界面
+     * 导航到课程管理界面的事件处理程序。
      */
     @FXML
     private void navigateToCourseManagement() {
         System.out.println("导航到课程管理界面");
+        // controller.switchToCourseMangement(); // 此前版本中的切换逻辑，已注释
     }
     
     /**
-     * 导航到排课管理界面
+     * 导航到排课管理界面的事件处理程序。
      */
     @FXML
     private void navigateToScheduleManagement() {
         System.out.println("导航到排课管理界面");
+        // controller.switchToScheduleMangement(); // 此前版本中的切换逻辑，已注释
     }
     
     /**
-     * 导航到考试管理界面
+     * 导航到考试管理界面的事件处理程序。
      */
     @FXML
     private void navigateToExamManagement() {
         System.out.println("导航到考试管理界面");
+        // controller.switchToExamMangement(); // 此前版本中的切换逻辑，已注释
     }
     
     /**
-     * 导航到公告管理界面
+     * 导航到公告管理界面的事件处理程序。
      */
     @FXML
     private void navigateToNoticeManagement() {
         System.out.println("导航到公告管理界面");
+        // controller.switchToAnnouncements(); // 此前版本中的切换逻辑，已注释
     }
 } 
