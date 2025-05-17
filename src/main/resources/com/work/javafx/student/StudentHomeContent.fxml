@@ -5,13 +5,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.Font?>
+<?import java.net.URL?>
 
 <ScrollPane fitToWidth="true" styleClass="content-scroll-pane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.work.javafx.controller.student.HomeContentController"
             VBox.vgrow="ALWAYS">
     <content>
-        <VBox styleClass="content-area">
+        <VBox styleClass="content-area" spacing="20">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
             <HBox styleClass="content-header">
                 <Label text="首页" styleClass="content-title"/>
             </HBox>
@@ -53,6 +57,19 @@
                     </HBox>
                 </VBox>
             </VBox>
+
+            <!-- 公告展示卡片 -->
+            <VBox styleClass="dashboard-card, notice-card">
+                <HBox styleClass="card-header">
+                    <Label styleClass="card-title" text="最新公告" />
+                </HBox>
+                <VBox fx:id="noticeListContainer" styleClass="notice-list">
+                    <!-- 公告条目将在此处动态添加 -->
+                </VBox>
+            </VBox>
         </VBox>
     </content>
+    <stylesheets>
+        <URL value="@../css/student/HomeContent.css"/>
+    </stylesheets>
 </ScrollPane> 
