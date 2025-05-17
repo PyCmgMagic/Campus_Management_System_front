@@ -65,60 +65,7 @@
             </VBox>
         </VBox>
         
-        <!-- 快速访问卡片 -->
-        <VBox styleClass="dashboard-card, quickaccess-card">
-            <HBox styleClass="card-header">
-                <Label styleClass="card-title" text="快速访问" />
-            </HBox>
-            
-            <GridPane hgap="15" styleClass="quickaccess-grid" vgap="15">
-                <columnConstraints>
-                    <ColumnConstraints percentWidth="33.33" />
-                    <ColumnConstraints percentWidth="33.33" />
-                    <ColumnConstraints percentWidth="33.33" />
-                </columnConstraints>
-                
-                <!-- 学生信息管理 -->
-                <VBox onMouseClicked="#navigateToStudentManagement" styleClass="quickaccess-item" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <StackPane styleClass="quickaccess-icon, student-management-icon" />
-                    <Label styleClass="quickaccess-title" text="学生信息管理" />
-                </VBox>
-                
-                <!-- 教师信息管理 -->
-                <VBox onMouseClicked="#navigateToTeacherManagement" styleClass="quickaccess-item" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <StackPane styleClass="quickaccess-icon, teacher-management-icon" />
-                    <Label styleClass="quickaccess-title" text="教师信息管理" />
-                </VBox>
-                
-                <!-- 课程信息管理 -->
-                <VBox onMouseClicked="#navigateToCourseManagement" styleClass="quickaccess-item" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <StackPane styleClass="quickaccess-icon, course-management-icon" />
-                    <Label styleClass="quickaccess-title" text="课程信息管理" />
-                </VBox>
-                
-                <!-- 排课管理 -->
-                <VBox onMouseClicked="#navigateToScheduleManagement" styleClass="quickaccess-item" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <StackPane styleClass="quickaccess-icon, schedule-management-icon" />
-                    <Label styleClass="quickaccess-title" text="排课管理" />
-                </VBox>
-                
-                <!-- 考试管理 -->
-                <VBox onMouseClicked="#navigateToExamManagement" styleClass="quickaccess-item" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <StackPane styleClass="quickaccess-icon, exam-management-icon" />
-                    <Label styleClass="quickaccess-title" text="考试管理" />
-                </VBox>
-                
-                <!-- 公告发布 -->
-                <VBox onMouseClicked="#navigateToNoticeManagement" styleClass="quickaccess-item" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <StackPane styleClass="quickaccess-icon, notice-management-icon" />
-                    <Label styleClass="quickaccess-title" text="公告发布" />
-                </VBox>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-            </GridPane>
-        </VBox>
+        
     </VBox>
     
     <stylesheets>

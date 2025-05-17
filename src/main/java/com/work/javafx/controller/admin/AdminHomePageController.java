@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.work.javafx.MainApplication;
 import com.work.javafx.controller.teacher.ApplyNewCourseController;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Priority;
 import javafx.scene.control.DialogPane;
+import java.lang.reflect.Method;
 
 /**
  * 管理员首页控制器
@@ -401,15 +403,7 @@ public class AdminHomePageController implements Initializable {
            e.printStackTrace();
        }
     }
-    
-    /**
-     * 删除公告的占位符方法。
-     * @param noticeTitle 被删除公告的标题 (保留此方法以防旧代码调用，但应迁移到使用ID)
-     */
-    private void deleteNotice(String noticeTitle) {
-        System.out.println("删除公告 (by title): " + noticeTitle + ". Consider using deleteNotice(int noticeId) instead.");
-        // TODO: Implement or remove this method. Preferably, find calls and update them to use noticeId.
-    }
+
 
     /**
      * 删除公告的方法。
@@ -419,57 +413,6 @@ public class AdminHomePageController implements Initializable {
         System.out.println("删除公告 ID: " + noticeId);
         // TODO: 在此实现实际的删除逻辑，可能需要在成功后调用 loadNotices() 刷新列表
     }
-    
-    /**
-     * 导航到学生管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToStudentManagement() {
-       adminBaseController.switchTostudentMangement(); // 调用基础控制器的方法切换视图
-    }
-    
-    /**
-     * 导航到教师管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToTeacherManagement() {
-        System.out.println("导航到教师管理界面");
-        // controller.switchToTeacherMangement(); // 此前版本中的切换逻辑，已注释
-    }
-    
-    /**
-     * 导航到课程管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToCourseManagement() {
-        System.out.println("导航到课程管理界面");
-        // controller.switchToCourseMangement(); // 此前版本中的切换逻辑，已注释
-    }
-    
-    /**
-     * 导航到排课管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToScheduleManagement() {
-        System.out.println("导航到排课管理界面");
-        // controller.switchToScheduleMangement(); // 此前版本中的切换逻辑，已注释
-    }
-    
-    /**
-     * 导航到考试管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToExamManagement() {
-        System.out.println("导航到考试管理界面");
-        // controller.switchToExamMangement(); // 此前版本中的切换逻辑，已注释
-    }
-    
-    /**
-     * 导航到公告管理界面的事件处理程序。
-     */
-    @FXML
-    private void navigateToNoticeManagement() {
-        System.out.println("导航到公告管理界面");
-        // controller.switchToAnnouncements(); // 此前版本中的切换逻辑，已注释
-    }
+
+
 } 

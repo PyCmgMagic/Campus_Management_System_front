@@ -265,8 +265,9 @@ public class TeacherManagementController implements Initializable {
                     try {
                         JsonObject jsonResponse = gson.fromJson(result, JsonObject.class);
 
-                        if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200 && jsonResponse.has("data") && jsonResponse.get("data").isJsonArray()) {
-                                JsonArray dataArray = jsonResponse.getAsJsonArray("data"); // 获取 user 数组
+                        if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200 && jsonResponse.has("data") ) {
+                                JsonObject data = jsonResponse.getAsJsonObject("data");
+                                JsonArray dataArray = data.getAsJsonArray("list");
                                 ObservableList<TeacherInfo> currentPageData = FXCollections.observableArrayList();
                                 for (JsonElement element : dataArray) {
                                     JsonObject teacherJson = element.getAsJsonObject();
@@ -304,8 +305,6 @@ public class TeacherManagementController implements Initializable {
                                 }
 
                             } else {
-                                // 处理 'user' 数组缺失或无效的情况
-                                showErrorDialog("加载失败", "服务器返回的数据格式不正确 (缺少教师列表)。");
                                 handleFetchError();
                             }
                     } catch (Exception e) {

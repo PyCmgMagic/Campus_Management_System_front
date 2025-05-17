@@ -8,7 +8,7 @@ public class UltimateCourse {
     private String name;
     private String teacherName;
     private String category;
-    private int point;
+    private double point;
     private int teacherId;
     private String classroom;
     private int weekStart;
@@ -102,7 +102,7 @@ public class UltimateCourse {
         this.category = category;
     }
 
-    public int getPoint() {
+    public double getPoint() {
         return point;
     }
 
