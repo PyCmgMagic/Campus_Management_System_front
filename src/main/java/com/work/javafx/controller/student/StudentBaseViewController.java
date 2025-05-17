@@ -3,10 +3,12 @@ package com.work.javafx.controller.student;
 import com.work.javafx.MainApplication;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.ShowMessage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
@@ -31,22 +33,28 @@ public class StudentBaseViewController implements Initializable {
     @FXML private Button courseSelectionBtn;
     @FXML private Button gradeQueryBtn;
     @FXML private Button teachingEvaluationBtn;
-    
+
     // 当前活动的按钮
     private Button currentActiveButton;
     
     // 保存当前加载的视图ID
     private String currentViewId = "";
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("基础视图初始化成功");
-        
-        // 初始化当前按钮为首页
+
+        // 设置当前 controller 为 Scene 的 userData，便于其他 controller 获取
+        Platform.runLater(() -> {
+            Scene scene = contentArea.getScene();
+            if (scene != null) {
+                scene.setUserData(this);
+            }
+        });
+
+        // 其他初始化内容
         currentActiveButton = homeBtn;
         homeBtn.getStyleClass().add("active-menu-item");
-        
-        // 默认加载首页内容
         loadView("StudentHomeContent.fxml");
         loadUserName();
         userBtn.setOnAction(event -> switchToPersonalCenter());
@@ -184,7 +192,7 @@ public class StudentBaseViewController implements Initializable {
         switchActiveButton(homeBtn);
         loadView("StudentHomeContent.fxml");
     }
-    
+
     /**
      * 切换到个人中心
      */

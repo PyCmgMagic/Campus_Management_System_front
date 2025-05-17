@@ -21,6 +21,10 @@
         </HBox>
     </top>
 
+    <center>
+        <VBox fx:id="contentContainer"/> <!-- 首页、课表都加载到这里 -->
+    </center>
+
     <!-- 左侧菜单 -->
     <left>
         <VBox styleClass="side-menu">
