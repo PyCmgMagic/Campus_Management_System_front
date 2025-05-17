@@ -83,8 +83,8 @@ public class HomeContentController implements Initializable {
         
         // 获取当前日期
         LocalDate today = LocalDate.now();
-        // 获取今天是星期几 (1=星期一, 7=星期日)
-        int dayOfWeek = 1;
+        // 获取今天是星期几
+        int dayOfWeek = today.getDayOfWeek().getValue();
         
         // 获取当前学期
         String currentTerm = Data.getInstance().getCurrentTerm();
