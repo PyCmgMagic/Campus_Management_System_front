@@ -267,9 +267,8 @@ public class LoginController {
 
                 @Override
                 public void onFailure(Exception e) {
-                    System.err.println("登录失败: " + e.getMessage());
-                    int i = e.getMessage().indexOf("msg");
-                    showErrorMessage(e.getMessage().substring(i + 6, e.getMessage().length() - 2));
+                   JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                    showErrorMessage(res.get("msg").getAsString());
                 }
             });
         }
@@ -287,7 +286,6 @@ public class LoginController {
             errorMessageLabel.setText(message);
             errorMessageLabel.setVisible(true);
         } else {
-            // 如果没有错误标签，则使用对话框显示错误
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("登录错误");
             alert.setHeaderText(null);

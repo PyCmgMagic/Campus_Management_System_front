@@ -151,7 +151,7 @@ public class AdminHomePageController implements Initializable {
         // 首先在JavaFX线程清空现有公告，准备加载新的
         Platform.runLater(() -> noticeListContainer.getChildren().clear());
         Map<String,String> params =  new HashMap<>();
-        params.put("Status","0");
+        params.put("Status","1");
         // 发起网络请求获取公告列表
         NetworkUtils.get("/notice/getAdminNoticeList", params, new NetworkUtils.Callback<String>() {
             @Override
@@ -267,7 +267,7 @@ public class AdminHomePageController implements Initializable {
         StackPane icon = new StackPane(); // 图标容器
         icon.getStyleClass().add("notice-icon");
         
-        VBox noticeDetailsVBox = new VBox(); // 内容容器 (标题和时间) - Renamed from content to noticeDetailsVBox
+        VBox noticeDetailsVBox = new VBox(); // 内容容器 (标题和时间)
         noticeDetailsVBox.getStyleClass().add("notice-content");
         
         HBox titleBox = new HBox(); // 标题行容器
@@ -278,9 +278,9 @@ public class AdminHomePageController implements Initializable {
         Label timeLabel = new Label(timeInfo); // 时间信息标签
         timeLabel.getStyleClass().add("notice-time");
         
-        noticeDetailsVBox.getChildren().addAll(titleBox, timeLabel); // 将标题和时间添加到内容VBox
+        noticeDetailsVBox.getChildren().addAll(titleBox, timeLabel);
         
-        HBox actions = new HBox(); // 操作按钮容器 (编辑/删除)
+        HBox actions = new HBox();
         actions.getStyleClass().add("notice-actions");
         
         Button editBtn = new Button("编辑");
@@ -321,7 +321,6 @@ public class AdminHomePageController implements Initializable {
         dialogPane.setContent(textArea);
         dialogPane.setPrefWidth(550); 
         dialogPane.setPrefHeight(400);
-        // Attempt to load CSS, handle potential null pointer if resource not found
         try {
             URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css");
             if (cssResource != null) {
@@ -350,20 +349,20 @@ public class AdminHomePageController implements Initializable {
         try {
             // 加载发布新公告的FXML文件
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewAnnouncement.fxml"));
-            Parent root = loader.load(); // 加载根节点
+            Parent root = loader.load();
 
-            AddNewAnnouncementController controller = loader.getController(); // 获取新窗口的控制器
+            AddNewAnnouncementController controller = loader.getController();
 
             Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口，阻止与父窗口交互
-            popupStage.initStyle(StageStyle.DECORATED); // 设置窗口样式 (带标题栏和边框)
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.DECORATED);
             popupStage.setTitle("发布公告");
-            popupStage.setScene(new Scene(root, 800, 600)); // 设置场景和初始大小
+            popupStage.setScene(new Scene(root, 800, 600));
 
             popupStage.setMinWidth(700); // 设置最小宽度
             popupStage.setMinHeight(550); // 设置最小高度
 
-            controller.setStage(popupStage); // 将舞台实例传递给新窗口的控制器
+            controller.setStage(popupStage);
 
             popupStage.showAndWait(); // 显示窗口并等待其关闭
         } catch (IOException e) {

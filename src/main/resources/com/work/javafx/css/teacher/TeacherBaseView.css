@@ -698,3 +698,103 @@
     -fx-text-fill: #666666;
     -fx-padding: 5 0 0 0;
 }
+/* 卡片样式 */
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+.card-header {
+    -fx-padding: 0 0 15 0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-alignment: center-left;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.card-action {
+    -fx-font-size: 12px;
+    -fx-text-fill: #d32f2f;
+    -fx-cursor: hand;
+}
+/* 公告列表样式 */
+.notice-list {
+    -fx-spacing: 10;
+    -fx-padding: 10 0 0 0;
+}
+
+.notice-item {
+    -fx-padding: 12 0 12 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+}
+
+.notice-icon {
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-background-color:#c70028;
+    -fx-background-radius: 50%;
+    -fx-shape: "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z";
+    -fx-fill: #c70028;
+}
+
+.notice-content {
+    -fx-spacing: 3;
+    -fx-pref-width: 100000; /* 使内容占据最大可用空间 */
+}
+
+.notice-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.notice-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+/* 公告按钮样式 */
+.notice-actions {
+    -fx-spacing: 8;
+    -fx-alignment: center;
+}
+
+.notice-btn {
+    -fx-font-size: 11px;
+    -fx-padding: 3 8 3 8;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-min-width: 40px;
+    -fx-min-height: 24px;
+    -fx-text-fill: #666666;
+}
+
+.edit-btn {
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #666666;
+}
+
+.delete-btn {
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #c70028;
+}
+
+.edit-btn:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.delete-btn:hover {
+    -fx-background-color: #ffcdd2;
+}
+

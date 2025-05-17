@@ -1,0 +1,116 @@
+
+.notice-dialog {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-background-radius: 8px;
+}
+
+.notice-dialog > *.header-panel {
+    -fx-background-color: #e53935;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-color: #c62828;
+    -fx-padding: 12px 15px;
+}
+
+.notice-dialog > *.header-panel > *.label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+    -fx-padding: 0;
+}
+
+.notice-dialog > *.content.label {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+
+.notice-dialog .divider {
+    -fx-background-color: #920c3f;
+    -fx-pref-height: 5px;
+    -fx-opacity: 0.8;
+    -fx-padding: 0 5px;
+    -fx-background-radius: 1px;
+}
+
+.notice-dialog > *.button-bar > *.container {
+    -fx-background-color: #f8f8f8;
+    -fx-background-radius: 0 0 8px 8px;
+    -fx-border-width: 1px 0 0 0;
+    -fx-border-color: #e0e0e0;
+}
+
+.notice-dialog > *.button-bar > *.container > *.button {
+    -fx-background-color: #e53935;
+    -fx-text-fill: white;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: bold;
+}
+
+.notice-dialog > *.button-bar > *.container > *.button:hover {
+    -fx-background-color: #c62828;
+}
+
+.notice-dialog .text-area {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4px;
+    -fx-background-insets: 0;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);
+    -fx-margin: 15px 10px;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4px;
+}
+
+.notice-dialog .text-area .content {
+    -fx-background-color: #ffffff;
+    -fx-padding: 5px;
+}
+
+.notice-dialog .text-area:focused {
+    -fx-border-color: #e53935;
+}
+
+.notice-dialog .text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.notice-dialog .text-area .scroll-bar:vertical {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 0;
+}
+
+.notice-dialog .text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #e53935;
+    -fx-background-radius: 2px;
+}
+
+.notice-dialog .text-area .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #c62828;
+}
+
+/* Custom title styling for the content area */
+.notice-dialog .text-area .title-section {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e53935;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: #e53935;
+}
+
+/* Content section with extra padding for better readability */
+.notice-dialog .text-area .content-section {
+    -fx-padding: 10px 0 0 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+    -fx-line-spacing: 1.3;
+}

@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ public class AddNewAnnouncementController implements Initializable {
 
     public void setStage(Stage stage) {
         this.stage = stage;
-        stage.initStyle(StageStyle.UNDECORATED);
     }
 
     // 公共回调设置方法

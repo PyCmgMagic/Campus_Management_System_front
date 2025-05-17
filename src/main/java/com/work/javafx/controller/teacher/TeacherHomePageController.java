@@ -255,21 +255,18 @@ public class TeacherHomePageController implements Initializable {
     @FXML
     private void publishNewNotice() {
         try {
-            // 假设教师与管理员使用相同的FXML和Controller来添加新公告
-            // 如果不同，请将路径更改为 "/com/work/javafx/teacher/addNewAnnouncementTeacher.fxml"
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewAnnouncement.fxml"));
             Parent root = loader.load();
 
-            // 假设 AddNewAnnouncementController 具有足够的通用性或可适配性
             AddNewAnnouncementController controller = loader.getController();
             if (controller == null) {
-                System.err.println("AddNewAnnouncementController 为空。请检查FXML文件和控制器链接。");
+                System.err.println("AddNewAnnouncementController 为空。");
                 displayErrorMessage("无法打开发布公告窗口。");
                 return;
             }
             
             Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.initStyle(StageStyle.DECORATED);
             popupStage.setTitle("发布新公告");
             popupStage.setScene(new Scene(root, 800, 600));
