@@ -138,9 +138,15 @@
 }
 
 .card-action {
-    -fx-font-size: 12px;
-    -fx-text-fill: #d32f2f;
+    -fx-background-color: transparent;
+    -fx-text-fill: #c70028;
+    -fx-font-size: 14px;
     -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.card-action:hover {
+    -fx-underline: true;
 }
 
 /* 课程日历样式 */

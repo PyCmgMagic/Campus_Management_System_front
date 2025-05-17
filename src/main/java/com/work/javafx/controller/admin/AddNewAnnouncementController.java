@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 public class AddNewAnnouncementController implements Initializable {
     private Stage stage;
     private final Gson gson = new Gson();
+    private Runnable onPublishCompleteCallback; // 回调字段
 
     @FXML
     private TextField titleField;
@@ -42,6 +43,11 @@ public class AddNewAnnouncementController implements Initializable {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    // 公共回调设置方法
+    public void setOnPublishCompleteCallback(Runnable callback) {
+        this.onPublishCompleteCallback = callback;
     }
 
     @FXML
@@ -76,7 +82,7 @@ public class AddNewAnnouncementController implements Initializable {
         params.put("visibleScope", String.valueOf(visibleScope));
         params.put("isTop", String.valueOf(isTop));
 
-        // Disable button to prevent multiple submissions
+        // 禁用按钮以防止重复提交
         submitButton.setDisable(true);
         cancelButton.setDisable(true);
 
@@ -88,6 +94,10 @@ public class AddNewAnnouncementController implements Initializable {
                         JsonObject response = gson.fromJson(result, JsonObject.class);
                         if (response.has("code") && response.get("code").getAsInt() == 200) {
                             ShowMessage.showInfoMessage("成功", "公告发布成功！");
+                            // 在此处调用回调
+                            if (onPublishCompleteCallback != null) {
+                                onPublishCompleteCallback.run();
+                            }
                             if (stage != null) {
                                 stage.close();
                             }

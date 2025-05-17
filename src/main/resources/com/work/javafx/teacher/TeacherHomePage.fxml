@@ -7,6 +7,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.work.javafx.controller.teacher.TeacherHomePageController"
@@ -358,62 +359,11 @@
                                  <children>
                                     <Label styleClass="card-title" text="通知公告" />
                                     <Pane HBox.hgrow="ALWAYS" />
-                                    <Label styleClass="card-action" text="发布公告" />
+                                    <Button fx:id="publishNewNoticeButton" onAction="#publishNewNotice" styleClass="card-action" text="发布公告" />
                                  </children>
                               </HBox>
-                              <VBox styleClass="notification-list">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
-                                       <children>
-                                          <StackPane styleClass="notification-icon">
-                                             <children>
-                                                <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" size="16" styleClass="notification-icon-inner" />
-                                             </children>
-                                          </StackPane>
-                                          <VBox styleClass="notification-content">
-                                             <children>
-                                                <HBox alignment="CENTER_LEFT">
-                                                   <children>
-                                                      <Label styleClass="notification-title" text="计算机学院2025届毕业设计答辩安排通知" />
-                                                      <Label styleClass="notification-badge" text="重要" />
-                                                   </children>
-                                                </HBox>
-                                                <Label styleClass="notification-time" text="2025-03-15 10:30" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
-                                       <children>
-                                          <StackPane styleClass="notification-icon">
-                                             <children>
-                                                <FontAwesomeIconView glyphName="PLUS_SQUARE" size="16" styleClass="notification-icon-inner" />
-                                             </children>
-                                          </StackPane>
-                                          <VBox styleClass="notification-content">
-                                             <children>
-                                                <Label styleClass="notification-title" text="关于教师教学工作量计算方法调整的通知" />
-                                                <Label styleClass="notification-time" text="2025-03-14 14:45" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" styleClass="notification-item">
-                                       <children>
-                                          <StackPane styleClass="notification-icon">
-                                             <children>
-                                                <FontAwesomeIconView glyphName="USER_CIRCLE" size="16" styleClass="notification-icon-inner" />
-                                             </children>
-                                          </StackPane>
-                                          <VBox styleClass="notification-content">
-                                             <children>
-                                                <Label styleClass="notification-title" text="2025年春季学期教师发展培训计划" />
-                                                <Label styleClass="notification-time" text="2025-03-12 09:15" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                 </children>
+                              <VBox fx:id="noticeListContainer" styleClass="notice-list">
+                                 <!-- Notices will be dynamically added here -->
                               </VBox>
                            </children>
                         </VBox>

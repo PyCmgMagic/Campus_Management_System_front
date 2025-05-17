@@ -61,27 +61,13 @@ public class AdminHomePageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 确保CSS样式表已正确加载
-        ensureStylesheetsLoaded();
+
         
         // 加载初始数据
         loadStatistics();
         loadNotices();    // 加载公告列表
     }
 
-    /**
-     * 确保相关的CSS样式表已加载到场景中。
-     * 如果未加载，则添加AdminHomePage.css。
-     */
-    private void ensureStylesheetsLoaded() {
-        // 延迟检查，确保场景已附加到noticeListContainer
-        Platform.runLater(() -> {
-            if (noticeListContainer.getScene() != null && 
-                !noticeListContainer.getScene().getStylesheets().contains("/com/work/javafx/css/admin/AdminHomePage.css")) {
-                noticeListContainer.getScene().getStylesheets().add("/com/work/javafx/css/admin/AdminHomePage.css");
-            }
-        });
-    }
 
     /**
      * 从服务器加载统计数据（学生和教师的数量）并更新UI。
@@ -313,7 +299,6 @@ public class AdminHomePageController implements Initializable {
 
         noticeListContainer.getChildren().add(noticeItem);
     }
-    
     /**
      * 显示公告详情。
      * @param title 公告标题
