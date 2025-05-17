@@ -12,6 +12,13 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);
     -fx-padding: 25px;
 }
+/* --- 标题样式 --- */
+.form-title {
+    -fx-font-size: 24px;       /* 字体大小 */
+    -fx-font-weight: bold;     /* 加粗 */
+    -fx-text-fill: #c0392b;    /* 红色 */
+    -fx-padding: 0 0 15px 0;  /* 底部间距 */
+}
 
 /* --- 头部标题 --- */
 .header-label {
