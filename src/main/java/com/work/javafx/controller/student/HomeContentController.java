@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,8 @@ public class HomeContentController implements Initializable {
     private Label dateText;
     @FXML
     private VBox noticeListContainer; // 公告列表容器
+    @FXML
+    private VBox todayCoursesContainer; // 今日课程容器
 
     private final Gson gson = new Gson();
     
@@ -49,6 +53,8 @@ public class HomeContentController implements Initializable {
         updateCurrentDate();
         // 加载公告
         loadNotices();
+        // 加载今日课程
+        loadTodayCourses();
     }
     
     /**
@@ -62,6 +68,190 @@ public class HomeContentController implements Initializable {
             String formattedDate = now.format(formatter);
             dateText.setText(formattedDate);
         }
+    }
+    
+    /**
+     * 加载今日课程
+     */
+    private void loadTodayCourses() {
+        // 清空今日课程容器
+        Platform.runLater(() -> {
+            if (todayCoursesContainer != null) {
+                todayCoursesContainer.getChildren().clear();
+            }
+        });
+        
+        // 获取当前日期
+        LocalDate today = LocalDate.now();
+        // 获取今天是星期几 (1=星期一, 7=星期日)
+        int dayOfWeek = 1;
+        
+        // 获取当前学期
+        String currentTerm = Data.getInstance().getCurrentTerm();
+        if (currentTerm == null || currentTerm.isEmpty()) {
+            // 当前学期为空，需要从服务器获取
+            fetchCurrentTerm(() -> {
+                // 获取完当前学期后再加载今日课程
+                Platform.runLater(this::loadTodayCourses);
+            });
+            return; // 终止当前方法执行，避免使用空的学期值
+        }
+
+        // 获取当前教学周
+        // 实际应用中应该从系统中获取当前教学周，这里简化为第1周
+        String currentWeek = "1";
+        
+        // 构建请求URL和参数
+        String url = "/class/getClassSchedule/";
+        url += currentWeek;
+        System.out.println(url);
+        Map<String, String> params = new HashMap<>();
+        params.put("term", currentTerm);
+        System.out.println(currentTerm);
+        
+        // 发送网络请求获取课表数据
+        NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Platform.runLater(() -> {
+                    try {
+                        JsonObject res = gson.fromJson(result, JsonObject.class);
+                        if (res.has("code") && res.get("code").getAsInt() == 200) {
+                            JsonArray data = res.getAsJsonArray("data");
+                            // 筛选今日课程
+                            filterAndDisplayTodayCourses(data, dayOfWeek);
+                        } else {
+                            String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
+                            displayTodayCoursesError("获取课程数据失败: " + msg);
+                        }
+                    } catch (Exception e) {
+                        displayTodayCoursesError("解析课程数据时发生错误: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
+            
+            @Override
+            public void onFailure(Exception e) {
+                displayTodayCoursesError("网络错误，无法加载今日课程");
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /**
+     * 筛选并显示今日课程
+     * @param data 课程数据
+     * @param dayOfWeek 今天是星期几(1-7)
+     */
+    private void filterAndDisplayTodayCourses(JsonArray data, int dayOfWeek) {
+        Platform.runLater(() -> {
+            if (todayCoursesContainer != null) {
+                todayCoursesContainer.getChildren().clear();
+                
+                boolean hasCourses = false;
+                
+                // 课程时间段定义
+                String[] timeSlots = {
+                    "08:00 - 09:50",
+                    "10:10 - 12:00",
+                    "14:00 - 15:50",
+                    "16:10 - 18:00",
+                    "19:00 - 20:50"
+                };
+                
+                for (JsonElement element : data) {
+                    JsonObject course = element.getAsJsonObject();
+                    int index = course.get("time").getAsInt();
+                    
+                    // 计算星期几，与dayOfWeek比较
+                    int courseDay = index / 5;
+                    courseDay += 1;
+                    
+                    // 如果是今天的课程
+                    if (courseDay == dayOfWeek) {
+                        hasCourses = true;
+                        
+                        String courseName = course.get("name").getAsString();
+                        String classroom = course.get("classroom").getAsString();
+                        
+                        // 计算是第几节课
+                        int timeSlotIndex = index % 5;
+                        if (timeSlotIndex == 0) timeSlotIndex = 4; // 如果余数为0表示是第5节课
+                        else timeSlotIndex--; // 否则余数需要减1，因为API返回的值从1开始
+                        
+                        // 添加课程项
+                        addCourseItem(timeSlots[timeSlotIndex], courseName, classroom);
+                    }
+                }
+                
+                // 如果今天没有课程，显示提示信息
+                if (!hasCourses) {
+                    Label noCourseLabel = new Label("今日没有安排课程");
+                    noCourseLabel.getStyleClass().add("no-course-message");
+                    noCourseLabel.setStyle("-fx-padding: 15px; -fx-text-fill: #888; -fx-alignment: center;");
+                    todayCoursesContainer.getChildren().add(noCourseLabel);
+                }
+            }
+        });
+    }
+    
+    /**
+     * 添加课程项到UI
+     * @param time 课程时间
+     * @param courseName 课程名称
+     * @param location 上课地点
+     */
+    private void addCourseItem(String time, String courseName, String location) {
+        VBox courseItem = new VBox();
+        courseItem.getStyleClass().add("course-item");
+        
+        HBox courseTime = new HBox();
+        courseTime.getStyleClass().add("course-time");
+        Label timeLabel = new Label(time);
+        timeLabel.getStyleClass().add("time-text");
+        courseTime.getChildren().add(timeLabel);
+        
+        HBox courseInfo = new HBox();
+        courseInfo.getStyleClass().add("course-info");
+        
+        VBox courseDetails = new VBox();
+        Label courseNameLabel = new Label(courseName);
+        courseNameLabel.getStyleClass().add("course-name");
+        
+        HBox locationBox = new HBox();
+        locationBox.getStyleClass().add("course-location");
+        
+        StackPane locationIcon = new StackPane();
+        locationIcon.getStyleClass().add("location-icon");
+        
+        Label locationLabel = new Label(location);
+        locationLabel.getStyleClass().add("location-text");
+        
+        locationBox.getChildren().addAll(locationIcon, locationLabel);
+        courseDetails.getChildren().addAll(courseNameLabel, locationBox);
+        
+        courseInfo.getChildren().add(courseDetails);
+        
+        courseItem.getChildren().addAll(courseTime, courseInfo);
+        
+        todayCoursesContainer.getChildren().add(courseItem);
+    }
+    
+    /**
+     * 显示今日课程加载错误信息
+     * @param message 错误信息
+     */
+    private void displayTodayCoursesError(String message) {
+        Platform.runLater(() -> {
+            if (todayCoursesContainer != null) {
+                todayCoursesContainer.getChildren().clear();
+                Label errorLabel = new Label(message);
+                errorLabel.getStyleClass().add("error-message");
+                errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10px; -fx-alignment: center;");
+                todayCoursesContainer.getChildren().add(errorLabel);
+            }
+        });
     }
     
     /**
@@ -227,7 +417,7 @@ public class HomeContentController implements Initializable {
         dialogPane.setPrefHeight(400);
 
         try {
-            // Attempt to load admin's dialog style directly
+
             URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css"); 
             if (cssResource != null) {
                 dialogPane.getStylesheets().add(cssResource.toExternalForm());
@@ -265,6 +455,53 @@ public class HomeContentController implements Initializable {
                 infoLabel.getStyleClass().add("info-message");
                 infoLabel.setStyle("-fx-padding: 10px; -fx-alignment: center;");
                 noticeListContainer.getChildren().add(infoLabel);
+            }
+        });
+    }
+
+    /**
+     * 获取当前学期
+     * @param callback 获取完成后的回调
+     */
+    private void fetchCurrentTerm(Runnable callback) {
+        NetworkUtils.get("/term/getCurrentTerm", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JsonObject res = gson.fromJson(result, JsonObject.class);
+                    if (res.has("code") && res.get("code").getAsInt() == 200) {
+                        String currentTerm = res.get("data").getAsString();
+                        System.out.println("成功获取当前学期: " + currentTerm);
+                        Data.getInstance().setCurrentTerm(currentTerm);
+                        
+                        // 调用回调函数
+                        if (callback != null) {
+                            callback.run();
+                        }
+                    } else {
+                        System.err.println("获取当前学期失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                        displayTodayCoursesError("获取当前学期失败，无法加载今日课程");
+                    }
+                } catch (Exception e) {
+                    System.err.println("解析当前学期数据时发生错误: " + e.getMessage());
+                    displayTodayCoursesError("获取当前学期失败，无法加载今日课程");
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                System.err.println("获取当前学期网络请求失败: " + e.getMessage());
+                displayTodayCoursesError("网络错误，无法获取当前学期");
+                try {
+                    if (e.getMessage() != null && e.getMessage().contains("{")) {
+                        JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                        if (res.has("msg")) {
+                            System.err.println(res.get("msg").getAsString());
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }

@@ -31,30 +31,9 @@
                     <Label fx:id="dateText" text="2023年3月15日 星期六" styleClass="date-text"/>
                 </VBox>
 
-                <VBox styleClass="course-item">
-                    <HBox styleClass="course-time">
-                        <Label text="08:00 - 09:40" styleClass="time-text"/>
-                    </HBox>
-                    <HBox styleClass="course-info">
-                        <VBox>
-                            <Label text="高等数学 (II)" styleClass="course-name"/>
-                            <HBox styleClass="course-location">
-                                <Region styleClass="location-icon"/>
-                                <Label text="理科楼 A203" styleClass="location-text"/>
-                            </HBox>
-                        </VBox>
-                    </HBox>
-                </VBox>
-
-                <VBox styleClass="course-item">
-                    <HBox styleClass="course-time">
-                        <Label text="10:10 - 11:50" styleClass="time-text"/>
-                    </HBox>
-                    <HBox styleClass="course-info">
-                        <VBox>
-                            <Label text="大学物理实验" styleClass="course-name"/>
-                        </VBox>
-                    </HBox>
+                <!-- 动态课程列表容器 -->
+                <VBox fx:id="todayCoursesContainer" styleClass="today-courses-container" spacing="10">
+                    <!-- 课程将在此处动态添加 -->
                 </VBox>
             </VBox>
 

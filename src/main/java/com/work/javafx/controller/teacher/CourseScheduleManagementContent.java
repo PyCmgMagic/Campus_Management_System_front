@@ -263,7 +263,6 @@ public class CourseScheduleManagementContent implements Initializable {
                     for (int i = 0; i < data.size(); i++) {
                         JsonObject course = data.get(i).getAsJsonObject();
                         int index = course.get("time").getAsInt();
-
                         String courseName = course.get("name").getAsString();
                         String classroom = course.get("classroom").getAsString();
                         switch (index % 5){

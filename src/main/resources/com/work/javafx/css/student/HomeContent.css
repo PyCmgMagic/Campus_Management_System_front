@@ -211,6 +211,34 @@
     -fx-font-size: 12px;
     -fx-text-fill: #666;
 }
+
+/* 今日课程容器样式 */
+.today-courses-container {
+    -fx-padding: 10px 0;
+}
+
+.no-course-message {
+    -fx-text-fill: #888;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-padding: 15px;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 4px;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 4px;
+}
+
+.error-message {
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-padding: 15px;
+    -fx-background-color: #fff8f8;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ffcdd2;
+    -fx-border-radius: 4px;
+}
+
 /* 卡片样式 */
 .dashboard-card {
     -fx-background-color: white;
@@ -237,6 +265,7 @@
     -fx-text-fill: #d32f2f;
     -fx-cursor: hand;
 }
+
 /* 公告列表样式 */
 .notice-list {
     -fx-spacing: 10;
