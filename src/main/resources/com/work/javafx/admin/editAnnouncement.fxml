@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600.0" prefWidth="750.0" styleClass="root-pane" stylesheets="@../css/admin/addNewAnnouncement.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.editAnnouncementController">
+    <children>
+        <VBox alignment="CENTER" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+            <VBox styleClass="form-card">
+                <!-- 标题栏 -->
+                <HBox styleClass="title-bar">
+                    <Label styleClass="header-label" text="编辑公告" />
+                </HBox>
+                
+                <!-- 表单内容 -->
+                <VBox styleClass="form-group">
+                    <!-- 标题字段 -->
+                    <VBox styleClass="field-container">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label styleClass="form-label" text="公告标题" />
+                            <Text styleClass="required-mark" text="*" />
+                        </HBox>
+                        <TextField fx:id="titleField" promptText="请输入公告标题（最多50个字符）" />
+                    </VBox>
+                    
+                    <!-- 内容字段 -->
+                    <VBox styleClass="field-container" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label styleClass="form-label" text="公告内容" />
+                            <Text styleClass="required-mark" text="*" />
+                        </HBox>
+                        <TextArea fx:id="contentArea" minHeight="150.0" prefHeight="200.0" promptText="请输入公告内容..." wrapText="true" VBox.vgrow="ALWAYS" />
+                    </VBox>
+                    
+                    <Separator styleClass="separator" />
+                    
+                    <!-- 可见范围 -->
+                    <HBox styleClass="form-row">
+                        <Label minWidth="80.0" styleClass="form-label" text="可见范围:" />
+                        <HBox spacing="20">
+                            <RadioButton fx:id="teachersOnlyRadio" styleClass="form-radio-button" text="仅教师可见">
+                                <toggleGroup>
+                                    <ToggleGroup fx:id="visibleScopeToggleGroup" />
+                                </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="allUsersRadio" selected="true" styleClass="form-radio-button" text="所有用户可见" toggleGroup="$visibleScopeToggleGroup" />
+                        </HBox>
+                    </HBox>
+                    
+                    <!-- 设置选项 -->
+                    <HBox styleClass="form-row">
+                        <Label minWidth="80.0" styleClass="form-label" text="公告设置:" />
+                        <CheckBox fx:id="isTopCheckBox" styleClass="form-checkbox" text="置顶公告" />
+                    </HBox>
+                    
+                    <!-- 按钮区域 -->
+                    <HBox alignment="CENTER_RIGHT" prefWidth="642.0" spacing="15.0" styleClass="button-container">
+                        <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="cancel-button" text="取消" />
+                        <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="submit-button" text="发布公告" />
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+                  <padding>
+                     <Insets top="-20.0" />
+                  </padding>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </VBox>
+    </children>
+</AnchorPane>

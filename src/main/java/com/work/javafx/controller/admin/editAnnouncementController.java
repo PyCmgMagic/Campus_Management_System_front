@@ -10,11 +10,12 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class AddNewAnnouncementController implements Initializable {
+public class editAnnouncementController implements Initializable {
     private Stage stage;
     private final Gson gson = new Gson();
 
@@ -35,11 +36,38 @@ public class AddNewAnnouncementController implements Initializable {
     @FXML
     private Button cancelButton;
 
+    private int id;
+    private String title;
+    private String content;
+    private  int isTop;
+    private  int visibleScope;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        initContent();
     }
-
+    //接收data
+    public void initData(int id,String title,String content,int isTop,int visibleScope){
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.isTop = isTop;
+        this.visibleScope = visibleScope;
+        initContent();
+    }
+    private void initContent(){
+        titleField.setText(title);
+        contentArea.setText(content);
+        if(visibleScope == 2){
+            visibleScopeToggleGroup.selectToggle(allUsersRadio);
+        } else if (visibleScope == 1) {
+            visibleScopeToggleGroup.selectToggle(teachersOnlyRadio);
+        }
+        if(isTop == 1){
+            isTopCheckBox.setSelected(true);
+        }else{
+            isTopCheckBox.setSelected(false);
+        }
+    }
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -72,6 +100,7 @@ public class AddNewAnnouncementController implements Initializable {
 
         Map<String, String> params = new HashMap<>();
         params.put("title", title);
+        params.put("id", id + "");
         params.put("content", content);
         params.put("visibleScope", String.valueOf(visibleScope));
         params.put("isTop", String.valueOf(isTop));

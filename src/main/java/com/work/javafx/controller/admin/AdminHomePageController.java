@@ -31,6 +31,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.Priority;
+import javafx.scene.control.DialogPane;
 
 /**
  * 管理员首页控制器
@@ -38,7 +42,7 @@ import java.util.ResourceBundle;
  */
 public class AdminHomePageController implements Initializable {
     // AdminBaseViewController的实例，用于页面切换等基础操作
-    AdminBaseViewController controller = new AdminBaseViewController();
+    AdminBaseViewController adminBaseController = new AdminBaseViewController();
 
     @FXML
     private Label studentCountLabel; // 显示学生总数的标签
@@ -73,8 +77,8 @@ public class AdminHomePageController implements Initializable {
         // 延迟检查，确保场景已附加到noticeListContainer
         Platform.runLater(() -> {
             if (noticeListContainer.getScene() != null && 
-                !noticeListContainer.getScene().getStylesheets().contains("/css/admin-home.css")) {
-                noticeListContainer.getScene().getStylesheets().add("/css/admin-home.css");
+                !noticeListContainer.getScene().getStylesheets().contains("/com/work/javafx/css/admin/AdminHomePage.css")) {
+                noticeListContainer.getScene().getStylesheets().add("/com/work/javafx/css/admin/AdminHomePage.css");
             }
         });
     }
@@ -185,6 +189,10 @@ public class AdminHomePageController implements Initializable {
                                 // 遍历公告数组，为每条公告创建UI元素
                                 for (JsonElement noticeElement : noticesArray) {
                                     JsonObject noticeObject = noticeElement.getAsJsonObject();
+                                    int id = noticeObject.get("id").getAsInt();
+                                    String content = noticeObject.get("content").getAsString();
+                                    int  isTop  = noticeObject.get("isTop").getAsInt();
+                                    int visibleScope = noticeObject.get("visibleScope").getAsInt();
                                     String title = noticeObject.has("title") ? noticeObject.get("title").getAsString() : "无标题";
                                     String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
                                     // String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "管理员";
@@ -195,7 +203,7 @@ public class AdminHomePageController implements Initializable {
                                     
                                     // 组合时间和创建者信息
                                     String timeAndCreatorInfo = "发布时间：" + formattedPublishTime + " | " + creatorInfo;
-                                    addNoticeItem(title, timeAndCreatorInfo);
+                                    addNoticeItem(id, title, content, isTop,visibleScope,timeAndCreatorInfo);
                                 }
                             } else {
                                 System.out.println("获取公告列表失败：响应中没有data字段或data不是有效的数组");
@@ -258,18 +266,23 @@ public class AdminHomePageController implements Initializable {
     
     /**
      * 根据提供的标题和时间信息，创建一个公告条目并添加到UI列表中。
+     * @param id 公告ID
      * @param title 公告标题
+     * @param content 公告内容
      * @param timeInfo 公告的时间和发布者信息字符串
+     * @param isTop 是否置顶
+     * @param visibleScope 可见范围
      */
-    private void addNoticeItem(String title, String timeInfo) {
+    private void addNoticeItem(int id, String title, String content, int isTop,int visibleScope,String timeInfo) {
         HBox noticeItem = new HBox(); // 公告条目的根容器
         noticeItem.getStyleClass().add("notice-item");
+        noticeItem.setOnMouseClicked(e -> showNoticeDetails(title, content));
         
         StackPane icon = new StackPane(); // 图标容器
         icon.getStyleClass().add("notice-icon");
         
-        VBox content = new VBox(); // 内容容器 (标题和时间)
-        content.getStyleClass().add("notice-content");
+        VBox noticeDetailsVBox = new VBox(); // 内容容器 (标题和时间) - Renamed from content to noticeDetailsVBox
+        noticeDetailsVBox.getStyleClass().add("notice-content");
         
         HBox titleBox = new HBox(); // 标题行容器
         Label titleLabel = new Label(title); // 标题标签
@@ -279,27 +292,70 @@ public class AdminHomePageController implements Initializable {
         Label timeLabel = new Label(timeInfo); // 时间信息标签
         timeLabel.getStyleClass().add("notice-time");
         
-        content.getChildren().addAll(titleBox, timeLabel); // 将标题和时间添加到内容VBox
+        noticeDetailsVBox.getChildren().addAll(titleBox, timeLabel); // 将标题和时间添加到内容VBox
         
         HBox actions = new HBox(); // 操作按钮容器 (编辑/删除)
         actions.getStyleClass().add("notice-actions");
         
         Button editBtn = new Button("编辑");
         editBtn.getStyleClass().addAll("notice-btn", "edit-btn");
-        editBtn.setOnAction(e -> editNotice(title)); // 设置编辑按钮的点击事件
+        editBtn.setOnAction(e -> {
+            editNotice(id,title,content,isTop,visibleScope);
+        }); // 设置编辑按钮的点击事件
         
         Button deleteBtn = new Button("删除");
         deleteBtn.getStyleClass().addAll("notice-btn", "delete-btn");
-        deleteBtn.setOnAction(e -> deleteNotice(title)); // 设置删除按钮的点击事件
+        deleteBtn.setOnAction(e -> deleteNotice(id)); // 设置删除按钮的点击事件
         
         actions.getChildren().addAll(editBtn, deleteBtn); // 将按钮添加到操作HBox
         
-        noticeItem.getChildren().addAll(icon, content, actions); // 组合图标、内容和操作到公告条目HBox
-        
-        // 此方法通常在Platform.runLater的 onSuccess 回调中调用，所以可以直接添加
+        noticeItem.getChildren().addAll(icon, noticeDetailsVBox, actions); // 组合图标、内容和操作到公告条目HBox
+
         noticeListContainer.getChildren().add(noticeItem);
     }
     
+    /**
+     * 显示公告详情。
+     * @param title 公告标题
+     * @param content 公告内容
+     */
+    private void showNoticeDetails(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("公告详情");
+        alert.setHeaderText(title);
+
+        TextArea textArea = new TextArea(content);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefHeight(300); 
+        textArea.setPrefWidth(500);  
+
+        alert.setGraphic(null);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setContent(textArea);
+        dialogPane.setPrefWidth(550); 
+        dialogPane.setPrefHeight(400);
+        // Attempt to load CSS, handle potential null pointer if resource not found
+        try {
+            URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css");
+            if (cssResource != null) {
+                dialogPane.getStylesheets().add(cssResource.toExternalForm());
+                dialogPane.getStyleClass().add("notice-dialog");
+            } else {
+                System.err.println("not found.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading CSS for dialog: " + e.getMessage());
+        }
+
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.setResizable(true);
+
+        alert.showAndWait();
+    }
+
     /**
      * "发布新公告"按钮的事件处理程序。
      * 打开一个新的模态窗口用于发布公告。
@@ -331,20 +387,52 @@ public class AdminHomePageController implements Initializable {
     }
     
     /**
-     * 编辑公告的占位符方法。
-     * @param noticeTitle 被编辑公告的标题
+     * 编辑公告的方法。
+     * @param noticeId 被编辑公告的ID
      */
-    private void editNotice(String noticeTitle) {
-        System.out.println("编辑公告: " + noticeTitle);
-        // TODO: 在此实现实际的编辑逻辑
+    private void editNotice(int noticeId,String title,String content,int isTop,int visibleScope) {
+       try {
+           FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/editAnnouncement.fxml"));
+           Parent root = loader.load();
+
+           editAnnouncementController controller = loader.getController();
+
+           if (controller != null) {
+               controller.initData(noticeId,title,content,isTop,visibleScope);
+           } else {
+               System.err.println("editAnnouncementController 为空");
+               return;
+           }
+
+           Stage stage = new Stage();
+           stage.initModality(Modality.APPLICATION_MODAL);
+           stage.initStyle(StageStyle.DECORATED);
+           stage.setTitle("编辑公告");
+           stage.setScene(new Scene(root, 800, 600));
+              controller.setStage(stage);
+
+           stage.showAndWait(); // 显示窗口并等待其关闭
+
+       }catch (Exception e) {
+           e.printStackTrace();
+       }
     }
     
     /**
      * 删除公告的占位符方法。
-     * @param noticeTitle 被删除公告的标题
+     * @param noticeTitle 被删除公告的标题 (保留此方法以防旧代码调用，但应迁移到使用ID)
      */
     private void deleteNotice(String noticeTitle) {
-        System.out.println("删除公告: " + noticeTitle);
+        System.out.println("删除公告 (by title): " + noticeTitle + ". Consider using deleteNotice(int noticeId) instead.");
+        // TODO: Implement or remove this method. Preferably, find calls and update them to use noticeId.
+    }
+
+    /**
+     * 删除公告的方法。
+     * @param noticeId 被删除公告的ID
+     */
+    private void deleteNotice(int noticeId) {
+        System.out.println("删除公告 ID: " + noticeId);
         // TODO: 在此实现实际的删除逻辑，可能需要在成功后调用 loadNotices() 刷新列表
     }
     
@@ -353,7 +441,7 @@ public class AdminHomePageController implements Initializable {
      */
     @FXML
     private void navigateToStudentManagement() {
-       controller.switchTostudentMangement(); // 调用基础控制器的方法切换视图
+       adminBaseController.switchTostudentMangement(); // 调用基础控制器的方法切换视图
     }
     
     /**

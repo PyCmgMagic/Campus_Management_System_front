@@ -78,7 +78,7 @@ public class AdminBaseViewController implements Initializable {
             // 清空当前内容区
             contentArea.getChildren().clear();
 
-            // 加载新的内容student
+            // 加载新的内容
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/com/work/javafx/admin/" + fxmlPath)));
             Parent view = loader.load();
