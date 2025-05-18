@@ -48,81 +48,11 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" styleClass="calendar-header">
                                  <children>
-                                    <Label styleClass="calendar-date" text="2025年3月15日 星期六" />
+                                    <Label fx:id="dateText" styleClass="calendar-date" text="2025年3月15日 星期六" />
                                  </children>
                               </HBox>
-                              <VBox styleClass="course-list">
-                                 <children>
-                                    <VBox styleClass="course-item">
-                                       <children>
-                                          <Label styleClass="course-time" text="08:00 - 09:40" />
-                                          <Label styleClass="course-name" text="高等数学 (II)" />
-                                          <HBox styleClass="course-info">
-                                             <children>
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
-                                                      <Label text="理科楼 A203" />
-                                                   </children>
-                                                </HBox>
-                                                <Pane HBox.hgrow="ALWAYS" />
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
-                                                      <Label text="计算机系 / 68人" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox styleClass="course-item">
-                                       <children>
-                                          <Label styleClass="course-time" text="10:10 - 11:50" />
-                                          <Label styleClass="course-name" text="数据结构与算法" />
-                                          <HBox styleClass="course-info">
-                                             <children>
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
-                                                      <Label text="信息楼 B501" />
-                                                   </children>
-                                                </HBox>
-                                                <Pane HBox.hgrow="ALWAYS" />
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
-                                                      <Label text="软件工程 / 42人" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox styleClass="course-item">
-                                       <children>
-                                          <Label styleClass="course-time" text="14:30 - 16:10" />
-                                          <Label styleClass="course-name" text="面向对象程序设计" />
-                                          <HBox styleClass="course-info">
-                                             <children>
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-location">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="MAP_MARKER" size="12" />
-                                                      <Label text="实验楼 C302" />
-                                                   </children>
-                                                </HBox>
-                                                <Pane HBox.hgrow="ALWAYS" />
-                                                <HBox alignment="CENTER_LEFT" styleClass="course-students">
-                                                   <children>
-                                                      <FontAwesomeIconView glyphName="USERS" size="12" />
-                                                      <Label text="人工智能 / 35人" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </children>
+                              <VBox fx:id="todayCoursesContainer" styleClass="course-list">
+                                 <!-- 课程将在此处动态添加 -->
                               </VBox>
                            </children>
                         </VBox>
