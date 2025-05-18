@@ -132,7 +132,7 @@ public class CourseSelectionContentController implements Initializable {
         capacityColumn.setCellValueFactory(data -> {
             UltimateCourse course = data.getValue();
             // 这里暂时显示容量而非已选人数
-            return new SimpleStringProperty("0/" + course.getCapacity());
+            return new SimpleStringProperty(course.getSelectedCount()+ "/" + course.getCapacity());
         });
 
         // 自定义操作列
@@ -371,6 +371,8 @@ public class CourseSelectionContentController implements Initializable {
             
             if (courseJson.has("capacity") && !courseJson.get("capacity").isJsonNull()) 
                 course.setCapacity(courseJson.get("capacity").getAsInt());
+            if (courseJson.has("selectedCount") && !courseJson.get("selectedCount").isJsonNull())
+                course.setSelectedCount(courseJson.get("selectedCount").getAsInt());
             
             if (courseJson.has("status") && !courseJson.get("status").isJsonNull()) 
                 course.setStatus(courseJson.get("status").getAsString());

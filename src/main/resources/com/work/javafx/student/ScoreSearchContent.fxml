@@ -160,11 +160,6 @@
                     </VBox>
                 </VBox>
             </Tab>
-
-            <Tab fx:id="statisticsTab" closable="false" text="成绩统计">
-                <VBox spacing="15">
-                </VBox>
-            </Tab>
         </TabPane>
     </VBox>
 </ScrollPane>

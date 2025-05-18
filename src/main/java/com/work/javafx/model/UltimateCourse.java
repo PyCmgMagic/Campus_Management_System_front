@@ -39,6 +39,7 @@ public class UltimateCourse {
     private String classNum;
     private String type;
     private int capacity;
+    private int selectedCount;
     private String status;
     private String intro;
     private int examination;
@@ -51,7 +52,7 @@ public class UltimateCourse {
 
     public UltimateCourse(int id, String name, String category, int point, int teacherId, String classroom,
                   int weekStart, int weekEnd, int period, String time, String college, String term,
-                  String classNum, String type, int capacity, String status, String intro,
+                  String classNum, String type, int capacity,int selectedCount, String status, String intro,
                   int examination, String f_reason, boolean published, double regularRatio, double finalRatio) {
         this.id = id;
         this.name = name;
@@ -68,6 +69,7 @@ public class UltimateCourse {
         this.classNum = classNum;
         this.type = type;
         this.capacity = capacity;
+        this.selectedCount = selectedCount;
         this.status = status;
         this.intro = intro;
         this.examination = examination;
@@ -128,6 +130,18 @@ public class UltimateCourse {
 
     public int getWeekStart() {
         return weekStart;
+    }
+
+    public int getSelectedCount() {
+        return selectedCount;
+    }
+
+    public void setSelectedCount(int selectedCount) {
+        this.selectedCount = selectedCount;
+    }
+
+    public void setPoint(double point) {
+        this.point = point;
     }
 
     public void setWeekStart(int weekStart) {

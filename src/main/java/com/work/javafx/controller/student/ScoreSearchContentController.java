@@ -7,17 +7,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -36,7 +30,6 @@ import com.google.gson.JsonObject;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,8 +46,6 @@ public class ScoreSearchContentController implements Initializable {
     
     // 导航标签页
     @FXML private Tab currentSemesterTab;
-    @FXML private Tab historicalScoresTab;
-    @FXML private Tab statisticsTab;
 
     // 统计数据控件
     @FXML private Label avgGpaLabel;
@@ -65,10 +56,6 @@ public class ScoreSearchContentController implements Initializable {
     // 成绩统计图表
     @FXML private BarChart<String, Number> scoreDistributionChart;
     @FXML private LineChart<String, Number> gpaLineChart;
-    
-    // 本学期成绩图表（动态创建）
-    private BarChart<String, Number> currentSemesterBarChart;
-    private LineChart<String, Number> currentSemesterLineChart;
     
     // 成绩表格
     @FXML private TableView<ScoreRecord> scoreTableView;
@@ -88,19 +75,6 @@ public class ScoreSearchContentController implements Initializable {
     @FXML private Button exportButton;
     @FXML private Button printButton;
 
-    // 历年成绩筛选控件
-    @FXML private ComboBox<String> historyYearComboBox;
-    @FXML private ComboBox<String> historySemesterComboBox;
-    @FXML private ComboBox<String> historyCourseTypeComboBox;
-    @FXML private TextField searchTextField;
-    @FXML private Button clearFilterButton;
-    
-    // 成绩统计控件
-    @FXML private PieChart creditPieChart;
-    @FXML private HBox semesterSelectBox;
-    @FXML private GridPane statsCardGrid;
-    @FXML private VBox failedCoursesContainer;
-    
     // 当前学期成绩数据
     private ObservableList<ScoreRecord> currentSemesterScores = FXCollections.observableArrayList();
     
@@ -121,9 +95,6 @@ public class ScoreSearchContentController implements Initializable {
         // 初始化图表
         initCharts();
         
-        // 初始化历年成绩筛选控件
-        initHistoricalFilters();
-        
         // 强制刷新图表显示
         Platform.runLater(() -> {
             // 触发布局刷新
@@ -141,9 +112,6 @@ public class ScoreSearchContentController implements Initializable {
         });
         
         System.out.println("成绩查询界面初始化成功");
-        
-        // 在initialize方法中添加标签页选择事件处理，触发历史成绩获取
-        setupTabSelectionHandlers();
     }
     
     /**
@@ -153,7 +121,7 @@ public class ScoreSearchContentController implements Initializable {
         // 学年下拉框
         ObservableList<String> academicYears = Data.getInstance().getSemesterList();
         academicYearComboBox.setItems(academicYears);
-        academicYearComboBox.setValue("2024-2025-1");
+        academicYearComboBox.setValue(Data.getInstance().getCurrentTerm());
         
         // 确保页面加载完成后自动查询数据
         Platform.runLater(() -> {
@@ -167,14 +135,14 @@ public class ScoreSearchContentController implements Initializable {
     private void initTableView() {
         // 设置列的单元格值工厂
         indexColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIndex()).asObject());
-        courseCodeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourseCode()));
+        courseCodeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
         courseNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourseName()));
-        creditColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getCredit()).asObject());
-        courseTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourseType()));
+        creditColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPoint()).asObject());
+        courseTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
         teacherColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeacher()));
-        regularScoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getRegularScore()).asObject());
+        regularScoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getRegular()).asObject());
         finalScoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getFinalScore()).asObject());
-        scoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
+        scoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getGrade()).asObject());
         gpaColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getGpa()).asObject());
         rankColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRank()));
         
@@ -238,7 +206,7 @@ public class ScoreSearchContentController implements Initializable {
                     } else {
                         ScoreRecord record = getTableView().getItems().get(getIndex());
                         
-                        Label codeLabel = new Label(record.getCourseCode());
+                        Label codeLabel = new Label(record.getId());
                         codeLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
                         
                         Label nameLabel = new Label(item);
@@ -296,7 +264,6 @@ public class ScoreSearchContentController implements Initializable {
             public void onSuccess(String result) {
                 try {
                     System.out.println("API返回结果: " + result);
-                    // 解析返回的JSON数据
                     List<ScoreRecord> grades = parseGradeData(result);
                     
                     // 更新表格数据
@@ -352,13 +319,7 @@ public class ScoreSearchContentController implements Initializable {
         try {
             // 解析JSON响应
             JsonObject responseJson = gson.fromJson(jsonResponse, JsonObject.class);
-            
-            // 检查响应码
-            if (!responseJson.has("code")) {
-                System.err.println("API响应中没有code字段");
-                return scoreRecords;
-            }
-            
+
             int code = responseJson.get("code").getAsInt();
             
             if (code != 200) {
@@ -366,12 +327,7 @@ public class ScoreSearchContentController implements Initializable {
                 System.err.println("API返回错误: " + msg);
                 return scoreRecords;
             }
-            
-            // 检查data字段是否存在
-            if (!responseJson.has("data")) {
-                System.err.println("API响应中没有data字段");
-                return scoreRecords;
-            }
+
             
             JsonElement dataElement = responseJson.get("data");
             
@@ -395,18 +351,17 @@ public class ScoreSearchContentController implements Initializable {
                 if (gradeElement == null || !gradeElement.isJsonObject()) {
                     continue;
                 }
-                
                 JsonObject gradeObject = gradeElement.getAsJsonObject();
-                
                 try {
                     // 安全获取各字段值
                     int id = getIntFromJson(gradeObject, "id", 0);
                     int courseId = getIntFromJson(gradeObject, "courseId", 0);
                     int grade = getIntFromJson(gradeObject, "grade", 0);
                     int rank = getIntFromJson(gradeObject, "rank", 0);
-                    int classNum = getIntFromJson(gradeObject, "classNum", 1); // 至少为1，避免除以0
+                    int classNum = getIntFromJson(gradeObject, "classNum", 1);
                     double point = getDoubleFromJson(gradeObject, "point", 0.0);
                     String type = getStringFromJson(gradeObject, "type", "未知");
+                    String courseName = getStringFromJson(gradeObject, "courseName", "未知");
                     int teacherId = getIntFromJson(gradeObject, "teacherId", 0);
                     int regular = getIntFromJson(gradeObject, "regular", 0);  // 平时成绩
                     int finalScore = getIntFromJson(gradeObject, "finalScore", 0);  // 期末成绩
@@ -426,12 +381,12 @@ public class ScoreSearchContentController implements Initializable {
                     ScoreRecord record = new ScoreRecord(
                         i + 1,                          // 序号
                         "COURSE" + courseId,            // 课程代码
-                        getCourseNameById(courseId),    // 课程名称
-                        getCreditsById(courseId),       // 学分
+                            courseName,    // 课程名称
+                            point,                         // 学分
                         type,                           // 课程类型
                         teacherName,                    // 任课教师
                         grade,                          // 总评成绩
-                        point,                          // 绩点
+                            (double) (grade - 50) /10.0, // 绩点
                         rank + "/" + classNum,          // 排名
                         regular,                        // 平时成绩
                         finalScore                      // 期末成绩
@@ -510,30 +465,30 @@ public class ScoreSearchContentController implements Initializable {
         }
     }
     
-    /**
-     * 根据课程ID获取课程名称
-     */
-    private String getCourseNameById(int courseId) {
-        // 直接返回课程ID，不再使用模拟数据
-        return "课程 " + courseId;
-    }
-    
-    /**
-     * 根据课程ID获取学分
-     */
-    private double getCreditsById(int courseId) {
-        // 默认返回2.0学分，不再使用模拟数据
-        return 2.0;
-    }
-    
-    /**
-     * 根据教师ID获取教师姓名
-     */
-    private String getTeacherNameById(int teacherId) {
-        // 直接返回教师ID，不再使用模拟数据
-        return "教师 " + teacherId;
-    }
-    
+//    /**
+//     * 根据课程ID获取课程名称
+//     */
+//    private String getCourseNameById(int courseId) {
+//        // 直接返回课程ID，不再使用模拟数据
+//        return "课程 " + courseId;
+//    }
+//
+//    /**
+//     * 根据课程ID获取学分
+//     */
+//    private double getCreditsById(int courseId) {
+//        // 默认返回2.0学分，不再使用模拟数据
+//        return 2.0;
+//    }
+//
+//    /**
+//     * 根据教师ID获取教师姓名
+//     */
+//    private String getTeacherNameById(int teacherId) {
+//        // 直接返回教师ID，不再使用模拟数据
+//        return "教师 " + teacherId;
+//    }
+//
     /**
      * 更新统计信息
      */
@@ -551,7 +506,7 @@ public class ScoreSearchContentController implements Initializable {
         double totalGpaPoints = 0;
         
         for (ScoreRecord record : grades) {
-            double credit = record.getCredit();
+            double credit = record.getPoint();
             double gpa = record.getGpa();
             
             totalCredits += credit;
@@ -576,9 +531,6 @@ public class ScoreSearchContentController implements Initializable {
     private void updateCharts(List<ScoreRecord> grades) {
         // 更新成绩分布图表
         updateScoreDistributionChart(grades);
-        
-        // 为本学期成绩标签页创建并添加图表
-        createChartsForCurrentSemester(FXCollections.observableArrayList(grades));
     }
     
     /**
@@ -594,7 +546,7 @@ public class ScoreSearchContentController implements Initializable {
         int count90Plus = 0, count80to89 = 0, count70to79 = 0, count60to69 = 0, countFail = 0;
         
         for (ScoreRecord record : grades) {
-            int score = record.getScore();
+            int score = record.getGrade();
             if (score >= 90) count90Plus++;
             else if (score >= 80) count80to89++;
             else if (score >= 70) count70to79++;
@@ -701,30 +653,6 @@ public class ScoreSearchContentController implements Initializable {
         }
     }
     
-    // ... 现有的其他方法保持不变 ... 
-    
-    // 在initialize方法中添加标签页选择事件处理，触发历史成绩获取
-    @FXML
-    private void setupTabSelectionHandlers() {
-        if (historicalScoresTab != null) {
-            historicalScoresTab.setOnSelectionChanged(event -> {
-                if (historicalScoresTab.isSelected()) {
-                    // 开始获取历年成绩
-                    fetchHistoricalGrades();
-                }
-            });
-        }
-        
-        if (statisticsTab != null) {
-            statisticsTab.setOnSelectionChanged(event -> {
-                if (statisticsTab.isSelected()) {
-                    // 加载统计数据
-                    loadStatisticsData();
-                }
-            });
-        }
-    }
-    
     /**
      * 初始化统计图表
      */
@@ -822,117 +750,6 @@ public class ScoreSearchContentController implements Initializable {
         } catch (Exception e) {
             System.err.println("增强图表交互效果时出错: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-    
-    /**
-     * 初始化历年成绩筛选控件
-     */
-    private void initHistoricalFilters() {
-        // 简化版的初始化历史成绩筛选控件
-        if (historicalScoresTab == null) return;
-        
-        // 实际项目中，这里会初始化筛选控件
-        System.out.println("初始化历年成绩筛选控件");
-    }
-    
-    /**
-     * 为本学期成绩标签页创建图表
-     */
-    private void createChartsForCurrentSemester(ObservableList<ScoreRecord> scores) {
-        // 查找图表容器
-        VBox currentSemesterContent = (VBox) currentSemesterTab.getContent();
-        if (currentSemesterContent == null) return;
-        
-        // 更新当前学期的图表数据
-        System.out.println("更新本学期成绩图表，课程数量：" + scores.size());
-    }
-    
-    /**
-     * 切换到成绩统计标签页并加载统计数据
-     */
-    private void loadStatisticsData() {
-        // 更新图表数据
-        updateScoreDistributionChart(FXCollections.observableArrayList());
-        
-        // 更新学期绩点统计
-        avgGpaLabel.setText("0.00");
-        totalCreditsLabel.setText("0.0");
-        completedCoursesLabel.setText("0");
-        rankingLabel.setText("--/--");
-        
-        System.out.println("已加载成绩统计数据");
-    }
-    
-    /**
-     * 获取历年成绩数据 
-     */
-    private void fetchHistoricalGrades() {
-        // 获取所有学期
-        List<String> allTerms = getAllTerms();
-        List<ScoreRecord> allGrades = new ArrayList<>();
-        final int[] completedRequests = {0};
-        final int totalRequests = allTerms.size();
-        
-        // 显示加载提示
-        Platform.runLater(() -> {
-            ShowMessage.showInfoMessage("加载中", "正在加载历年成绩数据，请稍候...");
-        });
-        
-        // 为每个学期发起请求
-        for (String term : allTerms) {
-            Map<String, String> params = new HashMap<>();
-            params.put("term", term);
-            
-            NetworkUtils.get("/grade/getGrade", params, new Callback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    try {
-                        // 解析返回的JSON数据
-                        List<ScoreRecord> termGrades = parseGradeData(result);
-                        synchronized (allGrades) {
-                            allGrades.addAll(termGrades);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        synchronized (completedRequests) {
-                            completedRequests[0]++;
-                            
-                            // 检查是否所有请求都已完成
-                            if (completedRequests[0] == totalRequests) {
-                                Platform.runLater(() -> {
-                                    // 更新UI
-                                    scoreTableView.setItems(FXCollections.observableArrayList(allGrades));
-                                    ShowMessage.showInfoMessage("加载完成", "历年成绩加载完成");
-                                });
-                            }
-                        }
-                    }
-                }
-                
-                @Override
-                public void onFailure(Exception e) {
-                    e.printStackTrace();
-                    synchronized (completedRequests) {
-                        completedRequests[0]++;
-                        
-                        // 检查是否所有请求都已完成
-                        if (completedRequests[0] == totalRequests) {
-                            Platform.runLater(() -> {
-                                // 如果没有获取到任何成绩，显示错误信息
-                                if (allGrades.isEmpty()) {
-                                    ShowMessage.showErrorMessage("获取失败", "无法获取历年成绩数据");
-                                } else {
-                                    // 更新UI
-                                    scoreTableView.setItems(FXCollections.observableArrayList(allGrades));
-                                    ShowMessage.showInfoMessage("加载完成", "历年成绩加载完成");
-                                }
-                            });
-                        }
-                    }
-                }
-            });
         }
     }
 } 
