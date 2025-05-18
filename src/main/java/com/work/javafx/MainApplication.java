@@ -144,6 +144,79 @@ public class MainApplication extends Application {
             tokenRefreshTimer = null;
         }
     }
+
+    /**
+     * 获取主视图加载器，用于预加载主视图
+     * @return FXMLLoader 根据用户权限返回相应的加载器
+     */
+    public static FXMLLoader getMainViewLoader() {
+        FXMLLoader loader = null;
+        switch (UserSession.getInstance().getIdentity()) {
+            case 2:
+                loader = new FXMLLoader(MainApplication.class.getResource("student/StudentBaseView.fxml"));
+                break;
+            case 1:
+                loader = new FXMLLoader(MainApplication.class.getResource("teacher/TeacherBaseView.fxml"));
+                break;
+            case 0:
+                loader = new FXMLLoader(MainApplication.class.getResource("admin/AdminBaseView.fxml"));
+                break;
+            default:
+                break;
+        }
+        return loader;
+    }
+    
+    /**
+     * 完成主视图转场后的设置
+     * @param mainView 已加载的主视图根节点
+     * @param loader 已使用的加载器
+     */
+    public static void completeMainViewTransition(Parent mainView, FXMLLoader loader) throws IOException {
+        // 确保节点未被添加到任何场景图中
+        if (mainView.getScene() != null) {
+            System.out.println("警告：节点已在场景图中，可能导致问题");
+        }
+
+        // 创建新场景并应用CSS
+        Scene scene = new Scene(mainView, APP_WIDTH, APP_HEIGHT);
+        
+        // 如果主视图已经有样式表，保留它们
+        if (!mainView.getStylesheets().isEmpty()) {
+            scene.getStylesheets().addAll(mainView.getStylesheets());
+        }
+        
+        // 获取相应的CSS
+        String cssPath = null;
+        switch (UserSession.getInstance().getIdentity()) {
+            case 2:
+                cssPath = "/com/work/javafx/css/student/BaseView.css";
+                break;
+            case 1:
+                cssPath = "/com/work/javafx/css/teacher/TeacherBaseView.css";
+                break;
+            case 0:
+                cssPath = "/com/work/javafx/css/admin/AdminBaseView.css";
+                break;
+            default:
+                break;
+        }
+        
+        // 始终添加基础视图的样式表，确保基本样式正确加载
+        if (cssPath != null) {
+            String cssUrl = Objects.requireNonNull(MainApplication.class.getResource(cssPath)).toExternalForm();
+            if (!scene.getStylesheets().contains(cssUrl)) {
+                scene.getStylesheets().add(cssUrl);
+            }
+        }
+        
+        // 如果是基础视图，将控制器实例保存到场景的userData中
+        scene.setUserData(loader.getController());
+        
+        // 设置新场景
+        stage.setScene(scene);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

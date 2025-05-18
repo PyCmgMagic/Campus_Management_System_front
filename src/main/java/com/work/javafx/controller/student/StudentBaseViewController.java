@@ -3,6 +3,7 @@ package com.work.javafx.controller.student;
 import com.work.javafx.MainApplication;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.ShowMessage;
+import com.work.javafx.util.ViewTransitionAnimation;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,24 +92,23 @@ public class StudentBaseViewController implements Initializable {
                 return;
             }
             
-            // 清空当前内容区
-            contentArea.getChildren().clear();
-            
+
             // 加载新的内容student
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/com/work/javafx/student/" + fxmlPath)));
-            Parent view = loader.load();
-            
+            Parent newView = loader.load();
+
+
             // 应用CSS样式
             String cssPath = getCssPathForView(fxmlPath);
             if (cssPath != null) {
-                view.getStylesheets().clear();
-                view.getStylesheets().add(
+                newView.getStylesheets().clear();
+                newView.getStylesheets().add(
                         Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             }
-            
-            // 将新内容添加到内容区
-            contentArea.getChildren().add(view);
+
+            // 使用ViewTransitionAnimation工具类应用动画
+            ViewTransitionAnimation.playAnimation(contentArea, newView);
             
             // 更新当前视图ID
             currentViewId = fxmlPath;
@@ -134,7 +134,7 @@ public class StudentBaseViewController implements Initializable {
         } else if (fxmlPath.equals("CourseSelectionContent.fxml")) {
             return "/com/work/javafx/css/student/CourseSelection.css";
         } else if (fxmlPath.equals("PersonalCenterContent.fxml")) {
-            return "/com/work/javafx/css/PersonalCenter.css";
+            return "/com/work/javafx/css/student/UserInfo.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
             return "/com/work/javafx/css/student/ScoreSearch.css";
         } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {

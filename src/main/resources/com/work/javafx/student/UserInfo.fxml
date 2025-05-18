@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="700" prefWidth="1000" xmlns="http://javafx.com/javafx/21"
+<BorderPane prefHeight="700" prefWidth="1000" stylesheets="/com/work/javafx/css/student/UserInfo.css" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.work.javafx.controller.student.UserInfoController">
 

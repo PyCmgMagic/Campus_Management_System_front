@@ -3,6 +3,16 @@ package com.work.javafx.controller.admin;
 import com.work.javafx.MainApplication;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.ShowMessage;
+import com.work.javafx.util.ViewTransitionAnimation;
+import com.work.javafx.util.ViewTransitionAnimation.AnimationType;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,10 +20,12 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -75,25 +87,19 @@ public class AdminBaseViewController implements Initializable {
                 return;
             }
 
-            // 清空当前内容区
-            contentArea.getChildren().clear();
-
             // 加载新的内容
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/com/work/javafx/admin/" + fxmlPath)));
-            Parent view = loader.load();
+            Parent newView = loader.load();
 
             // 应用CSS样式
             String cssPath = getCssPathForView(fxmlPath);
             if (cssPath != null) {
-                view.getStylesheets().clear();
-                view.getStylesheets().add(
+                newView.getStylesheets().clear();
+                newView.getStylesheets().add(
                         Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             }
-
-            // 将新内容添加到内容区
-            contentArea.getChildren().add(view);
-
+                ViewTransitionAnimation.playAnimationWithType(contentArea, newView, AnimationType.BOUNCE);
             // 更新当前视图ID
             currentView = fxmlPath;
 

@@ -3,6 +3,7 @@ package com.work.javafx.controller.teacher;
 import com.work.javafx.MainApplication;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.ShowMessage;
+import com.work.javafx.util.ViewTransitionAnimation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,13 +83,12 @@ public class TeacherBaseViewController implements Initializable {
                 return;
             }
             
-            // 清空当前内容区
-            contentArea.getChildren().clear();
+
             
             // 加载新的内容
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/com/work/javafx/teacher/" + fxmlPath)));
-            Parent view = loader.load();
+            Parent newView = loader.load();
             Object controller = loader.getController();
             if (controller instanceof TeacherHomePageController) {
                 ((TeacherHomePageController) controller).setBaseController(this);
@@ -97,13 +97,13 @@ public class TeacherBaseViewController implements Initializable {
             // 应用CSS样式
             String cssPath = getCssPathForView(fxmlPath);
             if (cssPath != null) {
-                view.getStylesheets().clear();
-                view.getStylesheets().add(
+                newView.getStylesheets().clear();
+                newView.getStylesheets().add(
                         Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             }
-            
-            // 将新内容添加到内容区
-            contentArea.getChildren().add(view);
+            // 使用ViewTransitionAnimation工具类应用动画
+            ViewTransitionAnimation.playAnimationWithType(contentArea, newView, ViewTransitionAnimation.AnimationType.BOUNCE);
+
             
             // 更新当前视图ID
             currentViewId = fxmlPath;

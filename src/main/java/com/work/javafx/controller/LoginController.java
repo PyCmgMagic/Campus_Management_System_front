@@ -11,6 +11,11 @@ import com.work.javafx.entity.UserSession;
 import com.work.javafx.model.term;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.StringUtil;
+import com.work.javafx.util.ViewTransitionAnimation;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
@@ -28,6 +33,9 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.util.*;
@@ -299,7 +307,164 @@ public class LoginController {
      */
     private void navigateToMainPage() {
         try {
-            MainApplication.showMainView();
+            // 获取当前场景
+            Scene currentScene = loginButton.getScene();
+            
+            // 获取当前场景的样式表
+            ObservableList<String> currentStylesheets = currentScene.getStylesheets();
+            
+            // 保存当前根节点，用于执行动画
+            Parent currentRoot = currentScene.getRoot();
+            
+            // 将当前根节点放入StackPane，便于执行动画
+            StackPane container = new StackPane();
+            container.getChildren().add(currentRoot);
+            
+            // 获取当前场景尺寸，确保动画过程中尺寸不变
+            double sceneWidth = currentScene.getWidth();
+            double sceneHeight = currentScene.getHeight();
+            
+            // 创建新场景，使用StackPane作为容器
+            Scene newScene = new Scene(container, sceneWidth, sceneHeight);
+            
+            // 应用原场景的样式表
+            if (currentStylesheets != null && !currentStylesheets.isEmpty()) {
+                newScene.getStylesheets().addAll(currentStylesheets);
+            }
+            
+            // 获取当前舞台
+            Stage stage = (Stage) currentScene.getWindow();
+            
+            // 设置新场景
+            stage.setScene(newScene);
+            
+            // 预加载主界面，但还不显示
+            FXMLLoader loader = MainApplication.getMainViewLoader();
+            Parent mainView = loader.load();
+            
+            // 获取对应的CSS路径
+            String cssPath = null;
+            switch (UserSession.getInstance().getIdentity()) {
+                case 2:
+                    cssPath = "/com/work/javafx/css/student/BaseView.css";
+                    break;
+                case 1:
+                    cssPath = "/com/work/javafx/css/teacher/TeacherBaseView.css";
+                    break;
+                case 0:
+                    cssPath = "/com/work/javafx/css/admin/AdminBaseView.css";
+                    break;
+            }
+
+            // 预先应用样式
+            if (cssPath != null) {
+                String fullCssPath = Objects.requireNonNull(
+                        getClass().getResource(cssPath)).toExternalForm();
+                if (!mainView.getStylesheets().contains(fullCssPath)) {
+                    mainView.getStylesheets().add(fullCssPath);
+                }
+                
+                // 检查内嵌的样式表是否被正确应用
+                FXMLLoader contentLoader = null;
+                Parent contentView = null;
+                
+                try {
+                    // 尝试获取基础视图中的内容区域，并确保其样式也被加载
+                    if (loader.getController() != null) {
+                        // 这里针对不同的控制器类型，获取内容区域
+                        // 这需要根据你的代码结构调整
+                        if (UserSession.getInstance().getIdentity() == 0) {
+                            // 如果是管理员视图
+                            contentLoader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/AdminHomePage.fxml"));
+                            contentView = contentLoader.load();
+                        } else if (UserSession.getInstance().getIdentity() == 1) {
+                            // 如果是教师视图
+                            contentLoader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/TeacherHomePage.fxml"));
+                            contentView = contentLoader.load();
+                        } else if (UserSession.getInstance().getIdentity() == 2) {
+                            // 如果是学生视图
+                            contentLoader = new FXMLLoader(getClass().getResource("/com/work/javafx/student/StudentHomePage.fxml"));
+                            contentView = contentLoader.load();
+                        }
+                        
+                        // 检查并应用内容视图的样式
+                        if (contentView != null) {
+                            mainView.getProperties().put("contentView", contentView);
+                        }
+                    }
+                } catch (Exception ex) {
+                    // 忽略错误，让主视图继续加载
+                    System.out.println("预加载内容视图时出错: " + ex.getMessage());
+                }
+            }
+            
+            // 为主视图设置初始状态
+            mainView.setOpacity(0);
+            mainView.setScaleX(1.05);
+            mainView.setScaleY(1.05);
+            
+            // 创建淡出动画
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), currentRoot);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setInterpolator(Interpolator.EASE_OUT);
+            
+            // 创建淡入动画
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(400), mainView);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.setInterpolator(Interpolator.EASE_IN);
+            
+            // 为当前视图添加缩小动画
+            ScaleTransition scaleOut = new ScaleTransition(Duration.millis(300), currentRoot);
+            scaleOut.setToX(0.95);
+            scaleOut.setToY(0.95);
+            scaleOut.setInterpolator(Interpolator.EASE_OUT);
+            
+            // 为主视图添加放大动画
+            ScaleTransition scaleIn = new ScaleTransition(Duration.millis(400), mainView);
+            scaleIn.setFromX(1.05);
+            scaleIn.setFromY(1.05);
+            scaleIn.setToX(1.0);
+            scaleIn.setToY(1.0);
+            scaleIn.setInterpolator(Interpolator.EASE_OUT);
+            
+            // 创建并行动画组
+            ParallelTransition fadeOutTransition = new ParallelTransition(fadeOut, scaleOut);
+            ParallelTransition fadeInTransition = new ParallelTransition(fadeIn, scaleIn);
+            
+            // 设置动画完成后的操作
+            fadeOutTransition.setOnFinished(event -> {
+                // 移除登录视图，添加主视图
+                container.getChildren().clear();
+                container.getChildren().add(mainView);
+                
+                // 开始淡入动画
+                fadeInTransition.play();
+            });
+            
+            // 淡入动画完成后
+            fadeInTransition.setOnFinished(event -> {
+                // 完成动画后，设置正常的主界面（由MainApplication处理后续逻辑）
+                try {
+                    // 从当前容器中移除节点，避免节点重用错误
+                    container.getChildren().clear();
+                    
+                    // 重新加载主视图，而不是重用已经在场景图中的节点
+                    FXMLLoader newLoader = MainApplication.getMainViewLoader();
+                    Parent newMainView = newLoader.load();
+                    
+                    // 使用新加载的视图完成转场
+                    MainApplication.completeMainViewTransition(newMainView, newLoader);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showErrorMessage("无法完成主界面跳转");
+                }
+            });
+            
+            // 开始淡出动画
+            fadeOutTransition.play();
+            
         } catch (IOException e) {
             e.printStackTrace();
             showErrorMessage("无法加载主界面");
