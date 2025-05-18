@@ -115,7 +115,7 @@ public class editAnnouncementController implements Initializable {
         submitButton.setDisable(true);
         cancelButton.setDisable(true);
 
-        NetworkUtils.post("/notice/set", params, null, new NetworkUtils.Callback<String>() {
+        NetworkUtils.post("/notice/edit", params, null, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 NetworkUtils.runOnUiThread(() -> {
