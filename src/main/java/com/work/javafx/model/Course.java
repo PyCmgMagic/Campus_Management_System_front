@@ -6,7 +6,7 @@ public class Course {
     private final StringProperty code = new SimpleStringProperty();
     private final StringProperty teacherName = new SimpleStringProperty();
     private final StringProperty department = new SimpleStringProperty();
-    private final IntegerProperty credit = new SimpleIntegerProperty();
+    private final DoubleProperty credit = new SimpleDoubleProperty();
     private final StringProperty type = new SimpleStringProperty();
     private final StringProperty teacher = new SimpleStringProperty();
     private final BooleanProperty isActive = new SimpleBooleanProperty();
@@ -16,7 +16,7 @@ public class Course {
     private final StringProperty term = new SimpleStringProperty();
     private final StringProperty status = new SimpleStringProperty();
 
-    public Course(String code, String name, String department, Integer credit, String type, String teacher, Boolean isActive) {
+    public Course(String code, String name, String department, Double credit, String type, String teacher, Boolean isActive) {
         this.code.set(code);
         this.teacherName.set(name);
         this.department.set(department);
@@ -66,15 +66,15 @@ public class Course {
     }
 
     // Credit property
-    public IntegerProperty creditProperty() {
+    public DoubleProperty creditProperty() {
         return credit;
     }
     
-    public Integer getCredit() {
+    public Double getCredit() {
         return credit.get();
     }
     
-    public void setCredit(Integer credit) {
+    public void setCredit(Double credit) {
         this.credit.set(credit);
     }
 

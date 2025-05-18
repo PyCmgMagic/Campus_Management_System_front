@@ -370,7 +370,7 @@ public class CourseManagementController implements Initializable {
                             String.valueOf(courseItem.get("id").getAsInt()),
                             courseItem.get("name").getAsString(),
                             "",
-                            courseItem.get("point").getAsInt(),
+                            courseItem.get("point").getAsDouble(),
                             courseItem.get("type").getAsString(),
                             courseItem.get("teacherName").getAsString(),
                             isActive

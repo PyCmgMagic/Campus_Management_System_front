@@ -5,7 +5,7 @@ public class CourseApplication {
     private String teacherName;
     private String name;
     private String category;
-    private int point;
+    private double point;
     private int teacherId;
     private String classroom;
     private int weekStart;
@@ -57,7 +57,7 @@ public class CourseApplication {
         this.category = category;
     }
 
-    public int getPoint() {
+    public double getPoint() {
         return point;
     }
 
