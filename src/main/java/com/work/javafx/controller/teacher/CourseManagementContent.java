@@ -266,6 +266,13 @@ static Gson gson = new Gson();
                         e.printStackTrace();
                     }
                 });
+                reEditApplicationButton.setOnAction(event -> {
+                    try {
+                        handlereEditApplicationButton(course);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
                 buttons.getChildren().addAll(
                     viewRejectionReasonButton,
                     reEditApplicationButton
@@ -354,6 +361,39 @@ static Gson gson = new Gson();
         });
 
         
+    }
+    //处理重新编辑请求
+    private void handlereEditApplicationButton(UltimateCourse course){
+        try {
+            // 加载新课程申请窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/editCourse.fxml"));
+            Parent root = loader.load();
+
+            // 获取控制器
+            editCourseController controller = loader.getController();
+
+            // 创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            popupStage.initStyle(StageStyle.DECORATED);
+            popupStage.setTitle("重新编辑申请");
+            popupStage.setScene(new Scene(root, 800, 600));
+
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+
+            // 将窗口引用传递给控制器
+            controller.initCourseData(course);
+            controller.setStage(popupStage);
+
+            // 显示窗口
+            popupStage.showAndWait();
+            loadData(currentPage,"/class/list");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     // 处理查看学生名单按钮点击事件
     private void handleViewStudents(UltimateCourse course) {

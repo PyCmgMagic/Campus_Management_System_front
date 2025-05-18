@@ -2,13 +2,13 @@
 
 <div align="center">
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Tans-hub/Campus_Management_System_front)
-![GitHub last commit](https://img.shields.io/github/last-commit/Tans-hub/Campus_Management_System_front)
-![GitHub top language](https://img.shields.io/github/languages/top/Tans-hub/Campus_Management_System_front)
-![Repo size](https://img.shields.io/github/repo-size/Tans-hub/Campus_Management_System_front)
-![License](https://img.shields.io/github/license/Tans-hub/Campus_Management_System_front)
-![GitHub issues](https://img.shields.io/github/issues/Tans-hub/Campus_Management_System_front)
-![GitHub issues closed](https://img.shields.io/github/issues-closed/Tans-hub/Campus_Management_System_front)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/PyCmgMagic/Campus_Management_System_front)
+![GitHub last commit](https://img.shields.io/github/last-commit/PyCmgMagic/Campus_Management_System_front)
+![GitHub top language](https://img.shields.io/github/languages/top/PyCmgMagic/Campus_Management_System_front)
+![Repo size](https://img.shields.io/github/repo-size/PyCmgMagic/Campus_Management_System_front)
+![License](https://img.shields.io/github/license/PyCmgMagic/Campus_Management_System_front)
+![GitHub issues](https://img.shields.io/github/issues/PyCmgMagic/Campus_Management_System_front)
+![GitHub issues closed](https://img.shields.io/github/issues-closed/PyCmgMagic/Campus_Management_System_front)
 
 </div>
 
@@ -18,8 +18,8 @@
   <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=Hanserprpr&repo=Campus_Management_System" />
 </a>
 
-<a href="https://github.com/Tans-hub/Campus_Management_System_front">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=Tans-hub&repo=Campus_Management_System_front" />
+<a href="https://github.com/PyCmgMagic/Campus_Management_System_front">
+  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=PyCmgMagic&repo=Campus_Management_System_front" />
 </a>
 
 本项目是教务管理系统的 **JavaFX 前端客户端**，搭配 Spring Boot 后端服务使用，实现了包括学生信息展示、选课、成绩管理等功能，界面简洁，交互友好，适用于高校教务系统的初步建模与实践。
@@ -128,9 +128,9 @@
 
 ## 🧑‍💻 开发者
 
-[![contributors](https://contrib.rocks/image?repo=Tans-hub/Campus_Management_System_front)](https://github.com/Tans-hub/Campus_Management_System_front/graphs/contributors)
+[![contributors](https://contrib.rocks/image?repo=PyCmgMagic/Campus_Management_System_front)](https://github.com/PyCmgMagic/Campus_Management_System_front/graphs/contributors)
 
-<img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=Tans-hub&theme=default" />
+<img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=PyCmgMagic&theme=default" />
 <img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=03ln3&theme=default" />
 <img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=x1x-1&theme=default" />
 <img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=Hanserprpr&theme=default" />

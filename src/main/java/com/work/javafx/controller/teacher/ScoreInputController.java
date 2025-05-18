@@ -41,10 +41,8 @@ public class ScoreInputController implements Initializable {
     private Label pendingClassesLabel;
     @FXML
     private Label enteredClassesLabel;
-    @FXML
-    private Label dueClassesLabel;
-    @FXML
-    private Label failedStudentsLabel;
+
+
 
     // 筛选控件
     @FXML
@@ -138,8 +136,10 @@ public class ScoreInputController implements Initializable {
                     JsonArray list = data.getAsJsonArray("list");
                     for (int i = 0; i < list.size(); i++) {
                         JsonObject c = list.get(i).getAsJsonObject();
-                        courseList.add(new Course(c.get("id").getAsString(), c.get("name").getAsString(), c.get("peopleNum").getAsInt(), c.get("regularRatio").getAsDouble(), c.get("finalRatio").getAsDouble()));
-                    }
+                        if(c.get("status").getAsString().equals("已通过")) {
+                            courseList.add(new Course(c.get("id").getAsString(), c.get("name").getAsString(), c.get("peopleNum").getAsInt(), c.get("regularRatio").getAsDouble(), c.get("finalRatio").getAsDouble()));
+                        }
+                        }
                 }
 
                 courseComboBox.setItems(courseList);
@@ -384,8 +384,6 @@ public class ScoreInputController implements Initializable {
         updateBarChart(validScores);
         updatePieChart(validScores);
 
-        // 更新信息卡中的不及格学生数
-        failedStudentsLabel.setText(String.valueOf(scoreData.stream().filter(s -> "不及格".equals(s.getStatus())).count()));
     }
 
     private void updateBarChart(List<Integer> scores) {
@@ -579,11 +577,7 @@ public class ScoreInputController implements Initializable {
     @FXML
     void handleSubmitLock(ActionEvent event) {
         System.out.println("提交并锁定按钮已点击");
-        // --- 在此添加提交并锁定逻辑 ---
-        // 1. 执行最终验证
-        // 2. 保存所有数据
-        // 3. 可能禁用编辑控件
-        // 4. 显示确认
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "确定提交并锁定所有成绩吗？此操作可能无法撤销。", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
@@ -597,7 +591,6 @@ public class ScoreInputController implements Initializable {
 
 
     // --- 数据模型内部类 ---
-    // （如果偏好，可以放在自己的文件中）
     public static class ScoreEntry {
         private final String studentId;
         private final String sduid;

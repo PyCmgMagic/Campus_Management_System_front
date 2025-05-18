@@ -30,20 +30,12 @@
          <FlowPane hgap="20.0" styleClass="info-card-container" vgap="20.0">
             <children>
                <VBox styleClass="info-card, primary-card" HBox.hgrow="ALWAYS">
-                  <Label styleClass="info-card-title" text="待录入班级" />
-                  <Label fx:id="pendingClassesLabel" styleClass="info-card-value" text="5" />
+                  <Label styleClass="info-card-title" text="待录入课程" />
+                  <Label fx:id="pendingClassesLabel" styleClass="info-card-value" text="0" />
                </VBox>
                <VBox styleClass="info-card, success-card" HBox.hgrow="ALWAYS">
-                  <Label styleClass="info-card-title" text="已录入班级" />
-                  <Label fx:id="enteredClassesLabel" styleClass="info-card-value" text="3" />
-               </VBox>
-               <VBox styleClass="info-card, warning-card" HBox.hgrow="ALWAYS">
-                  <Label styleClass="info-card-title" text="本周截止班级" />
-                  <Label fx:id="dueClassesLabel" styleClass="info-card-value" text="2" />
-               </VBox>
-               <VBox styleClass="info-card, danger-card" HBox.hgrow="ALWAYS">
-                  <Label styleClass="info-card-title" text="未通过人数" />
-                  <Label fx:id="failedStudentsLabel" styleClass="info-card-value" text="7" />
+                  <Label styleClass="info-card-title" text="已录入课程" />
+                  <Label fx:id="enteredClassesLabel" styleClass="info-card-value" text="0" />
                </VBox>
             </children>
          </FlowPane>
@@ -59,7 +51,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="8.0">
                      <children>
                         <Label text="课程:" />
-                        <ComboBox onAction="#handleQuery" fx:id="courseComboBox" promptText="选择课程" />
+                        <ComboBox fx:id="courseComboBox" onAction="#handleQuery" promptText="选择课程" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="8.0" />
