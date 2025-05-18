@@ -3,6 +3,7 @@ package com.work.javafx.controller.teacher;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.work.javafx.controller.admin.CourseDetailsController;
 import com.work.javafx.controller.student.CourseScheduleContentController;
 import com.work.javafx.entity.Data;
 import com.work.javafx.model.CourseRow;
@@ -10,7 +11,10 @@ import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
@@ -19,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
@@ -179,6 +184,8 @@ public class CourseScheduleManagementContent implements Initializable {
     private void setCourseColumnCellFactory(TableColumn<CourseRow, String> column) {
         column.setCellFactory(col -> {
             return new TableCell<CourseRow, String>() {
+                private int courseId = -1; // 存储课程ID
+
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -187,6 +194,7 @@ public class CourseScheduleManagementContent implements Initializable {
                         setText(null);
                         setGraphic(null);
                         setStyle("");
+                        courseId = -1; // 重置课程ID
                     } else {
                         setText(null);
 
@@ -197,6 +205,18 @@ public class CourseScheduleManagementContent implements Initializable {
 
                         // 分割课程信息
                         String[] parts = item.split("\n");
+                        String info = item;
+                        
+                        // 检查是否包含课程ID
+                        if (parts[0].startsWith("id:")) {
+                            String[] idParts = parts[0].split(":", 3);
+                            if (idParts.length >= 3) {
+                                courseId = Integer.parseInt(idParts[1]);
+                                info = idParts[2] + (parts.length > 1 ? "\n" + parts[1] : "");
+                                parts[0] = idParts[2];
+                            }
+                        }
+                        
                         if (parts.length >= 2) {
                             // 课程名称
                             Label courseName = new Label(parts[0]);
@@ -210,11 +230,41 @@ public class CourseScheduleManagementContent implements Initializable {
 
                             courseContainer.getChildren().addAll(courseName, location);
                         } else {
-                            Label courseName = new Label(item);
+                            Label courseName = new Label(parts[0]);
                             courseName.setWrapText(true);
                             courseName.setStyle("-fx-font-weight: bold; -fx-text-fill: #d32f2f;");
                             courseContainer.getChildren().add(courseName);
                         }
+
+                        // 添加点击事件处理
+                        final int finalCourseId = courseId;
+                        courseContainer.setOnMouseClicked(event -> {
+                            if (finalCourseId != -1) {
+                                try {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/CourseDetails.fxml"));
+                                    Parent root = loader.load();
+                                    //获取控制器
+                                    CourseDetailsController controller = loader.getController();
+                                    //创建新窗口
+                                    Stage stage = new Stage();
+                                    stage.initStyle(StageStyle.DECORATED);
+                                    stage.setTitle("课程详情——"+parts[0]);
+                                    stage.setScene(new Scene(root));
+                                    // 设置最小窗口大小
+                                    stage.setMinWidth(700);
+                                    stage.setMinHeight(550);
+                                    // 设置课程ID并加载数据
+                                    controller.loadCourseDetails(courseId);
+                                    // 设置为非审批页面
+                                    controller.setApplicable(false);
+
+                                    controller.setStage(stage);
+                                    stage.showAndWait();
+                                } catch (Exception e) {
+                                  e.printStackTrace();
+                                }
+                            }
+                        });
 
                         VBox.setVgrow(courseContainer, Priority.ALWAYS);
                         setGraphic(courseContainer);
@@ -265,70 +315,72 @@ public class CourseScheduleManagementContent implements Initializable {
                         int index = course.get("time").getAsInt();
                         String courseName = course.get("name").getAsString();
                         String classroom = course.get("classroom").getAsString();
+                        int id = course.get("id").getAsInt();
+
                         switch (index % 5){
                             case 1:
                                 if(index / 5 ==0){
-                                    First.setMonday(courseName + "\n"+classroom);
+                                    First.setMonday("id:" + id + ":" + courseName + "\n"+classroom);
                                 } else if (index /5 == 1) {
-                                    First.setTuesday(courseName + "\n" + classroom);
+                                    First.setTuesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 2) {
-                                    First.setWednesday(courseName + "\n" + classroom);
+                                    First.setWednesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 3) {
-                                    First.setThursday(courseName + "\n" + classroom);
+                                    First.setThursday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 4) {
-                                    First.setFriday(courseName + "\n" + classroom);
+                                    First.setFriday("id:" + id + ":" + courseName + "\n" + classroom);
                                 }
                                 break;
                             case 2:
                                 if(index / 5 ==0){
-                                    Second.setMonday(courseName + "\n"+classroom);
+                                    Second.setMonday("id:" + id + ":" + courseName + "\n"+classroom);
                                 } else if (index /5 == 1) {
-                                    Second.setTuesday(courseName + "\n" + classroom);
+                                    Second.setTuesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 2) {
-                                    Second.setWednesday(courseName + "\n" + classroom);
+                                    Second.setWednesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 3) {
-                                    Second.setThursday(courseName + "\n" + classroom);
+                                    Second.setThursday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 4) {
-                                    Second.setFriday(courseName + "\n" + classroom);
+                                    Second.setFriday("id:" + id + ":" + courseName + "\n" + classroom);
                                 }
                                 break;
                             case 3:
                                 if(index / 5 ==0){
-                                    Third.setMonday(courseName + "\n"+classroom);
+                                    Third.setMonday("id:" + id + ":" + courseName + "\n"+classroom);
                                 } else if (index /5 == 1) {
-                                    Third.setTuesday(courseName + "\n" + classroom);
+                                    Third.setTuesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 2) {
-                                    Third.setWednesday(courseName + "\n" + classroom);
+                                    Third.setWednesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 3) {
-                                    Third.setThursday(courseName + "\n" + classroom);
+                                    Third.setThursday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 4) {
-                                    Third.setFriday(courseName + "\n" + classroom);
+                                    Third.setFriday("id:" + id + ":" + courseName + "\n" + classroom);
                                 }
                                 break;
                             case 4:
                                 if(index / 5 ==0){
-                                    Fourth.setMonday(courseName + "\n"+classroom);
+                                    Fourth.setMonday("id:" + id + ":" + courseName + "\n"+classroom);
                                 } else if (index /5 == 1) {
-                                    Fourth.setTuesday(courseName + "\n" + classroom);
+                                    Fourth.setTuesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 2) {
-                                    Fourth.setWednesday(courseName + "\n" + classroom);
+                                    Fourth.setWednesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 3) {
-                                    Fourth.setThursday(courseName + "\n" + classroom);
+                                    Fourth.setThursday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 4) {
-                                    Fourth.setFriday(courseName + "\n" + classroom);
+                                    Fourth.setFriday("id:" + id + ":" + courseName + "\n" + classroom);
                                 }
                                 break;
                             case 0:
                                 if(index / 5 ==0){
-                                    Fifth.setMonday(courseName + "\n"+classroom);
+                                    Fifth.setMonday("id:" + id + ":" + courseName + "\n"+classroom);
                                 } else if (index /5 == 1) {
-                                    Fifth.setTuesday(courseName + "\n" + classroom);
+                                    Fifth.setTuesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 2) {
-                                    Fifth.setWednesday(courseName + "\n" + classroom);
+                                    Fifth.setWednesday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 3) {
-                                    Fifth.setThursday(courseName + "\n" + classroom);
+                                    Fifth.setThursday("id:" + id + ":" + courseName + "\n" + classroom);
                                 } else if (index / 5 == 4) {
-                                    Fifth.setFriday(courseName + "\n" + classroom);
+                                    Fifth.setFriday("id:" + id + ":" + courseName + "\n" + classroom);
                                 }
                                 break;
 

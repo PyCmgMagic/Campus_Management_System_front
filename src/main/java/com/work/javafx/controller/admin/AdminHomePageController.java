@@ -329,10 +329,10 @@ public class AdminHomePageController implements Initializable {
                 dialogPane.getStylesheets().add(cssResource.toExternalForm());
                 dialogPane.getStyleClass().add("notice-dialog");
             } else {
-                System.err.println("not found.");
+                System.err.println("not found");
             }
         } catch (Exception e) {
-            System.err.println("Error loading CSS for dialog: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
 
 
@@ -411,7 +411,7 @@ public class AdminHomePageController implements Initializable {
      */
     private void deleteNotice(int noticeId) {
         System.out.println("删除公告 ID: " + noticeId);
-        // TODO: 在此实现实际的删除逻辑，可能需要在成功后调用 loadNotices() 刷新列表
+        // TODO: 在此实现删除逻辑，需要在成功后调用 loadNotices() 刷新列表
     }
 
 
