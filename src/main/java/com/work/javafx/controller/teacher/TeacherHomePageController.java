@@ -337,7 +337,7 @@ public class TeacherHomePageController implements Initializable {
                                     int isTop = noticeObject.has("isTop") ? noticeObject.get("isTop").getAsInt() : 0;
                                     int visibleScope = noticeObject.has("visibleScope") ? noticeObject.get("visibleScope").getAsInt() : 0; // 或某些默认范围
                                     String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
-                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "系统";
+                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "null";
                                     
                                     String formattedPublishTime = "";
                                     if (!publishTimeStr.isEmpty()) {

@@ -312,7 +312,7 @@ public class HomeContentController implements Initializable {
                                     String title = noticeObject.has("title") ? noticeObject.get("title").getAsString() : "无标题";
                                     String content = noticeObject.get("content").getAsString();
                                     String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
-                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "无";
+                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "null";
 
                                     String formattedPublishTime = "";
                                     if (!publishTimeStr.isEmpty()) {

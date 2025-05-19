@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -181,12 +182,20 @@ public class AdminHomePageController implements Initializable {
                                     int visibleScope = noticeObject.get("visibleScope").getAsInt();
                                     String title = noticeObject.has("title") ? noticeObject.get("title").getAsString() : "无标题";
                                     String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
-                                    // String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "管理员";
-                                    String creatorInfo = "发布人: 管理员";
+                                     String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "null";
+                                    String creatorInfo = "发布人: "  + creatorName;
 
                                     String formattedPublishTime = "";
 
-                                    
+                                    if (!publishTimeStr.isEmpty()) {
+                                        try {
+                                            LocalDateTime dateTime = LocalDateTime.parse(publishTimeStr, inputFormatter);
+                                            formattedPublishTime = dateTime.format(outputFormatter);
+                                        } catch (DateTimeParseException e) {
+                                            System.err.println("日期解析错误: " + publishTimeStr + " - " + e.getMessage());
+                                            formattedPublishTime = publishTimeStr; // 回退到原始字符串
+                                        }
+                                    }
                                     // 组合时间和创建者信息
                                     String timeAndCreatorInfo = "发布时间：" + formattedPublishTime + " | " + creatorInfo;
                                     addNoticeItem(id, title, content, isTop,visibleScope,timeAndCreatorInfo);
