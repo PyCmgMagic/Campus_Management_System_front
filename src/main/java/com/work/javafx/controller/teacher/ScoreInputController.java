@@ -257,7 +257,7 @@ public class ScoreInputController implements Initializable {
                     params.put("studentId", entry.getStudentId());
                     params.put("courseId", currentCourse.getId());
                     params.put("regular", String.valueOf(entry.getRegularScore().intValue()));
-                    params.put("final_score", String.valueOf(entry.getFinalScore().intValue()));
+                    params.put("finalScore ", String.valueOf(entry.getFinalScore().intValue()));
                     params.put("grade", String.valueOf(entry.getTotalScore().intValue()));
                     params.put("rank", "0");
                     params.put("term", Data.getInstance().getCurrentTerm());
