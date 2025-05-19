@@ -31,8 +31,6 @@ public class TeacherBaseViewController implements Initializable {
     @FXML private Button courseScheduleManagementBtn;
     @FXML private Button courseManagementBtn;
     @FXML private Button scoreInputBtn;
-    @FXML private Button examManagementBtn;
-    @FXML private Button attendanceManagementBtn;
 
     // 当前活动的按钮
     private Button currentActiveButton;
@@ -132,9 +130,8 @@ public class TeacherBaseViewController implements Initializable {
             return "/com/work/javafx/css/student/UserInfo.css";
         } else if (fxmlPath.equals("CourseScheduleContent_teacher.fxml")) {
             return "/com/work/javafx/css/teacher/TeacherCourseSchedule.css";
-        } else if (fxmlPath.equals("AttendanceManagementContent.fxml")) {
-            return "/com/work/javafx/css/teacher/AttendanceManagement.css";
-        }else if (fxmlPath.equals("courseManagementContent.fxml")) {
+        }
+        else if (fxmlPath.equals("courseManagementContent.fxml")) {
             return "/com/work/javafx/css/teacher/courseManagementContent.css";
         }
         return null;
@@ -227,21 +224,5 @@ public class TeacherBaseViewController implements Initializable {
         loadView("ScoreInputContent.fxml");
     }
     
-    /**
-     * 切换到考试管理
-     */
-    @FXML
-    protected void switchToexamManagement() {
-        System.out.println("切换到考试管理");
-        switchActiveButton(examManagementBtn);
-        loadView("examManagementContent.fxml");
-    }
-    /**
-     * 切换到考试管理
-     */
-    public void switchToAttendanceManagement() {
-        System.out.println("切换到考勤管理");
-        switchActiveButton(attendanceManagementBtn);
-        loadView("AttendanceManagementContent.fxml");
-    }
+
 }

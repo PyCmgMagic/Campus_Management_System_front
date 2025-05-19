@@ -57,8 +57,7 @@ public class TeacherHomePageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //卡片功能按钮绑定
         CompleteCourseSchedule.setOnMouseClicked(this::changetocourseScheduleManagement);
-        AttendanceManagement.setOnMouseClicked(this::changetoAttendanceManagement);
-        
+
         // 更新当前日期显示
         updateCurrentDate();
         // 加载今日教学任务
@@ -304,10 +303,7 @@ public class TeacherHomePageController implements Initializable {
     private void changetocourseScheduleManagement(MouseEvent mouseEvent) {
         if (baseController != null) baseController.switchTocourseScheduleManagement();
     }
-    //切换到考勤管理
-    private void changetoAttendanceManagement(MouseEvent mouseEvent) {
-        if (baseController != null) baseController.switchToAttendanceManagement();
-    }
+
 
 
     private void loadNotices() {

@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.teacher.TeacherBaseViewController">
 
@@ -35,7 +34,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-               <Button fx:id="personalCenterBtn"  onAction="#switchToPersonalCenter" styleClass="menu-item" text="个人中心">
+               <Button fx:id="personalCenterBtn" onAction="#switchToPersonalCenter" styleClass="menu-item" text="个人中心">
                   <graphic>
                      <Region styleClass="user-icon" />
                   </graphic>
@@ -59,14 +58,6 @@
                   </graphic>
                </Button>
             </children>
-         </HBox><HBox prefHeight="25.0" prefWidth="32.0">
-            <children>
-               <Button fx:id="attendanceManagementBtn" onAction="#switchToAttendanceManagement" styleClass="menu-item" text="考勤管理">
-                  <graphic>
-                     <Region styleClass="select-course-icon" />
-                  </graphic>
-               </Button>
-            </children>
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
@@ -77,15 +68,7 @@
                </Button>
             </children>
          </HBox>
-         <HBox prefHeight="25.0" prefWidth="32.0">
-            <children>
-               <Button fx:id="examManagementBtn" onAction="#switchToexamManagement" styleClass="menu-item" text="考试管理">
-                  <graphic>
-                     <Region styleClass="exam-management-icon" />
-                  </graphic>
-               </Button>
-            </children>
-         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0" />
       </VBox>
    </left>
 

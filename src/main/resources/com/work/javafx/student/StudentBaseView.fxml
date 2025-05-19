@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.StudentBaseViewController">
 
@@ -16,13 +15,13 @@
         <HBox styleClass="top-bar">
             <Label styleClass="app-title" text="教务管理系统" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button  fx:id="userBtn" styleClass="user-btn" text="姓名" />
+            <Button fx:id="userBtn" styleClass="user-btn" text="姓名" />
             <Button onAction="#logout" styleClass="logout-btn" text="退出登录" />
         </HBox>
     </top>
 
     <center>
-        <VBox fx:id="contentContainer"/> <!-- 首页、课表都加载到这里 -->
+        <VBox fx:id="contentContainer" /> <!-- 首页、课表都加载到这里 -->
     </center>
 
     <!-- 左侧菜单 -->
@@ -39,7 +38,7 @@
          </HBox>
          <HBox prefHeight="25.0" prefWidth="32.0">
             <children>
-                  <Button fx:id="personalCenterBtn"  onAction="#switchToPersonalCenter" styleClass="menu-item" text="个人中心">
+                  <Button fx:id="personalCenterBtn" onAction="#switchToPersonalCenter" styleClass="menu-item" text="个人中心">
                       <graphic>
                           <Region styleClass="user-icon" />
                       </graphic>
@@ -73,15 +72,7 @@
                   </Button>
             </children>
          </HBox>
-         <HBox prefHeight="25.0" prefWidth="32.0">
-            <children>
-                  <Button fx:id="teachingEvaluationBtn" onAction="#switchToTeachingEvaluation" styleClass="menu-item" text="教学评价">
-                      <graphic>
-                          <Region styleClass="evaluation-icon" />
-                      </graphic>
-                  </Button>
-            </children>
-         </HBox>
+         <HBox prefHeight="25.0" prefWidth="32.0" />
         </VBox>
     </left>
 

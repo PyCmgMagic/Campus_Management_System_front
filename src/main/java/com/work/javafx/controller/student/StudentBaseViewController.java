@@ -33,7 +33,6 @@ public class StudentBaseViewController implements Initializable {
     @FXML private Button courseScheduleBtn;
     @FXML private Button courseSelectionBtn;
     @FXML private Button gradeQueryBtn;
-    @FXML private Button teachingEvaluationBtn;
 
     // 当前活动的按钮
     private Button currentActiveButton;
@@ -137,8 +136,6 @@ public class StudentBaseViewController implements Initializable {
             return "/com/work/javafx/css/student/UserInfo.css";
         } else if (fxmlPath.equals("ScoreSearchContent.fxml")) {
             return "/com/work/javafx/css/student/ScoreSearch.css";
-        } else if (fxmlPath.equals("TeachingEvaluationContent.fxml")) {
-            return "/com/work/javafx/css/student/TeachingEvaluation.css";
         }
         else if (fxmlPath.equals("UserInfo.fxml")) {
             return "/com/work/javafx/css/student/UserInfo.css";
@@ -233,13 +230,5 @@ public class StudentBaseViewController implements Initializable {
         loadView("ScoreSearchContent.fxml");
     }
     
-    /**
-     * 切换到教学评价
-     */
-    @FXML
-    private void switchToTeachingEvaluation() {
-        System.out.println("切换到教学评价");
-        switchActiveButton(teachingEvaluationBtn);
-        loadView("TeachingEvaluationContent.fxml");
-    }
+
 } 
