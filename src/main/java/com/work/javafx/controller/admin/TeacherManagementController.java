@@ -527,7 +527,7 @@ public class TeacherManagementController implements Initializable {
         String teacherName = selectedTeacher.getName();
         if (showConfirmDialog("确认删除", "确定要删除教师 " + teacherName + " (工号: "+ selectedTeacher.getSduid() +") 吗？")) {
             String endpoint = "/admin/deleteUser";
-            String urlWithParams = endpoint + "?userid=" + teacherId;
+            String urlWithParams = endpoint + "?userId=" + teacherId;
 
              NetworkUtils.postAsync(urlWithParams, null) // 使用 POST 方法，body 为 null
                 .thenAcceptAsync(response -> Platform.runLater(() -> {

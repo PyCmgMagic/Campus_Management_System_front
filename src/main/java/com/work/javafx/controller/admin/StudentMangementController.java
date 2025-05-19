@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.work.javafx.model.Student;
+import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -851,9 +852,35 @@ public class StudentMangementController implements Initializable {
         
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            showAlert(Alert.AlertType.INFORMATION, "成功", "已成功删除学生 " + student.getName() + "（模拟）。请调用后端API实现真正删除。");
+            String endpoint = "/admin/deleteUser";
+            String urlWithParams = endpoint + "?userId=" + student.getId();
+
+            NetworkUtils.postAsync(urlWithParams, null) // 使用 POST 方法，body 为 null
+                    .thenAcceptAsync(response -> Platform.runLater(() -> {
+                        try {
+                            JsonObject res = gson.fromJson(response, JsonObject.class);
+                            if (res.has("code") && res.get("code").getAsInt() == 200) {
+                                ShowMessage.showInfoMessage("操作成功", "已删除学生: " + student.getName());
+                                loadStudentsFromApi(Math.max(1, currentPage));
+                            } else {
+                                String errorMsg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
+                                ShowMessage.showInfoMessage("删除失败", "删除学生失败: " + errorMsg);
+                            }
+                        } catch (Exception e) {
+                            JsonObject res  = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                            ShowMessage.showInfoMessage("处理错误", res.get("msg").getAsString());
+                        }
+
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            JsonObject res  = gson.fromJson(ex.getMessage().substring(ex.getMessage().indexOf("{")), JsonObject.class);
+                            ShowMessage.showInfoMessage("处理错误", res.get("msg").getAsString());
+
+                        });
+                        return null;
+                    });
             
-            loadStudentsFromApi(Math.max(1, currentPage));
         }
     }
 

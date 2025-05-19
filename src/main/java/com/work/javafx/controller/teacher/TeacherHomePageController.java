@@ -556,7 +556,7 @@ public class TeacherHomePageController implements Initializable {
 
     private void deleteNotice(int noticeId) {
 
-        System.out.println("尝试删除公告 ID: " + noticeId);
+
 
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationDialog.setTitle("确认删除");
@@ -565,11 +565,11 @@ public class TeacherHomePageController implements Initializable {
 
         confirmationDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                Map<String, Object> params = new HashMap<>();
-                params.put("id", noticeId);
-                String jsonRequestBody = gson.toJson(params);
+                Map<String, String> params = new HashMap<>();
+                params.put("id", noticeId+"");
 
-                NetworkUtils.post("/notice/delete", jsonRequestBody, new NetworkUtils.Callback<String>() {
+
+                NetworkUtils.post("/notice/close", params, "" , new NetworkUtils.Callback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         Platform.runLater(() -> {

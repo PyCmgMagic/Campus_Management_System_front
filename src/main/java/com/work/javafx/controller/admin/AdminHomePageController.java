@@ -15,11 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Button;
 import javafx.stage.Modality;
 
 import javafx.stage.Stage;
@@ -32,10 +31,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
+
 import javafx.scene.layout.Priority;
-import javafx.scene.control.DialogPane;
+
 import java.lang.reflect.Method;
 
 /**
@@ -410,8 +408,43 @@ public class AdminHomePageController implements Initializable {
      * @param noticeId 被删除公告的ID
      */
     private void deleteNotice(int noticeId) {
-        System.out.println("删除公告 ID: " + noticeId);
-        // TODO: 在此实现删除逻辑，需要在成功后调用 loadNotices() 刷新列表
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("确认删除");
+        confirmationDialog.setHeaderText("您确定要删除此公告吗？");
+        confirmationDialog.setContentText("ID: " + noticeId);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", noticeId+"");
+
+
+                NetworkUtils.post("/notice/close", params, "" , new NetworkUtils.Callback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Platform.runLater(() -> {
+                            try {
+                                JsonObject res = gson.fromJson(result, JsonObject.class);
+                                if (res.has("code") && res.get("code").getAsInt() == 200) {
+                                    displayInfoMessage("公告删除成功。");
+                                    loadNotices(); // 刷新列表
+                                } else {
+                                    String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
+                                    displayErrorMessage("删除失败: " + msg);
+                                }
+                            } catch (JsonParseException e) {
+                                displayErrorMessage("删除失败: 响应格式错误。");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Platform.runLater(() -> displayErrorMessage("删除失败: " + e.getMessage()));
+                    }
+                });
+            }
+        });
     }
 
 
