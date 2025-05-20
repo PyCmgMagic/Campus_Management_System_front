@@ -116,6 +116,11 @@ public class editCourseController implements Initializable {
      */
     public void initCourseData(UltimateCourse course){
         loadCourseDetails(course.getId());
+    } /***
+     * 接受课程id并获取数据
+     */
+    public void initCourseId(int courseid){
+        loadCourseDetails(courseid);
     }
     /***
      * 获取课程信息
