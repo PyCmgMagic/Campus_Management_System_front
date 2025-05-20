@@ -3,6 +3,8 @@ package com.work.javafx.controller.admin;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.work.javafx.controller.teacher.StudentListViewController;
+import com.work.javafx.controller.teacher.editCourseController;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -26,10 +28,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.application.Platform;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -543,14 +547,94 @@ public class ClassManagementController implements Initializable {
         int actualIndex = index;
         if (actualIndex < 0 || actualIndex >= filteredClassInfo.size()) return;
         ClassInfo selectedClass = filteredClassInfo.get(actualIndex);
-        showInfoDialog("查看班级", "查看班级: " + selectedClass.getName() + "\n(详情页面待实现)");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/ClassStudentListView.fxml"));
+            Parent root = loader.load();
+
+            // 获取新窗口的控制器
+            ClassStudentListViewController controller = loader.getController();
+
+            // 检查控制器是否成功获取
+            if (controller == null) {
+                System.err.println("无法获取 ClassStudentListViewController 控制器实例。");
+                // 可以显示一个错误提示给用户
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("内部错误");
+                alert.setHeaderText(null);
+                alert.setContentText("无法加载学生列表界面控制器。");
+                alert.showAndWait();
+                return; // 提前退出
+            }
+
+            // 将课程信息传递给新窗口的控制器并加载数据
+            controller.initializeData(selectedClass.getId()+"");
+
+            // 创建新窗口 (Stage)
+            Stage studentListStage = new Stage();
+            studentListStage.initModality(Modality.APPLICATION_MODAL);
+            studentListStage.initStyle(StageStyle.DECORATED);
+            studentListStage.setTitle("学生名单 - " + selectedClass.getName());
+            studentListStage.setScene(new Scene(root));
+
+            studentListStage.setMinWidth(600);
+            studentListStage.setMinHeight(400);
+
+            // 显示窗口并等待用户关闭它
+            studentListStage.showAndWait();
+
+        } catch (IOException e) {
+            System.err.println("无法加载学生名单窗口 FXML: " + e.getMessage());
+            e.printStackTrace();
+            // 向用户显示错误提示
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("加载错误");
+            alert.setHeaderText(null);
+            // 更具体的错误消息
+            alert.setContentText("加载学生名单界面文件时出错: " + e.getMessage());
+            alert.showAndWait();
+        } catch (Exception e) {
+            System.err.println("显示学生名单窗口时发生错误: " + e.getMessage());
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("运行时错误");
+            alert.setHeaderText(null);
+            alert.setContentText("显示学生名单时遇到未知错误: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     private void editClass(int index) {
         int actualIndex = index;
         if (actualIndex < 0 || actualIndex >= filteredClassInfo.size()) return;
         ClassInfo selectedClass = filteredClassInfo.get(actualIndex);
-        showInfoDialog("编辑班级", "编辑班级: " + selectedClass.getName() + "\n(编辑功能待实现)");
+        try {
+            // 加载新课程申请窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewClass.fxml"));
+            Parent root = loader.load();
+
+            // 获取控制器
+            AddNewClassController controller = loader.getController();
+
+            // 创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            popupStage.initStyle(StageStyle.DECORATED);
+            popupStage.setTitle("编辑课程");
+            popupStage.setScene(new Scene(root));
+
+
+            // 将窗口引用传递给控制器
+            controller.initClassId(Integer.parseInt(selectedClass.getId()));
+            controller.setStage(popupStage);
+
+            // 显示窗口
+            popupStage.showAndWait();
+
+            loadTableData(classPagination.getCurrentPageIndex());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteClass(int index) {

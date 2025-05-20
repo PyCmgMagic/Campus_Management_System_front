@@ -20,15 +20,18 @@ public class AddNewClassController implements Initializable {
 
     @FXML private VBox rootPane;
     @FXML private TextField advisorIdField;
+    @FXML private TextField idField;
     @FXML private TextField numberField;
     @FXML private ComboBox<String> majorComboBox;
     @FXML private ComboBox<String> gradeComboBox;
     @FXML private Button submitButton;
     @FXML private Button cancelButton;
     @FXML private Label statusLabel;
+    @FXML private Label titleLabel;
 
     private boolean isSaving = false;
-
+    private  int ClassID = -1;
+    private Stage stage;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         majorComboBox.setItems(FXCollections.observableArrayList(
@@ -49,10 +52,20 @@ public class AddNewClassController implements Initializable {
         // Initialize buttons
         cancelButton.setOnAction(e -> closeDialog());
         submitButton.setOnAction(e -> submitForm());
+        if(ClassID != -1){
+            titleLabel.setText("编辑班级");
+        }
     }
-    
+    /**
+     * 接受班级id
+     */
+    public void initClassId(int ClassID){
+        this.ClassID = ClassID;
+        if(ClassID != -1){
+            titleLabel.setText("编辑班级");
+        }
+    }
     private void setupValidationListeners() {
-        // Validate number field to only allow digits
         numberField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 numberField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -164,5 +177,8 @@ public class AddNewClassController implements Initializable {
     private void closeDialog() {
         Stage stage = (Stage) rootPane.getScene().getWindow();
         stage.close();
+    }
+    public void setStage(Stage stage){
+        this.stage = stage;
     }
 }

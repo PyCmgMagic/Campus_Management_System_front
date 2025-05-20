@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" styleClass="student-list-view" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.ClassStudentListViewController">
+
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <TableView fx:id="studentTable" stylesheets="@../css/teacher/StudentListView.css" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" minWidth="5.0" prefWidth="120.79998636245728" text="学生id" />
+            <TableColumn fx:id="sduidColumn" prefWidth="260.80005645751953" text="学号" />
+            <TableColumn fx:id="usernameColumn" prefWidth="250" text="姓名" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
+</VBox>

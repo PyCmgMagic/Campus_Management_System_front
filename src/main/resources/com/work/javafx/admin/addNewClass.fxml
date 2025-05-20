@@ -19,7 +19,7 @@
         <URL value="@../css/admin/addNewClass.css" />
     </stylesheets>
 
-    <Label text="添加新班级" styleClass="form-title">
+    <Label fx:id="titleLabel" text="添加新班级" styleClass="form-title">
         <font>
             <Font name="System Bold" size="18.0"/>
         </font>
