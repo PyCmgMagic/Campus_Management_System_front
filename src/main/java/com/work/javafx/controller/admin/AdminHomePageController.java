@@ -372,7 +372,7 @@ public class AdminHomePageController implements Initializable {
             popupStage.setMinHeight(550); // 设置最小高度
 
             controller.setStage(popupStage);
-
+            controller.setOnPublishCompleteCallback(this::loadNotices);
             popupStage.showAndWait(); // 显示窗口并等待其关闭
         } catch (IOException e) {
             e.printStackTrace(); // 打印加载FXML时的IO异常
