@@ -7,6 +7,7 @@ import com.work.javafx.util.ShowMessage;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -35,6 +36,8 @@ public class AddNewAnnouncementController implements Initializable {
     private Button submitButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private HBox visbleHbox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -43,6 +46,9 @@ public class AddNewAnnouncementController implements Initializable {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+    public void initVisble(boolean v){
+            visbleHbox.setVisible(v);
     }
 
     // 公共回调设置方法

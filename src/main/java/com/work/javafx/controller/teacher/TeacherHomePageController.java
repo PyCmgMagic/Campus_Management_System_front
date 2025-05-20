@@ -507,8 +507,9 @@ public class TeacherHomePageController implements Initializable {
             popupStage.setScene(new Scene(root, 800, 600));
             popupStage.setMinWidth(700);
             popupStage.setMinHeight(550);
-
+            controller.initVisble(false);
             controller.setStage(popupStage);
+
             controller.setOnPublishCompleteCallback(this::loadNotices);
 
             popupStage.showAndWait();

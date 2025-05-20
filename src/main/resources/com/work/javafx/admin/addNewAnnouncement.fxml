@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
@@ -13,24 +13,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="750.0"
-            styleClass="root-pane"
-            stylesheets="@../css/admin/addNewAnnouncement.css"
-            xmlns="http://javafx.com/javafx/19"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.work.javafx.controller.admin.AddNewAnnouncementController">
+<AnchorPane prefHeight="600.0" prefWidth="750.0" styleClass="root-pane" stylesheets="@../css/admin/addNewAnnouncement.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.AddNewAnnouncementController">
 
     <children>
         <!-- 主内容容器 -->
-        <VBox alignment="TOP_CENTER"
-              AnchorPane.bottomAnchor="30.0"
-              AnchorPane.leftAnchor="30.0"
-              AnchorPane.rightAnchor="30.0"
-              AnchorPane.topAnchor="30.0"
-              spacing="20">
+        <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
 
             <!-- 表单标题 -->
-            <Label text="发布新公告" styleClass="form-title"/>
+            <Label styleClass="form-title" text="发布新公告" />
 
             <!-- 表单内容 -->
             <VBox spacing="15" style="-fx-padding: 0 20px;">
@@ -40,7 +30,7 @@
                         <Label styleClass="form-label" text="公告标题" />
                         <Text styleClass="required-mark" text="*" />
                     </HBox>
-                    <TextField fx:id="titleField" promptText="请输入公告标题（最多50个字符）"/>
+                    <TextField fx:id="titleField" promptText="请输入公告标题（最多50个字符）" />
                 </VBox>
 
                 <!-- 内容输入 -->
@@ -49,51 +39,35 @@
                         <Label styleClass="form-label" text="公告内容" />
                         <Text styleClass="required-mark" text="*" />
                     </HBox>
-                    <TextArea fx:id="contentArea"
-                              minHeight="150.0"
-                              prefHeight="200.0"
-                              promptText="请输入公告内容..."
-                              wrapText="true"/>
+                    <TextArea fx:id="contentArea" minHeight="150.0" prefHeight="200.0" promptText="请输入公告内容..." wrapText="true" />
                 </VBox>
 
                 <!-- 分隔线 -->
-                <Separator styleClass="separator"/>
+                <Separator styleClass="separator" />
 
                 <!-- 可见范围 -->
-                <HBox styleClass="form-row">
-                    <Label styleClass="form-label" text="可见范围:" minWidth="80.0"/>
+                <HBox fx:id="visbleHbox" styleClass="form-row">
+                    <Label minWidth="80.0" styleClass="form-label" text="可见范围:" />
                     <HBox spacing="20">
-                        <RadioButton fx:id="teachersOnlyRadio"
-                                     styleClass="form-radio-button"
-                                     text="仅教师可见">
+                        <RadioButton fx:id="teachersOnlyRadio" styleClass="form-radio-button" text="仅教师可见">
                             <toggleGroup>
-                                <ToggleGroup fx:id="visibleScopeToggleGroup"/>
+                                <ToggleGroup fx:id="visibleScopeToggleGroup" />
                             </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="allUsersRadio"
-                                     selected="true"
-                                     styleClass="form-radio-button"
-                                     text="所有用户可见"
-                                     toggleGroup="$visibleScopeToggleGroup"/>
+                        <RadioButton fx:id="allUsersRadio" selected="true" styleClass="form-radio-button" text="所有用户可见" toggleGroup="$visibleScopeToggleGroup" />
                     </HBox>
                 </HBox>
 
                 <!-- 公告设置 -->
                 <HBox styleClass="form-row">
-                    <Label styleClass="form-label" text="公告设置:" minWidth="80.0"/>
-                    <CheckBox fx:id="isTopCheckBox" styleClass="form-checkbox" text="置顶公告"/>
+                    <Label minWidth="80.0" styleClass="form-label" text="公告设置:" />
+                    <CheckBox fx:id="isTopCheckBox" styleClass="form-checkbox" text="置顶公告" />
                 </HBox>
 
                 <!-- 按钮区域 -->
                 <HBox alignment="CENTER_RIGHT" spacing="15" styleClass="button-container">
-                    <Button fx:id="cancelButton"
-                            onAction="#handleCancel"
-                            styleClass="cancel-button"
-                            text="取消"/>
-                    <Button fx:id="submitButton"
-                            onAction="#handleSubmit"
-                            styleClass="submit-button"
-                            text="发布公告"/>
+                    <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="cancel-button" text="取消" />
+                    <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="submit-button" text="发布公告" />
                 </HBox>
             </VBox>
         </VBox>
