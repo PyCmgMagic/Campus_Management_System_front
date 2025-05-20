@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.work.javafx.controller.teacher.CourseManagementContent;
+import com.work.javafx.controller.teacher.editCourseController;
 import com.work.javafx.entity.Data;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
@@ -34,6 +35,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -666,7 +668,34 @@ public class CourseManagementController implements Initializable {
 
     private void editCourse(int index) {
         Course course = courseTable.getItems().get(index);
-        showInfoDialog("编辑课程", "编辑课程: " + course.getName());
+        try {
+            // 加载新课程申请窗口
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/teacher/editCourse.fxml"));
+            Parent root = loader.load();
+
+            // 获取控制器
+            editCourseController controller = loader.getController();
+
+            // 创建新窗口
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // 设置为模态窗口
+            popupStage.initStyle(StageStyle.DECORATED);
+            popupStage.setTitle("编辑课程");
+            popupStage.setScene(new Scene(root, 800, 600));
+
+            // 设置最小窗口大小
+            popupStage.setMinWidth(700);
+            popupStage.setMinHeight(550);
+
+            // 将窗口引用传递给控制器
+            controller.initCourseId(Integer.parseInt(course.getCode()));
+            controller.setStage(popupStage);
+
+            // 显示窗口
+            popupStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void stopCourse(int index) {

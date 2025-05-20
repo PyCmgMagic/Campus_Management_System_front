@@ -39,7 +39,7 @@ public class StudentListViewController {
         // 初始化 TableView 列与 StudentInfo 属性的绑定
         idColumn.setCellValueFactory(new PropertyValueFactory<>("sduid"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-        sectionNumberColumn.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
+        sectionNumberColumn.setCellValueFactory(new PropertyValueFactory<>("majorAndNumber"));
 
         // 设置 TableView 的数据源
         studentTable.setItems(studentList);
@@ -121,7 +121,27 @@ public class StudentListViewController {
         private String username;
         private int sectionNumber;
         private String sduid;
+        private String major;
+        private String number;
 
+        public String getMajor() {
+            return major;
+        }
+
+        public void setMajor(String major) {
+            this.major = major;
+        }
+
+        public String getNumber() {
+            return number;
+        }
+
+        public void setNumber(String number) {
+            this.number = number;
+        }
+        public String getMajorAndNumber(){
+            return major+number;
+        }
         public int getId() {
             return id;
         }
@@ -153,15 +173,16 @@ public class StudentListViewController {
         public void setSectionNumber(int sectionNumber) {
             this.sectionNumber = sectionNumber;
         }
-        
-        public StudentInfo(int id, String username, int sectionNumber,String sduid) {
+
+        public StudentInfo(int id, String username, int sectionNumber, String sduid, String major, String number) {
             this.id = id;
             this.username = username;
             this.sectionNumber = sectionNumber;
             this.sduid = sduid;
+            this.major = major;
+            this.number = number;
         }
-        
-        // Gson 需要无参构造函数（或者确保所有字段都有Setter）
+
         public StudentInfo() {}
     }
 }
