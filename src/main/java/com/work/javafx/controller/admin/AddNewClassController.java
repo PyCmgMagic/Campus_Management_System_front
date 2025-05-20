@@ -106,7 +106,7 @@ public class AddNewClassController implements Initializable {
                             statusLabel.setText("保存失败: " + errorMsg);
                         }
                     } catch (Exception e) {
-                        showAlert(Alert.AlertType.ERROR, "处理错误", "无法处理服务器响应: " + e.getMessage());
+                        showAlert(Alert.AlertType.ERROR, "处理错误", "数据填写有误");
                         isSaving = false;
                         submitButton.setDisable(false);
                         statusLabel.setText("处理错误");
