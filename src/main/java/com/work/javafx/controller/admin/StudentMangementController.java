@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.work.javafx.model.Student;
+import com.work.javafx.model.TeacherInfo;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -25,6 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.work.javafx.util.NetworkUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -181,19 +183,24 @@ public class StudentMangementController implements Initializable {
         actionColumn.setCellFactory(column -> new TableCell<Student, Student>() {
             private final Button viewBtn = new Button();
             private final Button deleteBtn = new Button();
-            private final HBox actionsBox = new HBox(10, viewBtn, deleteBtn);
+            private final Button resetBtn = new Button();
+            private final HBox actionsBox = new HBox(10, viewBtn, resetBtn,deleteBtn);
             
             {
                 // 初始化按钮样式和提示
                 viewBtn.getStyleClass().addAll("table-button", "default-btn");
+                resetBtn.getStyleClass().addAll("table-button", "default-btn");
                 deleteBtn.getStyleClass().addAll("table-button", "danger-btn");
-
+                Tooltip tooltip = new Tooltip("重置密码");
+                resetBtn.setTooltip(tooltip);
                 // 添加图标
                 Region viewIcon = new Region();
                 viewIcon.getStyleClass().add("view-icon");
                 viewBtn.setGraphic(viewIcon);
 
-
+                Region editIcon = new Region();
+                editIcon.getStyleClass().add("edit-icon");
+                resetBtn.setGraphic(editIcon);
                 Region deleteIcon = new Region();
                 deleteIcon.getStyleClass().add("delete-icon");
                 deleteBtn.setGraphic(deleteIcon);
@@ -215,6 +222,8 @@ public class StudentMangementController implements Initializable {
                 } else {
                     viewBtn.setOnAction(e -> handleViewStudent(student));
                     deleteBtn.setOnAction(e -> handleDeleteStudent(student));
+                    resetBtn.setOnAction(e -> resetPassword(student));
+
                     setGraphic(actionsBox);
                 }
             }
@@ -856,6 +865,33 @@ public class StudentMangementController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-    
+    private void resetPassword(Student student) {
+
+        String studentId = student.getId();
+        if (ShowMessage.showConfirmMessage("确认操作", "确定要重置学生 " + student.getName() + " (学号: "+ student.getSduid() +") 的密码吗？")) {
+            Map<String,String> params = new HashMap<>();
+            params.put("userId",student.getId());
+            NetworkUtils.post("/user/resetPassword", params, "", new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) throws IOException {
+                    JsonObject res = gson.fromJson(result,JsonObject.class);
+                    if(res.get("code").getAsInt() == 200){
+                        ShowMessage.showInfoMessage("操作成功", "已重置学生 " + student.getName() + " 的密码(123456)");
+                    }else{
+                        ShowMessage.showErrorMessage("操作失败",res.get("msg").getAsString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                    ShowMessage.showErrorMessage("重置失败",res.get("msg").getAsString());
+                }
+            });
+
+        }
+    }
+
+
 
 }

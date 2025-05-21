@@ -30,6 +30,7 @@ import javafx.util.Callback;
 import com.work.javafx.model.TeacherInfo;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -136,6 +137,7 @@ public class TeacherManagementController implements Initializable {
 
                         viewBtn.setOnAction(event -> viewTeacher(getTableRow().getIndex()));
                         deleteBtn.setOnAction(event -> deleteTeacher(getTableRow().getIndex()));
+                        resetBtn.setOnAction(event -> resetPassword(getTableRow().getIndex()));
                     }
 
                     @Override
@@ -477,8 +479,25 @@ public class TeacherManagementController implements Initializable {
         TeacherInfo selectedTeacher = teacherTable.getItems().get(rowIndex);
         String teacherId = selectedTeacher.getId();
         if (showConfirmDialog("确认操作", "确定要重置教师 " + selectedTeacher.getName() + " (工号: "+ selectedTeacher.getSduid() +") 的密码吗？")) {
-            // TODO: 调用 API POST /admin/teacher/resetPassword/{sduid} ? 需要确认 API 路径中使用的 ID
-                ShowMessage.showInfoMessage("操作成功", "已重置教师 " + selectedTeacher.getName() + " 的密码。(模拟)");
+            Map<String,String> params = new HashMap<>();
+            params.put("userId",selectedTeacher.getId());
+            NetworkUtils.post("/user/resetPassword", params, "", new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) throws IOException {
+                    JsonObject res = gson.fromJson(result,JsonObject.class);
+                    if(res.get("code").getAsInt() == 200){
+                        ShowMessage.showInfoMessage("操作成功", "已重置教师 " + selectedTeacher.getName() + " 的密码(123456)");
+                    }else{
+                        ShowMessage.showErrorMessage("操作失败",res.get("msg").getAsString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                    ShowMessage.showErrorMessage("重置失败",res.get("msg").getAsString());
+                }
+            });
 
         }
     }
