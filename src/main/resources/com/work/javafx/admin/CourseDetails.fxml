@@ -53,6 +53,7 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <Label styleClass="field-label" text="课程编号" />
@@ -67,6 +68,8 @@
                                     <Label fx:id="creditLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <Label styleClass="field-label" text="授课教师ID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     <Label fx:id="teacherIdLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <Label styleClass="field-label" text="课序号" GridPane.rowIndex="3" />
+                                    <Label fx:id="classNumLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
                            </children>

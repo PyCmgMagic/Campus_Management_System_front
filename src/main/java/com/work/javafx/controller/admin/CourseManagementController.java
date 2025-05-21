@@ -39,9 +39,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CourseManagementController implements Initializable {
@@ -598,7 +596,7 @@ public class CourseManagementController implements Initializable {
         File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
         if (file != null) {
             // 导出课程数据到Excel
-            showInfoDialog("导出成功", "课程数据已成功导出到: " + file.getAbsolutePath());
+            ShowMessage.showInfoMessage("导出成功", "课程数据已成功导出到: " + file.getAbsolutePath());
         }
     }
 
@@ -606,14 +604,14 @@ public class CourseManagementController implements Initializable {
     private void batchStopCourses() {
         List<Course> selectedCourses = getSelectedCourses();
         if (selectedCourses.isEmpty()) {
-            showErrorDialog("操作失败", "请先选择要停开的课程");
+            ShowMessage.showErrorMessage("操作失败", "请先选择要停开的课程");
             return;
         }
 
         if (showConfirmDialog("确认操作", "确定要停开已选择的 " + selectedCourses.size() + " 门课程吗？")) {
             selectedCourses.forEach(course -> course.setIsActive(false));
             courseTable.refresh();
-            showInfoDialog("操作成功", "已拒绝 " + selectedCourses.size() + " 门课程");
+            ShowMessage.showInfoMessage("操作成功", "已拒绝 " + selectedCourses.size() + " 门课程");
         }
     }
 
@@ -621,11 +619,11 @@ public class CourseManagementController implements Initializable {
     private void batchEditCourses() {
         List<Course> selectedCourses = getSelectedCourses();
         if (selectedCourses.isEmpty()) {
-            showErrorDialog("操作失败", "请先选择要修改的课程");
+            ShowMessage.showErrorMessage("操作失败", "请先选择要修改的课程");
             return;
         }
 
-        showInfoDialog("功能提示", "批量修改功能将在后续版本开放");
+        ShowMessage.showInfoMessage("功能提示", "批量修改功能将在后续版本开放");
     }
 
     // 获取选中的课程
@@ -702,14 +700,14 @@ public class CourseManagementController implements Initializable {
         Course course = courseTable.getItems().get(index);
 
         if (!course.getIsActive()) {
-            showInfoDialog("操作提示", "该课程已经处于停开状态");
+            ShowMessage.showInfoMessage("操作提示", "该课程已经处于停开状态");
             return;
         }
 
         if (showConfirmDialog("确认操作", "确定要停开课程 " + course.getName() + " 吗？")) {
             course.setIsActive(false);
             courseTable.refresh();
-            showInfoDialog("操作成功", "已拒绝课程: " + course.getName());
+            ShowMessage.showInfoMessage("操作成功", "已拒绝课程: " + course.getName());
         }
     }
 
@@ -745,52 +743,182 @@ public class CourseManagementController implements Initializable {
         }
     }
 
+    private void fetchAvailableClasses(java.util.function.Consumer<List<ClassSimpleInfo>> callback) {
+        String classesUrl = "/section/getSectionListAll?page=1&size=500";
+        NetworkUtils.get(classesUrl, new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JsonObject res = gson.fromJson(result, JsonObject.class);
+                    if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
+                        java.lang.reflect.Type listType = new TypeToken<ArrayList<ClassSimpleInfo>>(){}.getType();
+                        JsonObject data = res.getAsJsonObject("data");
+                        List<ClassSimpleInfo> fetchedClasses = gson.fromJson(data.get("section"), listType);
+                        callback.accept(fetchedClasses);
+                    } else {
+                        ShowMessage.showErrorMessage("获取班级失败", "无法解析班级列表: " + (res.has("msg") ? res.get("msg").getAsString() : "格式错误"));
+                        callback.accept(new ArrayList<>());
+                    }
+                } catch (Exception ex) {
+                    JsonObject res = gson.fromJson(ex.getMessage().substring(ex.getMessage().indexOf("{")), JsonObject.class);
+                    ShowMessage.showErrorMessage("获取班级失败", "网络请求获取班级列表失败: " + res.get("msg").getAsString());
+                    callback.accept(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                ShowMessage.showErrorMessage("获取班级失败", "网络请求获取班级列表失败: " + res.get("msg").getAsString());
+                callback.accept(new ArrayList<>());
+            }
+        });
+    }
     private void approveCourse(int index) {
         CourseApplication application = pendingCourseTable.getItems().get(index);
 
         if (showConfirmDialog("确认操作", "确定要通过课程 " + application.getName() + " 的申请吗？")) {
-            // 发送批准请求到后端
-            String url = "/class/approve/"+application.getId()+"?status=1&classNum="+application.getClassNum();
-            NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    JsonObject res = gson.fromJson(result, JsonObject.class);
+            if(application.getType().equals("必修")){
+            fetchAvailableClasses(availableClasses -> {
+                if (availableClasses == null || availableClasses.isEmpty()) {
+                    ShowMessage.showErrorMessage("操作失败", "无法获取可用班级列表或列表为空。");
+                    return;
+                }
 
-                    if (res.has("code") && res.get("code").getAsInt() == 200) {
-                        // 添加到课程表
-                        Course newCourse = new Course(
-                                String.valueOf(application.getId()),
-                                application.getName(),
-                                application.getCollege(),
-                                application.getPoint(),
-                                application.getType(),
-                                String.valueOf(application.getTeacherId()),
-                                true
-                        );
+                // 步骤3: 创建并显示自定义对话框
+                Dialog<ClassSimpleInfo> dialog = new Dialog<>();
+                dialog.setTitle("选择班级");
+                dialog.setHeaderText("请为课程 '" + application.getName() + "' 选择一个班级进行绑定。");
 
-                        allCourses.add(newCourse);
+                // 设置按钮
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                        // 从待审批列表中移除
-                        pendingCourses.remove(application);
+                // 创建 ComboBox
+                ComboBox<ClassSimpleInfo> classComboBox = new ComboBox<>();
+                classComboBox.setItems(FXCollections.observableArrayList(availableClasses));
+                classComboBox.setPromptText("请选择班级");
+                if (!availableClasses.isEmpty()) {
+                    classComboBox.setValue(availableClasses.get(0)); // 默认选中第一个
+                }
 
-                        // 刷新数据
-                        applyFilters();
-                        updatePendingBadge();
-                        updatePendingPageInfo();
-                        pendingCourseTable.setItems(pendingCourses);
-                        pendingCourseTable.refresh();
+                // 设置对话框内容
+                VBox vbox = new VBox(10); // 10是间距
+                vbox.getChildren().addAll(new Label("选择要绑定的班级:"), classComboBox);
+                dialog.getDialogPane().setContent(vbox);
 
-                        showInfoDialog("操作成功", "已批准课程申请: " + application.getName());
-                    } else {
-                        showErrorDialog("操作失败", "批准课程失败: " + res.get("msg").getAsString());
+                // 启用/禁用 OK 按钮，直到选择了班级
+                javafx.scene.Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(classComboBox.getValue() == null); // 如果初始没选中，则禁用
+                classComboBox.valueProperty().addListener((obs, oldVal, newVal) -> okButton.setDisable(newVal == null));
+
+
+                // 步骤4: 处理对话框结果
+                // 将结果转换为 ClassInfo 对象
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        return classComboBox.getValue();
                     }
-                }
+                    return null;
+                });
 
-                @Override
-                public void onFailure(Exception e) {
-                    showErrorDialog("操作失败",   e.getMessage());
-                }
+                Optional<ClassSimpleInfo> result = dialog.showAndWait();
+
+                result.ifPresent(selectedClass -> {
+                    // 步骤5: 用户选择了班级并点击了OK，发送批准请求
+                    String selectedClassId = selectedClass.getId()+""; // 获取选中的班级ID
+                    Map<String,String> params = new HashMap<>();
+                    params.put("status","1");
+                    params.put("ccourseId",selectedClassId);
+                    String url = "/class/approve/" + application.getId();
+                    NetworkUtils.post(url,params, "", new NetworkUtils.Callback<String>() {
+                        @Override
+                        public void onSuccess(String responseResult) { // 参数名改一下避免和外部的result冲突
+                            JsonObject res = gson.fromJson(responseResult, JsonObject.class);
+
+                            if (res.has("code") && res.get("code").getAsInt() == 200) {
+                                // 添加到课程表
+                                Course newCourse = new Course(
+                                        String.valueOf(application.getId()),
+                                        application.getName(),
+                                        application.getCollege(),
+                                        application.getPoint(),
+                                        application.getType(),
+                                        String.valueOf(application.getTeacherId()),
+                                        true
+
+                                );
+
+                                allCourses.add(newCourse);
+
+                                // 从待审批列表中移除
+                                pendingCourses.remove(application);
+
+                                // 刷新数据
+                                applyFilters();
+                                updatePendingBadge();
+                                updatePendingPageInfo();
+                                pendingCourseTable.setItems(pendingCourses); // 确保 pendingCourses 是 ObservableList
+                                pendingCourseTable.refresh();
+
+                                ShowMessage.showInfoMessage("操作成功", "已批准课程申请: " + application.getName() + " 并绑定到班级: " + selectedClass.getName());
+                            } else {
+                                ShowMessage.showErrorMessage("操作失败", "批准课程失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            ShowMessage.showErrorMessage("操作失败", e.getMessage());
+                        }
+                    });
+                });
             });
+            }else{
+                Map<String,String> params = new HashMap<>();
+                params.put("status","1");
+                String url = "/class/approve/" + application.getId();
+                NetworkUtils.post(url,params, "", new NetworkUtils.Callback<String>() {
+                    @Override
+                    public void onSuccess(String responseResult) { // 参数名改一下避免和外部的result冲突
+                        JsonObject res = gson.fromJson(responseResult, JsonObject.class);
+
+                        if (res.has("code") && res.get("code").getAsInt() == 200) {
+                            // 添加到课程表
+                            Course newCourse = new Course(
+                                    String.valueOf(application.getId()),
+                                    application.getName(),
+                                    application.getCollege(),
+                                    application.getPoint(),
+                                    application.getType(),
+                                    String.valueOf(application.getTeacherId()),
+                                    true
+
+                            );
+
+                            allCourses.add(newCourse);
+
+                            // 从待审批列表中移除
+                            pendingCourses.remove(application);
+
+                            // 刷新数据
+                            applyFilters();
+                            updatePendingBadge();
+                            updatePendingPageInfo();
+                            pendingCourseTable.setItems(pendingCourses); // 确保 pendingCourses 是 ObservableList
+                            pendingCourseTable.refresh();
+
+                            ShowMessage.showInfoMessage("操作成功", "已批准课程申请: " + application.getName() );
+                        } else {
+                            ShowMessage.showErrorMessage("操作失败", "批准课程失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        ShowMessage.showErrorMessage("操作失败", e.getMessage());
+                    }
+                });
+            }
         }
     }
 
@@ -824,15 +952,17 @@ public class CourseManagementController implements Initializable {
                         pendingCourseTable.setItems(pendingCourses);
                         pendingCourseTable.refresh();
 
-                        showInfoDialog("操作成功", "已拒绝课程申请: " + application.getName());
+                        ShowMessage.showInfoMessage("操作成功", "已拒绝课程申请: " + application.getName());
+                     
                     } else {
-                        showErrorDialog("操作失败", "拒绝课程失败: " + res.get("msg").getAsString());
+                        ShowMessage.showErrorMessage("操作失败", "拒绝课程失败: " + res.get("msg").getAsString());
                     }
                 }
                 
                 @Override
                 public void onFailure(Exception e) {
-                    showErrorDialog("操作失败", "网络错误: " + e.getMessage());
+                    ShowMessage.showErrorMessage("操作失败", "网络错误: " + e.getMessage());
+                 
                 }
             });
             }else {
@@ -843,22 +973,8 @@ public class CourseManagementController implements Initializable {
     }
     
     // 对话框辅助方法
-    private void showInfoDialog(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-    
-    private void showErrorDialog(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-    
+
+
     private boolean showConfirmDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -870,5 +986,49 @@ public class CourseManagementController implements Initializable {
 
     public void handleTermChange(ActionEvent actionEvent) {
         fetchCourseList(1,ROWS_PER_PAGE);
+    }
+    public static class ClassSimpleInfo {
+        String major;
+        String number;
+        int id;
+
+        public ClassSimpleInfo() {
+        }
+
+        public ClassSimpleInfo(String major, String number, int id) {
+            this.major = major;
+            this.number = number;
+            this.id = id;
+        }
+        public String getName(){
+            return this.major+this.number;
+
+        }
+        public String getMajor() {
+            return major;
+        }
+        @Override
+        public String toString() {
+            return this.major+this.number;
+        }
+        public void setMajor(String major) {
+            this.major = major;
+        }
+
+        public String getNumber() {
+            return number;
+        }
+
+        public void setNumber(String number) {
+            this.number = number;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 }

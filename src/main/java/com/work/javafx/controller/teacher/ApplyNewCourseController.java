@@ -221,6 +221,7 @@ public class ApplyNewCourseController implements Initializable {
         if (isEmpty(classroomField)) errorMessages.append("- 上课教室不能为空\n");
         if (isEmpty(capacityField)) errorMessages.append("- 课容量不能为空\n");
         if (isEmpty(startWeekField)) errorMessages.append("- 开始周不能为空\n");
+        if (isEmpty(courseCodeField)) errorMessages.append("- 课序号不能为空\n");
         if (isEmpty(endWeekField)) errorMessages.append("- 结束周不能为空\n");
         if (isEmpty(classHoursField)) errorMessages.append("- 课时不能为空\n");
         if (isEmpty(departmentField)) errorMessages.append("- 开设学院不能为空\n");
