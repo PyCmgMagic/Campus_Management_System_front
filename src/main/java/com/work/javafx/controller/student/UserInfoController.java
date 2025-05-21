@@ -116,7 +116,7 @@ public class UserInfoController implements Initializable {
             useridLabel.setText(UserSession.getInstance().getSduid());
             admissionLabel.setText(UserSession.getInstance().getAdmission() + "年");
             graduationLabel.setText(UserSession.getInstance().getGraduation() + "年");
-            numberLabel.setText(convertMajorCode(UserSession.getInstance().getMajor()) + UserSession.getInstance().getNumber());
+            numberLabel.setText(UserSession.getInstance().getNumber());
         });
     }
 
@@ -132,7 +132,12 @@ public class UserInfoController implements Initializable {
                     JsonObject dataJson = responseJson.getAsJsonObject("data");
                     JsonObject user = dataJson.getAsJsonObject("user");
                     JsonObject status = dataJson.getAsJsonObject("status");
-                    JsonObject section = dataJson.getAsJsonObject("section");
+                    JsonObject section;
+                    try {
+                         section = dataJson.getAsJsonObject("section");
+                    }catch (Exception e){
+                        section = new JsonObject();
+                    }
                     updateUserSession(user);
                     updateUserSessionforStatus(status);
                     updateUserSessionforSection(section);
@@ -176,11 +181,14 @@ public class UserInfoController implements Initializable {
     }
 
     private void updateUserSessionforSection(JsonObject dataJson){
+        UserSession session = UserSession.getInstance();
        try{
-           UserSession session = UserSession.getInstance();
-           session.setNumber(getJsonValue(dataJson, "number"));
+           session.setNumber(getJsonValue(dataJson, "major")+getJsonValue(dataJson, "number"));
+           if(session.getNumber() .isEmpty()){
+               session.setNumber("无班级");
+           }
        }catch (Exception e){
-           e.printStackTrace();
+           session.setNumber("无班级");
        }
     }
 
