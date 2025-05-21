@@ -231,25 +231,7 @@ public class StudentMangementController implements Initializable {
         // 设置表格选择模式
         studentTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
-    
-    // 创建全选复选框
-    private CheckBox createSelectAllCheckbox() {
-        CheckBox selectAllCheckbox = new CheckBox();
-        selectAllCheckbox.getStyleClass().add("select-all-checkbox");
-        selectAllCheckbox.selectedProperty().bindBidirectional(selectAll);
-        
-        // 当全选框状态变化时更新所有行的选择状态
-        selectAll.addListener((obs, oldVal, newVal) -> {
-            // 更新当前页的所有数据
-            studentTable.getItems().forEach(student -> student.setSelected(newVal));
-            // 如果取消全选，需要将所有数据重置
-            if (!newVal) {
-                masterData.forEach(student -> student.setSelected(false));
-            }
-        });
-        
-        return selectAllCheckbox;
-    }
+
 
     // 初始化分页控件
     private void initializePagination() {
@@ -393,7 +375,7 @@ public class StudentMangementController implements Initializable {
                             }
                             String fullsection = major + sectionStr + "班";
 
-                            String studentApiStatus = "UNKNOWN_STATUS";
+                            String studentApiStatus = "STUDYING";
                             if (studentJson.has("status") && !studentJson.get("status").isJsonNull()) {
                                 studentApiStatus = studentJson.get("status").getAsString();
                             }
@@ -563,9 +545,10 @@ public class StudentMangementController implements Initializable {
                                     }
                                     String fullsection = major + sectionStr + "班";
 
-                                    String studentApiStatus = "UNKNOWN_STATUS";
+                                    String studentApiStatus = "STUDYING";
                                     if (studentJson.has("status") && !studentJson.get("status").isJsonNull()) {
                                         studentApiStatus = studentJson.get("status").getAsString();
+                                        System.out.println(studentApiStatus);
                                     }
                                     String displayStatus = mapStatusValue(studentApiStatus);
 
@@ -679,19 +662,7 @@ public class StudentMangementController implements Initializable {
         }
     }
     
-    // Map display status back to API value if needed for filtering
-    private String mapStatusToApiValue(String displayStatus) {
-        switch (displayStatus) {
-            case "在读":
-                return "STUDYING";
-            case "休学":
-                return "SUSPENDED";
-            case "毕业":
-                return "GRADUATED";
-            default:
-                return "";
-        }
-    }
+
 
     // 获取选中的年级值
     private String getSelectedGradeValue() {

@@ -122,11 +122,7 @@
                   <HBox alignment="CENTER_LEFT" styleClass="list-header">
                      <children>
                         <Label styleClass="list-title" text="学生列表" />
-                        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="list-actions" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#handleBatchDelete" styleClass="danger-btn" text="批量删除" />
-                           </children>
-                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="list-actions" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" styleClass="list-header" VBox.vgrow="ALWAYS">

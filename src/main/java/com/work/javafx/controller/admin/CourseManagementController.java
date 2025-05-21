@@ -622,7 +622,6 @@ public class CourseManagementController implements Initializable {
             ShowMessage.showErrorMessage("操作失败", "请先选择要修改的课程");
             return;
         }
-
         ShowMessage.showInfoMessage("功能提示", "批量修改功能将在后续版本开放");
     }
 
