@@ -99,12 +99,9 @@ static Gson gson = new Gson();
         });
     }
     private void setupComboBoxes() {
-        // Setup semester combo box
         ObservableList<String> semesters = Data.getInstance().getSemesterList();
         semesterComboBox.setItems(semesters);
         semesterComboBox.getSelectionModel().selectFirst();
-
-
     }
 
     private void setupTable() {

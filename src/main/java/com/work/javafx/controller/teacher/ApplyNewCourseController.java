@@ -1,11 +1,13 @@
 package com.work.javafx.controller.teacher;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,10 +15,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ApplyNewCourseController implements Initializable {
     private Stage stage;
@@ -25,7 +26,7 @@ public class ApplyNewCourseController implements Initializable {
     @FXML private TextField courseSubtypeField;
     @FXML private TextField creditsField;
     @FXML private TextField courseCodeField;
-    @FXML private TextField classroomField;
+    @FXML private ComboBox<String> classroomComboBox;
     @FXML private TextField capacityField;
     @FXML private TextField startWeekField;
     @FXML private TextField endWeekField;
@@ -55,7 +56,7 @@ public class ApplyNewCourseController implements Initializable {
         assessmentTypeComboBox.setItems(FXCollections.observableArrayList(
                 "考试", "考查"));
         assessmentTypeComboBox.getSelectionModel().selectFirst();
-        
+        fetchClassRoom();
         // 设置成绩比例初始值
         regularPercentageField.setText("40");
         finalPercentageField.setText("60");
@@ -108,7 +109,39 @@ public class ApplyNewCourseController implements Initializable {
         endWeekField.setText("16");
         departmentField.setText("软件学院");
     }
-    
+    /**
+     * 获取教室列表
+     */
+    private void fetchClassRoom(){
+        NetworkUtils.get("/Teacher/getClassRoom", new NetworkUtils.Callback<String>() {
+             ObservableList<String> classRoomList = FXCollections.observableArrayList();
+
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject  res=  gson.fromJson(result, JsonObject.class);
+                if(res.get("code").getAsInt() == 200){
+                    List<String> Roomlist = new ArrayList<>();
+                    JsonArray data = res.getAsJsonArray("data");
+                    for (int i = 0; i < data.size(); i++) {
+                        Roomlist.add(data.get(i).getAsJsonObject().get("location").getAsString());
+                    }
+                    if(classRoomList != null) {
+                        classRoomList.clear();
+                    }
+                    assert classRoomList != null;
+                    classRoomList.addAll(Roomlist);
+                    classroomComboBox.setItems(classRoomList);
+                    classroomComboBox.getSelectionModel().selectFirst();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res =gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+            }
+        });
+    }
     /**
      * 添加数字输入验证
      * @param textField 文本框
@@ -171,7 +204,7 @@ public class ApplyNewCourseController implements Initializable {
             }
             requestBody.put("point",creditsField.getText());//课程学分
             requestBody.put("classNum",courseCodeField.getText());//课序号
-            requestBody.put("classroom",classroomField.getText());//上课教室
+            requestBody.put("classroom",classroomComboBox.getValue()+"");//上课教室
             requestBody.put("weekStart",startWeekField.getText());//开始周
             requestBody.put("weekEnd",endWeekField.getText());//结束周
             requestBody.put("period",classHoursField.getText());//学时
@@ -218,7 +251,7 @@ public class ApplyNewCourseController implements Initializable {
         // 必填字段验证
         if (isEmpty(courseNameField)) errorMessages.append("- 课程名称不能为空\n");
         if (isEmpty(creditsField)) errorMessages.append("- 学分不能为空\n");
-        if (isEmpty(classroomField)) errorMessages.append("- 上课教室不能为空\n");
+        if ((""+classroomComboBox.getValue()).isEmpty()) errorMessages.append("- 上课教室不能为空\n");
         if (isEmpty(capacityField)) errorMessages.append("- 课容量不能为空\n");
         if (isEmpty(startWeekField)) errorMessages.append("- 开始周不能为空\n");
         if (isEmpty(courseCodeField)) errorMessages.append("- 课序号不能为空\n");
