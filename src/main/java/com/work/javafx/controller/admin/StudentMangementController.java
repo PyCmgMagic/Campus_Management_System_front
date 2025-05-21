@@ -49,7 +49,6 @@ public class StudentMangementController implements Initializable {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> majorComboBox;
     @FXML private ComboBox<String> gradeComboBox;
-    @FXML private ComboBox<String> statusComboBox;
     @FXML private TableView<Student> studentTable;
     @FXML private TableColumn<Student, String> idColumn;
     @FXML private TableColumn<Student, String> nameColumn;
@@ -99,40 +98,30 @@ public class StudentMangementController implements Initializable {
         // 添加专业选项
         majorComboBox.getItems().addAll(
             "全部专业",
-            "计算机科学与技术",
             "软件工程",
-            "电子信息工程",
-            "通信工程",
-            "数学与应用数学",
-            "统计学",
-            "英语"
+            "数字媒体技术",
+            "大数据",
+            "AI"
         );
         majorComboBox.setValue("全部专业");
         
         // 添加年级选项
         gradeComboBox.getItems().addAll(
             "全部年级",
-            "2024级",
-            "2023级",
-            "2022级",
-            "2021级",
-            "2020级"
+            "2024",
+            "2023",
+            "2022",
+            "2021",
+            "2020"
         );
         gradeComboBox.setValue("全部年级");
         
-        // 添加状态选项
-        statusComboBox.getItems().addAll(
-            "全部状态",
-            "在读",
-            "休学",
-            "毕业"
-        );
-        statusComboBox.setValue("全部状态");
+
+
         
         // 添加筛选监听器
         majorComboBox.setOnAction(e -> handleFilterChange());
         gradeComboBox.setOnAction(e -> handleFilterChange());
-        statusComboBox.setOnAction(e -> handleFilterChange());
     }
 
     // 初始化表格列和单元格工厂
@@ -302,7 +291,15 @@ public class StudentMangementController implements Initializable {
         }
         String majorFilter = majorComboBox.getValue();
         if (majorFilter != null && !majorFilter.equals("全部专业")) {
-            params.put("major", majorFilter);
+            if(majorFilter.equals("软件工程")){
+                params.put("major","0");
+            }if(majorFilter.equals("数字媒体技术")){
+                params.put("major","1");
+            }if(majorFilter.equals("大数据")){
+                params.put("major","2");
+            }if(majorFilter.equals("AI")){
+                params.put("major","3");
+            }
         }
 
         // 确保UI被禁用，显示加载状态
@@ -694,7 +691,6 @@ public class StudentMangementController implements Initializable {
         searchField.clear();
         majorComboBox.setValue("全部专业");
         gradeComboBox.setValue("全部年级");
-        statusComboBox.setValue("全部状态");
         loadStudentsFromApi(1);
     }
 

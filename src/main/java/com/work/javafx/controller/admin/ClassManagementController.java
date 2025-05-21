@@ -531,10 +531,7 @@ public class ClassManagementController implements Initializable {
     }
 
 
-    @FXML
-    private void batchDeleteClasses() {
-        showInfoDialog("功能开发中", "批量删除功能将在后续版本开放。");
-    }
+
 
     private void viewClass(int index) {
         int actualIndex = index;

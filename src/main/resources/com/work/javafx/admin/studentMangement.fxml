@@ -105,12 +105,7 @@
                               <ComboBox fx:id="gradeComboBox" prefWidth="150.0" promptText="全部年级" styleClass="filter-select" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label styleClass="filter-label" text="状态" />
-                              <ComboBox fx:id="statusComboBox" prefWidth="150.0" promptText="全部状态" styleClass="filter-select" VBox.vgrow="ALWAYS" />
-                           </children>
-                        </VBox>
+                        <VBox styleClass="filter-group" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>

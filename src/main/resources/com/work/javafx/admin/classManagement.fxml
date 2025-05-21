@@ -29,15 +29,12 @@
                 <HBox fx:id="mainTitleContainer" styleClass="page-title-container">
                     <Label fx:id="mainPageTitle" styleClass="page-title" text="班级管理" />
                 </HBox>
-                <!-- Add other title containers if needed, e.g., for detail views -->
             </VBox>
         </top>
 
         <center>
             <StackPane BorderPane.alignment="CENTER">
-                <!-- Main Classes View -->
                 <VBox fx:id="mainClassesView">
-                    <!-- Quick Actions -->
                     <GridPane styleClass="quick-actions">
                         <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
@@ -72,7 +69,6 @@
                         </BorderPane>
                     </GridPane>
 
-                    <!-- Search and Filter Container -->
                     <VBox styleClass="search-filter-container">
                         <HBox styleClass="search-row">
                             <HBox styleClass="search-input-container" HBox.hgrow="ALWAYS">
@@ -95,7 +91,6 @@
                                 <ComboBox fx:id="gradeFilter" prefWidth="150.0" promptText="全部年级" styleClass="filter-select" />
                             </VBox>
 
-                            <!-- Add more filters if needed -->
                         </GridPane>
                     </VBox>
 
@@ -105,8 +100,7 @@
                             <Label styleClass="list-title" text="班级列表" />
                             <Region HBox.hgrow="ALWAYS" />
                             <HBox styleClass="list-actions">
-                                <!-- Add batch action buttons here if needed -->
-                                <Button fx:id="batchDeleteBtn" onAction="#batchDeleteClasses" styleClass="btn,danger-btn" text="批量删除" />
+                                <Button fx:id="batchDeleteBtn" styleClass="btn,danger-btn" text="批量删除" />
                             </HBox>
                         </HBox>
 
@@ -115,8 +109,7 @@
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                             </columnResizePolicy>
                             <columns>
-                                <!-- Add TableColumn for CheckBox if batch actions are needed -->
-                                <!-- <TableColumn fx:id="selectColumn" prefWidth="40.0" text="" sortable="false"/> -->
+
                                 <TableColumn fx:id="idColumn" prefWidth="100.0" text="班级编号" />
                                 <TableColumn fx:id="nameColumn" prefWidth="150.0" text="班级名称" />
                                 <TableColumn fx:id="departmentColumn" prefWidth="120.0" text="所属院系" />
@@ -136,7 +129,6 @@
                     </VBox>
                 </VBox>
 
-                <!-- Add other views here if needed (e.g., Add/Edit Class View) -->
 
             </StackPane>
         </center>

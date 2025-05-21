@@ -91,12 +91,13 @@ public class AddNewClassController implements Initializable {
         statusLabel.setText("正在保存...");
 
         Map<String, String> params = new HashMap<>();
-        params.put("id","");
         params.put("major", majorComboBox.getValue());
         params.put("advisorId", advisorIdField.getText());
         params.put("grade", gradeComboBox.getValue());
         params.put("number", numberField.getText());
         Gson gson = new Gson();
+        if(ClassID == -1){
+            params.put("id","");
         NetworkUtils.post("/section/addSection",params, "", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -133,6 +134,46 @@ public class AddNewClassController implements Initializable {
                 });
             }
         });
+        }else {
+            params.put("id",ClassID+"");
+            NetworkUtils.post("/section/updateSection",params, "", new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    Platform.runLater(() -> {
+                        try {
+                            JsonObject response = gson.fromJson(result, JsonObject.class);
+
+                            if (response.has("code") && response.get("code").getAsInt() == 200) {
+                                showAlert(Alert.AlertType.INFORMATION, "修改成功", "班级修改成功");
+                                closeDialog();
+                            } else {
+                                String errorMsg = response.has("msg") ? response.get("msg").getAsString() : "未知错误";
+                                showAlert(Alert.AlertType.ERROR, "修改失败", errorMsg);
+                                isSaving = false;
+                                submitButton.setDisable(false);
+                                statusLabel.setText("保存失败: " + errorMsg);
+                            }
+                        } catch (Exception e) {
+                            showAlert(Alert.AlertType.ERROR, "处理错误", "数据填写有误");
+                            isSaving = false;
+                            submitButton.setDisable(false);
+                            statusLabel.setText("处理错误");
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Platform.runLater(() -> {
+                        JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                        showAlert(Alert.AlertType.ERROR, "网络错误", res.get("msg").getAsString());
+                        isSaving = false;
+                        submitButton.setDisable(false);
+                        statusLabel.setText("处理错误");
+                    });
+                }
+            });
+        }
     }
     
     private boolean validateForm() {
