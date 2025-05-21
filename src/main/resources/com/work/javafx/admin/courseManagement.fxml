@@ -86,7 +86,7 @@
                             
                             <VBox styleClass="filter-group" GridPane.columnIndex="0">
                                 <Label styleClass="filter-label" text="学期" />
-                                <ComboBox onAction="#handleTermChange" fx:id="termFilter" prefWidth="150.0" promptText="学期" styleClass="filter-select" />
+                                <ComboBox fx:id="termFilter" onAction="#handleTermChange" prefWidth="150.0" promptText="学期" styleClass="filter-select" />
                             </VBox>
                             
                             <VBox styleClass="filter-group" GridPane.columnIndex="1">
@@ -101,12 +101,9 @@
                     
                     <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
                         <HBox styleClass="list-header">
-                            <Label styleClass="list-title" text="课程列表 (已开设/已停开)" />
+                            <Label styleClass="list-title" text="课程列表 " />
                             <Region HBox.hgrow="ALWAYS" />
-                            <HBox styleClass="list-actions">
-                                <Button fx:id="batchStopBtn" onAction="#batchStopCourses" styleClass="btn,danger-btn" text="批量停开" />
-                                <Button fx:id="batchEditBtn" onAction="#batchEditCourses" styleClass="btn,default-btn" text="批量修改" />
-                            </HBox>
+                            <HBox styleClass="list-actions" />
                         </HBox>
                         
                         <TableView fx:id="courseTable" minHeight="-Infinity" styleClass="course-table" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">

@@ -62,9 +62,7 @@ public class CourseManagementController implements Initializable {
     @FXML private ComboBox<String> termFilter;
     @FXML private ComboBox<String> courseTypeFilter;
 
-    // 批量操作按钮
-    @FXML private Button batchStopBtn;
-    @FXML private Button batchEditBtn;
+
     
     // 主课程表格组件
     @FXML private TableView<Course> courseTable;
@@ -615,15 +613,6 @@ public class CourseManagementController implements Initializable {
         }
     }
 
-    @FXML
-    private void batchEditCourses() {
-        List<Course> selectedCourses = getSelectedCourses();
-        if (selectedCourses.isEmpty()) {
-            ShowMessage.showErrorMessage("操作失败", "请先选择要修改的课程");
-            return;
-        }
-        ShowMessage.showInfoMessage("功能提示", "批量修改功能将在后续版本开放");
-    }
 
     // 获取选中的课程
     private List<Course> getSelectedCourses() {
@@ -706,7 +695,23 @@ public class CourseManagementController implements Initializable {
         if (showConfirmDialog("确认操作", "确定要停开课程 " + course.getName() + " 吗？")) {
             course.setIsActive(false);
             courseTable.refresh();
-            ShowMessage.showInfoMessage("操作成功", "已拒绝课程: " + course.getName());
+            String url = "/class/deleteAd/" + course.getCode();
+            NetworkUtils.post(url, "", new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) throws IOException {
+                    JsonObject res = gson.fromJson(result, JsonObject.class);
+                    if(res.get("code").getAsInt() == 200){
+                        ShowMessage.showInfoMessage("操作成功", "已删除课程: " + course.getName());
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                    ShowMessage.showInfoMessage("操作失败",res.get("msg").getAsString() );
+
+                }
+            });
         }
     }
 
