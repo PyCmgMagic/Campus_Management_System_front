@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -98,7 +99,7 @@ public class HomeContentController implements Initializable {
         }
 
         // 获取当前教学周
-        // 实际应用中应该从系统中获取当前教学周，这里简化为第1周
+        //TODO:
         String currentWeek = "1";
         
         // 构建请求URL和参数
@@ -286,8 +287,7 @@ public class HomeContentController implements Initializable {
     private void loadNotices() {
         Platform.runLater(() -> noticeListContainer.getChildren().clear());
         Map<String, String> params = new HashMap<>();
-        // 学生端通常不需要区分状态，获取所有可见的公告
-        // 如果有特定参数需求，如只显示已发布的，可以在这里添加，例如 params.put("status", "published");
+
 
         NetworkUtils.get("/notice/getStudentNoticeList", params, new NetworkUtils.Callback<String>() {
             @Override
@@ -335,44 +335,20 @@ public class HomeContentController implements Initializable {
                             String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
                             displayErrorMessage("获取公告列表失败: " + msg);
                         }
-                    } catch (JsonParseException e) {
-                        displayErrorMessage("获取公告列表失败: 服务器响应格式错误。");
-                        System.err.println("loadNotices中的JSON解析错误: " + e.getMessage());
                     } catch (Exception e) {
-                        String errorMessage = e.getMessage() != null ? e.getMessage() : "发生未知错误";
-                         try {
-                            if (errorMessage.contains("{") && errorMessage.contains("}")) {
-                                JsonObject errorJson = gson.fromJson(errorMessage.substring(errorMessage.indexOf("{")), JsonObject.class);
-                                if (errorJson.has("msg")) {
-                                    errorMessage = errorJson.get("msg").getAsString();
-                                }
-                            }
-                        } catch (JsonParseException jsonEx) {
-                            // 如果错误消息不是JSON格式，保持原样
-                        }
-                        displayErrorMessage("获取公告列表失败: " + errorMessage);
-                        System.err.println("loadNotices中发生错误: " + e.toString());
-                        e.printStackTrace();
+                        String errorMessage = ResUtil.getMsgFromException(e);
+                        displayErrorMessage("无法加载公告: " + errorMessage);
+
+
                     }
                 });
             }
 
             @Override
             public void onFailure(Exception e) {
-                String errorMessage = e.getMessage() != null ? e.getMessage() : "网络错误";
-                try {
-                     if (errorMessage.contains("{") && errorMessage.contains("}")) {
-                        JsonObject errorJson = gson.fromJson(errorMessage.substring(errorMessage.indexOf("{")), JsonObject.class);
-                         if (errorJson.has("msg")) {
-                            errorMessage = errorJson.get("msg").getAsString();
-                        }
-                    }
-                } catch (JsonParseException jsonEx) {
-                     // 如果错误消息不是JSON格式，保持原样
-                }
+              String errorMessage = ResUtil.getMsgFromException(e);
                 displayErrorMessage("网络错误，无法加载公告: " + errorMessage);
-                System.err.println("loadNotices中网络故障: " + e.toString());
-                e.printStackTrace();
+
             }
         });
     }
@@ -423,10 +399,10 @@ public class HomeContentController implements Initializable {
                 dialogPane.getStylesheets().add(cssResource.toExternalForm());
                 dialogPane.getStyleClass().add("notice-dialog");
             } else {
-                System.err.println("DialogStyles.css not found.");
+                System.err.println("未找到");
             }
         } catch (Exception e) {
-            System.err.println("Error loading CSS for dialog: " + e.getMessage());
+            System.err.println("加载css失败 " + e.getMessage());
         }
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -490,18 +466,8 @@ public class HomeContentController implements Initializable {
 
             @Override
             public void onFailure(Exception e) {
-                System.err.println("获取当前学期网络请求失败: " + e.getMessage());
-                displayTodayCoursesError("网络错误，无法获取当前学期");
-                try {
-                    if (e.getMessage() != null && e.getMessage().contains("{")) {
-                        JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
-                        if (res.has("msg")) {
-                            System.err.println(res.get("msg").getAsString());
-                        }
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                String msg = ResUtil.getMsgFromException(e);
+                System.err.println(msg);
             }
         });
     }

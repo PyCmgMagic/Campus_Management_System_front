@@ -408,9 +408,6 @@ public class CourseScheduleContentController implements Initializable {
         String academicYear = academicYearComboBox.getValue();
         String week = weekComboBox.getValue();
 
-
-        // 这里可以根据查询条件请求后端API获取课表数据
-        // 简单示例：模拟查询操作，重新加载数据
         loadData();
 
         ShowMessage.showInfoMessage("查询成功", "已加载" + academicYear +"第" + week + "周" + "的课表");
@@ -423,7 +420,6 @@ public class CourseScheduleContentController implements Initializable {
     private void printSchedule() {
         System.out.println("打印课表");
         try {
-            // 导入我们新创建的工具类
             com.work.javafx.util.ExportUtils.printNode(
                 scheduleTableView, 
                 academicYearComboBox.getValue() + " " +

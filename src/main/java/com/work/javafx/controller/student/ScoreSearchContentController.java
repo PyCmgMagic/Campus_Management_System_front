@@ -1,6 +1,7 @@
 package com.work.javafx.controller.student;
 
 import com.work.javafx.entity.Data;
+import com.work.javafx.util.ResUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -41,7 +42,6 @@ public class ScoreSearchContentController implements Initializable {
 
     // 查询条件控件
     @FXML private ComboBox<String> academicYearComboBox;
-    @FXML private ComboBox<String> weekCombox;
     @FXML private Button queryButton;
     
     // 导航标签页
@@ -73,7 +73,6 @@ public class ScoreSearchContentController implements Initializable {
     
     // 导出/打印按钮
     @FXML private Button exportButton;
-    @FXML private Button printButton;
 
     // 当前学期成绩数据
     private ObservableList<ScoreRecord> currentSemesterScores = FXCollections.observableArrayList();
@@ -289,8 +288,8 @@ public class ScoreSearchContentController implements Initializable {
                         isLoading = false;
                         queryButton.setDisable(false);
                         queryButton.setText("查询");
-                        ShowMessage.showErrorMessage("解析数据失败", "无法解析服务器返回的数据: " + e.getMessage());
-                        e.printStackTrace();
+                        String msg = ResUtil.getMsgFromException(e);
+                        ShowMessage.showErrorMessage("查询失败", msg);
                     });
                 }
             }
@@ -301,8 +300,8 @@ public class ScoreSearchContentController implements Initializable {
                     isLoading = false;
                     queryButton.setDisable(false);
                     queryButton.setText("查询");
-                    ShowMessage.showErrorMessage("查询失败", "无法从服务器获取成绩数据: " + e.getMessage());
-                    e.printStackTrace();
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("查询失败", msg);
                 });
             }
         });
@@ -361,15 +360,14 @@ public class ScoreSearchContentController implements Initializable {
                     int classNum = getIntFromJson(gradeObject, "classNum", 1);
                     double point = getDoubleFromJson(gradeObject, "point", 0.0);
                     String type = getStringFromJson(gradeObject, "type", "未知");
-                    String courseName = getStringFromJson(gradeObject, "courseName", "未知");
+                    String courseName = getStringFromJson(gradeObject, "className", "未知");
                     int teacherId = getIntFromJson(gradeObject, "teacherId", 0);
                     int regular = getIntFromJson(gradeObject, "regular", 0);  // 平时成绩
                     int finalScore = getIntFromJson(gradeObject, "finalScore", 0);  // 期末成绩
                     
                     // 如果classNum为0，设置为1，避免排名显示问题
                     if (classNum <= 0) classNum = 1;
-                    
-                    // 如果API返回了teacher字段，优先使用API返回的teacher
+
                     String teacherName;
                     if (gradeObject.has("teacher") && !gradeObject.get("teacher").isJsonNull()) {
                         teacherName = gradeObject.get("teacher").getAsString();
@@ -394,12 +392,14 @@ public class ScoreSearchContentController implements Initializable {
                     
                     scoreRecords.add(record);
                 } catch (Exception e) {
-                    System.err.println("解析成绩项时出错: " + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("解析成绩项时出错", msg);
+
                 }
             }
         } catch (Exception e) {
-            System.err.println("解析成绩数据时出错: " + e.getMessage());
-            e.printStackTrace();
+            String msg = ResUtil.getMsgFromException(e);
+            ShowMessage.showErrorMessage("解析成绩数据时出错", msg);
         }
         
         return scoreRecords;
@@ -465,30 +465,7 @@ public class ScoreSearchContentController implements Initializable {
         }
     }
     
-//    /**
-//     * 根据课程ID获取课程名称
-//     */
-//    private String getCourseNameById(int courseId) {
-//        // 直接返回课程ID，不再使用模拟数据
-//        return "课程 " + courseId;
-//    }
-//
-//    /**
-//     * 根据课程ID获取学分
-//     */
-//    private double getCreditsById(int courseId) {
-//        // 默认返回2.0学分，不再使用模拟数据
-//        return 2.0;
-//    }
-//
-//    /**
-//     * 根据教师ID获取教师姓名
-//     */
-//    private String getTeacherNameById(int teacherId) {
-//        // 直接返回教师ID，不再使用模拟数据
-//        return "教师 " + teacherId;
-//    }
-//
+
     /**
      * 更新统计信息
      */
@@ -521,7 +498,8 @@ public class ScoreSearchContentController implements Initializable {
         totalCreditsLabel.setText(String.format("%.1f", totalCredits));
         completedCoursesLabel.setText(String.valueOf(courseCount));
         
-        // 简单处理排名，实际应从API获取
+        // 简单处理排名
+        //TODO:
         rankingLabel.setText("--/--");
     }
     
@@ -570,15 +548,7 @@ public class ScoreSearchContentController implements Initializable {
         // 增强图表交互效果
         enhanceChartInteraction();
     }
-    
-    /**
-     * 获取所有需要查询的学期列表
-     */
-    private List<String> getAllTerms() {
-        List<String> terms = new ArrayList<>();
-        terms.addAll(Data.getInstance().getSemesterList());
-        return terms;
-    }
+
     
     /**
      * 导出成绩为Excel
@@ -634,25 +604,7 @@ public class ScoreSearchContentController implements Initializable {
             ShowMessage.showErrorMessage("导出错误", "导出成绩时发生错误：" + e.getMessage());
         }
     }
-    
-    /**
-     * 打印成绩单
-     */
-    @FXML
-    private void printScores() {
-        System.out.println("打印成绩单");
-        try {
-            // 使用打印工具类进行打印
-            ExportUtils.printNode(
-                scoreTableView,
-                academicYearComboBox.getValue() + "成绩单"
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            ShowMessage.showErrorMessage("打印错误", "打印成绩单时发生错误：" + e.getMessage());
-        }
-    }
-    
+
     /**
      * 初始化统计图表
      */
@@ -749,7 +701,7 @@ public class ScoreSearchContentController implements Initializable {
             }
         } catch (Exception e) {
             System.err.println("增强图表交互效果时出错: " + e.getMessage());
-            e.printStackTrace();
+
         }
     }
 } 

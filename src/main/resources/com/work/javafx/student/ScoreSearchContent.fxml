@@ -139,7 +139,6 @@
                                 <Insets bottom="10" right="15" />
                             </padding>
                             <Button fx:id="exportButton" onAction="#exportScores" styleClass="utility-button" text="导出Excel" />
-                            <Button fx:id="printButton" onAction="#printScores" styleClass="utility-button" text="打印成绩单" />
                         </HBox>
                         
                         <TableView fx:id="scoreTableView" VBox.vgrow="ALWAYS">

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.work.javafx.MainApplication;
 import com.work.javafx.model.UltimateCourse;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,7 +31,6 @@ public class CourseSelectionContentController implements Initializable {
 
     // 选课导航按钮
     @FXML private Button thisTermBtn;
-    @FXML private Button generalCourseBtn;
     @FXML private Button selectedCoursesBtn;
     @FXML private Button courseResultBtn;
 
@@ -65,6 +65,7 @@ public class CourseSelectionContentController implements Initializable {
     
     // 保存已选课程的映射表，用于标记课程状态
     private Map<Integer, Boolean> selectedCourseMap = new HashMap<>();
+    Gson gson = new Gson();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -237,7 +238,6 @@ public class CourseSelectionContentController implements Initializable {
             @Override
             public void onSuccess(String result) {
                 try {
-                    Gson gson = new Gson();
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
                     
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
@@ -249,15 +249,15 @@ public class CourseSelectionContentController implements Initializable {
                         ShowMessage.showErrorMessage("查询失败", message);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("数据解析错误", msg);
                 }
             }
             
             @Override
             public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                ShowMessage.showErrorMessage("数据解析错误", msg);
             }
         });
     }    /**
@@ -283,15 +283,15 @@ public class CourseSelectionContentController implements Initializable {
                         ShowMessage.showErrorMessage("查询失败", message);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("数据解析错误", msg);
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                ShowMessage.showErrorMessage("数据解析错误", msg);
             }
         });
     }
@@ -440,7 +440,7 @@ public class CourseSelectionContentController implements Initializable {
         }
         System.out.println("显示选课结果");
         
-        // 构建查询参数，假设API有专门获取选课结果的endpoint
+
         NetworkUtils.get("/course-selection/results", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {

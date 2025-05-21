@@ -44,7 +44,7 @@ public class StudentBaseViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("基础视图初始化成功");
 
-        // 设置当前 controller 为 Scene 的 userData，便于其他 controller 获取
+
         Platform.runLater(() -> {
             Scene scene = contentArea.getScene();
             if (scene != null) {

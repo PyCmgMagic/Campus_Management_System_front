@@ -1,5 +1,5 @@
 package com.work.javafx.controller.student;
-
+/**尚未实现**/
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -183,12 +183,7 @@ public class TeachingEvaluationContentController implements Initializable {
                     row.getStyleClass().add("selected-row");
                 } else {
                     row.getStyleClass().remove("selected-row");
-//                    // 恢复交替行样式
-//                    if (row.getIndex() % 2 == 0) {
-//                        row.setStyle("-fx-background-color: white;");
-//                    } else {
-//                        row.setStyle("-fx-background-color: #fafafa;");
-//                    }
+
                 }
             });
 

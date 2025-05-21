@@ -130,40 +130,7 @@ public class UserInfo1 {
         emailField.clear();
         closeWindow();
 
-        // 可以添加提示信息，告知用户已取消操作
     }
-//    // 右侧保存按钮
-//    @FXML
-//    private void handleSaveRight(ActionEvent event) {
-//        String phoneNumber = phoneField.getText();
-//        String email = emailField.getText();
-//        Map<String, String> params = new HashMap<>();
-//        params.put("phone", phoneNumber);
-//        // 这里可以添加将信息保存到数据库或文件中的逻辑
-//        NetworkUtils.post("/user/updatePhone", params, null, new NetworkUtils.Callback<String>() {
-//            @Override
-//            public void onSuccess(String result) {
-//                JsonObject res = gson.fromJson(result, JsonObject.class);
-//                if(res.has("code") && res.get("code").getAsInt() ==200){
-//                    UserSession.getInstance().setPhone(phoneNumber);
-//                    ShowMessage.showInfoMessage("更换成功","更换手机号成功\n"+ "新手机号："+ phoneNumber);
-//
-//                }else{
-//                    ShowMessage.showErrorMessage("更换失败",res.get("msg").getAsString());
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                int index = e.getMessage().indexOf("{");
-//                JsonObject res = gson.fromJson(e.getMessage().substring(index),JsonObject.class);
-//                ShowMessage.showErrorMessage("更换失败",res.get("msg").getAsString());
-//            }
-//        });
-//        closeWindow();
-//    }
-
 
     // 公共关闭窗口方法
     private void closeWindow() {
