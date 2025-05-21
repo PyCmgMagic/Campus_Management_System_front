@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.work.javafx.controller.teacher.CourseManagementContent;
 import com.work.javafx.controller.teacher.editCourseController;
 import com.work.javafx.entity.Data;
+import com.work.javafx.model.ClassSimpleInfo;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
 import com.work.javafx.util.NetworkUtils;
@@ -28,18 +29,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CourseManagementController implements Initializable {
 
@@ -386,7 +384,6 @@ public class CourseManagementController implements Initializable {
             stage.setScene(new Scene(root, 800, 600)); stage.setMinWidth(700); stage.setMinHeight(550);
             ctrl.initCourseId(Integer.parseInt(c.getCode())); ctrl.setStage(stage);
             stage.showAndWait();
-            // Refresh current view after edit
             if (isSearchModeActive) {
                 Callback<Integer, Node> factory = coursePagination.getPageFactory();
                 if (factory != null) factory.call(coursePagination.getCurrentPageIndex());
@@ -406,7 +403,6 @@ public class CourseManagementController implements Initializable {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
                     if (res.get("code").getAsInt() == 200) {
                         ShowMessage.showInfoMessage("操作成功", "已删除课程: " + c.getName());
-                        // Refresh current view after stopping course
                         if (isSearchModeActive) {
                             completeSearchResults.remove(c); // Also remove from the full search list
                             Callback<Integer, Node> factory = coursePagination.getPageFactory();
@@ -484,11 +480,10 @@ public class CourseManagementController implements Initializable {
     private void sendApprovalRequest(CourseApplication app, String status, String classInfo, String reason, String successClassName) {
         Map<String, String> params = new HashMap<>(); params.put("status", status);
         if ("1".equals(status) && classInfo != null) params.put("ccourseId", classInfo);
-        // API might need classNum for rejection if it's part of the entity key or context
-        if ("2".equals(status) && classInfo != null && reason != null) { // Assuming classInfo is classNum for rejection
+        if ("2".equals(status) && classInfo != null && reason != null) {
             params.put("classNum", classInfo);
             params.put("reason", reason);
-        } else if ("2".equals(status) && reason != null){ // If only reason is needed for rejection
+        } else if ("2".equals(status) && reason != null){
             params.put("reason", reason);
         }
 
@@ -501,7 +496,7 @@ public class CourseManagementController implements Initializable {
                     String msg = "1".equals(status) ? "已批准: " + app.getName() + (successClassName != null ? " 绑定到: " + successClassName : "") : "已拒绝: " + app.getName();
                     ShowMessage.showInfoMessage("操作成功", msg);
                     pendingCourses.remove(app); updatePendingBadge(); updatePendingPageInfo();
-                    if ("1".equals(status)) fetchCourseList(1, ROWS_PER_PAGE); // Refresh main list if approved
+                    if ("1".equals(status)) fetchCourseList(1, ROWS_PER_PAGE);
                 } else ShowMessage.showErrorMessage("操作失败", (status.equals("1")?"批准":"拒绝")+"失败: " + (res.has("msg")?res.get("msg").getAsString():"未知错误"));
             }
             @Override public void onFailure(Exception e) { ShowMessage.showErrorMessage("操作失败", "网络错误: " + e.getMessage()); }
@@ -514,13 +509,5 @@ public class CourseManagementController implements Initializable {
         return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
     }
 
-    public static class ClassSimpleInfo {
-        String major; String number; int id;
-        public ClassSimpleInfo() {}
-        public ClassSimpleInfo(String m, String n, int i) { major=m; number=n; id=i; }
-        public String getName(){ return major+number; } public String getMajor() { return major; }
-        @Override public String toString() { return major+number; }
-        public void setMajor(String m){major=m;} public String getNumber(){return number;}
-        public void setNumber(String n){number=n;} public int getId(){return id;} public void setId(int i){id=i;}
-    }
+
 }

@@ -5,10 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.work.javafx.MainApplication;
-import com.work.javafx.controller.teacher.ApplyNewCourseController;
 import com.work.javafx.util.NetworkUtils;
-import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,9 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javafx.scene.layout.Priority;
 
-import java.lang.reflect.Method;
 
 /**
  * 管理员首页控制器
@@ -77,21 +72,21 @@ public class AdminHomePageController implements Initializable {
         Map<String,String> params = new HashMap<>();
         
         // 获取教师人数
-        params.put("permission","1"); // 参数"permission"为"1"表示查询教师
+        params.put("permission","1"); //
         NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 // 确保UI更新在JavaFX应用线程执行
                 Platform.runLater(() -> {
                     try {
-                        JsonObject res  = gson.fromJson(result, JsonObject.class); // 解析JSON响应
-                        if(res.has("code") && res.get("code").getAsInt()==200){ // 检查响应码是否为200 (成功)
-                            int data = res.get("data").getAsInt(); // 获取数据
-                            teacherCountLabel.setText(String.valueOf(data)); // 更新教师数量标签
+                        JsonObject res  = gson.fromJson(result, JsonObject.class);
+                        if(res.has("code") && res.get("code").getAsInt()==200){
+                            int data = res.get("data").getAsInt();
+                            teacherCountLabel.setText(String.valueOf(data));
                         } else {
                             System.out.print("获取教师人数失败：");
                             if (res.has("msg")) {
-                                System.out.println(res.get("msg").getAsString()); // 打印错误信息
+                                System.out.println(res.get("msg").getAsString());
                             } else {
                                 System.out.println("未知错误");
                             }
@@ -107,25 +102,25 @@ public class AdminHomePageController implements Initializable {
             @Override
             public void onFailure(Exception e) {
                 System.err.println("获取教师人数网络请求失败: " + e.getMessage());
-                // 可选：在此处更新UI以显示错误信息
+
             }
         });
         
         // 获取学生人数
-        params.put("permission","2"); // 参数"permission"为"2"表示查询学生
+        params.put("permission","2");
         NetworkUtils.get("/admin/getNum", params, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 Platform.runLater(() -> {
                     try {
                         JsonObject res  = gson.fromJson(result, JsonObject.class);
-                        if(res.has("code") && res.get("code").getAsInt()==200){ // 检查响应码
-                            int data = res.get("data").getAsInt(); // 获取数据
-                            studentCountLabel.setText(String.valueOf(data)); // 更新学生数量标签
+                        if(res.has("code") && res.get("code").getAsInt()==200){
+                            int data = res.get("data").getAsInt();
+                            studentCountLabel.setText(String.valueOf(data));
                         } else {
                             System.out.print("获取学生人数失败：");
                             if (res.has("msg")) {
-                                System.out.println(res.get("msg").getAsString()); // 打印错误信息
+                                System.out.println(res.get("msg").getAsString());
                             } else {
                                 System.out.println("未知错误");
                             }
@@ -149,7 +144,6 @@ public class AdminHomePageController implements Initializable {
      * 从服务器加载公告列表并更新UI。
      */
     private void loadNotices() {
-        // 首先在JavaFX线程清空现有公告，准备加载新的
         Platform.runLater(() -> noticeListContainer.getChildren().clear());
         Map<String,String> params =  new HashMap<>();
         params.put("Status","1");
@@ -170,7 +164,7 @@ public class AdminHomePageController implements Initializable {
                                 noticeListContainer.getChildren().clear();
 
                                 // 定义日期时间格式化器
-                                DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // 输入格式 (ISO标准)
+                                DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
                                 DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // 输出格式
 
                                 // 遍历公告数组，为每条公告创建UI元素
@@ -251,8 +245,8 @@ public class AdminHomePageController implements Initializable {
      */
     private void displayInfoMessage(String message) {
         Platform.runLater(() -> {
-            noticeListContainer.getChildren().clear(); // 清空容器
-            Label infoLabel = new Label(message); // 创建信息标签
+            noticeListContainer.getChildren().clear();
+            Label infoLabel = new Label(message);
             infoLabel.getStyleClass().add("info-message"); // 添加CSS类名
             infoLabel.setStyle("-fx-padding: 10px; -fx-alignment: center;"); // 直接设置样式
             noticeListContainer.getChildren().add(infoLabel); // 添加到容器
@@ -276,7 +270,7 @@ public class AdminHomePageController implements Initializable {
         StackPane icon = new StackPane(); // 图标容器
         icon.getStyleClass().add("notice-icon");
         
-        VBox noticeDetailsVBox = new VBox(); // 内容容器 (标题和时间)
+        VBox noticeDetailsVBox = new VBox(); // 内容容器
         noticeDetailsVBox.getStyleClass().add("notice-content");
         
         HBox titleBox = new HBox(); // 标题行容器

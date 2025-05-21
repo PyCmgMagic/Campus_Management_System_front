@@ -3,16 +3,13 @@ package com.work.javafx.controller.admin;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.work.javafx.controller.teacher.StudentListViewController;
-import com.work.javafx.controller.teacher.editCourseController;
+
 import com.work.javafx.model.ClassInfo;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,22 +19,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.application.Platform;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ClassManagementController implements Initializable {
 
@@ -304,7 +297,6 @@ public class ClassManagementController implements Initializable {
                                     updatePageInfo();
                                 }
                             } else {
-                                String errorMsg = response.has("msg") ? response.get("msg").getAsString() : "未知错误";
                                 filteredClassInfo.clear();
                                 classPagination.setPageCount(1);
                                 classTable.refresh();
@@ -558,7 +550,6 @@ public class ClassManagementController implements Initializable {
             // 检查控制器是否成功获取
             if (controller == null) {
                 System.err.println("无法获取 ClassStudentListViewController 控制器实例。");
-                // 可以显示一个错误提示给用户
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("内部错误");
                 alert.setHeaderText(null);

@@ -44,7 +44,8 @@ import java.util.ResourceBundle;
 public class TeacherHomePageController implements Initializable {
     //卡片功能按钮
     @FXML private Label CompleteCourseSchedule;
-    @FXML private Label AttendanceManagement;
+    @FXML private Label ClassCount;
+    @FXML private Label hoursCount;
     @FXML private VBox noticeListContainer; // 公告条目容器
     @FXML private Label dateText; // 日期文本
     @FXML private VBox todayCoursesContainer; // 今日课程容器
@@ -64,6 +65,30 @@ public class TeacherHomePageController implements Initializable {
         loadTodayCourses();
         // 加载公告
         loadNotices();
+        //获取教师统计数据
+        fetchStatistics();
+    }
+    /***
+     * 获取教师统计数据
+     */
+    private void fetchStatistics(){
+        NetworkUtils.get("/Teacher/getMessage", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if(res.get("code").getAsInt() == 200){
+                    JsonObject data = res.getAsJsonObject("data");
+                    ClassCount.setText(data.get("classAmo").getAsString());
+                    hoursCount.setText(data.get("totalClassHour").getAsString());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+            }
+        });
     }
 
     /**
@@ -180,7 +205,6 @@ public class TeacherHomePageController implements Initializable {
                     // 如果是今天的课程
                     if (courseDay == dayOfWeek) {
                         hasCourses = true;
-                        
                         String courseName = course.get("name").getAsString();
                         String classroom = course.get("classroom").getAsString();
                         String classInfo = course.has("className") ? course.get("className").getAsString() : "";

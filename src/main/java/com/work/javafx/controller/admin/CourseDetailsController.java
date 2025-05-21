@@ -3,7 +3,7 @@ package com.work.javafx.controller.admin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.work.javafx.model.Course;
+import com.work.javafx.model.ClassSimpleInfo;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.collections.FXCollections;
@@ -201,7 +201,7 @@ public class CourseDetailsController implements Initializable {
         closeWindow();
     }
 
-    private void fetchAvailableClasses(java.util.function.Consumer<List<CourseManagementController.ClassSimpleInfo>> callback) {
+    private void fetchAvailableClasses(java.util.function.Consumer<List<ClassSimpleInfo>> callback) {
         String classesUrl = "/section/getSectionListAll?page=1&size=500";
         NetworkUtils.get(classesUrl, new NetworkUtils.Callback<String>() {
             @Override
@@ -209,9 +209,9 @@ public class CourseDetailsController implements Initializable {
                 try {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
                     if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
-                        java.lang.reflect.Type listType = new TypeToken<ArrayList<CourseManagementController.ClassSimpleInfo>>(){}.getType();
+                        java.lang.reflect.Type listType = new TypeToken<ArrayList<ClassSimpleInfo>>(){}.getType();
                         JsonObject data = res.getAsJsonObject("data");
-                        List<CourseManagementController.ClassSimpleInfo> fetchedClasses = gson.fromJson(data.get("section"), listType);
+                        List<ClassSimpleInfo> fetchedClasses = gson.fromJson(data.get("section"), listType);
                         callback.accept(fetchedClasses);
                     } else {
                         ShowMessage.showErrorMessage("获取班级失败", "无法解析班级列表: " + (res.has("msg") ? res.get("msg").getAsString() : "格式错误"));
@@ -232,35 +232,7 @@ public class CourseDetailsController implements Initializable {
             }
         });
     }
-    /*
-         if (courseData == null) return;
-
-        int id = courseData.get("id").getAsInt();
-        int classNum = courseData.get("classNum").getAsInt();
-        String url = "/class/approve/"+id+"?status=1&classNum="+classNum;
-
-        // 发送审批请求
-        NetworkUtils.post(url,"", new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                JsonObject response = gson.fromJson(result, JsonObject.class);
-                if (response.has("code") && response.get("code").getAsInt() == 200) {
-                    // 审批成功，关闭窗口
-                    showSuccessDialog("课程审批成功");
-                    closeWindow();
-                } else {
-                    // 显示错误信息
-                    String errorMsg = response.has("msg") ? response.get("msg").getAsString() : "课程审批失败";
-                    showError(errorMsg);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                showError("网络错误: " + e.getMessage());
-            }
-        });
-    * */
+   
     /**
      * 处理通过按钮事件
      */
@@ -274,8 +246,8 @@ public class CourseDetailsController implements Initializable {
                         return;
                     }
 
-                    // 步骤3: 创建并显示自定义对话框
-                    Dialog<CourseManagementController.ClassSimpleInfo> dialog = new Dialog<>();
+                    // 创建并显示自定义对话框
+                    Dialog<ClassSimpleInfo> dialog = new Dialog<>();
                     dialog.setTitle("选择班级");
                     dialog.setHeaderText("请为课程 '" +courseData.get("name").getAsString()  + "' 选择一个班级进行绑定。");
 
@@ -283,7 +255,7 @@ public class CourseDetailsController implements Initializable {
                     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
                     // 创建 ComboBox
-                    ComboBox<CourseManagementController.ClassSimpleInfo> classComboBox = new ComboBox<>();
+                    ComboBox<ClassSimpleInfo> classComboBox = new ComboBox<>();
                     classComboBox.setItems(FXCollections.observableArrayList(availableClasses));
                     classComboBox.setPromptText("请选择班级");
                     if (!availableClasses.isEmpty()) {
@@ -299,10 +271,7 @@ public class CourseDetailsController implements Initializable {
                     javafx.scene.Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setDisable(classComboBox.getValue() == null); // 如果初始没选中，则禁用
                     classComboBox.valueProperty().addListener((obs, oldVal, newVal) -> okButton.setDisable(newVal == null));
-
-
-                    // 步骤4: 处理对话框结果
-                    // 将结果转换为 ClassInfo 对象
+                    
                     dialog.setResultConverter(dialogButton -> {
                         if (dialogButton == ButtonType.OK) {
                             return classComboBox.getValue();
@@ -310,7 +279,7 @@ public class CourseDetailsController implements Initializable {
                         return null;
                     });
 
-                    Optional<CourseManagementController.ClassSimpleInfo> result = dialog.showAndWait();
+                    Optional<ClassSimpleInfo> result = dialog.showAndWait();
 
                     result.ifPresent(selectedClass -> {
                         // 步骤5: 用户选择了班级并点击了OK，发送批准请求

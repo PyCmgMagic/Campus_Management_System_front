@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.work.javafx.model.Student;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,19 +17,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.work.javafx.util.NetworkUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,7 +235,6 @@ public class StudentMangementController implements Initializable {
         
         // 添加页码变化监听器
         pageChangeListener = (obs, oldIndex, newIndex) -> {
-             // 添加额外的判断，确保新旧索引确实不同，且当前没有页面加载锁定
              if (newIndex.intValue() != oldIndex.intValue() && !isPageLoadingLocked) {
                  isPageLoadingLocked = true;
                  loadStudentsFromApi(newIndex.intValue() + 1);
@@ -254,7 +248,7 @@ public class StudentMangementController implements Initializable {
         };
         
         pagination.currentPageIndexProperty().addListener(pageChangeListener);
-        updatePageInfo(); // Initial call
+        updatePageInfo();
     }
 
     // 创建分页页面内容
@@ -516,7 +510,6 @@ public class StudentMangementController implements Initializable {
                                     } else if (major.equals("3")) {
                                         major = "AI";
                                     } else if (major.equals("未分配")) {
-                                        // Keep as "未分配"
                                     } else {
                                     }
 

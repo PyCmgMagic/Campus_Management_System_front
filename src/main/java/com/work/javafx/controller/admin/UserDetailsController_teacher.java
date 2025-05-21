@@ -29,7 +29,6 @@ public class UserDetailsController_teacher implements Initializable {
     private String userId;
     private boolean isEditMode = false;
     
-    // Basic Information
     @FXML private Label idLabel;
     @FXML private Label usernameLabel;
     @FXML private Label sduidLabel;
@@ -39,13 +38,11 @@ public class UserDetailsController_teacher implements Initializable {
     @FXML private Label collegeLabel;
     @FXML private Label permissionLabel;
     
-    // Additional Information
     @FXML private Label statusLabel;
     @FXML private Label admissionLabel;
     @FXML private Label ethnicLabel;
     @FXML private Label politicsStatusLabel;
     
-    // Edit Fields for Basic Information
     @FXML private TextField usernameField;
     @FXML private TextField sduidField;
     @FXML private ComboBox<String> sexComboBox;
@@ -54,13 +51,11 @@ public class UserDetailsController_teacher implements Initializable {
     @FXML private TextField collegeField;
     @FXML private ComboBox<String> permissionComboBox;
     
-    // Edit Fields for Additional Information
     @FXML private ComboBox<String> statusComboBox;
     @FXML private TextField admissionField;
     @FXML private TextField ethnicField;
     @FXML private TextField politicsStatusField;
     
-    // Buttons
     @FXML private Button editButton;
     @FXML private Button closeButton;
     @FXML private Button saveButton;
@@ -158,8 +153,6 @@ public class UserDetailsController_teacher implements Initializable {
                                 String statusText;
                                 switch (status) {
                                     case "STUDYING": statusText = "在职"; break;
-//                                    case "GRADUATED": statusText = "已毕业"; break;
-//                                    case "SUSPENDED": statusText = "休学"; break;
                                     default: statusText = status;
                                 }
                                 statusLabel.setText(statusText);
@@ -271,7 +264,6 @@ public class UserDetailsController_teacher implements Initializable {
         userInfo.put("ethnic", ethnicField.getText());
         userInfo.put("PoliticsStatus", politicsStatusField.getText());
         userInfo.put("admission", admissionField.getText());
-//        userInfo.put("status", statusComboBox.getValue());
 
         // 发送更新请求到服务器
         saveUserData(userInfo);

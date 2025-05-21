@@ -42,14 +42,11 @@ public class AddNewClassController implements Initializable {
                 "2021", "2022", "2023", "2024"
         ));
         
-        // Select first items by default
         majorComboBox.getSelectionModel().selectFirst();
         gradeComboBox.getSelectionModel().selectFirst();
         
-        // Set up listeners for validation
         setupValidationListeners();
         
-        // Initialize buttons
         cancelButton.setOnAction(e -> closeDialog());
         submitButton.setOnAction(e -> submitForm());
         if(ClassID != -1){
@@ -72,7 +69,6 @@ public class AddNewClassController implements Initializable {
             }
         });
         
-        // Validate advisor ID field to only allow digits
         advisorIdField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 advisorIdField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -83,7 +79,7 @@ public class AddNewClassController implements Initializable {
     @FXML
     private void submitForm() {
         if (isSaving) {
-            return; // Prevent multiple submissions
+            return;
         }
         
         if (!validateForm()) {

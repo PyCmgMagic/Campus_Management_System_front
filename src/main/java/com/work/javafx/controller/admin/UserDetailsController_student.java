@@ -29,7 +29,6 @@ public class UserDetailsController_student implements Initializable {
     private String userId;
     private boolean isEditMode = false;
     
-    // Basic Information Labels
     @FXML private Label idLabel;
     @FXML private Label usernameLabel;
     @FXML private Label sduidLabel;
@@ -39,7 +38,6 @@ public class UserDetailsController_student implements Initializable {
     @FXML private Label collegeLabel;
     @FXML private Label permissionLabel;
     
-    // Additional Information Labels
     @FXML private Label gradeLabel;
     @FXML private Label sectionLabel;
     @FXML private Label statusLabel;
@@ -48,7 +46,6 @@ public class UserDetailsController_student implements Initializable {
     @FXML private Label ethnicLabel;
     @FXML private Label politicsStatusLabel;
     
-    // Edit Fields for Basic Information
     @FXML private TextField usernameField;
     @FXML private TextField sduidField;
     @FXML private ComboBox<String> sexComboBox;
@@ -56,7 +53,6 @@ public class UserDetailsController_student implements Initializable {
     @FXML private TextField phoneField;
     @FXML private TextField collegeField;
     
-    // Edit Fields for Additional Information
     @FXML private TextField gradeField;
     @FXML private TextField sectionField;
     @FXML private ComboBox<String> statusComboBox;
@@ -65,7 +61,6 @@ public class UserDetailsController_student implements Initializable {
     @FXML private TextField ethnicField;
     @FXML private TextField politicsStatusField;
     
-    // Buttons
     @FXML private Button editButton;
     @FXML private Button closeButton;
     @FXML private Button saveButton;
@@ -73,7 +68,7 @@ public class UserDetailsController_student implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 初始时禁用编辑按钮，后续可根据权限启用
+        // 初始时禁用编辑按钮，后续根据权限启用
         editButton.setDisable(true);
         
         // 初始化下拉选项
@@ -139,7 +134,7 @@ public class UserDetailsController_student implements Initializable {
                                 permissionLabel.setText(permissionText);
                             }
                             
-                            // 预设编辑字段的值 (Basic Info)
+                            // 预设编辑字段的值
                             setTextFieldFromLabel(usernameField, usernameLabel);
                             setTextFieldFromLabel(sduidField, sduidLabel);
                             setComboBoxFromLabel(sexComboBox, sexLabel);
@@ -174,7 +169,7 @@ public class UserDetailsController_student implements Initializable {
                             setLabelText(admissionLabel, statusInfo, "admission");
                             setLabelText(graduationLabel, statusInfo, "graduation");
                             
-                            // 预设编辑字段的值 (Additional Info)
+                            // 预设编辑字段的值
                             setTextFieldFromLabel(gradeField, gradeLabel);
                             setTextFieldFromLabel(sectionField, sectionLabel);
                             setTextFieldFromLabel(admissionField, admissionLabel);
@@ -284,8 +279,6 @@ public class UserDetailsController_student implements Initializable {
         if (statusToSend != null) {
             userInfo.put("status", statusToSend);
         } else {
-            // Decide how to handle null status - maybe don't send the key, or send an empty string?
-            // Depending on backend requirements. For now, we don't add the key if null.
              LOGGER.log(Level.INFO, "Status not sent as it was null or invalid.");
         }
         
@@ -318,37 +311,32 @@ public class UserDetailsController_student implements Initializable {
                             errorMsg += ": " + jsonResponse.get("msg").getAsString();
                         }
                         ShowMessage.showErrorMessage("保存失败", errorMsg);
-                        // Keep edit mode active on failure, re-enable buttons
                         saveButton.setDisable(false);
                         cancelButton.setDisable(false);
                     }
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Failed to process update response", e);
                     ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应: " + e.getMessage());
-                    // Keep edit mode active on failure, re-enable buttons
                     saveButton.setDisable(false);
                     cancelButton.setDisable(false);
                 }
-                // editButton is handled by toggleEditMode(false) on success
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
                     LOGGER.log(Level.SEVERE, "Network error during update", ex);
                     ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + ex.getMessage());
-                    // Keep edit mode active on failure, re-enable buttons
                     saveButton.setDisable(false);
                     cancelButton.setDisable(false);
-                    // editButton remains disabled as we are still in edit mode technically
                 });
                 return null;
             });
     }
     
     private void updateLabelsFromEditFields() {
-        // 从编辑控件更新标签显示的值 (Basic Info)
+        // 从编辑控件更新标签显示的值
         usernameLabel.setText(usernameField.getText());
         sduidLabel.setText(sduidField.getText());
-        idLabel.setText("学号: " + sduidField.getText()); // Update ID label as well
+        idLabel.setText("学号: " + sduidField.getText());
         sexLabel.setText(sexComboBox.getValue());
         emailLabel.setText(emailField.getText());
         phoneLabel.setText(phoneField.getText().isEmpty() ? "未设置" : phoneField.getText());
@@ -356,7 +344,7 @@ public class UserDetailsController_student implements Initializable {
         ethnicLabel.setText(ethnicField.getText());
         politicsStatusLabel.setText(politicsStatusField.getText());
         
-        // 从编辑控件更新标签显示的值 (Additional Info)
+        // 从编辑控件更新标签显示的值
         gradeLabel.setText(gradeField.getText());
         sectionLabel.setText(sectionField.getText());
         statusLabel.setText(statusComboBox.getValue());
@@ -373,7 +361,7 @@ public class UserDetailsController_student implements Initializable {
     private void toggleEditMode(boolean editMode) {
         isEditMode = editMode;
         
-        // 显示/隐藏编辑控件 (Basic Info)
+        // 显示/隐藏编辑控件
         usernameField.setVisible(editMode);
         sduidField.setVisible(editMode);
         sexComboBox.setVisible(editMode);
@@ -381,7 +369,7 @@ public class UserDetailsController_student implements Initializable {
         phoneField.setVisible(editMode);
         collegeField.setVisible(editMode);
         
-        // 显示/隐藏编辑控件 (Additional Info)
+        // 显示/隐藏编辑控件
         gradeField.setVisible(editMode);
         sectionField.setVisible(editMode);
         statusComboBox.setVisible(editMode);
@@ -390,7 +378,7 @@ public class UserDetailsController_student implements Initializable {
         ethnicField.setVisible(editMode);
         politicsStatusField.setVisible(editMode);
         
-        // 显示/隐藏标签 (Basic Info)
+        // 显示/隐藏标签
         usernameLabel.setVisible(!editMode);
         sduidLabel.setVisible(!editMode);
         sexLabel.setVisible(!editMode);
@@ -398,7 +386,7 @@ public class UserDetailsController_student implements Initializable {
         phoneLabel.setVisible(!editMode);
         collegeLabel.setVisible(!editMode);
         
-        // 显示/隐藏标签 (Additional Info)
+        // 显示/隐藏标签
         gradeLabel.setVisible(!editMode);
         sectionLabel.setVisible(!editMode);
         statusLabel.setVisible(!editMode);
@@ -409,7 +397,7 @@ public class UserDetailsController_student implements Initializable {
         
         // 显示/隐藏按钮
         editButton.setVisible(!editMode);
-        editButton.setManaged(!editMode); // Ensure layout updates correctly
+        editButton.setManaged(!editMode);
         saveButton.setVisible(editMode);
         saveButton.setManaged(editMode);
         cancelButton.setVisible(editMode);
@@ -417,7 +405,6 @@ public class UserDetailsController_student implements Initializable {
         
         // 如果取消编辑，恢复编辑字段原始值
         if (!editMode) {
-            // Restore Basic Info fields
             setTextFieldFromLabel(usernameField, usernameLabel);
             setTextFieldFromLabel(sduidField, sduidLabel);
             setComboBoxFromLabel(sexComboBox, sexLabel);
@@ -427,19 +414,16 @@ public class UserDetailsController_student implements Initializable {
             setTextFieldFromLabel(ethnicField, ethnicLabel);
             setTextFieldFromLabel(politicsStatusField, politicsStatusLabel);
             
-            // Restore Additional Info fields
             setTextFieldFromLabel(gradeField, gradeLabel);
             setTextFieldFromLabel(sectionField, sectionLabel);
             setComboBoxFromLabel(statusComboBox, statusLabel);
             setTextFieldFromLabel(admissionField, admissionLabel);
             setTextFieldFromLabel(graduationField, graduationLabel);
             
-            // Re-enable edit button and disable save/cancel
-            editButton.setDisable(false); 
+            editButton.setDisable(false);
             saveButton.setDisable(true);
             cancelButton.setDisable(true);
         } else {
-             // Entering edit mode: enable save/cancel, disable edit
             editButton.setDisable(true);
             saveButton.setDisable(false);
             cancelButton.setDisable(false);
@@ -451,20 +435,18 @@ public class UserDetailsController_student implements Initializable {
         if (text != null && !text.equals("未知") && !text.equals("加载中...") && !text.equals("加载失败") && !text.equals("未设置")) {
             textField.setText(text);
         } else {
-            textField.setText(""); // Clear field if label has placeholder or default text
+            textField.setText("");
         }
     }
     
     private void setComboBoxFromLabel(ComboBox<String> comboBox, Label label) {
         String text = label.getText();
         if (text != null && !text.equals("未知") && !text.equals("加载中...") && !text.equals("加载失败")) {
-             // Check if the value exists in the ComboBox items before setting
              if (comboBox.getItems().contains(text)) {
                 comboBox.setValue(text);
              } else {
-                 // Handle case where label text doesn't match an item (e.g., log warning, set default)
                  LOGGER.log(Level.WARNING, "Label text '" + text + "' not found in ComboBox items for " + comboBox.getId());
-                 comboBox.getSelectionModel().clearSelection(); // Or set a default value
+                 comboBox.getSelectionModel().clearSelection();
              }
         } else {
             comboBox.getSelectionModel().clearSelection();

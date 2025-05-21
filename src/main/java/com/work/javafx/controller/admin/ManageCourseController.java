@@ -77,7 +77,6 @@ public class ManageCourseController implements Initializable {
                     JsonArray dataArray = res.getAsJsonArray("data");
                     List<String> loadedSemesters = new ArrayList<>();
                     for (int i = 0; i < dataArray.size(); i++) {
-                        // 假设返回的数据是学期字符串列表
                         termList.add(new term(dataArray.get(i).getAsJsonObject().get("term").getAsString(), dataArray.get(i).getAsJsonObject().get("open").getAsBoolean()));
                         loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
                     }
@@ -106,40 +105,7 @@ public class ManageCourseController implements Initializable {
         });
     }
 
-    /**
-     * 加载学期列表 - 删除此方法，用refreshCurrentTermStatus代替
-     */
-    /*
-    private void loadSemesters(int index) {
-        NetworkUtils.get("/term/getTermList", new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                JsonObject res = gson.fromJson(result, JsonObject.class);
-                if (res.has("code") && res.get("code").getAsInt() == 200) {
-                    JsonArray dataArray = res.getAsJsonArray("data");
-                    List<String> loadedSemesters = new ArrayList<>();
-                    for (int i = 0; i < dataArray.size(); i++) {
-                        // 假设返回的数据是学期字符串列表
-                        termList.add(new term(dataArray.get(i).getAsJsonObject().get("term").getAsString(),dataArray.get(i).getAsJsonObject().get("open").getAsBoolean()));
-                        loadedSemesters.add(dataArray.get(i).getAsJsonObject().get("term").getAsString());
-                    }
-                    semesterList.clear();
-                    semesterList.addAll(loadedSemesters);
-                    if (!semesterList.isEmpty()) {
-                        semesterComboBox.getSelectionModel().select(index);
-                    }
-                } else {
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                System.out.println("加载学期列表异常: " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
-     */
     /**
      * 在状态变更后刷新当前学期信息
      */
@@ -219,7 +185,6 @@ public class ManageCourseController implements Initializable {
      * 处理学期变更事件
      */
     public void handleTermChange(ActionEvent actionEvent) {
-        // 如果是从服务器更新触发的，不要再次处理
         if (isUpdatingFromServer) {
             isUpdatingFromServer = false;
             return;
@@ -249,7 +214,7 @@ public class ManageCourseController implements Initializable {
             return;
         }
 
-        // 校验学期格式 (简单示例，可根据实际需求加强)
+        // 校验学期格式
         if (!newSemester.matches("\\d{4}-\\d{4}-[12]")) {
             updateStatus("学期格式不正确，应为 YYYY-YYYY-1 或 YYYY-YYYY-2", false);
             return;

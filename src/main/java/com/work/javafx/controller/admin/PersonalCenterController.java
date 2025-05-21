@@ -105,12 +105,8 @@ public class PersonalCenterController implements Initializable {
             email.setText(UserSession.getInstance().getEmail());
             collegeLabel.setText(UserSession.getInstance().getCollege());
             
-            // 设置工作信息 (这些信息可能需要从其他API获取，这里设置默认值)
             titleLabel.setText("系统管理员");
-//            departmentLabel.setText("信息技术部");
-//            yearLabel.setText("2020");
-//            entryDateLabel.setText("2020-01-01");
-//            workYearsLabel.setText("4年");
+
         });
     }
     

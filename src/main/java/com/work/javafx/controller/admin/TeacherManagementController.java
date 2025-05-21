@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -41,7 +40,7 @@ import java.util.logging.Logger;
 public class TeacherManagementController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(TeacherManagementController.class.getName());
-    private static final Gson gson = new Gson(); // Gson 实例用于 JSON 解析
+    private static final Gson gson = new Gson();
 
     // FXML 绑定
     @FXML private ScrollPane rootPane;
@@ -55,7 +54,7 @@ public class TeacherManagementController implements Initializable {
 
     // Search and Filter
     @FXML private TextField searchField;
-    @FXML private ComboBox<String> departmentFilter; // API 中对应 'college'
+    @FXML private ComboBox<String> departmentFilter;
 
 
     // Teacher Table
@@ -96,9 +95,9 @@ public class TeacherManagementController implements Initializable {
 
     private void initTeacherTable() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("sduid"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // 对应 TeacherInfo.name (映射自 username)
-        departmentColumn.setCellValueFactory(new PropertyValueFactory<>("college")); // 对应 TeacherInfo.college
-        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contactInfo")); // 对应 TeacherInfo.contactInfo (映射自 email)
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        departmentColumn.setCellValueFactory(new PropertyValueFactory<>("college"));
+        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contactInfo"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         actionColumn.setCellFactory(createActionCellFactory());
     }
@@ -163,7 +162,7 @@ public class TeacherManagementController implements Initializable {
         teacherTable.setPlaceholder(new Label("正在加载数据..."));
         if(searchField.getText().isEmpty()){
             Map<String, String> params = new HashMap<>();
-            params.put("page", String.valueOf(pageIndex + 1)); // API 需要从 1 开始的页码
+            params.put("page", String.valueOf(pageIndex + 1));
             params.put("limit", String.valueOf(ROWS_PER_PAGE));
             String selectedDepartment = departmentFilter.getValue();
             if (selectedDepartment != null && !"全部院系".equals(selectedDepartment)) {
@@ -192,7 +191,7 @@ public class TeacherManagementController implements Initializable {
                                             getStringOrNull(teacherJson, "username"), // 映射 username 到 name
                                             getStringOrNull(teacherJson, "college"),
                                             getStringOrNull(teacherJson, "email"),     // 映射 email 到 contactInfo
-                                            "在职" // 假设状态为在职，如果API返回状态字段，应进行映射
+                                            "在职"
                                     );
                                     currentPageData.add(teacher);
                                 }
@@ -227,7 +226,7 @@ public class TeacherManagementController implements Initializable {
 
                             } else {
                                 // 处理 'user' 数组缺失或无效的情况
-                                showErrorDialog("加载失败", "服务器返回的数据格式不正确 (缺少教师列表)。");
+                                ShowMessage.showErrorMessage("加载失败", "服务器返回的数据格式不正确 (缺少教师列表)。");
                                 handleFetchError();
                             }
                         } else {
@@ -236,24 +235,22 @@ public class TeacherManagementController implements Initializable {
                                 errorMsg += ": " + jsonResponse.get("msg").getAsString();
                             }
                             LOGGER.log(Level.WARNING, "API Error: " + errorMsg);
-                            showErrorDialog("加载失败", errorMsg);
+                            ShowMessage.showErrorMessage("加载失败", errorMsg);
                             handleFetchError();
                         }
                     } catch (Exception e) {
                         LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                        showErrorDialog("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                        ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
                         handleFetchError();
-                    } finally {
-                        // 隐藏加载指示器 (可选)
                     }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> { // 确保 UI 更新在 FX 线程执行
                         LOGGER.log(Level.SEVERE, "网络请求失败", ex);
-                        showErrorDialog("网络错误", "无法连接到服务器: " + ex.getMessage());
+                        ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + ex.getMessage());
                         handleFetchError();
                     });
-                    return null; // exceptionally 需要返回 null
+                    return null;
                 });
     }else{
             Map<String,String> params = new HashMap<>();
@@ -277,7 +274,7 @@ public class TeacherManagementController implements Initializable {
                                             getStringOrNull(teacherJson, "username"), // 映射 username 到 name
                                             getStringOrNull(teacherJson, "college"),
                                             getStringOrNull(teacherJson, "email"),     // 映射 email 到 contactInfo
-                                            "在职" // 假设状态为在职，如果API返回状态字段，应进行映射
+                                            "在职"
                                     );
                                     currentPageData.add(teacher);
                                 }
@@ -309,7 +306,7 @@ public class TeacherManagementController implements Initializable {
                             }
                     } catch (Exception e) {
                         LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                        showErrorDialog("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                        ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
                         handleFetchError();
                     }
                 }
@@ -317,7 +314,7 @@ public class TeacherManagementController implements Initializable {
                 @Override
                 public void onFailure(Exception e) {
                     LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                    showErrorDialog("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                    ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
                     handleFetchError();
                 }
             });
@@ -339,14 +336,13 @@ public class TeacherManagementController implements Initializable {
 
     // 更新分页信息标签
     private void updatePageInfoLabel(int currentPageIndex, int fetchedCount, int totalPages) {
-         if (currentPageIndex < 0 || fetchedCount <= 0 && currentPageIndex == 0 && totalPages <= 1) { // 更好地处理无数据的情况
+         if (currentPageIndex < 0 || fetchedCount <= 0 && currentPageIndex == 0 && totalPages <= 1) {
              pageInfo.setText("第 1 页 / 共 1 页 - 显示 0 条");
              if(currentPageIndex == -1) pageInfo.setText("加载失败"); // 加载失败的特定情况
          } else {
             int pageNum = currentPageIndex + 1; // 显示页码从 1 开始
              int fromRecord = currentPageIndex * ROWS_PER_PAGE + 1;
              int toRecord = fromRecord + fetchedCount - 1;
-             // 确保当 fetchedCount 为 0 且页码大于 1 时，toRecord 不小于 fromRecord
              if (toRecord < fromRecord) toRecord = fromRecord -1;
              pageInfo.setText(String.format("第 %d 页 / 共 %d 页 - 显示 %d-%d 条",
                      pageNum, totalPages, fromRecord, toRecord));
@@ -482,13 +478,8 @@ public class TeacherManagementController implements Initializable {
         String teacherId = selectedTeacher.getId();
         if (showConfirmDialog("确认操作", "确定要重置教师 " + selectedTeacher.getName() + " (工号: "+ selectedTeacher.getSduid() +") 的密码吗？")) {
             // TODO: 调用 API POST /admin/teacher/resetPassword/{sduid} ? 需要确认 API 路径中使用的 ID
-            showInfoDialog("操作成功", "已重置教师 " + selectedTeacher.getName() + " 的密码。(模拟)");
-            // API 调用结构示例 (根据需要调整端点/方法/ID):
-            /*
-            NetworkUtils.postAsync("/admin/teacher/resetPassword/" + teacherId, null) // 传递 sduid
-                .thenAcceptAsync(response -> Platform.runLater(() -> { ... 检查响应 ... }))
-                .exceptionally(ex -> { ... 处理错误 ... });
-            */
+                ShowMessage.showInfoMessage("操作成功", "已重置教师 " + selectedTeacher.getName() + " 的密码。(模拟)");
+
         }
     }
 
@@ -501,51 +492,34 @@ public class TeacherManagementController implements Initializable {
             String endpoint = "/admin/deleteUser";
             String urlWithParams = endpoint + "?userId=" + teacherId;
 
-             NetworkUtils.postAsync(urlWithParams, null) // 使用 POST 方法，body 为 null
+             NetworkUtils.postAsync(urlWithParams, null) 
                 .thenAcceptAsync(response -> Platform.runLater(() -> {
                     try {
                          JsonObject res = gson.fromJson(response, JsonObject.class);
                          if (res.has("code") && res.get("code").getAsInt() == 200) {
-                            showInfoDialog("操作成功", "已删除教师: " + teacherName);
+                                ShowMessage.showInfoMessage("操作成功", "已删除教师: " + teacherName);
                             fetchTeacherData(teacherPagination.getCurrentPageIndex());
                          } else {
                              String errorMsg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
-                             showErrorDialog("删除失败", "删除教师失败: " + errorMsg);
+                             ShowMessage.showErrorMessage("删除失败", "删除教师失败: " + errorMsg);
                          }
                     } catch (Exception e) {
                         LOGGER.log(Level.SEVERE, "处理删除响应失败", e);
-                        showErrorDialog("处理错误", "无法处理删除响应。 Exception: " + e.getMessage());
+                        ShowMessage.showErrorMessage("处理错误", "无法处理删除响应。 Exception: " + e.getMessage());
                     }
 
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         LOGGER.log(Level.SEVERE, "删除请求失败", ex);
-                        showErrorDialog("删除失败", "删除教师请求失败: " + ex.getMessage());
+                        ShowMessage.showErrorMessage("删除失败", "删除教师请求失败: " + ex.getMessage());
                     });
                     return null;
                 });
         }
     }
 
-    // Helper Dialog Methods
-    private void showInfoDialog(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-         alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-    }
 
-     private void showErrorDialog(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-         alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-    }
 
 
     private boolean showConfirmDialog(String title, String content) {
@@ -556,51 +530,5 @@ public class TeacherManagementController implements Initializable {
          alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
         return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
-//
-//    /**
-//     * 教师数据模型的内部类。
-//     */
-//    public static class TeacherInfo {
-//        private final SimpleStringProperty id;
-//        private final SimpleStringProperty sduid;
-//        private final SimpleStringProperty name;        // 映射自 username
-//        private final SimpleStringProperty college;
-//        private final SimpleStringProperty contactInfo; // 映射自 email
-//        private final SimpleStringProperty status;
-//
-//        public String getSduid() {
-//            return sduid.get();
-//        }
-//
-//        public SimpleStringProperty sduidProperty() {
-//            return sduid;
-//        }
-//
-//        public TeacherInfo(String id, String sduid, String name, String college, String contactInfo, String status) {
-//            this.id = new SimpleStringProperty(id);
-//             this.sduid = new SimpleStringProperty(sduid);
-//             this.name = new SimpleStringProperty(name);
-//            this.college = new SimpleStringProperty(college);
-//            this.contactInfo = new SimpleStringProperty(contactInfo);
-//             this.status = new SimpleStringProperty(status);
-//         }
-//
-//        public String getStatus() {
-//            return status.get();
-//        }
-//
-//        public SimpleStringProperty statusProperty() {
-//            return status;
-//        }
-//
-//        // PropertyValueFactory 需要的 Getters
-//        public String getId() { return id.get(); } // 返回 sduid
-//        public SimpleStringProperty idProperty() { return id; }
-//        public String getName() { return name.get(); } // 返回 username
-//        public SimpleStringProperty nameProperty() { return name; }
-//        public String getCollege() { return college.get(); }
-//        public SimpleStringProperty collegeProperty() { return college; }
-//        public String getContactInfo() { return contactInfo.get(); } // Returns email
-//        public SimpleStringProperty contactInfoProperty() { return contactInfo; }
-//    }
+
 }
