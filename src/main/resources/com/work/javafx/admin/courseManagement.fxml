@@ -81,17 +81,11 @@
                         <GridPane styleClass="filter-row">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" prefWidth="100.0" />
                             </columnConstraints>
                             
                             <VBox styleClass="filter-group" GridPane.columnIndex="0">
                                 <Label styleClass="filter-label" text="学期" />
                                 <ComboBox fx:id="termFilter" onAction="#handleTermChange" prefWidth="150.0" promptText="学期" styleClass="filter-select" />
-                            </VBox>
-                            
-                            <VBox styleClass="filter-group" GridPane.columnIndex="1">
-                                <Label styleClass="filter-label" text="课程类型" />
-                                <ComboBox fx:id="courseTypeFilter" prefWidth="150.0" promptText="全部类型" styleClass="filter-select" />
                             </VBox>
                      <rowConstraints>
                         <RowConstraints />
@@ -131,17 +125,7 @@
                 
                 <!-- 审阅课程页面 -->
                 <VBox fx:id="pendingCoursesView" visible="false">
-                    <!-- Search for Pending -->
-                    <VBox styleClass="search-filter-container">
-                        <HBox styleClass="search-row">
-                            <HBox styleClass="search-input-container" HBox.hgrow="ALWAYS">
-                                <Region styleClass="search-icon" />
-                                <TextField fx:id="pendingSearchField" promptText="搜索申请课程名称、申请人..." styleClass="search-input" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <Button onAction="#searchPendingCourses" styleClass="btn,primary-btn" text="搜索" />
-                        </HBox>
-                    </VBox>
-                    
+
                     <!-- 审阅课程列表 -->
                     <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
                         <HBox styleClass="list-header">

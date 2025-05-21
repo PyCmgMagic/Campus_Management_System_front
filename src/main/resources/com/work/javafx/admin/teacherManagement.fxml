@@ -108,11 +108,7 @@
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="教师列表" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <HBox styleClass="list-actions">
-                                <!-- Add batch action buttons here -->
-                                <Button fx:id="batchResetPasswordBtn" onAction="#batchResetPassword" styleClass="btn,warning-btn" text="批量重置密码" />
-                                <Button fx:id="batchDeleteBtn" onAction="#batchDeleteTeachers" styleClass="btn,danger-btn" text="批量删除" />
-                            </HBox>
+                            <HBox styleClass="list-actions" />
                         </HBox>
 
                         <TableView fx:id="teacherTable" minHeight="-Infinity" styleClass="course-table" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"> <!-- Reuse course-table style -->

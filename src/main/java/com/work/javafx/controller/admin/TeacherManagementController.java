@@ -52,15 +52,11 @@ public class TeacherManagementController implements Initializable {
     // 快速操作
     @FXML private BorderPane addTeacherCard;
     @FXML private BorderPane importTeacherCard;
-    @FXML private BorderPane exportTeacherCard;
 
     // Search and Filter
     @FXML private TextField searchField;
     @FXML private ComboBox<String> departmentFilter; // API 中对应 'college'
 
-    // Batch Actions
-    @FXML private Button batchResetPasswordBtn;
-    @FXML private Button batchDeleteBtn;
 
     // Teacher Table
     @FXML private TableView<TeacherInfo> teacherTable;
@@ -114,11 +110,15 @@ public class TeacherManagementController implements Initializable {
                 return new TableCell<>() {
                     private final Button viewBtn = new Button();
                     private final Button deleteBtn = new Button();
+                    private final Button resetBtn = new Button();
                     private final HBox actionBox = new HBox(5);
 
                     {
                         viewBtn.getStyleClass().addAll("table-button", "default-btn");
+                        resetBtn.getStyleClass().addAll("table-button", "default-btn");
                         deleteBtn.getStyleClass().addAll("table-button", "danger-btn");
+                        Tooltip tooltip = new Tooltip("重置密码");
+                        resetBtn.setTooltip(tooltip);
 
                         // 添加图标
                         Region viewIcon = new Region();
@@ -127,12 +127,12 @@ public class TeacherManagementController implements Initializable {
 
                         Region editIcon = new Region();
                         editIcon.getStyleClass().add("edit-icon");
-
+                        resetBtn.setGraphic(editIcon);
                         Region deleteIcon = new Region();
                         deleteIcon.getStyleClass().add("delete-icon");
                         deleteBtn.setGraphic(deleteIcon);
 
-                        actionBox.getChildren().addAll(viewBtn, deleteBtn);
+                        actionBox.getChildren().addAll(viewBtn,resetBtn, deleteBtn);
                         actionBox.setAlignment(Pos.CENTER);
 
                         viewBtn.setOnAction(event -> viewTeacher(getTableRow().getIndex()));
@@ -449,34 +449,6 @@ public class TeacherManagementController implements Initializable {
             }
         }
 
-
-
-
-    // 批量操作 - 为选定的 ID 实现 API 调用
-    @FXML
-    private void batchResetPassword() {
-         ObservableList<TeacherInfo> selectedTeachers = teacherTable.getSelectionModel().getSelectedItems();
-         if (selectedTeachers.isEmpty()){
-             showInfoDialog("提示", "请先在当前页选择要重置密码的教师。");
-             return;
-         }
-        // TODO: 为每个 selectedTeacher.getId() (即 sduid) 调用 API
-        showInfoDialog("功能开发中", "批量重置密码功能待实现。选中: " + selectedTeachers.size() + "个");
-    }
-
-    @FXML
-    private void batchDeleteTeachers() {
-         ObservableList<TeacherInfo> selectedTeachers = teacherTable.getSelectionModel().getSelectedItems();
-         if (selectedTeachers.isEmpty()){
-             showInfoDialog("提示", "请先在当前页选择要删除的教师。");
-             return;
-         }
-         if (showConfirmDialog("确认批量删除", "确定要删除当前页选中的 " + selectedTeachers.size() + " 位教师吗？")) {
-             // TODO: 为每个 selectedTeacher.getId()  调用 API
-             showInfoDialog("功能开发中", "批量删除功能待实现。选中: " + selectedTeachers.size() + "个");
-             // 成功调用 API 后刷新: triggerDataReload();
-         }
-    }
 
     // 表格操作
     private void viewTeacher(int rowIndex) {
