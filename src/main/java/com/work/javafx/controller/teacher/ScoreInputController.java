@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 public class ScoreInputController implements Initializable {
 
-    // --- FXML 注入 ---
 
     // 信息卡标签
     @FXML
@@ -95,31 +94,53 @@ public class ScoreInputController implements Initializable {
     private VBox pieChartLegend; // 自定义图例的VBox
 
     Gson gson = new Gson();
-    // --- 数据 ---
+    // 数据
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
     private Course currentCourse; // 添加当前课程引用
 
-    // --- 初始化 ---
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 1. 填充下拉框
+        //  填充下拉框
         setupComboBoxes();
 
-        // 2. 配置表格视图列
+        // 配置表格视图列
         setupTableView();
 
 
-        // 4. 设置图表
+        //  设置图表
         setupCharts();
 
-        // 5. 计算并显示初始统计数据
+        //计算并显示初始统计数据
         updateStatistics();
+        //统计数据
+//        fetchStatistics();
 
     }
-
-    // --- 设置方法 ---
-
+/**
+ * 初始化获取统计数据
+ * */
+//private  void fetchStatistics(){
+//    NetworkUtils.get("/Teacher/countClass", new NetworkUtils.Callback<String>() {
+//        @Override
+//        public void onSuccess(String result) throws IOException {
+//            JsonObject res = gson.fromJson(result, JsonObject.class);
+//            if(res.get("code").getAsInt() == 200){
+//                JsonObject data = res.getAsJsonObject("data");
+//                int activeClass = data.get("activeClass").getAsInt();
+//                int pendingClass = data.get("pendingClass").getAsInt();
+//                pendingClassesLabel.setText(pendingClass+"");
+//                enteredClassesLabel.setText(activeClass+"");
+//            }
+//        }
+//
+//        @Override
+//        public void onFailure(Exception e) {
+//
+//        }
+//    });
+//}
     private void setupComboBoxes() {
         ObservableList<Course> courseList = FXCollections.observableArrayList();
         Map<String, String> params = new HashMap<>();

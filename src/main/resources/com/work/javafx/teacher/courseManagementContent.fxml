@@ -19,13 +19,13 @@
         <VBox styleClass="info-card,success" HBox.hgrow="ALWAYS">
             <VBox styleClass="card-content">
                 <Text styleClass="info-card-title" text="本学期授课" />
-                <Text styleClass="info-card-value" text="0" />
+                <Text fx:id="activeClassText" styleClass="info-card-value" text="0" />
             </VBox>
         </VBox>
         <VBox styleClass="info-card,warning" HBox.hgrow="ALWAYS">
             <VBox styleClass="card-content" VBox.vgrow="ALWAYS">
                 <Text styleClass="info-card-title" text="待审课程申请" />
-                <Text styleClass="info-card-value" text="0" />
+                <Text fx:id="pendingClassText" styleClass="info-card-value" text="0" />
             </VBox>
         </VBox>
     </HBox>

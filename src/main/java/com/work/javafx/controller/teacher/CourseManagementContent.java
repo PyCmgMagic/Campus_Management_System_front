@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
@@ -16,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,7 +39,10 @@ static Gson gson = new Gson();
     @FXML
     private ComboBox<String> semesterComboBox;
 
-
+    @FXML
+    private Text activeClassText;
+    @FXML
+    private Text pendingClassText;
 
     @FXML
     private TextField searchField;
@@ -67,16 +72,35 @@ static Gson gson = new Gson();
     public void initialize(URL location, ResourceBundle resources) {
         setupComboBoxes();
         setupTable();
+        fetchStatistics();
         loadData(currentPage,"/class/list");
     }
+    /**
+     * 获取统计数据
+     * */
+    private  void fetchStatistics(){
+        NetworkUtils.get("/Teacher/countClass", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject res = gson.fromJson(result, JsonObject.class);
+                if(res.get("code").getAsInt() == 200){
+                    JsonObject data = res.getAsJsonObject("data");
+                    int activeClass = data.get("activeClass").getAsInt();
+                    int pendingClass = data.get("pendingClass").getAsInt();
+                    pendingClassText.setText(pendingClass+"");
+                    activeClassText.setText(activeClass+"");
+                }
+            }
 
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
     private void setupComboBoxes() {
         // Setup semester combo box
-        ObservableList<String> semesters = FXCollections.observableArrayList(
-            "2024-2025-1",
-            "2024-2025-2",
-            "全部历史学期"
-        );
+        ObservableList<String> semesters = Data.getInstance().getSemesterList();
         semesterComboBox.setItems(semesters);
         semesterComboBox.getSelectionModel().selectFirst();
 
