@@ -8,9 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.work.javafx.controller.student.UserInfo1">
+<BorderPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.UserInfo1">
 
     <center>
         <HBox alignment="TOP_CENTER" spacing="40.0" styleClass="form-container">
@@ -30,6 +28,12 @@
                 <HBox spacing="10.0">
                     <Label styleClass="form-label" text="电子邮箱:" />
                     <TextField fx:id="emailField" promptText="请输入电子邮箱" />
+                </HBox>
+
+                <HBox spacing="10.0">
+                    <Label styleClass="form-label" text="验证码：" />
+                    <TextField fx:id="verifyCodeField" promptText="请输入验证码" />
+                    <Button fx:id="sendCodeButton" onAction="#handleSendVerifyCode" styleClass="send-code-button" text="向邮箱发送验证码" />
                 </HBox>
 
                 <HBox spacing="10.0" />

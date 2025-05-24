@@ -52,4 +52,18 @@
 .cancel-button:hover {
     -fx-background-color: #fceeee;
 }
+/* 发送验证码按钮 */
+.send-code-button {
+    -fx-background-color: #9A1E1E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5 12;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+
+.send-code-button:hover {
+    -fx-background-color: #b72727;
+}
 
