@@ -493,48 +493,8 @@ public class CourseSelectionContentController implements Initializable {
         }
     }
 
-    /**
-     * 上一页
-     */
-    @FXML
-    private void previousPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            if (currentPageLabel != null) {
-                currentPageLabel.setText(String.valueOf(currentPage));
-            }
-            // 使用当前活动的导航按钮判断应该加载哪类课程
-            refreshCurrentView();
-        }
-        System.out.println("显示第" + currentPage + "页");
-    }
 
-    /**
-     * 下一页
-     */
-    @FXML
-    private void nextPage() {
-        // 假设总页数是动态的，这里简单处理
-        currentPage++;
-        if (currentPageLabel != null) {
-            currentPageLabel.setText(String.valueOf(currentPage));
-        }
-        // 使用当前活动的导航按钮判断应该加载哪类课程
-        refreshCurrentView();
-        System.out.println("显示第" + currentPage + "页");
-    }
-    
-    /**
-     * 根据当前选中的导航刷新视图
-     */
-    private void refreshCurrentView() {
-        // 根据当前活动的导航按钮加载对应的课程数据
-        if (currentActiveNavButton == thisTermBtn) {
-            searchCourses();
-        }  else if (currentActiveNavButton == courseResultBtn) {
-            showCourseResults();
-        }
-    }
+
     
     /**
      * 选课操作
