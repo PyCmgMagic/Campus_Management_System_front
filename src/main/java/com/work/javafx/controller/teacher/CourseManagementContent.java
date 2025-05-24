@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.work.javafx.controller.student.StudentBaseViewController;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
@@ -236,7 +237,7 @@ static Gson gson = new Gson();
                 Button enterGradesButton = createTextButton("成绩录入", "primary");
 
                 viewStudentsButton.setOnAction(event -> handleViewStudents(course));
-
+                enterGradesButton.setOnAction(event -> handleEnterGrades(course));
                 buttons.getChildren().addAll(
                     viewStudentsButton,
                     enterGradesButton
@@ -301,6 +302,30 @@ static Gson gson = new Gson();
         }
         
         return buttons;
+    }
+
+    private void handleEnterGrades(UltimateCourse course) {
+        try {
+            // 获取当前场景
+            Scene scene = activeClassText.getScene();
+            if (scene != null) {
+                // 获取基础视图控制器实例
+                Object userData = scene.getUserData();
+                if (userData instanceof TeacherBaseViewController) {
+                    TeacherBaseViewController baseController = (TeacherBaseViewController) userData;
+                    // 调用基础视图控制器的方法切换到课表查询
+                    baseController.switchToscoreInput();
+                } else {
+                    System.out.println("无法获取基础视图控制器：userData不是TeacherBaseViewController类型");
+                }
+            } else {
+                System.out.println("无法获取场景");
+            }
+        } catch (Exception e) {
+            System.out.println("切换到课表查询时发生错误: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     private Button createIconButton(String icon, String tooltip) {
