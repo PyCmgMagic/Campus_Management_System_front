@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos; // Added for alignment
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -32,12 +33,15 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -78,15 +82,26 @@ public class TeacherHomePageController implements Initializable {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
                 if(res.get("code").getAsInt() == 200){
                     JsonObject data = res.getAsJsonObject("data");
-                    ClassCount.setText(data.get("classAmo").getAsString());
-                    hoursCount.setText(data.get("totalClassHour").getAsString());
+                    Platform.runLater(() -> { // Ensure UI updates are on JavaFX Application Thread
+                        ClassCount.setText(data.get("classAmo").getAsString());
+                        hoursCount.setText(data.get("totalClassHour").getAsString());
+                    });
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
-                System.err.println(res.get("msg").getAsString());
+                String errorMessage = e.getMessage();
+                if (errorMessage != null && errorMessage.contains("{")) {
+                    try {
+                        JsonObject res = gson.fromJson(errorMessage.substring(errorMessage.indexOf("{")), JsonObject.class);
+                        System.err.println("获取教师统计数据失败: " + res.get("msg").getAsString());
+                    } catch (JsonParseException | IllegalStateException jsonEx) {
+                        System.err.println("获取教师统计数据失败，且错误信息解析失败: " + errorMessage);
+                    }
+                } else {
+                    System.err.println("获取教师统计数据失败: " + errorMessage);
+                }
             }
         });
     }
@@ -114,12 +129,12 @@ public class TeacherHomePageController implements Initializable {
                 todayCoursesContainer.getChildren().clear();
             }
         });
-        
+
         // 获取当前日期
         LocalDate today = LocalDate.now();
         // 获取今天是星期几
         int dayOfWeek = today.getDayOfWeek().getValue();
-        
+
         // 获取当前学期
         String currentTerm = Data.getInstance().getCurrentTerm();
         if (currentTerm == null || currentTerm.isEmpty()) {
@@ -131,48 +146,50 @@ public class TeacherHomePageController implements Initializable {
             return; // 终止当前方法执行，避免使用空的学期值
         }
 
-        // 获取当前教学周
-        // 实际应用中应该从系统中获取当前教学周，这里简化为第1周
-        String currentWeek = "1";
-        
-        // 构建请求URL和参数
-        String url = "/class/getClassSchedule/";
-        url += currentWeek;
-        System.out.println(url);
-        Map<String, String> params = new HashMap<>();
-        params.put("term", currentTerm);
-        System.out.println(currentTerm);
-        
-        // 发送网络请求获取课表数据
-        NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Platform.runLater(() -> {
-                    try {
-                        JsonObject res = gson.fromJson(result, JsonObject.class);
-                        if (res.has("code") && res.get("code").getAsInt() == 200) {
-                            JsonArray data = res.getAsJsonArray("data");
-                            // 筛选今日课程
-                            filterAndDisplayTodayCourses(data, dayOfWeek);
-                        } else {
-                            String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
-                            displayTodayCoursesError("获取课程数据失败: " + msg);
+
+        fetchCurrentWeek(currentTerm, (currentWeek) -> {
+            if (currentWeek == null || currentWeek.isEmpty()) {
+                displayTodayCoursesError("无法获取当前教学周，无法加载今日课程。");
+                return;
+            }
+            // 构建请求URL和参数
+            String url = "/class/getClassSchedule/";
+            url += currentWeek;
+            System.out.println("Requesting today's courses with URL: " + url + " and term: " + currentTerm);
+            Map<String, String> params = new HashMap<>();
+            params.put("term", currentTerm);
+
+            // 发送网络请求获取课表数据
+            NetworkUtils.get(url, params, new NetworkUtils.Callback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    Platform.runLater(() -> {
+                        try {
+                            JsonObject res = gson.fromJson(result, JsonObject.class);
+                            if (res.has("code") && res.get("code").getAsInt() == 200) {
+                                JsonArray data = res.getAsJsonArray("data");
+                                // 筛选今日课程
+                                filterAndDisplayTodayCourses(data, dayOfWeek);
+                            } else {
+                                String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
+                                displayTodayCoursesError("获取课程数据失败: " + msg);
+                            }
+                        } catch (Exception e) {
+                            displayTodayCoursesError("解析课程数据时发生错误: " + e.getMessage());
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        displayTodayCoursesError("解析课程数据时发生错误: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                });
-            }
-            
-            @Override
-            public void onFailure(Exception e) {
-                displayTodayCoursesError("网络错误，无法加载今日课程");
-                e.printStackTrace();
-            }
+                    });
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    displayTodayCoursesError("网络错误，无法加载今日课程: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
         });
     }
-    
+
     /**
      * 筛选并显示今日课程
      * @param data 课程数据
@@ -182,44 +199,46 @@ public class TeacherHomePageController implements Initializable {
         Platform.runLater(() -> {
             if (todayCoursesContainer != null) {
                 todayCoursesContainer.getChildren().clear();
-                
+
                 boolean hasCourses = false;
-                
+
                 // 课程时间段定义
                 String[] timeSlots = {
-                    "08:00 - 09:50",
-                    "10:10 - 12:00",
-                    "14:00 - 15:50",
-                    "16:10 - 18:00",
-                    "19:00 - 20:50"
+                        "08:00 - 09:50",
+                        "10:10 - 12:00",
+                        "14:00 - 15:50",
+                        "16:10 - 18:00",
+                        "19:00 - 20:50"
                 };
-                
+
                 for (JsonElement element : data) {
                     JsonObject course = element.getAsJsonObject();
+                    // 确保 'time' 字段存在且为整数
+                    if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
+                        System.err.println("课程数据缺少'time'字段或格式不正确: " + course.toString());
+                        continue;
+                    }
                     int index = course.get("time").getAsInt();
-                    
-                    // 计算星期几，与dayOfWeek比较
-                    int courseDay = index / 5;
-                    courseDay += 1;
-                    
+
+
+                    int courseDay = (index / 5) + 1;
+
                     // 如果是今天的课程
                     if (courseDay == dayOfWeek) {
                         hasCourses = true;
-                        String courseName = course.get("name").getAsString();
-                        String classroom = course.get("classroom").getAsString();
+                        String courseName = course.has("name") ? course.get("name").getAsString() : "未知课程";
+                        String classroom = course.has("classroom") ? course.get("classroom").getAsString() : "未知地点";
                         String classInfo = course.has("className") ? course.get("className").getAsString() : "";
                         String studentsCount = course.has("studentsCount") ? course.get("studentsCount").getAsString() : "";
-                        
-                        // 计算是第几节课
+
+                        // 计算是第几节课 (0-4, 对应 timeSlots 数组的索引)
                         int timeSlotIndex = index % 5;
-                        if (timeSlotIndex == 0) timeSlotIndex = 4; // 如果余数为0表示是第5节课
-                        else timeSlotIndex--; // 否则余数需要减1，因为API返回的值从1开始
-                        
+
                         // 添加课程项
                         addCourseItem(timeSlots[timeSlotIndex], courseName, classroom, classInfo, studentsCount);
                     }
                 }
-                
+
                 // 如果今天没有课程，显示提示信息
                 if (!hasCourses) {
                     Label noCourseLabel = new Label("今日没有安排课程");
@@ -230,7 +249,7 @@ public class TeacherHomePageController implements Initializable {
             }
         });
     }
-    
+
     /**
      * 添加课程项到UI
      * @param time 课程时间
@@ -242,68 +261,69 @@ public class TeacherHomePageController implements Initializable {
     private void addCourseItem(String time, String courseName, String location, String classInfo, String studentsCount) {
         VBox courseItem = new VBox();
         courseItem.getStyleClass().add("course-item");
-        
+
         // 课程时间
         Label timeLabel = new Label(time);
         timeLabel.getStyleClass().add("course-time");
-        
+
         // 课程名称
         Label courseNameLabel = new Label(courseName);
         courseNameLabel.getStyleClass().add("course-name");
-        
+
         // 课程信息容器
         HBox courseInfo = new HBox();
         courseInfo.getStyleClass().add("course-info");
-        
+        courseInfo.setSpacing(10); // Add some spacing
+
         // 地点信息
-        HBox locationBox = new HBox();
+        HBox locationBox = new HBox(5); // Spacing for icon and label
         locationBox.getStyleClass().add("course-location");
         locationBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
+
         FontAwesomeIconView locationIcon = new FontAwesomeIconView();
         locationIcon.setGlyphName("MAP_MARKER");
         locationIcon.setSize("12");
-        
+
         Label locationLabel = new Label(location);
-        
+
         locationBox.getChildren().addAll(locationIcon, locationLabel);
-        
+
         // 学生信息
-        HBox studentsBox = new HBox();
+        HBox studentsBox = new HBox(5); // Spacing for icon and label
         studentsBox.getStyleClass().add("course-students");
         studentsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
+
         FontAwesomeIconView studentsIcon = new FontAwesomeIconView();
         studentsIcon.setGlyphName("USERS");
         studentsIcon.setSize("12");
-        
+
         // 组合班级信息和人数
         String studentInfo = classInfo;
-        if (!studentsCount.isEmpty()) {
-            studentInfo += " / " + studentsCount + "人";
+        if (studentsCount != null && !studentsCount.isEmpty() && !"0".equals(studentsCount)) { // Check for "0" as well
+            studentInfo += (studentInfo.isEmpty() ? "" : " / ") + studentsCount + "人";
         }
         if (studentInfo.isEmpty()) {
-            studentInfo = "无班级信息";
+            studentInfo = "暂无学生信息";
         }
-        
+
         Label studentsLabel = new Label(studentInfo);
-        
+
         studentsBox.getChildren().addAll(studentsIcon, studentsLabel);
-        
+
         // 添加空白占位
         javafx.scene.layout.Pane spacer = new javafx.scene.layout.Pane();
         javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-        
+
         // 组装课程信息
         courseInfo.getChildren().addAll(locationBox, spacer, studentsBox);
-        
+
         // 组装整个课程项
         courseItem.getChildren().addAll(timeLabel, courseNameLabel, courseInfo);
-        
+
         // 添加到容器
         todayCoursesContainer.getChildren().add(courseItem);
     }
-    
+
     /**
      * 显示今日课程加载错误信息
      * @param message 错误信息
@@ -333,7 +353,7 @@ public class TeacherHomePageController implements Initializable {
     private void loadNotices() {
         Platform.runLater(() -> noticeListContainer.getChildren().clear());
         Map<String, String> params = new HashMap<>();
-        params.put("Status", "0");
+        params.put("Status", "0"); // "0" for active/visible notices
 
         NetworkUtils.get("/notice/getTeacherNoticeList", params, new NetworkUtils.Callback<String>() {
             @Override
@@ -350,30 +370,65 @@ public class TeacherHomePageController implements Initializable {
                                 }
                                 noticeListContainer.getChildren().clear();
 
+                                List<JsonElement> noticeList = new ArrayList<>();
+                                for (JsonElement el : noticesArray) {
+                                    noticeList.add(el);
+                                }
+
                                 DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                                Collections.sort(noticeList, new Comparator<JsonElement>() {
+                                    @Override
+                                    public int compare(JsonElement o1, JsonElement o2) {
+                                        JsonObject notice1 = o1.getAsJsonObject();
+                                        JsonObject notice2 = o2.getAsJsonObject();
+
+                                        int isTop1 = notice1.has("isTop") ? notice1.get("isTop").getAsInt() : 0;
+                                        int isTop2 = notice2.has("isTop") ? notice2.get("isTop").getAsInt() : 0;
+
+                                        if (isTop1 != isTop2) {
+                                            return Integer.compare(isTop2, isTop1);
+                                        }
+
+                                        String timeStr1 = notice1.has("publishTime") ? notice1.get("publishTime").getAsString() : "";
+                                        String timeStr2 = notice2.has("publishTime") ? notice2.get("publishTime").getAsString() : "";
+
+                                        if (timeStr1.isEmpty() && timeStr2.isEmpty()) return 0;
+                                        if (timeStr1.isEmpty()) return 1;
+                                        if (timeStr2.isEmpty()) return -1;
+
+                                        try {
+                                            LocalDateTime dt1 = LocalDateTime.parse(timeStr1, inputFormatter);
+                                            LocalDateTime dt2 = LocalDateTime.parse(timeStr2, inputFormatter);
+                                            return dt2.compareTo(dt1);
+                                        } catch (DateTimeParseException e) {
+                                            return timeStr2.compareTo(timeStr1);
+                                        }
+                                    }
+                                });
+
+
                                 DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-                                for (JsonElement noticeElement : noticesArray) {
+                                for (JsonElement noticeElement : noticeList) {
                                     JsonObject noticeObject = noticeElement.getAsJsonObject();
                                     int id = noticeObject.get("id").getAsInt();
                                     String title = noticeObject.has("title") ? noticeObject.get("title").getAsString() : "无标题";
-                                    String content = noticeObject.get("content").getAsString();
+                                    String content = noticeObject.has("content") ? noticeObject.get("content").getAsString() : "";
                                     int isTop = noticeObject.has("isTop") ? noticeObject.get("isTop").getAsInt() : 0;
-                                    int visibleScope = noticeObject.has("visibleScope") ? noticeObject.get("visibleScope").getAsInt() : 0; // 或某些默认范围
+                                    int visibleScope = noticeObject.has("visibleScope") ? noticeObject.get("visibleScope").getAsInt() : 0;
                                     String publishTimeStr = noticeObject.has("publishTime") ? noticeObject.get("publishTime").getAsString() : "";
-                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "null";
-                                    
-                                    String formattedPublishTime = "";
+                                    String creatorName = noticeObject.has("creatorName") ? noticeObject.get("creatorName").getAsString() : "未知发布者";
+
+                                    String formattedPublishTime = "时间未知";
                                     if (!publishTimeStr.isEmpty()) {
                                         try {
                                             LocalDateTime dateTime = LocalDateTime.parse(publishTimeStr, inputFormatter);
                                             formattedPublishTime = dateTime.format(outputFormatter);
                                         } catch (DateTimeParseException e) {
-                                            System.err.println("日期解析错误: " + publishTimeStr + " - " + e.getMessage());
-                                            formattedPublishTime = publishTimeStr; // 回退到原始字符串
+                                            System.err.println("公告日期解析错误: " + publishTimeStr + " - " + e.getMessage());
                                         }
                                     }
-                                    
+
                                     String timeAndCreatorInfo = "发布时间：" + formattedPublishTime + " | 发布人：" + creatorName;
                                     addNoticeItem(id, title, content, isTop, visibleScope, timeAndCreatorInfo);
                                 }
@@ -389,17 +444,16 @@ public class TeacherHomePageController implements Initializable {
                         System.err.println("loadNotices中的JSON解析错误: " + e.getMessage());
                     } catch (Exception e) {
                         String errorMessage = e.getMessage();
-                        try {
-                            if (errorMessage != null && errorMessage.contains("{") && errorMessage.contains("}")) {
+                        if (errorMessage != null && errorMessage.contains("{") && errorMessage.contains("}")) {
+                            try {
                                 JsonObject errorJson = gson.fromJson(errorMessage.substring(errorMessage.indexOf("{")), JsonObject.class);
                                 if (errorJson.has("msg")) {
                                     errorMessage = errorJson.get("msg").getAsString();
                                 }
+                            } catch (JsonParseException jsonEx) {
                             }
-                        } catch (JsonParseException jsonEx) {
-
                         }
-                        displayErrorMessage("获取公告列表失败: " + errorMessage);
+                        displayErrorMessage("获取公告列表时发生错误: " + errorMessage);
                         System.err.println("loadNotices中发生错误: " + e.getMessage());
                         e.printStackTrace();
                     }
@@ -408,20 +462,19 @@ public class TeacherHomePageController implements Initializable {
 
             @Override
             public void onFailure(Exception e) {
-
                 String errorMessage = e.getMessage();
-                try {
-                     if (errorMessage != null && errorMessage.contains("{") && errorMessage.contains("}")) {
+                if (errorMessage != null && errorMessage.contains("{") && errorMessage.contains("}")) {
+                    try {
                         JsonObject errorJson = gson.fromJson(errorMessage.substring(errorMessage.indexOf("{")), JsonObject.class);
-                         if (errorJson.has("msg")) {
+                        if (errorJson.has("msg")) {
                             errorMessage = errorJson.get("msg").getAsString();
                         }
+                    } catch (JsonParseException jsonEx) {
                     }
-                } catch (JsonParseException jsonEx) {
-
                 }
                 displayErrorMessage("网络错误，无法加载公告: " + errorMessage);
                 System.err.println("loadNotices中网络故障: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -429,28 +482,41 @@ public class TeacherHomePageController implements Initializable {
     private void addNoticeItem(int id, String title, String content, int isTop, int visibleScope, String timeInfo) {
         HBox noticeItem = new HBox();
         noticeItem.getStyleClass().add("notice-item");
+        noticeItem.setSpacing(10);
         noticeItem.setOnMouseClicked(e -> showNoticeDetails(title, content));
 
         StackPane iconPane = new StackPane();
-        iconPane.getStyleClass().add("notice-icon"); 
-    
+        iconPane.getStyleClass().add("notice-icon");
+
+
 
         VBox noticeDetailsVBox = new VBox();
         noticeDetailsVBox.getStyleClass().add("notice-content");
+        noticeDetailsVBox.setSpacing(5);
+
+        HBox titleLine = new HBox(5);
+        titleLine.setAlignment(Pos.CENTER_LEFT);
+
+        if (isTop == 1) {
+            Label topTag = new Label("[置顶]");
+            topTag.getStyleClass().add("notice-tag-top");
+            titleLine.getChildren().add(topTag);
+        }
 
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("notice-title");
-        if (isTop == 1) { 
-            titleLabel.getStyleClass().add("notice-title-top");
-        }
+
+        titleLine.getChildren().add(titleLabel);
+
 
         Label timeLabel = new Label(timeInfo);
         timeLabel.getStyleClass().add("notice-time");
 
-        noticeDetailsVBox.getChildren().addAll(titleLabel, timeLabel);
-
+        noticeDetailsVBox.getChildren().addAll(titleLine, timeLabel);
         HBox actions = new HBox();
         actions.getStyleClass().add("notice-actions");
+        actions.setSpacing(5);
+        actions.setAlignment(Pos.CENTER_RIGHT);
 
 
         Button editBtn = new Button("编辑");
@@ -470,6 +536,8 @@ public class TeacherHomePageController implements Initializable {
         actions.getChildren().addAll(editBtn, deleteBtn);
 
         HBox.setHgrow(noticeDetailsVBox, javafx.scene.layout.Priority.ALWAYS); // 使内容占据可用空间
+        HBox.setHgrow(actions, javafx.scene.layout.Priority.NEVER);
+
         noticeItem.getChildren().addAll(iconPane, noticeDetailsVBox, actions);
         noticeListContainer.getChildren().add(noticeItem);
     }
@@ -485,24 +553,24 @@ public class TeacherHomePageController implements Initializable {
         textArea.setPrefHeight(300);
         textArea.setPrefWidth(500);
 
-        alert.setGraphic(null); // 移除默认图标
+        alert.setGraphic(null);
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setContent(textArea);
         dialogPane.setPrefWidth(550);
         dialogPane.setPrefHeight(400);
 
+
         try {
-            // 尝试加载通用对话框样式或教师特定样式
-            URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css"); // 复用管理员对话框样式
+            URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css");
             if (cssResource != null) {
                 dialogPane.getStylesheets().add(cssResource.toExternalForm());
-                dialogPane.getStyleClass().add("notice-dialog"); // 公告对话框的通用样式类
+                dialogPane.getStyleClass().add("notice-dialog");
             } else {
-                System.err.println("DialogStyles.css 未找到。");
+                System.err.println("DialogStyles.css 未找到。将使用默认对话框样式。");
             }
         } catch (Exception e) {
-            System.err.println("Error loading CSS for dialog: " + e.getMessage());
+            System.err.println("加载对话框CSS时出错: " + e.getMessage());
         }
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -514,26 +582,27 @@ public class TeacherHomePageController implements Initializable {
     @FXML
     private void publishNewNotice() {
         try {
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/addNewAnnouncement.fxml"));
             Parent root = loader.load();
 
             AddNewAnnouncementController controller = loader.getController();
             if (controller == null) {
-                System.err.println("AddNewAnnouncementController 为空。");
-                displayErrorMessage("无法打开发布公告窗口。");
+                System.err.println("AddNewAnnouncementController 为空。请检查FXML路径和控制器绑定。");
+                displayErrorMessage("无法打开发布公告窗口：控制器加载失败。");
                 return;
             }
-            
+
             Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.initStyle(StageStyle.DECORATED);
             popupStage.setTitle("发布新公告");
-            popupStage.setScene(new Scene(root, 800, 600));
+            Scene scene = new Scene(root, 800, 600);
+            popupStage.setScene(scene);
             popupStage.setMinWidth(700);
             popupStage.setMinHeight(550);
+
             controller.initVisble(false);
             controller.setStage(popupStage);
-
             controller.setOnPublishCompleteCallback(this::loadNotices);
 
             popupStage.showAndWait();
@@ -543,10 +612,10 @@ public class TeacherHomePageController implements Initializable {
             displayErrorMessage("打开公告发布窗口失败: " + e.getMessage());
         }  catch (Exception e) {
             e.printStackTrace();
-            displayErrorMessage("发生意外错误: " + e.getMessage());
+            displayErrorMessage("打开公告发布窗口时发生意外错误: " + e.getMessage());
         }
     }
-    
+
     private void editNotice(int noticeId, String title, String content, int isTop, int visibleScope) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/editAnnouncement.fxml"));
@@ -554,12 +623,13 @@ public class TeacherHomePageController implements Initializable {
 
             editAnnouncementController controller = loader.getController();
             if (controller == null) {
-                System.err.println("editAnnouncementController 为空。请检查FXML和控制器。");
-                 displayErrorMessage("无法打开编辑公告窗口。");
+                System.err.println("editAnnouncementController 为空。请检查FXML路径和控制器绑定。");
+                displayErrorMessage("无法打开编辑公告窗口：控制器加载失败。");
                 return;
             }
-            
+
             controller.initData(noticeId, title, content, isTop, visibleScope);
+
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -575,24 +645,32 @@ public class TeacherHomePageController implements Initializable {
             displayErrorMessage("打开公告编辑窗口失败: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            displayErrorMessage("发生意外错误: " + e.getMessage());
+            displayErrorMessage("打开公告编辑窗口时发生意外错误: " + e.getMessage());
         }
     }
 
     private void deleteNotice(int noticeId) {
-
-
-
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationDialog.setTitle("确认删除");
         confirmationDialog.setHeaderText("您确定要删除此公告吗？");
-        confirmationDialog.setContentText("ID: " + noticeId);
+        confirmationDialog.setContentText("公告ID: " + noticeId + "\n此操作会将公告状态设置为关闭，但不会从数据库中物理删除。");
+
+        try {
+            URL cssResource = getClass().getResource("/com/work/javafx/css/admin/DialogStyles.css");
+            if (cssResource != null) {
+                DialogPane dialogPane = confirmationDialog.getDialogPane();
+                dialogPane.getStylesheets().add(cssResource.toExternalForm());
+                dialogPane.getStyleClass().add("confirmation-dialog");
+            }
+        } catch (Exception e) {
+            System.err.println("加载确认对话框CSS时出错: " + e.getMessage());
+        }
+
 
         confirmationDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 Map<String, String> params = new HashMap<>();
-                params.put("id", noticeId+"");
-
+                params.put("id", String.valueOf(noticeId));
 
                 NetworkUtils.post("/notice/close", params, "" , new NetworkUtils.Callback<String>() {
                     @Override
@@ -601,21 +679,22 @@ public class TeacherHomePageController implements Initializable {
                             try {
                                 JsonObject res = gson.fromJson(result, JsonObject.class);
                                 if (res.has("code") && res.get("code").getAsInt() == 200) {
-                                    displayInfoMessage("公告删除成功。");
-                                    loadNotices(); // 刷新列表
+                                    displayInfoMessage("公告已成功关闭（标记为删除）。");
+                                    loadNotices();
                                 } else {
                                     String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
-                                    displayErrorMessage("删除失败: " + msg);
+                                    displayErrorMessage("关闭公告失败: " + msg);
                                 }
                             } catch (JsonParseException e) {
-                                displayErrorMessage("删除失败: 响应格式错误。");
+                                displayErrorMessage("关闭公告失败: 服务器响应格式错误。");
                             }
                         });
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Platform.runLater(() -> displayErrorMessage("删除失败: " + e.getMessage()));
+                        Platform.runLater(() -> displayErrorMessage("关闭公告操作失败: " + e.getMessage()));
+                        e.printStackTrace();
                     }
                 });
             }
@@ -624,16 +703,18 @@ public class TeacherHomePageController implements Initializable {
 
     private void displayErrorMessage(String message) {
         Platform.runLater(() -> {
+            if (noticeListContainer == null) return;
             noticeListContainer.getChildren().clear();
             Label errorLabel = new Label(message);
             errorLabel.getStyleClass().add("error-message");
-            errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10px; -fx-alignment: center;");
+            errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10px; -fx-alignment: center; -fx-font-weight: bold;");
             noticeListContainer.getChildren().add(errorLabel);
         });
     }
 
     private void displayInfoMessage(String message) {
         Platform.runLater(() -> {
+            if (noticeListContainer == null) return;
             noticeListContainer.getChildren().clear();
             Label infoLabel = new Label(message);
             infoLabel.getStyleClass().add("info-message");
@@ -652,22 +733,23 @@ public class TeacherHomePageController implements Initializable {
             public void onSuccess(String result) {
                 try {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
-                    if (res.has("code") && res.get("code").getAsInt() == 200) {
+                    if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
                         String currentTerm = res.get("data").getAsString();
                         System.out.println("成功获取当前学期: " + currentTerm);
                         Data.getInstance().setCurrentTerm(currentTerm);
-                        
-                        // 调用回调函数
+
                         if (callback != null) {
                             callback.run();
                         }
                     } else {
-                        System.err.println("获取当前学期失败: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
-                        displayTodayCoursesError("获取当前学期失败，无法加载今日课程");
+                        String msg = res.has("msg") ? res.get("msg").getAsString() : "响应格式不正确或获取失败";
+                        System.err.println("获取当前学期失败: " + msg);
+                        displayTodayCoursesError("获取当前学期失败 ("+msg+")，无法加载今日课程");
                     }
                 } catch (Exception e) {
                     System.err.println("解析当前学期数据时发生错误: " + e.getMessage());
-                    displayTodayCoursesError("获取当前学期失败，无法加载今日课程");
+                    displayTodayCoursesError("获取当前学期失败（解析错误），无法加载今日课程");
+                    e.printStackTrace();
                 }
             }
 
@@ -675,17 +757,50 @@ public class TeacherHomePageController implements Initializable {
             public void onFailure(Exception e) {
                 System.err.println("获取当前学期网络请求失败: " + e.getMessage());
                 displayTodayCoursesError("网络错误，无法获取当前学期");
-                try {
-                    if (e.getMessage() != null && e.getMessage().contains("{")) {
+                if (e.getMessage() != null && e.getMessage().contains("{")) {
+                    try {
                         JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
                         if (res.has("msg")) {
-                            System.err.println(res.get("msg").getAsString());
+                            System.err.println("服务器错误信息: " + res.get("msg").getAsString());
                         }
+                    } catch (Exception ex) {
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+                e.printStackTrace();
             }
         });
+    }
+
+    private void fetchCurrentWeek(String term, java.util.function.Consumer<String> callback) {
+        if (term == null || term.isEmpty()) {
+            System.err.println("无法获取当前周，因为学期为空。");
+            if (callback != null) callback.accept(null);
+            return;
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("term", term);
+        callback.accept("1");
+//        NetworkUtils.get("/week/getTermCurrentWeek", params, new NetworkUtils.Callback<String>() {
+//            @Override
+//            public void onSuccess(String result) throws IOException {
+//                JsonObject res = gson.fromJson(result, JsonObject.class);
+//                if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
+//                    String currentWeek = res.get("data").getAsString();
+//                    System.out.println("成功获取当前教学周: " + currentWeek + " for term: " + term);
+//                    if (callback != null) callback.accept(currentWeek);
+//                } else {
+//                    String msg = res.has("msg") ? res.get("msg").getAsString() : "响应格式不正确或获取失败";
+//                    System.err.println("获取当前教学周失败: " + msg);
+//                    if (callback != null) callback.accept(null);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                System.err.println("获取当前教学周网络请求失败: " + e.getMessage());
+//                if (callback != null) callback.accept(null);
+//                e.printStackTrace();
+//            }
+//        });
     }
 }

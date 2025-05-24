@@ -113,7 +113,7 @@ public class AddNewAnnouncementController implements Initializable {
                         }
                     } catch (Exception e) {
                         JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
-                        ShowMessage.showErrorMessage("解析错误", res.get("msg").getAsString());
+                        ShowMessage.showErrorMessage("发布失败", res.get("msg").getAsString());
                     }
                     submitButton.setDisable(false);
                     cancelButton.setDisable(false);
@@ -124,7 +124,7 @@ public class AddNewAnnouncementController implements Initializable {
             public void onFailure(Exception e) {
                 NetworkUtils.runOnUiThread(() -> {
                     JsonObject res = gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")), JsonObject.class);
-                    ShowMessage.showErrorMessage("解析错误", res.get("msg").getAsString());
+                    ShowMessage.showErrorMessage("发布失败", res.get("msg").getAsString());
                     submitButton.setDisable(false);
                     cancelButton.setDisable(false);
                 });
