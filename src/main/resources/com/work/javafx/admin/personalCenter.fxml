@@ -80,10 +80,6 @@
                         <Label styleClass="info-label" text="职称" />
                         <Label fx:id="titleLabel" styleClass="info-value" />
                     </HBox>
-                    <HBox spacing="10">
-                        <Label styleClass="info-label" text="入职时间" />
-                        <Label fx:id="entryDateLabel" styleClass="info-value" />
-                    </HBox>
                 </VBox>
             </VBox>
         </HBox>
