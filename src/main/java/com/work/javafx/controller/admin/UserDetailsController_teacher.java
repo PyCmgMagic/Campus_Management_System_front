@@ -30,6 +30,7 @@ public class UserDetailsController_teacher implements Initializable {
     private boolean isEditMode = false;
     
     @FXML private Label idLabel;
+    @FXML private Label idLabel1;
     @FXML private Label usernameLabel;
     @FXML private Label sduidLabel;
     @FXML private Label sexLabel;
@@ -110,6 +111,9 @@ public class UserDetailsController_teacher implements Initializable {
                             setLabelText(sduidLabel, userInfo, "sduid");
                             if (userInfo.has("sduid") && !userInfo.get("sduid").isJsonNull()) {
                                 idLabel.setText("工号: " + userInfo.get("sduid").getAsString());
+                            }
+                            if (userInfo.has("id") && !userInfo.get("id").isJsonNull()) {
+                                idLabel1.setText("ID: " + userInfo.get("id").getAsString());
                             }
                             setLabelText(sexLabel, userInfo, "sex");
                             setLabelText(emailLabel, userInfo, "email");
