@@ -9,6 +9,7 @@ import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -53,18 +54,15 @@ public class TeacherManagementController implements Initializable {
     @FXML private BorderPane addTeacherCard;
     @FXML private BorderPane importTeacherCard;
 
-    // Search and Filter
     @FXML private TextField searchField;
     @FXML private ComboBox<String> departmentFilter;
 
-
-    // Teacher Table
     @FXML private TableView<TeacherInfo> teacherTable;
-    @FXML private TableColumn<TeacherInfo, String> idColumn; // 职工号 (映射自 sduid)
-    @FXML private TableColumn<TeacherInfo, String> nameColumn; // 映射自 username
-    @FXML private TableColumn<TeacherInfo, String> departmentColumn; // 显示 'college'
-    @FXML private TableColumn<TeacherInfo, String> contactColumn; // 显示 'email' 作为联系方式
-    @FXML private TableColumn<TeacherInfo, String> statusColumn; // 状态列
+    @FXML private TableColumn<TeacherInfo, String> idColumn;
+    @FXML private TableColumn<TeacherInfo, String> nameColumn;
+    @FXML private TableColumn<TeacherInfo, String> departmentColumn;
+    @FXML private TableColumn<TeacherInfo, String> contactColumn;
+    @FXML private TableColumn<TeacherInfo, String> statusColumn;
     @FXML private TableColumn<TeacherInfo, Void> actionColumn;
 
     // Pagination
@@ -73,15 +71,27 @@ public class TeacherManagementController implements Initializable {
 
     // Pagination Parameters
     private final int ROWS_PER_PAGE = 10;
+    
+    // 添加分页相关的成员变量
+    private ObservableList<TeacherInfo> masterData = FXCollections.observableArrayList();
+    private int totalItems = 0;
+    private int totalPages = 1;
+    private int currentPage = 1;
+    
+    // 页码变化监听器
+    private javafx.beans.value.ChangeListener<Number> pageChangeListener;
+    
+    // 添加页面加载锁定标志
+    private volatile boolean isPageLoadingLocked = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initFilters();
-        initTeacherTable(); // 初始化表格列和单元格工厂
-        initPagination();   // 初始化分页并设置页面工厂
+        initTeacherTable();
+        initPagination();
 
-        // 初始加载第 0 页数据
-        fetchTeacherData(0);
+        // 初始加载第 1 页数据
+        loadTeachersFromApi(1);
     }
 
     private void initFilters() {
@@ -154,174 +164,332 @@ public class TeacherManagementController implements Initializable {
         };
     }
 
+    /**
+     * 初始化分页控件
+     */
     private void initPagination() {
-        teacherPagination.setPageCount(1); // 初始为 1 页
         teacherPagination.setCurrentPageIndex(0);
-        teacherPagination.setPageFactory(this::fetchTeacherData);
+        teacherPagination.setPageFactory(this::createPage);
+        
+        // 添加页码变化监听器
+        pageChangeListener = (obs, oldIndex, newIndex) -> {
+             if (newIndex.intValue() != oldIndex.intValue() && !isPageLoadingLocked) {
+                 isPageLoadingLocked = true;
+                 loadTeachersFromApi(newIndex.intValue() + 1);
+             } else if (isPageLoadingLocked) {
+                 Platform.runLater(() -> {
+                     teacherPagination.currentPageIndexProperty().removeListener(pageChangeListener);
+                     teacherPagination.setCurrentPageIndex(oldIndex.intValue());
+                     teacherPagination.currentPageIndexProperty().addListener(pageChangeListener);
+                 });
+             }
+        };
+        
+        teacherPagination.currentPageIndexProperty().addListener(pageChangeListener);
+        updatePageInfo();
     }
 
-    private Node fetchTeacherData(int pageIndex) {
-        teacherTable.setPlaceholder(new Label("正在加载数据..."));
-        if(searchField.getText().isEmpty()){
+    /**
+     * 创建分页页面内容
+     */
+    private Node createPage(int pageIndex) {
+        return new VBox();
+    }
+    
+    /**
+     * 更新分页信息标签
+     */
+    private void updatePageInfo() {
+        if (pageInfo == null) return;
+
+        int itemsOnCurrentPage = masterData.size(); 
+
+        if (totalItems == 0) {
+            pageInfo.setText("共 0 条记录");
+        } else {
+            int fromIndex = (currentPage - 1) * ROWS_PER_PAGE + 1;
+            int toIndex = Math.min(fromIndex + itemsOnCurrentPage - 1, totalItems);
+             if (itemsOnCurrentPage == 0 && currentPage > 1) {
+                 pageInfo.setText(String.format("第 %d 页 (共 %d 页) 无记录", currentPage, totalPages));
+             } else if (itemsOnCurrentPage == 0 && totalItems > 0) {
+                 pageInfo.setText(String.format("共 %d 条记录 (0 显示)", totalItems));
+             } else {
+                 pageInfo.setText(String.format("显示 %d-%d 条，共 %d 条 (第 %d/%d 页)", 
+                                                 fromIndex, toIndex, totalItems, currentPage, totalPages));
+             }
+        }
+    }
+
+    /**
+     * 从API加载教师数据
+     * @param pageNum 页码（从1开始）
+     */
+    private void loadTeachersFromApi(int pageNum) {
+        // 用户请求的页码，记录下来以便后续比较
+        final int requestedPage = pageNum;
+        
+        if(searchField.getText().trim().isEmpty()){
             Map<String, String> params = new HashMap<>();
-            params.put("page", String.valueOf(pageIndex + 1));
+            params.put("page", String.valueOf(pageNum));
             params.put("limit", String.valueOf(ROWS_PER_PAGE));
             String selectedDepartment = departmentFilter.getValue();
             if (selectedDepartment != null && !"全部院系".equals(selectedDepartment)) {
                 params.put("college", selectedDepartment);
             }
 
+            // 确保UI被禁用，显示加载状态
+            Platform.runLater(() -> {
+                teacherTable.setDisable(true);
+                teacherTable.setPlaceholder(new Label("正在加载数据..."));
+            });
+
             NetworkUtils.getAsync("/admin/getTeacherList", params)
-                .thenAcceptAsync(response -> Platform.runLater(() -> { // 确保 UI 更新在 FX 线程执行
+                .thenAcceptAsync(response -> {
                     try {
                         JsonObject jsonResponse = gson.fromJson(response, JsonObject.class);
 
                         if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200 && jsonResponse.has("data") && jsonResponse.get("data").isJsonObject()) {
-                            JsonObject dataObject = jsonResponse.getAsJsonObject("data"); // 获取 data 对象
+                            JsonObject dataObject = jsonResponse.getAsJsonObject("data");
 
                             // 检查 'data' 中是否存在 'user' 数组
                             if (dataObject.has("user") && dataObject.get("user").isJsonArray()) {
-                                JsonArray dataArray = dataObject.getAsJsonArray("user"); // 获取 user 数组
+                                JsonArray dataArray = dataObject.getAsJsonArray("user");
+                                
+                                // 获取分页信息
+                                int apiTotalPages = 1;
+                                if (dataObject.has("page") && dataObject.get("page").isJsonPrimitive()) {
+                                    apiTotalPages = dataObject.get("page").getAsInt();
+                                    if (apiTotalPages <= 0) apiTotalPages = 1;
+                                }
+                                
+                                // 计算总记录数
+                                int apiTotalItems = (apiTotalPages - 1) * ROWS_PER_PAGE + dataArray.size();
+                                if (pageNum < apiTotalPages) {
+                                    apiTotalItems = apiTotalPages * ROWS_PER_PAGE; // 估算值
+                                }
 
-                                ObservableList<TeacherInfo> currentPageData = FXCollections.observableArrayList();
+                                ObservableList<TeacherInfo> newData = FXCollections.observableArrayList();
                                 for (JsonElement element : dataArray) {
                                     JsonObject teacherJson = element.getAsJsonObject();
                                     TeacherInfo teacher = new TeacherInfo(
                                             getStringOrNull(teacherJson, "id"),
-
                                             getStringOrNull(teacherJson, "sduid"),
-                                            getStringOrNull(teacherJson, "username"), // 映射 username 到 name
+                                            getStringOrNull(teacherJson, "username"),
                                             getStringOrNull(teacherJson, "college"),
-                                            getStringOrNull(teacherJson, "email"),     // 映射 email 到 contactInfo
+                                            getStringOrNull(teacherJson, "email"),
                                             "在职"
                                     );
-                                    currentPageData.add(teacher);
+                                    newData.add(teacher);
                                 }
 
-                                // 更新表格数据
-                                teacherTable.setItems(currentPageData);
-                                if (currentPageData.isEmpty() && pageIndex == 0) {
-                                    teacherTable.setPlaceholder(new Label("没有找到符合条件的教师数据"));
-                                } else if (currentPageData.isEmpty() && pageIndex > 0) {
-                                    teacherTable.setPlaceholder(new Label("没有更多数据了"));
-                                }
-
-                                // 使用响应中的总页数更新分页控件
-                                int totalPages = 1; // 如果未提供，默认为 1
-                                if (dataObject.has("page") && dataObject.get("page").isJsonPrimitive()) {
-                                    totalPages = dataObject.get("page").getAsInt();
-                                    if (totalPages <= 0) totalPages = 1; // 确保至少有 1 页
-                                } else {
-
-                                }
-                                teacherPagination.setPageCount(totalPages);
-
-                                if (pageIndex >= totalPages) {
-                                    int newPageIndex = Math.max(0, totalPages - 1);
-                                    teacherPagination.setCurrentPageIndex(newPageIndex);
-                                    // 如果索引改变，我们可能需要重新获取数据，但先更新标签
-                                    updatePageInfoLabel(newPageIndex, currentPageData.size(), totalPages);
-                                } else {
-                                    teacherPagination.setCurrentPageIndex(pageIndex); // 如果有效，保持当前索引
-                                    updatePageInfoLabel(pageIndex, currentPageData.size(), totalPages);
-                                }
-
+                                // 最后在UI线程中更新界面
+                                int finalApiTotalItems = apiTotalItems;
+                                int finalApiTotalPages = apiTotalPages;
+                                Platform.runLater(() -> {
+                                    try {
+                                        // 保存API返回的数据到模型
+                                        totalItems = finalApiTotalItems;
+                                        totalPages = finalApiTotalPages;
+                                        currentPage = requestedPage;
+                                        
+                                        // 只有当当前页面的数据确实是我们请求的页面的数据时，才更新UI
+                                        if (requestedPage == pageNum) {
+                                            // 临时禁用监听器
+                                            teacherPagination.currentPageIndexProperty().removeListener(pageChangeListener);
+                                            
+                                            // 设置总页数
+                                            teacherPagination.setPageCount(Math.max(1, totalPages));
+                                            
+                                            // 更新页码
+                                            teacherPagination.setCurrentPageIndex(currentPage - 1);
+                                            
+                                            // 重新添加监听器
+                                            teacherPagination.currentPageIndexProperty().addListener(pageChangeListener);
+                                            
+                                            // 更新表格数据
+                                            masterData.setAll(newData);
+                                            if (teacherTable.getItems() != masterData) {
+                                                teacherTable.setItems(masterData);
+                                            }
+                                            
+                                            if (newData.isEmpty() && pageNum == 1) {
+                                                teacherTable.setPlaceholder(new Label("没有找到符合条件的教师数据"));
+                                            } else if (newData.isEmpty() && pageNum > 1) {
+                                                teacherTable.setPlaceholder(new Label("没有更多数据了"));
+                                            }
+                                        }
+                                    } finally {
+                                        // 无论如何都要解除加载锁定，启用UI
+                                        isPageLoadingLocked = false;
+                                        teacherTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
                             } else {
-                                // 处理 'user' 数组缺失或无效的情况
-                                ShowMessage.showErrorMessage("加载失败", "服务器返回的数据格式不正确 (缺少教师列表)。");
-                                handleFetchError();
+                                Platform.runLater(() -> {
+                                    try {
+                                        ShowMessage.showErrorMessage("加载失败", "服务器返回的数据格式不正确 (缺少教师列表)。");
+                                        handleFetchError();
+                                    } finally {
+                                        isPageLoadingLocked = false;
+                                        teacherTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
                             }
                         } else {
-                            String errorMsg = "获取教师数据失败";
-                            if (jsonResponse.has("msg")) {
-                                errorMsg += ": " + jsonResponse.get("msg").getAsString();
-                            }
-                            LOGGER.log(Level.WARNING, "API Error: " + errorMsg);
-                            ShowMessage.showErrorMessage("加载失败", errorMsg);
-                            handleFetchError();
+                            Platform.runLater(() -> {
+                                try {
+                                    String errorMsg = "获取教师数据失败";
+                                    if (jsonResponse.has("msg")) {
+                                        errorMsg += ": " + jsonResponse.get("msg").getAsString();
+                                    }
+                                    LOGGER.log(Level.WARNING, "API Error: " + errorMsg);
+                                    ShowMessage.showErrorMessage("加载失败", errorMsg);
+                                    handleFetchError();
+                                } finally {
+                                    isPageLoadingLocked = false;
+                                    teacherTable.setDisable(false);
+                                    updatePageInfo();
+                                }
+                            });
                         }
                     } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                        ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
-                        handleFetchError();
+                        Platform.runLater(() -> {
+                            try {
+                                LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
+                                ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                                handleFetchError();
+                            } finally {
+                                isPageLoadingLocked = false;
+                                teacherTable.setDisable(false);
+                                updatePageInfo();
+                            }
+                        });
                     }
-                }))
+                }, Platform::runLater)
                 .exceptionally(ex -> {
-                    Platform.runLater(() -> { // 确保 UI 更新在 FX 线程执行
-                        LOGGER.log(Level.SEVERE, "网络请求失败", ex);
-                        ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + ex.getMessage());
-                        handleFetchError();
+                    Platform.runLater(() -> {
+                        try {
+                            LOGGER.log(Level.SEVERE, "网络请求失败", ex);
+                            ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + ex.getMessage());
+                            handleFetchError();
+                        } finally {
+                            isPageLoadingLocked = false;
+                            teacherTable.setDisable(false);
+                            updatePageInfo();
+                        }
                     });
                     return null;
                 });
-    }else{
+        } else {
+            // 搜索逻辑保持不变，但需要添加UI状态管理
             Map<String,String> params = new HashMap<>();
             params.put("keyword",searchField.getText());
             params.put("permission","1");
+            
+            // 确保UI被禁用，显示加载状态
+            Platform.runLater(() -> {
+                teacherTable.setDisable(true);
+                teacherTable.setPlaceholder(new Label("正在搜索..."));
+            });
+            
             NetworkUtils.get("/admin/searchSdu", params, new NetworkUtils.Callback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     try {
                         JsonObject jsonResponse = gson.fromJson(result, JsonObject.class);
-
                         if (jsonResponse.has("code") && jsonResponse.get("code").getAsInt() == 200 && jsonResponse.has("data") ) {
                                 JsonObject data = jsonResponse.getAsJsonObject("data");
                                 JsonArray dataArray = data.getAsJsonArray("list");
-                                ObservableList<TeacherInfo> currentPageData = FXCollections.observableArrayList();
+                                ObservableList<TeacherInfo> newData = FXCollections.observableArrayList();
                                 for (JsonElement element : dataArray) {
                                     JsonObject teacherJson = element.getAsJsonObject();
                                     TeacherInfo teacher = new TeacherInfo(
                                             getStringOrNull(teacherJson, "id"),
                                             getStringOrNull(teacherJson, "sduid"),
-                                            getStringOrNull(teacherJson, "username"), // 映射 username 到 name
+                                            getStringOrNull(teacherJson, "username"),
                                             getStringOrNull(teacherJson, "college"),
-                                            getStringOrNull(teacherJson, "email"),     // 映射 email 到 contactInfo
+                                            getStringOrNull(teacherJson, "email"),
                                             "在职"
                                     );
-                                    currentPageData.add(teacher);
+                                    newData.add(teacher);
                                 }
 
-                                // 更新表格数据
-                                teacherTable.setItems(currentPageData);
-                                if (currentPageData.isEmpty() && pageIndex == 0) {
-                                    teacherTable.setPlaceholder(new Label("没有找到符合条件的教师数据"));
-                                } else if (currentPageData.isEmpty() && pageIndex > 0) {
-                                    teacherTable.setPlaceholder(new Label("没有更多数据了"));
-                                }
-
-                                // 使用响应中的总页数更新分页控件
-                                int totalPages = 1; // 如果未提供，默认为 1
-                                teacherPagination.setPageCount(totalPages);
-
-                                if (pageIndex >= totalPages) {
-                                    int newPageIndex = Math.max(0, totalPages - 1);
-                                    teacherPagination.setCurrentPageIndex(newPageIndex);
-                                    // 如果索引改变，我们可能需要重新获取数据，但先更新标签
-                                    updatePageInfoLabel(newPageIndex, currentPageData.size(), totalPages);
-                                } else {
-                                    teacherPagination.setCurrentPageIndex(pageIndex); // 如果有效，保持当前索引
-                                    updatePageInfoLabel(pageIndex, currentPageData.size(), totalPages);
-                                }
-
+                                Platform.runLater(() -> {
+                                    try {
+                                        // 搜索结果通常只有一页
+                                        totalItems = newData.size();
+                                        totalPages = 1;
+                                        currentPage = 1;
+                                        
+                                        // 临时禁用监听器
+                                        teacherPagination.currentPageIndexProperty().removeListener(pageChangeListener);
+                                        
+                                        // 设置总页数
+                                        teacherPagination.setPageCount(1);
+                                        
+                                        // 更新页码
+                                        teacherPagination.setCurrentPageIndex(0);
+                                        
+                                        // 重新添加监听器
+                                        teacherPagination.currentPageIndexProperty().addListener(pageChangeListener);
+                                        
+                                        // 更新表格数据
+                                        masterData.setAll(newData);
+                                        teacherTable.setItems(masterData);
+                                        
+                                        if (newData.isEmpty()) {
+                                            teacherTable.setPlaceholder(new Label("没有找到符合条件的教师数据"));
+                                        }
+                                    } finally {
+                                        isPageLoadingLocked = false;
+                                        teacherTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
                             } else {
-                                handleFetchError();
+                                Platform.runLater(() -> {
+                                    try {
+                                        handleFetchError();
+                                    } finally {
+                                        isPageLoadingLocked = false;
+                                        teacherTable.setDisable(false);
+                                        updatePageInfo();
+                                    }
+                                });
                             }
                     } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                        ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
-                        handleFetchError();
+                        Platform.runLater(() -> {
+                            try {
+                                LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
+                                ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                                handleFetchError();
+                            } finally {
+                                isPageLoadingLocked = false;
+                                teacherTable.setDisable(false);
+                                updatePageInfo();
+                            }
+                        });
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
-                    ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
-                    handleFetchError();
+                    Platform.runLater(() -> {
+                        try {
+                            LOGGER.log(Level.SEVERE, "解析教师数据失败", e);
+                            ShowMessage.showErrorMessage("处理错误", "无法处理服务器响应。 Exception: " + e.getMessage());
+                            handleFetchError();
+                        } finally {
+                            isPageLoadingLocked = false;
+                            teacherTable.setDisable(false);
+                            updatePageInfo();
+                        }
+                    });
                 }
             });
         }
-        return teacherTable;
     }
 
     private String getStringOrNull(JsonObject obj, String key) {
@@ -329,47 +497,20 @@ public class TeacherManagementController implements Initializable {
     }
 
     private void handleFetchError() {
-        teacherTable.setItems(FXCollections.observableArrayList()); // 清空表格
+        masterData.clear();
         teacherTable.setPlaceholder(new Label("加载数据失败，请重试"));
+        totalItems = 0;
+        totalPages = 1;
+        currentPage = 1;
         teacherPagination.setPageCount(1);
         teacherPagination.setCurrentPageIndex(0);
-        updatePageInfoLabel(-1, 0, 1); // 更新标签以显示加载失败状态
-    }
-
-    // 更新分页信息标签
-    private void updatePageInfoLabel(int currentPageIndex, int fetchedCount, int totalPages) {
-         if (currentPageIndex < 0 || fetchedCount <= 0 && currentPageIndex == 0 && totalPages <= 1) {
-             pageInfo.setText("第 1 页 / 共 1 页 - 显示 0 条");
-             if(currentPageIndex == -1) pageInfo.setText("加载失败"); // 加载失败的特定情况
-         } else {
-            int pageNum = currentPageIndex + 1; // 显示页码从 1 开始
-             int fromRecord = currentPageIndex * ROWS_PER_PAGE + 1;
-             int toRecord = fromRecord + fetchedCount - 1;
-             if (toRecord < fromRecord) toRecord = fromRecord -1;
-             pageInfo.setText(String.format("第 %d 页 / 共 %d 页 - 显示 %d-%d 条",
-                     pageNum, totalPages, fromRecord, toRecord));
-         }
-    }
-
-
-    // 事件处理
-    @FXML
-    private void searchTeachers() {
-        triggerDataReload();
-    }
-
-    @FXML
-    private void resetFilters() {
-        searchField.clear();
-        departmentFilter.getSelectionModel().selectFirst();
-        triggerDataReload();
     }
 
     private void triggerDataReload() {
          if (teacherPagination.getCurrentPageIndex() == 0) {
-            fetchTeacherData(0);
+            loadTeachersFromApi(1);
         } else {
-            teacherPagination.setCurrentPageIndex(0); // 否则跳回第一页（会自动触发 fetchTeacherData）
+            teacherPagination.setCurrentPageIndex(0); // 否则跳回第一页（会自动触发 loadTeachersFromApi）
          }
     }
 
@@ -421,7 +562,7 @@ public class TeacherManagementController implements Initializable {
                                         System.out.println( response); // 打印响应以供调试
                                         ShowMessage.showInfoMessage( "成功", "文件上传成功！");
                                         //刷新列表
-                                        fetchTeacherData(teacherPagination.getCurrentPageIndex());
+                                        loadTeachersFromApi(teacherPagination.getCurrentPageIndex() + 1);
                                     }
 
                                 });
@@ -517,7 +658,7 @@ public class TeacherManagementController implements Initializable {
                          JsonObject res = gson.fromJson(response, JsonObject.class);
                          if (res.has("code") && res.get("code").getAsInt() == 200) {
                                 ShowMessage.showInfoMessage("操作成功", "已删除教师: " + teacherName);
-                            fetchTeacherData(teacherPagination.getCurrentPageIndex());
+                            loadTeachersFromApi(teacherPagination.getCurrentPageIndex() + 1);
                          } else {
                              String errorMsg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
                              ShowMessage.showErrorMessage("删除失败", "删除教师失败: " + errorMsg);
@@ -550,4 +691,14 @@ public class TeacherManagementController implements Initializable {
         return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
 
+    public void searchTeachers(ActionEvent actionEvent) {
+        loadTeachersFromApi(1);
+    }
+
+    public void resetFilters(ActionEvent actionEvent) {
+        searchField.clear();
+        departmentFilter.setValue("全部院系");
+        loadTeachersFromApi(1);
+    }
 }
+
