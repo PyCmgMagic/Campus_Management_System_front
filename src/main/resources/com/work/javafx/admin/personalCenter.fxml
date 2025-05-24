@@ -18,8 +18,6 @@
                     <HBox spacing="10">
                         <Label styleClass="user-id" text="工号" />
                         <Label fx:id="stuIdLabel" styleClass="info-value" />
-                        <Label styleClass="user-id" text="入职年份" />
-                        <Label fx:id="yearLabel" styleClass="info-value" />
                     </HBox>
                 </VBox>
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
