@@ -24,6 +24,7 @@ public class UltimateCourse {
     private String semester;
     private String credits;
     private String studentCount;
+    private int peopleNum;
     private String syllabusStatus;
     private transient HBox actions;
 
@@ -314,6 +315,14 @@ public class UltimateCourse {
 
     public void setStudentCount(String studentCount) {
         this.studentCount = studentCount;
+    }
+
+    public int getPeopleNum() {
+        return peopleNum;
+    }
+
+    public void setPeopleNum(int peopleNum) {
+        this.peopleNum = peopleNum;
     }
 
     public String getSyllabusStatus() {

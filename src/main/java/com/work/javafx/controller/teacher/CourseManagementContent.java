@@ -216,15 +216,11 @@ static Gson gson = new Gson();
             creditsField.setAccessible(true);
             creditsField.set(course, String.valueOf(course.getPoint()));
             
-            // 选课人数默认设置为0或容量
-            java.lang.reflect.Field countField = UltimateCourse.class.getDeclaredField("studentCount");
+            // 选课人数默认设置为0
+            java.lang.reflect.Field countField = UltimateCourse.class.getDeclaredField("peopleNum");
             countField.setAccessible(true);
-            countField.set(course, String.valueOf(course.getCapacity()));
-            
-            // 教学大纲状态默认设为"已提交"
-            java.lang.reflect.Field syllabusField = UltimateCourse.class.getDeclaredField("syllabusStatus");
-            syllabusField.setAccessible(true);
-            syllabusField.set(course, "已提交");
+            countField.set(course, course.getPeopleNum());
+
             
         } catch (Exception e) {
             System.out.println("设置课程属性失败: " + e.getMessage());
@@ -571,40 +567,40 @@ static Gson gson = new Gson();
         }
     }
 
-    // 课程类
-    public static class Course {
-        private final String courseCode;
-        private final String courseName;
-        private final String otherTeachers;
-        private final String semester;
-        private final String credits;
-        private final String studentCount;
-        private final String syllabusStatus;
-        private final String status;
-        private final HBox actions;
-
-        public Course(String courseCode, String courseName, String otherTeachers, 
-                     String semester, String credits, String studentCount, 
-                     String syllabusStatus, String status, HBox actions) {
-            this.courseCode = courseCode;
-            this.courseName = courseName;
-            this.otherTeachers = otherTeachers;
-            this.semester = semester;
-            this.credits = credits;
-            this.studentCount = studentCount;
-            this.syllabusStatus = syllabusStatus;
-            this.status = status;
-            this.actions = actions;
-        }
-
-        public String getCourseCode() { return courseCode; }
-        public String getCourseName() { return courseName; }
-        public String getOtherTeachers() { return otherTeachers; }
-        public String getSemester() { return semester; }
-        public String getCredits() { return credits; }
-        public String getStudentCount() { return studentCount; }
-        public String getSyllabusStatus() { return syllabusStatus; }
-        public String getStatus() { return status; }
-        public HBox getActions() { return actions; }
-    }
+//    // 课程类
+//    public static class Course {
+//        private final String courseCode;
+//        private final String courseName;
+//        private final String otherTeachers;
+//        private final String semester;
+//        private final String credits;
+//        private final String studentCount;
+//        private final String syllabusStatus;
+//        private final String status;
+//        private final HBox actions;
+//
+//        public Course(String courseCode, String courseName, String otherTeachers,
+//                     String semester, String credits, String studentCount,
+//                     String syllabusStatus, String status, HBox actions) {
+//            this.courseCode = courseCode;
+//            this.courseName = courseName;
+//            this.otherTeachers = otherTeachers;
+//            this.semester = semester;
+//            this.credits = credits;
+//            this.studentCount = studentCount;
+//            this.syllabusStatus = syllabusStatus;
+//            this.status = status;
+//            this.actions = actions;
+//        }
+//
+//        public String getCourseCode() { return courseCode; }
+//        public String getCourseName() { return courseName; }
+//        public String getOtherTeachers() { return otherTeachers; }
+//        public String getSemester() { return semester; }
+//        public String getCredits() { return credits; }
+//        public String getStudentCount() { return studentCount; }
+//        public String getSyllabusStatus() { return syllabusStatus; }
+//        public String getStatus() { return status; }
+//        public HBox getActions() { return actions; }
+//    }
 }

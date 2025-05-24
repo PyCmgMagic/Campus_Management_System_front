@@ -33,21 +33,21 @@
             <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
         </columnConstraints>
 
-        <!-- Major Field -->
+        <!-- 专业字段 -->
         <Label text="专业:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
         <ComboBox fx:id="majorComboBox" promptText="选择专业" GridPane.rowIndex="0" GridPane.columnIndex="1" 
                   maxWidth="Infinity" />
 
-        <!-- Grade Field -->
+        <!-- 年级字段 -->
         <Label text="年级:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
         <ComboBox fx:id="gradeComboBox" promptText="选择年级" GridPane.rowIndex="1" GridPane.columnIndex="1" 
                   maxWidth="Infinity" />
 
-        <!-- Advisor ID Field -->
+        <!-- 导员ID字段 -->
         <Label text="导员ID:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
         <TextField fx:id="advisorIdField" promptText="输入导员ID" GridPane.rowIndex="2" GridPane.columnIndex="1" />
 
-        <!-- Class Number Field -->
+        <!-- 班级编号字段 -->
         <Label text="班级编号:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
         <TextField fx:id="numberField" promptText="输入班级编号" GridPane.rowIndex="3" GridPane.columnIndex="1" />
     </GridPane>

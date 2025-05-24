@@ -130,7 +130,7 @@ public class PersonalCenterContent implements Initializable {
         email.setText(UserSession.getInstance().getEmail());
         name.setText(UserSession.getInstance().getUsername());
         idlabel.setText(UserSession.getInstance().getSduid());
-        // 获取 yearLabel 显示的内容（即 Induction 年份）
+        // 获取 yearLabel 显示的内容
         String inductionYear = UserSession.getInstance().getInduction();
 
         try {

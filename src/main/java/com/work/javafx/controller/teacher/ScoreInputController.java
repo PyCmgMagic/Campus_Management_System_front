@@ -330,9 +330,7 @@ public class ScoreInputController implements Initializable {
         // --- Y轴整数刻度的配置 ---
         barChartYAxis.setAutoRanging(false); // 禁用自动范围以手动控制刻度
         barChartYAxis.setLowerBound(0);      // 坐标轴从0开始
-        // 我们将根据最大值在updateBarChart中动态设置上限和刻度单位
         barChartYAxis.setMinorTickCount(0); // 整数之间没有次要刻度
-        // 可选：格式化刻度标签以确保它们显示为没有小数的整数
         barChartYAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
@@ -349,7 +347,6 @@ public class ScoreInputController implements Initializable {
                 return null;
             }
         });
-        // --- Y轴配置结束 ---
 
 
         // 饼图设置
@@ -507,7 +504,7 @@ public class ScoreInputController implements Initializable {
     }
 
 
-    // --- 事件处理器（来自FXML onAction） ---
+    // --- 事件处理器
 
     @FXML
     void handleQuery(ActionEvent event) {
@@ -545,17 +542,6 @@ public class ScoreInputController implements Initializable {
         });
     }
 
-    @FXML
-    void handleBatchImport(ActionEvent event) {
-        System.out.println("批量导入按钮已点击");
-        // --- 在此添加文件选择器和导入逻辑 ---
-    }
-
-    @FXML
-    void handleExportExcel(ActionEvent event) {
-        System.out.println("导出Excel按钮已点击");
-        // --- 在此添加Excel导出逻辑 ---
-    }
 
     @FXML
     void handleSortById(ActionEvent event) {

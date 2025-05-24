@@ -90,8 +90,6 @@
             <!-- 底部按钮组 -->
             <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="button-group">
                <children>
-                  <Button onAction="#handleCancel" styleClass="secondary-button" text="取消" />
-                  <Button onAction="#handleBatchSave" styleClass="primary-button" text="批量保存" />
                   <Button onAction="#handleSubmitLock" styleClass="primary-button" text="提交并锁定" />
                </children>
             </HBox>

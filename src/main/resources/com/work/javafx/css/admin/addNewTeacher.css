@@ -1,10 +1,12 @@
 /* Main Container Styles */
+/* 主容器样式 */
 .main-container {
     -fx-background-color: #f5f5f5;
     -fx-padding: 20px;
 }
 
-/* Header Styles */
+
+/* 头部样式 */
 .header-container {
     -fx-padding: 10px 0px 20px 0px;
     -fx-border-color: transparent transparent #e0e0e0 transparent;
@@ -16,7 +18,7 @@
     -fx-font-weight: bold;
 }
 
-/* Form Container Styles */
+/* 表单容器样式 */
 .form-scroll-pane {
     -fx-background: transparent;
     -fx-background-color: transparent;
@@ -42,7 +44,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
 }
 
-/* Form Field Styles */
+/* 表单字段样式 */
 .form-field-container {
     -fx-alignment: center-left;
 }
@@ -64,7 +66,7 @@
     -fx-background-color: white;
 }
 
-/* ComboBox Styling */
+/* ComboBox 样式 */
 .combo-box {
     -fx-background-color: #f9f9f9;
     -fx-border-color: #ddd;
@@ -79,7 +81,6 @@
     -fx-padding: 8px;
 }
 
-/* Button Styles */
 .buttons-container {
     -fx-padding: 15px 0px 0px 0px;
     -fx-border-color: #e0e0e0 transparent transparent transparent;
@@ -111,7 +112,6 @@
     -fx-background-color: #bdc3c7;
 }
 
-/* Radio Button Styling */
 .radio-button {
     -fx-padding: 5px;
 }
@@ -126,7 +126,6 @@
     -fx-background-color: #3498db;
 }
 
-/* Error Styles */
 .error-label {
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
