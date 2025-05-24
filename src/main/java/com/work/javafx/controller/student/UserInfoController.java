@@ -122,9 +122,7 @@ public class UserInfoController implements Initializable {
 
     public void fetchUserInfo() {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + UserSession.getInstance().getToken());
-
-        NetworkUtils.post("/status/getStatusCard", "", header, new NetworkUtils.Callback<String>() {
+        NetworkUtils.post("/status/getStatusCard", "", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 JsonObject responseJson = gson.fromJson(result, JsonObject.class);
