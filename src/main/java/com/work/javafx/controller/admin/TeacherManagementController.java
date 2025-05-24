@@ -65,11 +65,9 @@ public class TeacherManagementController implements Initializable {
     @FXML private TableColumn<TeacherInfo, String> statusColumn;
     @FXML private TableColumn<TeacherInfo, Void> actionColumn;
 
-    // Pagination
     @FXML private Pagination teacherPagination;
     @FXML private Label pageInfo;
 
-    // Pagination Parameters
     private final int ROWS_PER_PAGE = 10;
     
     // 添加分页相关的成员变量
