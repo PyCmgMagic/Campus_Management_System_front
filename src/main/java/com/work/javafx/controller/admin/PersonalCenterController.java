@@ -3,6 +3,7 @@ package com.work.javafx.controller.admin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.work.javafx.controller.student.PasswordChangeController;
+import com.work.javafx.controller.student.UserInfo1;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
 import javafx.application.Platform;
@@ -179,16 +180,16 @@ public class PersonalCenterController implements Initializable {
             popupStage.setTitle("修改个人信息");
             
             // 加载修改个人信息的FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/editPersonalInfo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/student/UserInfo_1.fxml"));
             Parent root = loader.load();
             
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
-                    Objects.requireNonNull(getClass().getResource("/com/work/javafx/css/admin/editPersonalInfo.css")).toExternalForm()
+                    Objects.requireNonNull(getClass().getResource("/com/work/javafx/css/student/UserInfo_1.css")).toExternalForm()
             );
             
             // 获取控制器并设置stage
-            EditPersonalInfoController controller = loader.getController();
+            UserInfo1 controller = loader.getController();
             controller.setStage(popupStage);
             
             // 获取主窗口并设置用户数据为当前控制器，用于回调刷新

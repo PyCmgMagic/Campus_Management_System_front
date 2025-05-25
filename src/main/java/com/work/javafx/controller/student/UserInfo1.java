@@ -9,6 +9,7 @@ import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class UserInfo1 {
+public class UserInfo1 implements Initializable {
     // 新增回调接口
     public interface OnSaveListener {
         void onSaveSuccess() throws IOException;
@@ -50,6 +51,7 @@ public class UserInfo1 {
 
         // 配置验证码输入框
         setupVerifyCodeField();
+
     }
 
     /**
@@ -69,6 +71,8 @@ public class UserInfo1 {
     }
 
     private void fetchUserInfo() {
+        phoneField.setText(UserSession.getInstance().getPhone());
+        emailField.setText(UserSession.getInstance().getEmail());
 
     }
 
