@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -92,7 +93,9 @@ public class ScoreInputController implements Initializable {
     private PieChart gradeLevelChart;
     @FXML
     private VBox pieChartLegend; // 自定义图例的VBox
-
+    //按钮
+    @FXML
+    private Button submitLockButton;
     Gson gson = new Gson();
     // 数据
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
@@ -588,14 +591,40 @@ public class ScoreInputController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "确定提交并锁定所有成绩吗？此操作可能无法撤销。", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                System.out.println("正在提交并锁定...");
-                // ... 实际提交逻辑 ...
-                scoreTableView.setEditable(false); // 示例：禁用表格编辑
-                // 如需要禁用其他按钮
+                Map<String, String> params = new HashMap<>();
+                params.put("courseId", currentCourse.getId());
+                // 打印参数信息
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                }
+                // 调用后端API
+                NetworkUtils.post("/grade/releaseGrade", params, null, new NetworkUtils.Callback<String>() {
+                    @Override
+                    public void onSuccess(String result) throws IOException {
+                        JsonObject res = gson.fromJson(result, JsonObject.class);
+                        if (res.has("code") && res.get("code").getAsInt() == 200) {
+                            Platform.runLater(() -> {
+                                ShowMessage.showInfoMessage("提交成功", res.get("msg").getAsString());
+                                scoreTableView.setEditable(false);
+                                submitLockButton.setDisable(true);
+                            });
+                        } else {
+                            Platform.runLater(() -> {
+                                ShowMessage.showErrorMessage("提交失败", res.get("msg").getAsString());
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        String msg = ResUtil.getMsgFromException(e);
+                                ShowMessage.showErrorMessage("提交失败", msg);
+
+                    }
+                });
             }
         });
     }
-
 
     // --- 数据模型内部类 ---
     public static class ScoreEntry {
@@ -816,13 +845,7 @@ public class ScoreInputController implements Initializable {
             }
         }
 
-//        private void showErrorAlert(String title, String content) { // 注释或移除此方法
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle(title);
-//            alert.setHeaderText(null);
-//            alert.setContentText(content);
-//            alert.showAndWait();
-//        }
+
     }
 
 }
