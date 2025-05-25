@@ -4,11 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.work.javafx.entity.Data;
+import com.work.javafx.model.CourseForScoreInput;
+import com.work.javafx.model.ScoreEntry;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,7 +31,6 @@ import javafx.util.StringConverter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ScoreInputController implements Initializable {
@@ -46,7 +46,7 @@ public class ScoreInputController implements Initializable {
 
     // 筛选控件
     @FXML
-    private ComboBox<Course> courseComboBox;
+    private ComboBox<CourseForScoreInput> courseComboBox;
 
     // 表格视图和列
     @FXML
@@ -99,7 +99,7 @@ public class ScoreInputController implements Initializable {
     Gson gson = new Gson();
     // 数据
     private ObservableList<ScoreEntry> scoreData = FXCollections.observableArrayList();
-    private Course currentCourse; // 添加当前课程引用
+    private CourseForScoreInput currentCourse; // 添加当前课程引用
 
 
 
@@ -145,7 +145,7 @@ public class ScoreInputController implements Initializable {
 //    });
 //}
     private void setupComboBoxes() {
-        ObservableList<Course> courseList = FXCollections.observableArrayList();
+        ObservableList<CourseForScoreInput> courseList = FXCollections.observableArrayList();
         Map<String, String> params = new HashMap<>();
         params.put("term", Data.getInstance().getCurrentTerm());
         System.out.println(Data.getInstance().getCurrentTerm());
@@ -161,7 +161,7 @@ public class ScoreInputController implements Initializable {
                     for (int i = 0; i < list.size(); i++) {
                         JsonObject c = list.get(i).getAsJsonObject();
                         if(c.get("status").getAsString().equals("已通过")) {
-                            courseList.add(new Course(c.get("id").getAsString(), c.get("name").getAsString(), c.get("peopleNum").getAsInt(), c.get("regularRatio").getAsDouble(), c.get("finalRatio").getAsDouble()));
+                            courseList.add(new CourseForScoreInput(c.get("id").getAsString(), c.get("name").getAsString(), c.get("peopleNum").getAsInt(), c.get("regularRatio").getAsDouble(), c.get("finalRatio").getAsDouble()));
                         }
                         }
                 }
@@ -359,7 +359,7 @@ public class ScoreInputController implements Initializable {
     }
 
 
-    private void updateStatistics() {
+    public void updateStatistics() {
         if (scoreData.isEmpty()) {
             avgScoreLabel.setText("-");
             maxScoreLabel.setText("-");
@@ -511,7 +511,7 @@ public class ScoreInputController implements Initializable {
 
     @FXML
     void handleQuery(ActionEvent event) {
-        Course selectedCourse = courseComboBox.getValue();
+        CourseForScoreInput selectedCourse = courseComboBox.getValue();
         currentCourse = selectedCourse; // 保存当前课程
         regularScoreCol.setText("平时分(" + selectedCourse.getRegularRatio() + ")");
         finalScoreCol.setText("期末分(" + selectedCourse.getFinalRatio() + ")");
@@ -626,198 +626,9 @@ public class ScoreInputController implements Initializable {
         });
     }
 
-    // --- 数据模型内部类 ---
-    public static class ScoreEntry {
-        private final String studentId;
-        private final String sduid;
-        private final String name;
-        private final String className;
-        private final String courseName;
-        private javafx.beans.property.IntegerProperty regularScore = new javafx.beans.property.SimpleIntegerProperty(0);
-        private javafx.beans.property.IntegerProperty finalScore = new javafx.beans.property.SimpleIntegerProperty(0);
-        private javafx.beans.property.IntegerProperty totalScore = new javafx.beans.property.SimpleIntegerProperty(0);
-        private javafx.beans.property.StringProperty status = new javafx.beans.property.SimpleStringProperty("-");
-        private String remarks;
-        private double regularRatio = 0.3; // 默认平时成绩比例
-        private double finalRatio = 0.7;   // 默认期末成绩比例
-        private ScoreInputController controller; // 引用控制器以更新统计
 
-        public ScoreEntry(String studentId, String sduid, String name, String className, String courseName, Integer regularScoreVal, Integer finalScoreVal, String remarks) {
-            this.studentId = studentId;
-            this.sduid = sduid;
-            this.name = name;
-            this.className = className;
-            this.courseName = courseName;
-            if (regularScoreVal != null) this.regularScore.set(regularScoreVal);
-            if (finalScoreVal != null) this.finalScore.set(finalScoreVal);
-            this.remarks = remarks;
 
-            // 监听平时分和期末分的变化，自动更新总分和状态
-            this.regularScore.addListener((obs, oldVal, newVal) -> {
-                calculateTotalScore();
-                updateStatus();
-                // 通知控制器更新统计信息
-                Platform.runLater(() -> {
-                    if (controller != null) {
-                        controller.updateStatistics();
-                    }
-                });
-            });
 
-            this.finalScore.addListener((obs, oldVal, newVal) -> {
-                calculateTotalScore();
-                updateStatus();
-                // 通知控制器更新统计信息
-                Platform.runLater(() -> {
-                    if (controller != null) {
-                        controller.updateStatistics();
-                    }
-                });
-            });
-
-            calculateTotalScore();
-            updateStatus();
-        }
-
-        // 设置控制器引用
-        public void setController(ScoreInputController controller) {
-            this.controller = controller;
-        }
-
-        // 设置成绩比例
-        public void setScoreRatios(double regularRatio, double finalRatio) { // Changed parameters to double
-            this.regularRatio = regularRatio;
-            this.finalRatio = finalRatio;
-            calculateTotalScore();
-            updateStatus();
-        }
-
-        // --- Getters ---
-        public String getStudentId() {
-            return studentId;
-        }
-
-        public String getSduid() {
-            return sduid;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getClassName() {
-            return className;
-        }
-
-        public String getCourseName() {
-            return courseName;
-        }
-
-        // JavaFX 属性方法
-        public Integer getRegularScore() {
-            return regularScore.get();
-        }
-
-        public javafx.beans.property.IntegerProperty regularScoreProperty() {
-            return regularScore;
-        }
-
-        public void setRegularScore(Integer value) {
-            this.regularScore.set(value != null ? value : 0);
-        }
-
-        public Integer getFinalScore() {
-            return finalScore.get();
-        }
-
-        public javafx.beans.property.IntegerProperty finalScoreProperty() {
-            return finalScore;
-        }
-
-        public void setFinalScore(Integer value) {
-            this.finalScore.set(value != null ? value : 0);
-        }
-
-        public Integer getTotalScore() {
-            return totalScore.get();
-        }
-
-        public javafx.beans.property.IntegerProperty totalScoreProperty() {
-            return totalScore;
-        }
-
-        public String getStatus() {
-            return status.get();
-        }
-
-        public javafx.beans.property.StringProperty statusProperty() {
-            return status;
-        }
-
-        public String getRemarks() {
-            return remarks;
-        }
-
-        public void setRemarks(String remarks) {
-            this.remarks = remarks;
-        }
-
-        // --- 计算逻辑 ---
-        private void calculateTotalScore() {
-            double regScore = regularScore.get();
-            double finScore = finalScore.get();
-            // Calculate with double precision and then round to nearest integer
-            int total = (int) Math.round(regScore * regularRatio + finScore * finalRatio);
-            totalScore.set(total);
-        }
-
-        private void updateStatus() {
-            double total = totalScore.get(); // Keep as double for comparison consistency
-            if (total >= 60) {
-                status.set("通过");
-            } else {
-                status.set("不及格");
-            }
-        }
-    }
-
-    // 课程数据内部类
-    public static class Course {
-        private String id;
-        private String name;
-        private int peopleNum;
-        private double regularRatio;
-        private double finalRatio;
-
-        public Course(String id, String name, int peopleNum, double regularRatio, double finalRatio) {
-            this.id = id;
-            this.peopleNum = peopleNum;
-            this.name = name;
-            this.regularRatio = regularRatio;
-            this.finalRatio = finalRatio;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public double getRegularRatio() {
-            return regularRatio;
-        }
-
-        public double getFinalRatio() {
-            return finalRatio;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 
     // --- 分数输入验证的辅助类 ---
     private static class ScoreStringConverter extends StringConverter<Integer> { // Changed to Integer

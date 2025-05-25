@@ -155,7 +155,6 @@ public class TeacherHomePageController implements Initializable {
             // 构建请求URL和参数
             String url = "/class/getClassSchedule/";
             url += currentWeek;
-            System.out.println("Requesting today's courses with URL: " + url + " and term: " + currentTerm);
             Map<String, String> params = new HashMap<>();
             params.put("term", currentTerm);
 
@@ -214,12 +213,15 @@ public class TeacherHomePageController implements Initializable {
                 for (JsonElement element : data) {
                     JsonObject course = element.getAsJsonObject();
                     // 确保 'time' 字段存在且为整数
-                    if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
-                        System.err.println("课程数据缺少'time'字段或格式不正确: " + course.toString());
+                    int index = 0;
+                    try {
+                        if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
+                            continue;
+                        }
+                       index = course.get("time").getAsInt();
+                    }catch (Exception e){
                         continue;
                     }
-                    int index = course.get("time").getAsInt();
-
 
                     int courseDay = (index / 5) + 1;
 

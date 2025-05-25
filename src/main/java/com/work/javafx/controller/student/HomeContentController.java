@@ -182,14 +182,15 @@ public class HomeContentController implements Initializable {
 
                 for (JsonElement element : data) {
                     JsonObject course = element.getAsJsonObject();
-
-                    // 确保 'time' 字段存在且为整数
-                    if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
-                        System.err.println("学生端课程数据缺少'time'字段或格式不正确: " + course.toString());
-                        continue;
-                    }
-                    int timeIndex = course.get("time").getAsInt(); // timeIndex 从0开始，代表周一第一节课
-
+                    int timeIndex =  0;
+                  try{
+                      if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
+                          continue;
+                      }
+                       timeIndex = course.get("time").getAsInt(); // timeIndex 从0开始，代表周一第一节课
+                  }catch (Exception e){
+                      continue;
+                  }
                     // 计算课程在哪一天 (1=周一, ..., 7=周日)
                     int courseDay = (timeIndex / 5) + 1;
 

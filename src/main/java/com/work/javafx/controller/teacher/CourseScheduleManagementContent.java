@@ -312,9 +312,18 @@ public class CourseScheduleManagementContent implements Initializable {
                     Fifth.setTime("第9-10节\n19:00-20:50");
                     for (int i = 0; i < data.size(); i++) {
                         JsonObject course = data.get(i).getAsJsonObject();
-                        int index = course.get("time").getAsInt();
+                        int index = 0;
+                        try{
+                            index = course.get("time").getAsInt();
+                        }catch (Exception e){
+                            continue;
+                        }
                         String courseName = course.get("name").getAsString();
-                        String classroom = course.get("classroom").getAsString();
+                        String classroom = "";
+                        try{
+                         classroom = course.get("classroom").getAsString();
+                        } catch (Exception ignored){
+                        }
                         int id = course.get("id").getAsInt();
 
                         switch (index % 5){

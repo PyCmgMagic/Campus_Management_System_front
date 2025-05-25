@@ -593,7 +593,7 @@ static Gson gson = new Gson();
     }
 
 //    // 课程类
-//    public static class Course {
+//    public static class CourseForScoreInput {
 //        private final String courseCode;
 //        private final String courseName;
 //        private final String otherTeachers;
@@ -604,7 +604,7 @@ static Gson gson = new Gson();
 //        private final String status;
 //        private final HBox actions;
 //
-//        public Course(String courseCode, String courseName, String otherTeachers,
+//        public CourseForScoreInput(String courseCode, String courseName, String otherTeachers,
 //                     String semester, String credits, String studentCount,
 //                     String syllabusStatus, String status, HBox actions) {
 //            this.courseCode = courseCode;
