@@ -7,6 +7,7 @@ import com.work.javafx.model.UltimateCourse;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,7 +29,7 @@ public class editCourseController implements Initializable {
     @FXML private TextField courseSubtypeField;
     @FXML private TextField creditsField;
     @FXML private TextField courseCodeField;
-    @FXML private TextField classroomField;
+    @FXML private ComboBox<String> classroomComboBox;
     @FXML private TextField capacityField;
     @FXML private TextField startWeekField;
     @FXML private TextField endWeekField;
@@ -161,13 +162,15 @@ public class editCourseController implements Initializable {
         }
         creditsField.setText(courseData.get("point").getAsString());
         courseCodeField.setText(courseData.get("classNum").getAsString());
+        String classroom = null;
         try{
-            classroomField.setText(courseData.get("classroom").getAsString());
-
-
+             classroom = courseData.get("classroom").getAsString();
         }catch (Exception e){
-            classroomField.setText("");
-
+            classroom = "";
+        }
+        classroomComboBox.setItems(Data.getInstance().getClassRoomList());
+        if(classroom != null && !classroom.isEmpty()){
+            classroomComboBox.getSelectionModel().select(classroom);
         }
         capacityField.setText(courseData.get("capacity").getAsString());
         startWeekField.setText(courseData.get("weekStart").getAsString());
@@ -248,7 +251,7 @@ public class editCourseController implements Initializable {
             }
             requestBody.put("point",creditsField.getText());//课程学分
             requestBody.put("classNum",courseCodeField.getText());//课序号
-            requestBody.put("classroom",classroomField.getText());//上课教室
+            requestBody.put("classroom",classroomComboBox.getValue());//上课教室
             requestBody.put("weekStart",startWeekField.getText());//开始周
             requestBody.put("weekEnd",endWeekField.getText());//结束周
             requestBody.put("period",classHoursField.getText());//学时
@@ -295,7 +298,7 @@ public class editCourseController implements Initializable {
         // 必填字段验证
         if (isEmpty(courseNameField)) errorMessages.append("- 课程名称不能为空\n");
         if (isEmpty(creditsField)) errorMessages.append("- 学分不能为空\n");
-        if (isEmpty(classroomField)) errorMessages.append("- 上课教室不能为空\n");
+        if (classroomComboBox.getValue() == null || classroomComboBox.getValue().isEmpty()) errorMessages.append("- 上课教室不能为空\n");
         if (isEmpty(capacityField)) errorMessages.append("- 课容量不能为空\n");
         if (isEmpty(startWeekField)) errorMessages.append("- 开始周不能为空\n");
         if (isEmpty(endWeekField)) errorMessages.append("- 结束周不能为空\n");

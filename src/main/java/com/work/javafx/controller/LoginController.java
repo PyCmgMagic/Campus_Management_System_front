@@ -191,6 +191,37 @@ public class LoginController {
         });
     }
     /**
+     * 获取教室列表
+     */
+    private void fetchClassRoom(){
+        NetworkUtils.get("/Teacher/getClassRoom", new NetworkUtils.Callback<String>() {
+            ObservableList<String> classRoomList = FXCollections.observableArrayList();
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject  res=  gson.fromJson(result, JsonObject.class);
+                if(res.get("code").getAsInt() == 200){
+                    List<String> Roomlist = new ArrayList<>();
+                    JsonArray data = res.getAsJsonArray("data");
+                    for (int i = 0; i < data.size(); i++) {
+                        Roomlist.add(data.get(i).getAsJsonObject().get("location").getAsString());
+                    }
+                    if(classRoomList != null) {
+                        classRoomList.clear();
+                    }
+                    assert classRoomList != null;
+                    classRoomList.addAll(Roomlist);
+                    Data.getInstance().setClassRoomList(classRoomList);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                JsonObject res =gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
+                System.err.println(res.get("msg").getAsString());
+            }
+        });
+    }
+    /**
      * 验证用户凭据
      *
      * @param username 用户名
@@ -220,6 +251,7 @@ public class LoginController {
                             UserSession.getInstance().setUsername(username);
                             fecthSemesters();//获取学期列表
                             fetchCurrentTerm();//获取当前学期
+                            fetchClassRoom();//获取教室列表
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -259,6 +291,7 @@ public class LoginController {
                             UserSession.getInstance().setUsername(username);
                             fecthSemesters();//获取学期列表
                             fetchCurrentTerm();//获取当前学期
+                            fetchClassRoom();//获取教室列表
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -569,6 +602,7 @@ public class LoginController {
                                     
                                     fecthSemesters();
                                     fetchCurrentTerm();
+                                    fetchClassRoom();
                                     
                                     MainApplication.startTokenRefreshTimer();
                                     

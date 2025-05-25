@@ -53,14 +53,13 @@ public class NetworkUtils {
                 System.out.println("从 resources 中加载配置成功，BaseUrl = " + BaseUrl);
             } else {
                 LOGGER.warning("application.properties 未包含在资源路径中");
-                ShowMessage.showErrorMessage("无配置文件", "找不到内置配置，请联系作者");
+                ShowMessage.showErrorMessage("无配置文件", "找不到内置配置，请根据README配置URL");
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "加载配置失败", e);
             ShowMessage.showErrorMessage("配置错误", "加载配置失败：" + e.getMessage());
         }
     }
-
     /**
      * 方法枚举
      */

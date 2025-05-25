@@ -57,7 +57,7 @@
                 <!-- 上课教室 & 课容量 -->
                 <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
                     <Label styleClass="form-label, required" text="上课教室*"/>
-                    <TextField fx:id="classroomField"/>
+                    <ComboBox fx:id="classroomComboBox"/>
                 </VBox>
 
                 <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">

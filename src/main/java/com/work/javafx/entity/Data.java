@@ -6,6 +6,7 @@ public  class Data {
     private static Data instance;
     private String currentTerm;
     private ObservableList<String> semesterList; // 学期列表数据
+    private ObservableList<String> classRoomList; // 教室列表数据
 
 
     public static synchronized Data getInstance() {
@@ -37,7 +38,16 @@ public  class Data {
     public ObservableList<String> getSemesterList() {
         return semesterList;
     }
+
     public void setSemesterList(ObservableList<String> semesterList) {
         this.semesterList = semesterList;
+    }
+
+    public ObservableList<String> getClassRoomList() {
+        return classRoomList;
+    }
+
+    public void setClassRoomList(ObservableList<String> classRoomList) {
+        this.classRoomList = classRoomList;
     }
 }
