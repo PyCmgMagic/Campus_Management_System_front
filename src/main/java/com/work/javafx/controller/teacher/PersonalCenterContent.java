@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.xmlbeans.GDate;
 
 import java.io.IOException;
 
@@ -80,33 +81,6 @@ public class PersonalCenterContent implements Initializable {
         popupStage.show();
     }
 
-    public class YourController {
-        // 变量名从 name 改为 firstname
-        @FXML
-        private Label firstname; // 注意变量名和FXML的fx:id一致
-
-        public void initialize() {
-            // 初始化截取第一个字符
-            truncateToFirstCharacter();
-
-            // 添加监听器（变量名同步修改）
-            firstname.textProperty().addListener((obs, oldVal, newVal) -> {
-                truncateToFirstCharacter();
-            });
-        }
-
-        private void truncateToFirstCharacter() {
-            String text = firstname.getText(); // 变量名修改
-            if (text != null && !text.isEmpty()) {
-                String firstChar = text.substring(0, Math.min(1, text.length()));
-                if (!firstChar.equals(text)) {
-                    firstname.setText(firstChar); // 变量名修改
-                }
-            } else {
-                firstname.setText("");
-            }
-        }
-    }
     // 提取名字的首字母并返回大写字母
     private String getFirstLetter(String fullName) {
         if (fullName != null && !fullName.isEmpty()) {
@@ -116,7 +90,6 @@ public class PersonalCenterContent implements Initializable {
     }
     //加载用户信息
     public void loadUserInfo(){
-        System.out.println("测试点1");
         String fullName = UserSession.getInstance().getUsername();
         String firstLetter = getFirstLetter(fullName);  // 调用提取首字母的方法
         firstname.setText(firstLetter);  // 更新头像显示首字母
@@ -149,6 +122,15 @@ public class PersonalCenterContent implements Initializable {
 
 
     }
+    //安全获取数据
+    private String safeGet(JsonObject data,String str){
+        String d = "";
+        try{
+            d = data.get(str).getAsString();
+        }catch (Exception ignored){
+        }
+        return d;
+    }
     //获取个人信息
     //获取个人信息
     public  void fetchUserInfo() throws IOException {
@@ -163,18 +145,20 @@ public class PersonalCenterContent implements Initializable {
                     if(code == 200){
                         JsonObject dataJson = responseJson.getAsJsonObject("data");
                         if (dataJson != null) {
-                            String username = dataJson.has("username") ? dataJson.get("username").getAsString() : "";
-                            String email = dataJson.has("email") ? dataJson.get("email").getAsString() : "";
-                            String phone = dataJson.has("phone") ? dataJson.get("phone").getAsString() : "";
-                            String sex = dataJson.has("sex") ? dataJson.get("sex").getAsString() : "";
-                            String section = dataJson.has("section") ? dataJson.get("section").getAsString() : "";
-                            String nation = dataJson.has("nation") ? dataJson.get("nation").getAsString() : "";
-                            String ethnic = dataJson.has("ethnic") ? dataJson.get("ethnic").getAsString() : "";
-                            String sduid = dataJson.has("sduid") ? dataJson.get("sduid").getAsString() : "";
-                            String major = dataJson.has("major") ? dataJson.get("major").getAsString() : "";
+                            String username = safeGet(dataJson,"username");
+                            String email = safeGet(dataJson,"email");
+                            String phone = safeGet(dataJson,"phone");
+                            String sex = safeGet(dataJson,"sex");
+                            String section = safeGet(dataJson,"section");
+                            String nation = safeGet(dataJson,"nation");
+                            String ethnic = safeGet(dataJson,"ethnic");
+
+                            String sduid = safeGet(dataJson,"sduid");
+                            System.out.println(sduid);
+                            String major =safeGet(dataJson,"major");
                             String yearLabel= sduid.substring(0,4);
-                            String nationLabel = dataJson.has("nation") ? dataJson.get("nation").getAsString() : "";
-                            String politicsLabel = dataJson.has("politicsStatus") ? dataJson.get("politicsStatus").getAsString() : "";
+                            String nationLabel = safeGet(dataJson,"nation");
+                            String politicsLabel = safeGet(dataJson,"politicsStatus");
 
 
                             UserSession.getInstance().setUsername(username);

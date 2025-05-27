@@ -17,6 +17,7 @@ module com.work.javafx {
     // 打印支持
     requires javafx.swing;
     requires java.logging;
+    requires org.apache.xmlbeans;
 
     // 导出 DataResponse 包到 Gson 模块
     exports com.work.javafx.DataResponse;
