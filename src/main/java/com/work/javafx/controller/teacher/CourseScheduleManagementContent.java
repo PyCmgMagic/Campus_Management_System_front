@@ -55,7 +55,6 @@ public class CourseScheduleManagementContent implements Initializable {
     @FXML private TableColumn<CourseRow, String> sundayColumn;
 
     // 课表工具按钮
-    @FXML private Button printButton;
     @FXML private Button exportButton;
 
     // 当前活动的按钮
@@ -421,25 +420,6 @@ public class CourseScheduleManagementContent implements Initializable {
         ShowMessage.showInfoMessage("查询成功", "已加载" + academicYear + week + "的" + scheduleType);
     }
 
-    /**
-     * 打印课表
-     */
-    @FXML
-    private void printSchedule() {
-        System.out.println("打印课表");
-        try {
-            // 导入我们新创建的工具类
-            com.work.javafx.util.ExportUtils.printNode(
-                scheduleTableView, 
-                academicYearComboBox.getValue() + " " +
-                        weekComboBox.getValue() + " " +
-                "教师课表"
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            ShowMessage.showErrorMessage("打印错误", "打印课表时发生错误：" + e.getMessage());
-        }
-    }
 
     /**
      * 导出为Excel

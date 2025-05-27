@@ -66,18 +66,17 @@
             <HBox styleClass="schedule-display-header">
                 <Label styleClass="schedule-display-title" text="我的课表" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="printButton" onAction="#printSchedule" styleClass="secondary-button" text="打印课表" />
                 <Button fx:id="exportButton" onAction="#exportToExcel" styleClass="secondary-button" text="导出Excel" />
             </HBox>
             
             <!-- 课表表格 -->
-            <TableView fx:id="scheduleTableView" styleClass="schedule-table" VBox.vgrow="ALWAYS">
+            <TableView fx:id="scheduleTableView" minHeight="430.0" prefHeight="430.0" prefWidth="874.0" styleClass="schedule-table" VBox.vgrow="ALWAYS">
                 <placeholder>
                     <Label style="-fx-text-fill: #999; -fx-font-style: italic;" text="没有课程数据" />
                 </placeholder>
                 <columns>
-                    <TableColumn fx:id="timeColumn" prefWidth="100" text="节次/星期" />
-                    <TableColumn fx:id="mondayColumn" prefWidth="110" text="周一" />
+                    <TableColumn fx:id="timeColumn" minWidth="80.0" text="节次/星期" />
+                    <TableColumn fx:id="mondayColumn" prefWidth="103.20003509521484" text="周一" />
                     <TableColumn fx:id="tuesdayColumn" prefWidth="110" text="周二" />
                     <TableColumn fx:id="wednesdayColumn" prefWidth="110" text="周三" />
                     <TableColumn fx:id="thursdayColumn" prefWidth="110" text="周四" />
