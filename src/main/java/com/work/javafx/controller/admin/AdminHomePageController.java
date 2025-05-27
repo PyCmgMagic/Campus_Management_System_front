@@ -480,7 +480,6 @@ public class AdminHomePageController implements Initializable {
 
             if (controller != null) {
                 controller.initData(noticeId,title,content,isTop,visibleScope);
-                controller.setStage((Stage) root.getScene().getWindow());
                 controller.setOnEditCompleteCallback(this::loadNotices);
             } else {
                 System.err.println("editAnnouncementController 为空");

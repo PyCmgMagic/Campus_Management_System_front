@@ -487,7 +487,6 @@ public class CourseManagementController implements Initializable {
             params.put("reason", reason);
         }
 
-
         String url = "/class/approve/" + app.getId();
         NetworkUtils.post(url, params, "", new NetworkUtils.Callback<String>() {
             @Override public void onSuccess(String result) {
@@ -495,14 +494,25 @@ public class CourseManagementController implements Initializable {
                 if (res.has("code") && res.get("code").getAsInt() == 200) {
                     String msg = "1".equals(status) ? "已批准: " + app.getName() + (successClassName != null ? " 绑定到: " + successClassName : "") : "已拒绝: " + app.getName();
                     ShowMessage.showInfoMessage("操作成功", msg);
-                    pendingCourses.remove(app); updatePendingBadge(); updatePendingPageInfo();
-                    if ("1".equals(status)) fetchCourseList(1, ROWS_PER_PAGE);
-                } else ShowMessage.showErrorMessage("操作失败", (status.equals("1")?"批准":"拒绝")+"失败: " + (res.has("msg")?res.get("msg").getAsString():"未知错误"));
+                    pendingCourses.remove(app);
+                    updatePendingBadge();
+                    updatePendingPageInfo(); // 正确更新待审批课程视图及其分页
+
+                    if ("1".equals(status)) { // 课程已批准，刷新主课程列表到第1页
+                        if (coursePagination.getCurrentPageIndex() == 0) {
+                            fetchCourseList(1, ROWS_PER_PAGE);
+                        } else {
+
+                            coursePagination.setCurrentPageIndex(0);
+                        }
+                    }
+                } else {
+                    ShowMessage.showErrorMessage("操作失败", (status.equals("1")?"批准":"拒绝")+"失败: " + (res.has("msg")?res.get("msg").getAsString():"未知错误"));
+                }
             }
             @Override public void onFailure(Exception e) { ShowMessage.showErrorMessage("操作失败", "网络错误: " + e.getMessage()); }
         });
     }
-
     private boolean showConfirmDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION); alert.setTitle(title);
         alert.setHeaderText(null); alert.setContentText(content);

@@ -124,10 +124,10 @@
                 </VBox>
                 
                 <!-- 审阅课程页面 -->
-                <VBox fx:id="pendingCoursesView" visible="false">
+                <VBox fx:id="pendingCoursesView" visible="false" minHeight="600.0">
 
                     <!-- 审阅课程列表 -->
-                    <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
+                    <VBox styleClass="list-container" VBox.vgrow="ALWAYS" minHeight="600.0">
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="待审批课程列表" />
                             <Region HBox.hgrow="ALWAYS" />
