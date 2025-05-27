@@ -6,7 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
+import javafx.geometry.Bounds;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,29 +25,6 @@ import java.util.zip.ZipOutputStream;
  */
 public class ExportUtils {
 
-    /**
-     * 打印节点
-     * @param node 要打印的节点
-     * @param jobName 打印任务名称
-     * @return 是否打印成功
-     */
-    public static boolean printNode(Node node, String jobName) {
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            // 显示打印对话框
-            boolean proceed = job.showPrintDialog(node.getScene().getWindow());
-            if (proceed) {
-                boolean success = job.printPage(node);
-                if (success) {
-                    job.endJob();
-                    return true;
-                }
-            }
-            job.endJob();
-        }
-        return false;
-    }
-    
     /**
      * 将课表导出为Excel文件(.xlsx) - 学生端
      *
@@ -99,7 +78,21 @@ public class ExportUtils {
             }
         }
     }
-    
+    /**
+     * 分隔课程名
+     *
+     */
+    private static String splitCourseName(String courseName) {
+        // 假设课程名格式为 "课程代码 课程名称"，我们只取课程名称部分
+        String[] parts = courseName.split(":", 3);
+        if (parts.length >= 2) {
+            return parts[2].trim(); // 返回课程名称部分
+        }else{
+            return courseName;
+        }
+    }
+
+
     /**
      * 将课表导出为Excel文件(.xlsx) - 教师端
      *
@@ -139,14 +132,14 @@ public class ExportUtils {
                 // 转换教师端的CourseRow到学生端的CourseRow
                 for (CourseRow teacherRow : teacherRows) {
                     CourseRow convertedRow = new CourseRow(
-                        teacherRow.getTime(),
-                        teacherRow.getMonday(),
-                        teacherRow.getTuesday(),
-                        teacherRow.getWednesday(),
-                        teacherRow.getThursday(),
-                        teacherRow.getFriday(),
-                        teacherRow.getSaturday(),
-                        teacherRow.getSunday()
+                            splitCourseName(teacherRow.getTime()),
+                            splitCourseName(teacherRow.getMonday()),
+                            splitCourseName(teacherRow.getTuesday()),
+                            splitCourseName(teacherRow.getWednesday()),
+                            splitCourseName(teacherRow.getThursday()),
+                            splitCourseName(teacherRow.getFriday()),
+                            (teacherRow.getSaturday()),
+                            splitCourseName(teacherRow.getSunday())
                     );
                     convertedRows.add(convertedRow);
                 }
@@ -154,7 +147,7 @@ public class ExportUtils {
                 // 创建工作表内容
                 createWorksheet(tempDir, academicYear, semester, scheduleType, convertedRows);
                 
-                // 打包成ZIP文件（Excel本质上是ZIP文件）
+                // 打包成ZIP文件
                 createExcelZipFile(tempDir, file.toPath());
                 
                 // 删除临时文件夹
@@ -184,7 +177,6 @@ public class ExportUtils {
         
         // 创建必要的XML文件
         
-        // 1. Content Types
         String contentTypes = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" +
                 "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" +
@@ -200,7 +192,6 @@ public class ExportUtils {
                 "</Types>";
         Files.write(baseDir.resolve("[Content_Types].xml"), contentTypes.getBytes(), StandardOpenOption.CREATE);
         
-        // 2. Main .rels file
         String mainRels = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
                 "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>" +
@@ -209,7 +200,6 @@ public class ExportUtils {
                 "</Relationships>";
         Files.write(baseDir.resolve("_rels/.rels"), mainRels.getBytes(), StandardOpenOption.CREATE);
         
-        // 3. Workbook 
         String workbook = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
                 "<sheets>" +
@@ -218,7 +208,6 @@ public class ExportUtils {
                 "</workbook>";
         Files.write(baseDir.resolve("xl/workbook.xml"), workbook.getBytes(), StandardOpenOption.CREATE);
         
-        // 4. Workbook Rels
         String workbookRels = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
                 "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>" +
@@ -228,7 +217,6 @@ public class ExportUtils {
                 "</Relationships>";
         Files.write(baseDir.resolve("xl/_rels/workbook.xml.rels"), workbookRels.getBytes(), StandardOpenOption.CREATE);
         
-        // 5. Document Props
         String appProps = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\">" +
                 "<Application>JavaFX课表系统</Application>" +
@@ -245,7 +233,6 @@ public class ExportUtils {
                 "</cp:coreProperties>";
         Files.write(baseDir.resolve("docProps/core.xml"), coreProps.getBytes(), StandardOpenOption.CREATE);
         
-        // 6. Styles
         String styles = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">" +
                 "<fonts count=\"3\">" +
@@ -272,7 +259,6 @@ public class ExportUtils {
                 "</styleSheet>";
         Files.write(baseDir.resolve("xl/styles.xml"), styles.getBytes(), StandardOpenOption.CREATE);
         
-        // 7. Theme
         String theme = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" name=\"Office Theme\">" +
                 "<a:themeElements>" +

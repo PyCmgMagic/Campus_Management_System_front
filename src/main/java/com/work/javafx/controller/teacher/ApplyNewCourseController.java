@@ -110,39 +110,7 @@ public class ApplyNewCourseController implements Initializable {
         endWeekField.setText("16");
         departmentField.setText("软件学院");
     }
-//    /**
-//     * 获取教室列表
-//     */
-//    private void fetchClassRoom(){
-//        NetworkUtils.get("/Teacher/getClassRoom", new NetworkUtils.Callback<String>() {
-//            ObservableList<String> classRoomList = FXCollections.observableArrayList();
-//
-//            @Override
-//            public void onSuccess(String result) throws IOException {
-//                JsonObject  res=  gson.fromJson(result, JsonObject.class);
-//                if(res.get("code").getAsInt() == 200){
-//                    List<String> Roomlist = new ArrayList<>();
-//                    JsonArray data = res.getAsJsonArray("data");
-//                    for (int i = 0; i < data.size(); i++) {
-//                        Roomlist.add(data.get(i).getAsJsonObject().get("location").getAsString());
-//                    }
-//                    if(classRoomList != null) {
-//                        classRoomList.clear();
-//                    }
-//                    assert classRoomList != null;
-//                    classRoomList.addAll(Roomlist);
-//                    classroomComboBox.setItems(classRoomList);
-//                    classroomComboBox.getSelectionModel().selectFirst();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                JsonObject res =gson.fromJson(e.getMessage().substring(e.getMessage().indexOf("{")),JsonObject.class);
-//                System.err.println(res.get("msg").getAsString());
-//            }
-//        });
-//    }
+
     /**
      * 获取教室列表
      */
