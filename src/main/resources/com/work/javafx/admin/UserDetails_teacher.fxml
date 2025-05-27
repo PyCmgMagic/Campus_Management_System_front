@@ -144,7 +144,7 @@
                               <ComboBox fx:id="statusComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" />
                               <TextField fx:id="admissionField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField fx:id="ethnicField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="politicsStatusField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ComboBox fx:id="politicsStatusComboBox" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                      </children>

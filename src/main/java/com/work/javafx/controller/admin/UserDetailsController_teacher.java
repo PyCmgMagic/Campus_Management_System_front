@@ -55,7 +55,7 @@ public class UserDetailsController_teacher implements Initializable {
     @FXML private ComboBox<String> statusComboBox;
     @FXML private TextField admissionField;
     @FXML private TextField ethnicField;
-    @FXML private TextField politicsStatusField;
+    @FXML private ComboBox<String> politicsStatusComboBox;
     
     @FXML private Button editButton;
     @FXML private Button closeButton;
@@ -71,6 +71,7 @@ public class UserDetailsController_teacher implements Initializable {
         sexComboBox.setItems(FXCollections.observableArrayList("男", "女"));
         permissionComboBox.setItems(FXCollections.observableArrayList("管理员", "教师", "学生"));
         statusComboBox.setItems(FXCollections.observableArrayList("在职"));
+        politicsStatusComboBox.setItems(FXCollections.observableArrayList("群众", "中共党员", "共青团员","中共预备党员"));
     }
     
     public void setStage(Stage stage) {
@@ -143,7 +144,7 @@ public class UserDetailsController_teacher implements Initializable {
                             setTextFieldFromLabel(collegeField, collegeLabel);
                             setComboBoxFromLabel(permissionComboBox, permissionLabel);
                             setTextFieldFromLabel(ethnicField, ethnicLabel);
-                            setTextFieldFromLabel(politicsStatusField, politicsStatusLabel);
+                            setComboBoxFromLabel(politicsStatusComboBox, politicsStatusLabel);
                         }
                         
                         // 设置状态信息
@@ -266,7 +267,7 @@ public class UserDetailsController_teacher implements Initializable {
         userInfo.put("phone", phoneField.getText());
         userInfo.put("college", collegeField.getText());
         userInfo.put("ethnic", ethnicField.getText());
-        userInfo.put("PoliticsStatus", politicsStatusField.getText());
+        userInfo.put("PoliticsStatus", politicsStatusComboBox.getValue());
         userInfo.put("admission", admissionField.getText());
 
         // 发送更新请求到服务器
@@ -333,7 +334,7 @@ public class UserDetailsController_teacher implements Initializable {
         statusLabel.setText(statusComboBox.getValue());
         admissionLabel.setText(admissionField.getText());
         ethnicLabel.setText(ethnicField.getText());
-        politicsStatusLabel.setText(politicsStatusField.getText());
+        politicsStatusLabel.setText(politicsStatusComboBox.getValue());
     }
     
     @FXML
@@ -356,7 +357,7 @@ public class UserDetailsController_teacher implements Initializable {
         statusComboBox.setVisible(editMode);
         admissionField.setVisible(editMode);
         ethnicField.setVisible(editMode);
-        politicsStatusField.setVisible(editMode);
+        politicsStatusComboBox.setVisible(editMode);
         
         // 显示/隐藏标签
         usernameLabel.setVisible(!editMode);
@@ -388,7 +389,7 @@ public class UserDetailsController_teacher implements Initializable {
             setComboBoxFromLabel(statusComboBox, statusLabel);
             setTextFieldFromLabel(admissionField, admissionLabel);
             setTextFieldFromLabel(ethnicField, ethnicLabel);
-            setTextFieldFromLabel(politicsStatusField, politicsStatusLabel);
+            setComboBoxFromLabel(politicsStatusComboBox, politicsStatusLabel);
         }
     }
     
