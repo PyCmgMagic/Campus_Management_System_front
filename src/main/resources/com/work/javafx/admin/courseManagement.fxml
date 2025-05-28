@@ -151,7 +151,8 @@
                         <HBox styleClass="pagination-container">
                             <Label fx:id="pendingPageInfo" styleClass="page-info" text="共 0 条待审批记录" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <Pagination fx:id="pendingPagination" styleClass="table-pagination" />
+                            <!-- 隐藏待审批课程的分页控件 -->
+                            <Pagination fx:id="pendingPagination" styleClass="table-pagination" visible="false" managed="false" />
                         </HBox>
                     </VBox>
                 </VBox>

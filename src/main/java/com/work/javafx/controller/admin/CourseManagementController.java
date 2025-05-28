@@ -11,6 +11,7 @@ import com.work.javafx.model.ClassSimpleInfo;
 import com.work.javafx.model.Course;
 import com.work.javafx.model.CourseApplication;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -38,11 +39,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class CourseManagementController implements Initializable {
@@ -96,7 +95,6 @@ public class CourseManagementController implements Initializable {
     private ObservableList<Course> filteredCourses = FXCollections.observableArrayList();
     private ObservableList<CourseApplication> pendingCourses = FXCollections.observableArrayList();
 
-    // --- 新增/修改的状态变量 ---
     private ObservableList<Course> completeSearchResults = FXCollections.observableArrayList();
     private boolean isSearchModeActive = false;
     private int totalItemsForCurrentView = 0;
@@ -205,7 +203,6 @@ public class CourseManagementController implements Initializable {
 
     private void loadData() {
         fetchCourseList(1, ROWS_PER_PAGE);
-
         NetworkUtils.get("/class/pending", new NetworkUtils.Callback<String>() {
             @Override public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -218,16 +215,24 @@ public class CourseManagementController implements Initializable {
                     if (loadedApplications != null) {
                         pendingCourses.addAll(loadedApplications);
                     }
+                    // 直接设置所有待审批课程到表格，不使用分页
+                    pendingCourseTable.setItems(pendingCourses);
+                    pendingCourseTable.refresh();
                 } else {
-                    System.err.println("加载待审批课程失败 - API返回错误: " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
+                    System.err.println("加载待审批课程失败 " + (res.has("msg") ? res.get("msg").getAsString() : "未知错误"));
                     pendingCourses.clear();
+                    pendingCourseTable.setItems(pendingCourses);
+                    pendingCourseTable.refresh();
                 }
                 updatePendingBadge();
                 updatePendingPageInfo();
             }
             @Override public void onFailure(Exception e) {
-                System.err.println("加载待审批课程失败 - 网络异常: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                System.err.println("加载待审批课程失败 : " +msg);
                 pendingCourses.clear();
+                pendingCourseTable.setItems(pendingCourses);
+                pendingCourseTable.refresh();
                 updatePendingBadge();
                 updatePendingPageInfo();
             }
@@ -283,7 +288,6 @@ public class CourseManagementController implements Initializable {
     }
 
     private void initPagination() {
-        // Main course list pagination
         coursePagination.setCurrentPageIndex(0);
         coursePagination.setPageFactory(pageIndex -> {
             if (isSearchModeActive) {
@@ -299,27 +303,11 @@ public class CourseManagementController implements Initializable {
             return new VBox();
         });
 
-
-        pendingPagination.setCurrentPageIndex(0);
-        pendingPagination.setPageFactory(this::createPendingPage);
-
-        pendingPagination.setPageCount(1);
+        // 移除待审批课程的分页逻辑，直接显示全部
+        pendingPagination.setVisible(false);
+        pendingPagination.setManaged(false);
     }
 
-    private Node createPendingPage(int pageIndex) {
-        int from = pageIndex * ROWS_PER_PAGE;
-        int to = Math.min(from + ROWS_PER_PAGE, pendingCourses.size());
-
-        List<CourseApplication> pageDataToShow;
-        if (from < to && from < pendingCourses.size()) {
-            pageDataToShow = pendingCourses.subList(from, to);
-        } else {
-            pageDataToShow = Collections.emptyList();
-        }
-        pendingCourseTable.setItems(FXCollections.observableArrayList(pageDataToShow));
-        pendingCourseTable.refresh();
-        return new VBox();
-    }
 
     private void updatePageInfo() {
         int currentPageZeroBased = coursePagination.getCurrentPageIndex();
@@ -337,34 +325,9 @@ public class CourseManagementController implements Initializable {
             pageInfo.setText(String.format("第 %d 页，显示 %d-%d 条 (共 %d 条)", currentPageZeroBased + 1, startItem, endItem, totalItemsForCurrentView));
         }
     }
-
     private void updatePendingPageInfo() {
         int totalPending = pendingCourses.size();
         pendingPageInfo.setText(String.format("共 %d 条待审批记录", totalPending));
-
-        int newPageCount = (int) Math.ceil((double) totalPending / ROWS_PER_PAGE);
-        if (newPageCount == 0) {
-            newPageCount = 1;
-        }
-
-        int oldPageIndex = pendingPagination.getCurrentPageIndex();
-        pendingPagination.setPageCount(newPageCount);
-
-        int currentEffectivePageIndex = pendingPagination.getCurrentPageIndex();
-
-        if (totalPending == 0) {
-            if (currentEffectivePageIndex != 0) pendingPagination.setCurrentPageIndex(0);
-            currentEffectivePageIndex = 0;
-        } else if (oldPageIndex >= newPageCount) {
-            currentEffectivePageIndex = newPageCount -1;
-            if(pendingPagination.getCurrentPageIndex() != currentEffectivePageIndex) pendingPagination.setCurrentPageIndex(currentEffectivePageIndex);
-        }
-
-
-        Callback<Integer, Node> factory = pendingPagination.getPageFactory();
-        if (factory != null) {
-            factory.call(currentEffectivePageIndex);
-        }
     }
 
     private void updatePendingBadge() {
@@ -431,7 +394,8 @@ public class CourseManagementController implements Initializable {
             }
             @Override
             public void onFailure(Exception e) {
-                ShowMessage.showErrorMessage("搜索异常", "网络请求失败: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                ShowMessage.showErrorMessage("搜索异常", msg);
                 isSearchModeActive = false;
                 resetFilters();
             }
@@ -465,8 +429,7 @@ public class CourseManagementController implements Initializable {
     @FXML private void showMainView() { mainCoursesView.setVisible(true); pendingCoursesView.setVisible(false); mainTitleContainer.setVisible(true); pendingTitleContainer.setVisible(false); }
     @FXML private void showPendingView() { mainCoursesView.setVisible(false); pendingCoursesView.setVisible(true); mainTitleContainer.setVisible(false); pendingTitleContainer.setVisible(true); }
     @FXML private void showAddCourseView() { new CourseManagementContent().ApplyForNewCourse(new ActionEvent());}
-    @FXML private void exportCourses() { ShowMessage.showInfoMessage("提示", "导出功能未实现"); }
-    @FXML private void batchStopCourses() { ShowMessage.showInfoMessage("提示", "批量停开未实现"); }
+
 
 
     private void viewCourse(int indexInPage) {
