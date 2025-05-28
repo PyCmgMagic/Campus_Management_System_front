@@ -26,7 +26,7 @@ public class editCourseController implements Initializable {
     private JsonObject courseData;
     private int courseId;
     @FXML private TextField courseNameField;
-    @FXML private TextField courseSubtypeField;
+    @FXML private ComboBox<String> courseSubtypeComboBox;
     @FXML private TextField creditsField;
     @FXML private TextField courseCodeField;
     @FXML private ComboBox<String> classroomComboBox;
@@ -59,7 +59,9 @@ public class editCourseController implements Initializable {
         assessmentTypeComboBox.setItems(FXCollections.observableArrayList(
                 "考试", "考查"));
         assessmentTypeComboBox.getSelectionModel().selectFirst();
-        
+        courseSubtypeComboBox.setItems(FXCollections.observableArrayList(
+                "无","羽毛球", "篮球","网球","乒乓球","武术","健美操"));
+        courseSubtypeComboBox.getSelectionModel().selectFirst();
         // 设置成绩比例初始值
         regularPercentageField.setText("40");
         finalPercentageField.setText("60");
@@ -155,10 +157,10 @@ public class editCourseController implements Initializable {
 
         courseNameField.setText(courseData.get("name").getAsString());
         try{
-            courseSubtypeField.setText(courseData.get("category").getAsString());
-
+            String s = courseData.get("category").getAsString();
+            courseSubtypeComboBox.getSelectionModel().select(s);
         }catch (Exception e){
-            courseSubtypeField.setText("");
+            courseSubtypeComboBox.getSelectionModel().selectFirst();
         }
         creditsField.setText(courseData.get("point").getAsString());
         courseCodeField.setText(courseData.get("classNum").getAsString());
@@ -235,8 +237,8 @@ public class editCourseController implements Initializable {
         if (validateForm()) {
             Map<String,String> requestBody = new HashMap<>();
             requestBody.put("name",courseNameField.getText());//课程名称
-            if(!isEmpty(courseSubtypeField)){
-                requestBody.put("category",courseSubtypeField.getText());//课程小类
+            if(!courseSubtypeComboBox.getValue().equals("无")){
+                requestBody.put("category",courseSubtypeComboBox.getValue());//课程小类
             }if(!isEmpty(courseDescriptionField)){
                 requestBody.put("intro",courseDescriptionField.getText());//课程简介
             }
@@ -306,7 +308,16 @@ public class editCourseController implements Initializable {
         if (isEmpty(departmentField)) errorMessages.append("- 开设学院不能为空\n");
 
 
-        
+        //课程小类验证
+        if(courseNameField.getText().equals("体育")||courseNameField.getText().equals("体育课")){
+            if(courseSubtypeComboBox.getValue().equals("无")){
+                errorMessages.append("- 体育课程必须选择课程小类\n");
+            }
+        }else{
+            if(!courseSubtypeComboBox.getValue().equals("无")){
+                errorMessages.append("非体育课程不可选择课程小类\n");
+            }
+        }
         // 学分验证
         if (!isEmpty(creditsField)) {
             double credits = Double.parseDouble(creditsField.getText());
