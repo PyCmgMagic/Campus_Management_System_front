@@ -241,9 +241,13 @@ public class ApplyNewCourseController implements Initializable {
 
 
         //课程小类验证
-        if(courseNameField.getText().equals("体育")){
+        if(courseNameField.getText().equals("体育")||courseNameField.getText().equals("体育课")){
             if(courseSubtypeComboBox.getValue().equals("无")){
                 errorMessages.append("- 体育课程必须选择课程小类\n");
+            }
+        }else{
+            if(!courseSubtypeComboBox.getValue().equals("无")){
+                errorMessages.append("非体育课程不可选择课程小类\n");
             }
         }
         // 学分验证
