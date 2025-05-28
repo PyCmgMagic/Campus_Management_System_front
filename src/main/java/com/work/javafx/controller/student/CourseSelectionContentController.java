@@ -522,15 +522,15 @@ public class CourseSelectionContentController implements Initializable {
                         ShowMessage.showErrorMessage("选课失败", message);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("数据解析错误", msg);
                 }
             }
             
             @Override
             public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                ShowMessage.showErrorMessage("失败", msg);
             }
         });
     }
@@ -560,15 +560,15 @@ public class CourseSelectionContentController implements Initializable {
                         ShowMessage.showErrorMessage("退选失败", message);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("失败", msg);
                 }
             }
             
             @Override
             public void onFailure(Exception e) {
-                e.printStackTrace();
-                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+                String msg = ResUtil.getMsgFromException(e);
+                ShowMessage.showErrorMessage("失败", msg);
             }
         });
     }
