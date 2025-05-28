@@ -44,7 +44,7 @@
 
                 <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <Label styleClass="form-label" text="课程小类" />
-                    <TextField fx:id="courseSubtypeField" promptText="选填，如：篮球、网球等" />
+                    <ComboBox fx:id="courseSubtypeComboBox" promptText="选填，如：篮球、网球等" />
                 </VBox>
 
                 <!-- 学分 & 课序号 -->
