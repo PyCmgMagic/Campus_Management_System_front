@@ -251,7 +251,9 @@ public class LoginController {
                             UserSession.getInstance().setUsername(username);
                             fecthSemesters();//获取学期列表
                             fetchCurrentTerm();//获取当前学期
-                            fetchClassRoom();//获取教室列表
+                            if(identity != 2){
+                                fetchClassRoom();
+                            }//获取教室列表
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -291,7 +293,9 @@ public class LoginController {
                             UserSession.getInstance().setUsername(username);
                             fecthSemesters();//获取学期列表
                             fetchCurrentTerm();//获取当前学期
-                            fetchClassRoom();//获取教室列表
+                            if(identity != 2){
+                                fetchClassRoom();
+                            }//获取教室列表
                             System.out.println("登录成功: " + result);
                             MainApplication.startTokenRefreshTimer();
                             navigateToMainPage(); // 导航到主页面
@@ -602,8 +606,10 @@ public class LoginController {
                                     
                                     fecthSemesters();
                                     fetchCurrentTerm();
-                                    fetchClassRoom();
-                                    
+                                    if(identity != 2){
+                                        fetchClassRoom();
+                                    }
+
                                     MainApplication.startTokenRefreshTimer();
                                     
                                     Platform.runLater(() -> {

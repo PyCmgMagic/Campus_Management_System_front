@@ -22,7 +22,7 @@
   <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=PyCmgMagic&repo=Campus_Management_System_front" />
 </a>
 
-本项目是教务管理系统的 **JavaFX 前端客户端**，搭配 Spring Boot 后端服务使用，实现了包括学生信息展示、选课、成绩管理等功能，界面简洁，交互友好，适用于高校教务系统的初步建模与实践。
+本项目是教务管理系统的 **JavaFX 前端客户端**，搭配 Spring Boot 后端服务使用，实现了包括学生信息展示、选课、成绩管理等功能，界面简洁，交互友好。旨在完成Java课设作业。
 
 ---
 
