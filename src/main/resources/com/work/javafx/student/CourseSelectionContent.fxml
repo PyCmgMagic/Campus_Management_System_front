@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" styleClass="content-scroll-pane" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.CourseSelectionContentController">
+<ScrollPane fitToWidth="true" styleClass="content-scroll-pane" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.CourseSelectionContentController">
     <content>
         <VBox styleClass="content-area">
             <HBox styleClass="content-header">
@@ -37,27 +36,25 @@
                         <Insets bottom="15" left="15" right="15" top="15" />
                     </padding>
 
-                    <!-- 学院 -->
-                    <Label text="学院" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                    <ComboBox fx:id="collegeComboBox" prefWidth="200" promptText="所有学院" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
-                    <!-- 课程性质 -->
-                    <Label text="课程性质" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                    <ComboBox fx:id="courseTypeComboBox" prefWidth="200" promptText="所有类型" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-
                     <!-- 课程名称 -->
-                    <Label text="课程名称" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                    <TextField fx:id="courseNameField" prefWidth="420" promptText="输入课程名称或代码" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                    <Label text="课程名称" GridPane.columnIndex="0" />
+                    <TextField fx:id="courseNameField" prefWidth="420" promptText="输入课程名称或代码" GridPane.columnIndex="1" GridPane.columnSpan="2" />
 
-                    <Button fx:id="searchButton" onAction="#searchCourses" styleClass="primary-button" text="查询" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                    <Button fx:id="searchButton" onAction="#searchCourses" styleClass="primary-button" text="查询" GridPane.columnIndex="3" />
+               <HBox alignment="CENTER" prefHeight="32.0" prefWidth="356.0" GridPane.columnIndex="5">
+                  <children>
+                     <Label fx:id="totalpointLabel" prefHeight="30.0" prefWidth="136.0" text="已选学分：0" />
+                  </children>
+               </HBox>
                <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
                   <ColumnConstraints />
                   <ColumnConstraints />
                   <ColumnConstraints />
                   <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints />
                   <RowConstraints />
                </rowConstraints>
                 </GridPane>

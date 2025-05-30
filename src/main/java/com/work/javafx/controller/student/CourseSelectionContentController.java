@@ -35,11 +35,10 @@ public class CourseSelectionContentController implements Initializable {
     @FXML private Button courseResultBtn;
 
     // 查询条件控件
-    @FXML private ComboBox<String> collegeComboBox;
-    @FXML private ComboBox<String> courseTypeComboBox;
     @FXML private TextField courseNameField;
     @FXML private Button searchButton;
-
+    //总学分
+    @FXML private Label totalpointLabel;
     // 课程表格
     @FXML private TableView<UltimateCourse> courseTableView;
     @FXML private TableColumn<UltimateCourse, Integer> numberColumn;
@@ -93,19 +92,13 @@ public class CourseSelectionContentController implements Initializable {
      * 初始化下拉框选项
      */
     private void initComboBoxes() {
-        // 学院下拉框
-        ObservableList<String> colleges = FXCollections.observableArrayList(
-                "所有学院", "计算机学院", "数学学院", "物理学院", "外语学院", "信息学院"
-        );
-        collegeComboBox.setItems(colleges);
-        collegeComboBox.setValue("所有学院");
+
 
         // 课程性质下拉框
         ObservableList<String> courseTypes = FXCollections.observableArrayList(
                 "所有类型", "必修课", "选修课", "通识课", "体育课"
         );
-        courseTypeComboBox.setItems(courseTypes);
-        courseTypeComboBox.setValue("所有类型");
+
     }
 
     /**
@@ -215,6 +208,7 @@ public class CourseSelectionContentController implements Initializable {
      * 加载数据
      */
     private void loadSampleCourses() {
+        Count();
         load();
     }
 
@@ -223,12 +217,7 @@ public class CourseSelectionContentController implements Initializable {
      */
     @FXML
     private void searchCourses() {
-        String collegeName = collegeComboBox.getValue();
-        String courseType = courseTypeComboBox.getValue();
         String courseName = courseNameField.getText();
-
-        System.out.println("查询课程: 学院=" + collegeName + ", 课程性质=" + courseType + ", 课程名称=" + courseName);
-
         // 构建查询参数
         Map<String, String> params = new HashMap<>();
         params.put("keyword", courseName);
@@ -241,7 +230,7 @@ public class CourseSelectionContentController implements Initializable {
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
                     
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        processCoursesResponse(result);
+                        processCoursesResponse(result,false);
                     } else {
                         // 处理错误
                         String message = responseJson.has("msg") ? 
@@ -275,7 +264,7 @@ public class CourseSelectionContentController implements Initializable {
                     JsonObject responseJson = gson.fromJson(result, JsonObject.class);
 
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
-                        processCoursesResponse(result);
+                        processCoursesResponse(result,false);
                     } else {
                         // 处理错误
                         String message = responseJson.has("msg") ?
@@ -322,7 +311,7 @@ public class CourseSelectionContentController implements Initializable {
                 course.setCategory("");
             
             if (courseJson.has("point") && !courseJson.get("point").isJsonNull()) 
-                course.setPoint(courseJson.get("point").getAsInt());
+                course.setPoint(courseJson.get("point").getAsDouble());
             
             if (courseJson.has("teacherId") && !courseJson.get("teacherId").isJsonNull()) 
                 course.setTeacherId(courseJson.get("teacherId").getAsInt());
@@ -438,14 +427,12 @@ public class CourseSelectionContentController implements Initializable {
         if (courseResultBtn != null) {
             switchActiveNavButton(courseResultBtn);
         }
-        System.out.println("显示选课结果");
-        
 
         NetworkUtils.get("/course-selection/results", new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) {
                 try {
-                    processCoursesResponse(result);
+                    processCoursesResponse(result,true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
@@ -462,11 +449,54 @@ public class CourseSelectionContentController implements Initializable {
             }
         });
     }
-    
+    /**
+     * 计算总学分
+     */
+    @FXML
+    private void Count() {
+        NetworkUtils.get("/course-selection/results", new NetworkUtils.Callback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    // 解析JSON响应
+                    Gson gson = new Gson();
+                    JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                    if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                        // 获取课程数据
+                        JsonArray coursesArray = responseJson.getAsJsonArray("data");
+                        List<UltimateCourse> courses = parseCourseData(coursesArray);
+                        //已选总学分
+                        double totalPoint = 0;
+                        for (UltimateCourse course : courses) {
+                                totalPoint += course.getPoint();
+                            }
+                        totalpointLabel.setText("已选学分：" + totalPoint);
+                    } else {
+                        // 处理错误
+                        String message = responseJson.has("msg") ?
+                                responseJson.get("msg").getAsString() : "获取课程数据失败";
+                        ShowMessage.showErrorMessage("查询失败", message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowMessage.showErrorMessage("数据解析错误", "无法解析服务器响应: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+                ShowMessage.showErrorMessage("网络错误", "无法连接到服务器: " + e.getMessage());
+
+                // 出错时加载空列表
+                updateCourseTable(new ArrayList<>());
+            }
+        });
+    }
     /**
      * 处理课程数据响应
      */
-    private void processCoursesResponse(String result) {
+    private void processCoursesResponse(String result,boolean st) {
         // 解析JSON响应
         Gson gson = new Gson();
         JsonObject responseJson = gson.fromJson(result, JsonObject.class);
@@ -475,14 +505,18 @@ public class CourseSelectionContentController implements Initializable {
             // 获取课程数据
             JsonArray coursesArray = responseJson.getAsJsonArray("data");
             List<UltimateCourse> courses = parseCourseData(coursesArray);
-            
+            //已选总学分
+            double totalPoint = 0;
             // 如果是获取已选课程或选课结果，标记为已选
             if (currentActiveNavButton == selectedCoursesBtn || currentActiveNavButton == courseResultBtn) {
                 for (UltimateCourse course : courses) {
+                    totalPoint += course.getPoint();
                     selectedCourseMap.put(course.getId(), true);
                 }
             }
-            
+            if(st){
+                totalpointLabel.setText("已选学分：" + totalPoint);
+            }
             // 更新UI
             updateCourseTable(courses);
         } else {
@@ -493,9 +527,6 @@ public class CourseSelectionContentController implements Initializable {
         }
     }
 
-
-
-    
     /**
      * 选课操作
      */
@@ -514,6 +545,7 @@ public class CourseSelectionContentController implements Initializable {
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
                         selectedCourseMap.put(course.getId(), true);
                         courseTableView.refresh();
+                        Count();
                         ShowMessage.showInfoMessage("操作成功", "已成功选择课程：" + course.getName());
                     } else {
                         // 处理错误
@@ -553,6 +585,7 @@ public class CourseSelectionContentController implements Initializable {
                     if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
                         selectedCourseMap.put(course.getId(), false);
                         courseTableView.refresh();
+                        Count();
                         ShowMessage.showInfoMessage("操作成功", "已成功退选课程：" + course.getName());
                     } else {
                         String message = responseJson.has("msg") ?
