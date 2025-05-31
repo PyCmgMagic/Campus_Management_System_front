@@ -325,18 +325,18 @@ public class AddNewStudentController implements Initializable {
     /***
      * 处理专业转换
      */
-    private int transMajor(String major){
+    private String transMajor(String major){
         switch (major){
             case "软件工程":
-                return 0;
+                return "MAJOR_0";
             case "数字媒体技术":
-                return 1;
+                return "MAJOR_1";
             case "大数据":
-                return 2;
+                return "MAJOR_2";
             case "人工智能国际班" :
-                return 3;
+                return "MAJOR_3";
             default:
-                return -1;
+                return "MAJOR_-1";
         }
     }
     
@@ -356,7 +356,7 @@ public class AddNewStudentController implements Initializable {
         Map<String, String> params = new HashMap<>();
         params.put("username", usernameField.getText().trim());
         params.put("college", collegeComboBox.getValue());
-        params.put("major", transMajor(majorComboBox.getValue())+"");
+        params.put("major", transMajor(majorComboBox.getValue()));
         params.put("email", emailField.getText().trim());
         params.put("ethnic", ethnicComboBox.getValue());
         params.put("password", "123456");

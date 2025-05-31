@@ -555,17 +555,15 @@ public class CourseManagementController implements Initializable {
     }
 
     private void fetchAvailableClasses(java.util.function.Consumer<List<ClassSimpleInfo>> callback) {
-        String url = "/section/getSectionListAll?page=1&size=500"; // Ensure size is large enough
+        String url = "/section/getSectionListAll?page=1&size=500";
         NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
             @Override public void onSuccess(String result) {
                 try {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
                     if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
                         JsonObject data = res.getAsJsonObject("data");
-                        // Assuming the list of classes is under a key like "list" or "section"
-                        // Adjust "section" if the key is different in your API response
                         JsonArray classArray = data.getAsJsonArray("section");
-                        if (classArray == null && data.has("list")) { // Fallback if key is "list"
+                        if (classArray == null && data.has("list")) {
                             classArray = data.getAsJsonArray("list");
                         }
 
@@ -601,7 +599,7 @@ public class CourseManagementController implements Initializable {
 
                 Dialog<List<ClassSimpleInfo>> dialog = new Dialog<>();
                 dialog.setTitle("选择班级绑定");
-                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个或多个班级进行绑定");
+                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个或多个班级进行绑定(shift+鼠标左键多选)");
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
                 ListView<ClassSimpleInfo> classListView = new ListView<>(FXCollections.observableArrayList(availableClasses));
@@ -624,42 +622,38 @@ public class CourseManagementController implements Initializable {
                 Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setDisable(true);
 
-                // Enable OK button only if at least one class is selected
                 classListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends ClassSimpleInfo> c) -> {
                     okButton.setDisable(classListView.getSelectionModel().getSelectedItems().isEmpty());
                 });
 
                 dialog.setResultConverter(dialogButton -> {
                     if (dialogButton == ButtonType.OK) {
-                        // getSelectedItems() returns an ObservableList, ensure it's converted to a new ArrayList
                         return new ArrayList<>(classListView.getSelectionModel().getSelectedItems());
                     }
                     return null;
                 });
 
                 dialog.showAndWait().ifPresent(selectedClasses -> {
-                    // This block executes if OK was pressed and selectedClasses is not null (due to resultConverter).
-                    // The okButton disable logic ensures selectedClasses is not empty if OK was pressed.
-                    if (selectedClasses.isEmpty()) { // Defensive check
+
+                    if (selectedClasses.isEmpty()) {
                         ShowMessage.showErrorMessage("操作取消", "未选择任何班级。审批操作已取消。");
                         return;
                     }
 
                     List<String> selectedClassIds = selectedClasses.stream()
-                            .map(csi -> String.valueOf(csi.getId())) // Assuming getId() returns int or long
+                            .map(csi -> String.valueOf(csi.getId()))
                             .collect(Collectors.toList());
                     List<String> selectedClassNames = selectedClasses.stream()
                             .map(ClassSimpleInfo::getName)
                             .collect(Collectors.toList());
 
                     String ccourseIdsString = String.join(",", selectedClassIds);
-                    // Use Chinese comma for display in messages if preferred
                     String ccourseNamesString = String.join("，", selectedClassNames);
 
                     sendApprovalRequest(app, "1", ccourseIdsString, null, ccourseNamesString);
                 });
             });
-        } else { // For non-compulsory courses
+        } else {
             sendApprovalRequest(app, "1", null, null, null);
         }
     }
@@ -686,18 +680,15 @@ public class CourseManagementController implements Initializable {
     private void sendApprovalRequest(CourseApplication app, String status, String classId, String reason, String successClassName) {
         Map<String, String> params = new HashMap<>();
         params.put("status", status);
-
-        System.out.println(classId);
+        String bodyJson = "";
         if ("1".equals(status) && classId != null && !classId.isEmpty()) {
-
+             bodyJson = "[" + classId + "]";
         }
-
         if ("2".equals(status)) {
             if (reason != null) params.put("reason", reason);
         }
-
         String url = "/class/approve/" + app.getId();
-        NetworkUtils.post(url, params, "", new NetworkUtils.Callback<String>() {
+        NetworkUtils.post(url, params, bodyJson, new NetworkUtils.Callback<String>() {
             @Override public void onSuccess(String result) {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
                 if (res.has("code") && res.get("code").getAsInt() == 200) {
@@ -711,14 +702,14 @@ public class CourseManagementController implements Initializable {
                     pendingCourses.remove(app);
                     updatePendingBadge();
                     updatePendingPageInfo();
-                    pendingCourseTable.refresh(); // Refresh table after removal
+                    pendingCourseTable.refresh();
 
 
-                    if ("1".equals(status)) { // If approved, refresh the main course list
+                    if ("1".equals(status)) {
                         if (coursePagination.getCurrentPageIndex() == 0) {
                             fetchCourseList(1, ROWS_PER_PAGE);
                         } else {
-                            coursePagination.setCurrentPageIndex(0); // This will trigger a fetch
+                            coursePagination.setCurrentPageIndex(0);
                         }
                     }
                 } else {
