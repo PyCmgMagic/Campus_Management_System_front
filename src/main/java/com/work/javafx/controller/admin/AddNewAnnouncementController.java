@@ -38,6 +38,8 @@ public class AddNewAnnouncementController implements Initializable {
     private Button cancelButton;
     @FXML
     private HBox visbleHbox;
+    @FXML
+    private HBox settingHbox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -47,10 +49,11 @@ public class AddNewAnnouncementController implements Initializable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    public void initVisble(boolean v){
-            visbleHbox.setVisible(v);
-    }
 
+    public void initVisble(boolean v){
+        settingHbox.setVisible(v);
+        visbleHbox.setVisible(v);
+    }
     // 公共回调设置方法
     public void setOnPublishCompleteCallback(Runnable callback) {
         this.onPublishCompleteCallback = callback;

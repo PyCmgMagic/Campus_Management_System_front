@@ -59,7 +59,7 @@
                 </HBox>
 
                 <!-- 公告设置 -->
-                <HBox styleClass="form-row">
+                <HBox fx:id="settingHbox" styleClass="form-row">
                     <Label minWidth="80.0" styleClass="form-label" text="公告设置:" />
                     <CheckBox fx:id="isTopCheckBox" styleClass="form-checkbox" text="置顶公告" />
                 </HBox>
