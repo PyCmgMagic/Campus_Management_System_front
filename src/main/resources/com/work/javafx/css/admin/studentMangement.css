@@ -375,10 +375,9 @@
     -fx-scale-x: 0.7;
     -fx-scale-y: 0.7;
 }
-/* Icon for Batch Import (using export shape but green color like teacher import) */
 .export-icon {
-    -fx-shape: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"; /* Export shape */
-    -fx-background-color: #388e3c; /* Green color like teacher import */
+    -fx-shape: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z";
+    -fx-background-color: #388e3c;
     -fx-scale-x: 0.7;
     -fx-scale-y: 0.7;
 }
@@ -409,40 +408,12 @@
     -fx-page-information-visible: false;
     -fx-max-page-indicator-count: 5;
 }
-/*
-.pagination-control .button,
-.pagination-control .toggle-button {
-    -fx-background-color: white;
-    -fx-border-color: #dddddd;
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
-    -fx-font-size: 13px;
-    -fx-text-fill: #555555;
-    -fx-cursor: hand;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
-    -fx-padding: 5px 10px;
-}
 
-.pagination-control .button:hover, 
-.pagination-control .toggle-button:hover {
-    -fx-border-color: #a71d1d;
-    -fx-text-fill: #a71d1d;
-}
-
-.pagination-control .toggle-button:selected {
-    -fx-background-color: #8B1C1C;
-    -fx-border-color: #8B1C1C;
-    -fx-text-fill: white;
-    -fx-cursor: default;
-}
-*/
 /* 添加一个全选框样式 */
 .select-all-checkbox {
     -fx-padding: 0 0 0 10px;
 }
 
-/* Approval Icon (Used for Batch Import) */
 .approval-icon {
     -fx-shape: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z";
     -fx-background-color: #388e3c; /* Green */
