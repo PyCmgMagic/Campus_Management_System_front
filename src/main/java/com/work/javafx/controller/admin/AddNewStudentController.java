@@ -33,7 +33,6 @@ public class AddNewStudentController implements Initializable {
     @FXML private TextField sduIdField;
     @FXML private TextField usernameField;
     @FXML private ComboBox<String> sexComboBox;
-    @FXML private ComboBox<String> collegeComboBox;
     @FXML private ComboBox<String> majorComboBox;
     @FXML private TextField emailField;
     @FXML private TextField phoneField;
@@ -60,11 +59,6 @@ public class AddNewStudentController implements Initializable {
      * 初始化学院和专业选项
      */
     private void initializeCollegeOptions() {
-        ObservableList<String> colleges = FXCollections.observableArrayList(
-                "软件学院","计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院",
-                "文学院", "历史学院", "法学院", "医学院", "生命科学学院"
-        );
-        collegeComboBox.setItems(colleges);
         ObservableList<String> majors = FXCollections.observableArrayList(
                 "软件工程","大数据","数字媒体技术","人工智能国际班"
         );
@@ -291,11 +285,6 @@ public class AddNewStudentController implements Initializable {
             hideFieldError(phoneField);
         }
         
-        // 验证学院选择
-        if (collegeComboBox.getValue() == null) {
-            ShowMessage.showErrorMessage("验证失败", "请选择所属学院");
-            isValid = false;
-        }
           // 验证专业选择
         if (majorComboBox.getValue() == null) {
             ShowMessage.showErrorMessage("验证失败", "请选择所属专业");
@@ -355,7 +344,6 @@ public class AddNewStudentController implements Initializable {
         // 获取表单数据
         Map<String, String> params = new HashMap<>();
         params.put("username", usernameField.getText().trim());
-        params.put("college", collegeComboBox.getValue());
         params.put("major", transMajor(majorComboBox.getValue()));
         params.put("email", emailField.getText().trim());
         params.put("ethnic", ethnicComboBox.getValue());

@@ -50,12 +50,6 @@
                     <Label minWidth="100" styleClass="field-label" text="性别:" />
                     <ComboBox fx:id="sexComboBox" promptText="请选择性别" styleClass="field-input" HBox.hgrow="ALWAYS" />
                 </HBox>
-                
-                <!-- Department/College -->
-                <HBox spacing="10" styleClass="form-field-container">
-                    <Label minWidth="100" styleClass="field-label" text="所属学院:" />
-                    <ComboBox fx:id="collegeComboBox" promptText="请选择学院" styleClass="field-input" HBox.hgrow="ALWAYS" />
-                </HBox>
                    <!-- major -->
                 <HBox spacing="10" styleClass="form-field-container">
                     <Label minWidth="100" styleClass="field-label" text="专业:" />
