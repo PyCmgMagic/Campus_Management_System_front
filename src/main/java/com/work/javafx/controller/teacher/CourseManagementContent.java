@@ -79,7 +79,7 @@ static Gson gson = new Gson();
     /**
      * 获取统计数据
      * */
-    private  void fetchStatistics(){
+    public   void fetchStatistics(){
         String term = semesterComboBox.getValue();
         Map<String,String> param = new HashMap<>();
         param.put("term", term);
@@ -166,6 +166,7 @@ static Gson gson = new Gson();
                     
                     // 更新分页控件状态
                     updatePaginationControls();
+                    fetchStatistics();
                 }else{
                     System.out.println("失败！"+ res.get("msg").getAsString());
                 }
@@ -371,6 +372,7 @@ static Gson gson = new Gson();
             // 显示窗口
             popupStage.showAndWait();
             loadData(currentPage,"/class/list");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
