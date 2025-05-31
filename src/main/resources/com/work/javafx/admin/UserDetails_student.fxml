@@ -76,6 +76,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -87,14 +88,16 @@
                               <Label styleClass="field-label" text="邮箱" GridPane.rowIndex="3" />
                               <Label styleClass="field-label" text="电话" GridPane.rowIndex="4" />
                               <Label styleClass="field-label" text="学院" GridPane.rowIndex="5" />
-                              <Label styleClass="field-label" text="权限" GridPane.rowIndex="6" />
+                              <Label styleClass="field-label" text="专业" GridPane.rowIndex="6" />
+                              <Label styleClass="field-label" text="权限" GridPane.rowIndex="7" />
                               <Label fx:id="usernameLabel" styleClass="field-value" text="teachertest" GridPane.columnIndex="1" />
                               <Label fx:id="sduidLabel" styleClass="field-value" text="2401" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="sexLabel" styleClass="field-value" text="男" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label fx:id="emailLabel" styleClass="field-value" text="teachertest@mail.orbithy.com" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Label fx:id="phoneLabel" styleClass="field-value" text="未设置" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label fx:id="collegeLabel" styleClass="field-value" text="未设置" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label fx:id="permissionLabel" styleClass="field-value" text="学生" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label fx:id="majorLabel" styleClass="field-value" text="未设置" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label fx:id="permissionLabel" styleClass="field-value" text="学生" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                               
                               <TextField fx:id="usernameField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" />
                               <TextField fx:id="sduidField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -102,7 +105,8 @@
                               <TextField fx:id="emailField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="phoneField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="collegeField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <ComboBox fx:id="permissionComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="majorComboBox" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="permissionComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                            </children>
                         </GridPane>
                      </children>

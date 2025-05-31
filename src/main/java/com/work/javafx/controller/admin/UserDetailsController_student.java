@@ -37,6 +37,7 @@ public class UserDetailsController_student implements Initializable {
     @FXML private Label emailLabel;
     @FXML private Label phoneLabel;
     @FXML private Label collegeLabel;
+    @FXML private Label majorLabel;
     @FXML private Label permissionLabel;
     
     @FXML private Label gradeLabel;
@@ -62,6 +63,7 @@ public class UserDetailsController_student implements Initializable {
     @FXML private TextField graduationField;
     @FXML private TextField ethnicField;
     @FXML private TextField nationField;
+    @FXML private ComboBox<String> majorComboBox;
     @FXML private TextField politicsStatusField;
     
     @FXML private Button editButton;
@@ -73,7 +75,7 @@ public class UserDetailsController_student implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // 初始时禁用编辑按钮，后续根据权限启用
         editButton.setDisable(true);
-        
+        majorComboBox.setItems(FXCollections.observableArrayList("软件工程", "数字媒体技术", "大数据", "AI"));
         // 初始化下拉选项
         sexComboBox.setItems(FXCollections.observableArrayList("男", "女"));
         statusComboBox.setItems(FXCollections.observableArrayList("在校学习", "已毕业", "休学"));
@@ -123,6 +125,7 @@ public class UserDetailsController_student implements Initializable {
                             setLabelText(emailLabel, userInfo, "email");
                             setLabelText(phoneLabel, userInfo, "phone", "未设置");
                             setLabelText(collegeLabel, userInfo, "college", "未设置");
+                            setLabelText(majorLabel, userInfo, "major", "未设置");
                             setLabelText(ethnicLabel, userInfo, "ethnic");
                             setLabelText(nationLabel, userInfo, "nation");
                             setLabelText(politicsStatusLabel, userInfo, "politicsStatus");
@@ -146,6 +149,7 @@ public class UserDetailsController_student implements Initializable {
                             setTextFieldFromLabel(emailField, emailLabel);
                             setTextFieldFromLabel(phoneField, phoneLabel);
                             setTextFieldFromLabel(collegeField, collegeLabel);
+                            majorComboBox.getSelectionModel().select(majorLabel.getText());
                             setTextFieldFromLabel(ethnicField, ethnicLabel);
                             setTextFieldFromLabel(politicsStatusField, politicsStatusLabel);
                         }
@@ -226,7 +230,7 @@ public class UserDetailsController_student implements Initializable {
     private void resetLabelsToLoading() {
         // 设置所有标签为"加载中..."
         Label[] allLabels = { 
-            usernameLabel, sduidLabel, sexLabel, emailLabel, phoneLabel, collegeLabel, permissionLabel,
+            usernameLabel, sduidLabel, sexLabel, emailLabel, phoneLabel, collegeLabel, permissionLabel,majorLabel,
             gradeLabel, sectionLabel, statusLabel, admissionLabel, graduationLabel, ethnicLabel, politicsStatusLabel
         };
         
@@ -238,7 +242,7 @@ public class UserDetailsController_student implements Initializable {
     private void resetLabelsToError() {
         // 设置所有标签为错误状态
         Label[] allLabels = { 
-            usernameLabel, sduidLabel, sexLabel, emailLabel, phoneLabel, collegeLabel, permissionLabel,
+            usernameLabel, sduidLabel, sexLabel, emailLabel, phoneLabel, collegeLabel, permissionLabel,majorLabel,
             gradeLabel, sectionLabel, statusLabel, admissionLabel, graduationLabel, ethnicLabel, politicsStatusLabel
         };
         
@@ -253,7 +257,21 @@ public class UserDetailsController_student implements Initializable {
         // 切换到编辑模式
         toggleEditMode(true);
     }
-    
+    private String transMajor(){
+        String major = majorComboBox.getValue();
+        switch (major){
+            case "软件工程":
+                return "MAJOR_0";
+            case "数字媒体技术":
+                return "MAJOR_1";
+            case "大数据":
+                return "MAJOR_2";
+            case "AI":
+                return "MAJOR_3";
+            default:
+                return "MAJOR_-1";
+        }
+    }
     @FXML
     public void handleSave() {
         // 从编辑控件获取修改后的值
@@ -267,14 +285,14 @@ public class UserDetailsController_student implements Initializable {
         userInfo.put("college", collegeField.getText());
         userInfo.put("ethnic", ethnicField.getText());
         userInfo.put("nation", nationField.getText());
+        userInfo.put("major", transMajor());
         userInfo.put("PoliticsStatus", politicsStatusField.getText());
         userInfo.put("admission", admissionField.getText());
         userInfo.put("graduation", graduationField.getText());
         userInfo.put("grade", gradeField.getText());
         userInfo.put("section", sectionField.getText());
-        
         String statusValue = statusComboBox.getValue();
-        String statusToSend = null; // Default to null if not selected or invalid
+        String statusToSend = null;
         if (statusValue != null) {
              switch (statusValue) {
                 case "在校学习": statusToSend = "STUDYING"; break;
@@ -351,7 +369,8 @@ public class UserDetailsController_student implements Initializable {
         collegeLabel.setText(collegeField.getText().isEmpty() ? "未设置" : collegeField.getText());
         ethnicLabel.setText(ethnicField.getText());
         politicsStatusLabel.setText(politicsStatusField.getText());
-        
+        nationLabel.setText(nationField.getText());
+        majorLabel.setText(majorLabel.getText());
         // 从编辑控件更新标签显示的值
         gradeLabel.setText(gradeField.getText());
         sectionLabel.setText(sectionField.getText());
@@ -376,7 +395,7 @@ public class UserDetailsController_student implements Initializable {
         emailField.setVisible(editMode);
         phoneField.setVisible(editMode);
         collegeField.setVisible(editMode);
-        
+        majorComboBox.setVisible(editMode);
         // 显示/隐藏编辑控件
         gradeField.setVisible(editMode);
         sectionField.setVisible(editMode);
@@ -394,7 +413,7 @@ public class UserDetailsController_student implements Initializable {
         emailLabel.setVisible(!editMode);
         phoneLabel.setVisible(!editMode);
         collegeLabel.setVisible(!editMode);
-        
+        majorLabel.setVisible(!editMode);
         // 显示/隐藏标签
         gradeLabel.setVisible(!editMode);
         sectionLabel.setVisible(!editMode);
