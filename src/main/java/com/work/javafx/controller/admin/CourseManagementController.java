@@ -15,6 +15,7 @@ import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors; // Added for stream operations
 
 public class CourseManagementController implements Initializable {
 
@@ -553,15 +555,22 @@ public class CourseManagementController implements Initializable {
     }
 
     private void fetchAvailableClasses(java.util.function.Consumer<List<ClassSimpleInfo>> callback) {
-        String url = "/section/getSectionListAll?page=1&size=500";
+        String url = "/section/getSectionListAll?page=1&size=500"; // Ensure size is large enough
         NetworkUtils.get(url, new NetworkUtils.Callback<String>() {
             @Override public void onSuccess(String result) {
                 try {
                     JsonObject res = gson.fromJson(result, JsonObject.class);
                     if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
                         JsonObject data = res.getAsJsonObject("data");
+                        // Assuming the list of classes is under a key like "list" or "section"
+                        // Adjust "section" if the key is different in your API response
+                        JsonArray classArray = data.getAsJsonArray("section");
+                        if (classArray == null && data.has("list")) { // Fallback if key is "list"
+                            classArray = data.getAsJsonArray("list");
+                        }
+
                         Type listType = new TypeToken<ArrayList<ClassSimpleInfo>>(){}.getType();
-                        List<ClassSimpleInfo> classes = gson.fromJson(data.get("section"), listType);
+                        List<ClassSimpleInfo> classes = gson.fromJson(classArray, listType);
                         callback.accept(classes != null ? classes : new ArrayList<>());
                     } else {
                         ShowMessage.showErrorMessage("获取班级列表失败", res.has("msg") ? res.get("msg").getAsString() : "API数据格式错误");
@@ -584,38 +593,77 @@ public class CourseManagementController implements Initializable {
         if (!showConfirmDialog("确认操作", "确定要通过课程 \"" + app.getName() + "\" 的申请吗?")) return;
 
         if ("必修".equals(app.getType())) {
-            fetchAvailableClasses(classes -> {
-                if (classes == null || classes.isEmpty()) {
-                    ShowMessage.showErrorMessage("操作失败", "没有可用的班级进行绑定。");
+            fetchAvailableClasses(availableClasses -> {
+                if (availableClasses == null || availableClasses.isEmpty()) {
+                    ShowMessage.showErrorMessage("操作失败", "没有可用的班级进行绑定。请先添加班级。");
                     return;
                 }
-                Dialog<ClassSimpleInfo> dialog = new Dialog<>();
-                dialog.setTitle("选择班级");
-                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个班级进行绑定");
+
+                Dialog<List<ClassSimpleInfo>> dialog = new Dialog<>();
+                dialog.setTitle("选择班级绑定");
+                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个或多个班级进行绑定");
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                ComboBox<ClassSimpleInfo> combo = new ComboBox<>(FXCollections.observableArrayList(classes));
-                combo.setPromptText("请选择班级");
-                if (!classes.isEmpty()) combo.setValue(classes.get(0));
+                ListView<ClassSimpleInfo> classListView = new ListView<>(FXCollections.observableArrayList(availableClasses));
+                classListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                classListView.setPrefHeight(240);
+                classListView.setMinWidth(350);
 
-                VBox vbox = new VBox(10, new Label("选择绑定班级:"), combo);
-                vbox.setPadding(new javafx.geometry.Insets(10));
+                classListView.setCellFactory(lv -> new ListCell<ClassSimpleInfo>() {
+                    @Override
+                    protected void updateItem(ClassSimpleInfo item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty || item == null ? null : item.getName());
+                    }
+                });
+
+                VBox vbox = new VBox(10, new Label("请选择要绑定的班级 (可多选):"), classListView);
+                vbox.setPadding(new javafx.geometry.Insets(20));
                 dialog.getDialogPane().setContent(vbox);
 
-                Node okBtn = dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okBtn.setDisable(combo.getValue() == null);
-                combo.valueProperty().addListener((obs,ov,nv) -> okBtn.setDisable(nv == null));
+                Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(true);
 
-                dialog.setResultConverter(btnType -> btnType == ButtonType.OK ? combo.getValue() : null);
+                // Enable OK button only if at least one class is selected
+                classListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends ClassSimpleInfo> c) -> {
+                    okButton.setDisable(classListView.getSelectionModel().getSelectedItems().isEmpty());
+                });
 
-                dialog.showAndWait().ifPresent(selectedClass ->
-                        sendApprovalRequest(app, "1", String.valueOf(selectedClass.getId()), null, selectedClass.getName())
-                );
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        // getSelectedItems() returns an ObservableList, ensure it's converted to a new ArrayList
+                        return new ArrayList<>(classListView.getSelectionModel().getSelectedItems());
+                    }
+                    return null;
+                });
+
+                dialog.showAndWait().ifPresent(selectedClasses -> {
+                    // This block executes if OK was pressed and selectedClasses is not null (due to resultConverter).
+                    // The okButton disable logic ensures selectedClasses is not empty if OK was pressed.
+                    if (selectedClasses.isEmpty()) { // Defensive check
+                        ShowMessage.showErrorMessage("操作取消", "未选择任何班级。审批操作已取消。");
+                        return;
+                    }
+
+                    List<String> selectedClassIds = selectedClasses.stream()
+                            .map(csi -> String.valueOf(csi.getId())) // Assuming getId() returns int or long
+                            .collect(Collectors.toList());
+                    List<String> selectedClassNames = selectedClasses.stream()
+                            .map(ClassSimpleInfo::getName)
+                            .collect(Collectors.toList());
+
+                    String ccourseIdsString = String.join(",", selectedClassIds);
+                    // Use Chinese comma for display in messages if preferred
+                    String ccourseNamesString = String.join("，", selectedClassNames);
+
+                    sendApprovalRequest(app, "1", ccourseIdsString, null, ccourseNamesString);
+                });
             });
-        } else {
+        } else { // For non-compulsory courses
             sendApprovalRequest(app, "1", null, null, null);
         }
     }
+
 
     private void rejectCourse(CourseApplication app) {
         if (app == null) return;
@@ -639,13 +687,13 @@ public class CourseManagementController implements Initializable {
         Map<String, String> params = new HashMap<>();
         params.put("status", status);
 
-        if ("1".equals(status) && classId != null) {
-            params.put("ccourseId", classId);
+        System.out.println(classId);
+        if ("1".equals(status) && classId != null && !classId.isEmpty()) {
+
         }
 
         if ("2".equals(status)) {
             if (reason != null) params.put("reason", reason);
-
         }
 
         String url = "/class/approve/" + app.getId();
@@ -655,7 +703,7 @@ public class CourseManagementController implements Initializable {
                 if (res.has("code") && res.get("code").getAsInt() == 200) {
                     String msgAction = "1".equals(status) ? "批准" : "拒绝";
                     String msgDetails = app.getName();
-                    if ("1".equals(status) && successClassName != null) {
+                    if ("1".equals(status) && successClassName != null && !successClassName.isEmpty()) {
                         msgDetails += " 并绑定到班级: " + successClassName;
                     }
                     ShowMessage.showInfoMessage("操作成功", "已" + msgAction + "课程申请: " + msgDetails);
@@ -663,12 +711,14 @@ public class CourseManagementController implements Initializable {
                     pendingCourses.remove(app);
                     updatePendingBadge();
                     updatePendingPageInfo();
+                    pendingCourseTable.refresh(); // Refresh table after removal
 
-                    if ("1".equals(status)) {
+
+                    if ("1".equals(status)) { // If approved, refresh the main course list
                         if (coursePagination.getCurrentPageIndex() == 0) {
                             fetchCourseList(1, ROWS_PER_PAGE);
                         } else {
-                            coursePagination.setCurrentPageIndex(0);
+                            coursePagination.setCurrentPageIndex(0); // This will trigger a fetch
                         }
                     }
                 } else {

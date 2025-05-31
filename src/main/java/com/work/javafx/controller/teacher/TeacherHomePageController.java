@@ -9,6 +9,8 @@ import com.work.javafx.controller.admin.AddNewAnnouncementController;
 import com.work.javafx.controller.admin.editAnnouncementController;
 import com.work.javafx.entity.Data;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
+import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -644,10 +646,10 @@ public class TeacherHomePageController implements Initializable {
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
-            displayErrorMessage("打开公告编辑窗口失败: " + e.getMessage());
+            ShowMessage.showErrorMessage("打开公告编辑窗口失败: " , e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            displayErrorMessage("打开公告编辑窗口时发生意外错误: " + e.getMessage());
+            ShowMessage.showErrorMessage("打开公告编辑窗口失败: " , e.getMessage());
         }
     }
 
@@ -685,7 +687,7 @@ public class TeacherHomePageController implements Initializable {
                                     loadNotices();
                                 } else {
                                     String msg = res.has("msg") ? res.get("msg").getAsString() : "未知错误";
-                                    displayErrorMessage("关闭公告失败: " + msg);
+                                    ShowMessage.showErrorMessage("删除公告失败: " , msg);
                                 }
                             } catch (JsonParseException e) {
                                 displayErrorMessage("关闭公告失败: 服务器响应格式错误。");
@@ -695,8 +697,8 @@ public class TeacherHomePageController implements Initializable {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Platform.runLater(() -> displayErrorMessage("关闭公告操作失败: " + e.getMessage()));
-                        e.printStackTrace();
+                        String  msg = ResUtil.getMsgFromException(e);
+                        ShowMessage.showErrorMessage("删除错误",msg);
                     }
                 });
             }

@@ -94,7 +94,7 @@ public class TeacherManagementController implements Initializable {
 
     private void initFilters() {
         departmentFilter.setItems(FXCollections.observableArrayList(
-                "全部院系", "计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院"
+                "全部院系", "计算机学院", "数学学院", "物理学院", "外语学院", "经济管理学院","软件学院"
         ));
         departmentFilter.getSelectionModel().selectFirst();
 
@@ -161,7 +161,6 @@ public class TeacherManagementController implements Initializable {
             }
         };
     }
-
     /**
      * 初始化分页控件
      */
