@@ -40,6 +40,7 @@ public class UserInfoController implements Initializable {
     @FXML private Label graduationLabel;
     @FXML private Label userLabel;
     @FXML private Label useridLabel;
+    @FXML private Label IDLabel;
 
     private Gson gson = new Gson();
 
@@ -54,6 +55,7 @@ public class UserInfoController implements Initializable {
     }
 
     private void setLabels(String text) {
+        IDLabel.setText(text);
         admissionLabel_1.setText(text);
         nameLabel.setText(text);
         stuIdLabel.setText(text);
@@ -101,7 +103,6 @@ public class UserInfoController implements Initializable {
             String fullName = UserSession.getInstance().getUsername();
             String firstLetter = getFirstLetter(fullName);
             surnameLabel.setText(firstLetter);
-
             admissionLabel_1.setText( UserSession.getInstance().getAdmission() + "年");
             nameLabel.setText(fullName);
             stuIdLabel.setText(UserSession.getInstance().getSduid());
@@ -117,6 +118,7 @@ public class UserInfoController implements Initializable {
             admissionLabel.setText(UserSession.getInstance().getAdmission() + "年");
             graduationLabel.setText(UserSession.getInstance().getGraduation() + "年");
             numberLabel.setText(UserSession.getInstance().getNumber());
+            IDLabel.setText("ID:" + UserSession.getInstance().getId());
         });
     }
 
@@ -163,6 +165,7 @@ public class UserInfoController implements Initializable {
             session.setSex(getJsonValue(dataJson, "sex"));
             session.setMajor(getJsonValue(dataJson, "major"));
             session.setSduid(getJsonValue(dataJson, "sduid"));
+            session.setId(Integer.parseInt(getJsonValue(dataJson, "id")));
         } catch (Exception e) {
             e.printStackTrace();
         }

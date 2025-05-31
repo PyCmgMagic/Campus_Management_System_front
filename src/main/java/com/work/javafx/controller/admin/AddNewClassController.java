@@ -75,13 +75,25 @@ public class AddNewClassController implements Initializable {
             }
         });
     }
-    
+    private String transformMajor(String major){
+        switch (major){
+            case "软件工程":
+                return "MAJOR_0";
+            case "数字媒体技术":
+                return "MAJOR_1";
+            case "大数据":
+                return "MAJOR_2";
+            case "AI":
+                return "MAJOR_3";
+            default:
+                return "MAJOR_-1";
+        }
+    }
     @FXML
     private void submitForm() {
         if (isSaving) {
             return;
         }
-        
         if (!validateForm()) {
             return;
         }
@@ -89,9 +101,8 @@ public class AddNewClassController implements Initializable {
         isSaving = true;
         submitButton.setDisable(true);
         statusLabel.setText("正在保存...");
-
         Map<String, String> params = new HashMap<>();
-        params.put("major", majorComboBox.getValue());
+        params.put("major", transformMajor(majorComboBox.getValue()));
         params.put("advisorId", advisorIdField.getText());
         params.put("grade", gradeComboBox.getValue());
         params.put("number", numberField.getText());

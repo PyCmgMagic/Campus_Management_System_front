@@ -29,6 +29,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.HashMap;
@@ -112,7 +113,32 @@ public class ScoreSearchContentController implements Initializable {
         
         System.out.println("成绩查询界面初始化成功");
     }
-    
+    /*
+     * 获取统计数据
+     * */
+    private void fetchStatistics() {
+        Map<String,String> params = new HashMap<>();
+        params.put("term", academicYearComboBox.getValue());
+        NetworkUtils.get("/grade/getMessage", params, new Callback<String>() {
+            @Override
+            public void onSuccess(String result) throws IOException {
+                JsonObject responseJson = gson.fromJson(result, JsonObject.class);
+                if (responseJson.has("code") && responseJson.get("code").getAsInt() == 200) {
+                    JsonObject dataJson = responseJson.getAsJsonObject("data");
+                    try{
+                        rankingLabel.setText(dataJson.get("pointRank").getAsString());
+                    }catch (Exception ignore){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
     /**
      * 初始化下拉框选项
      */
@@ -497,10 +523,7 @@ public class ScoreSearchContentController implements Initializable {
         avgGpaLabel.setText(String.format("%.2f", avgGpa));
         totalCreditsLabel.setText(String.format("%.1f", totalCredits));
         completedCoursesLabel.setText(String.valueOf(courseCount));
-        
-        // 简单处理排名
-        //TODO:
-        rankingLabel.setText("--/--");
+        fetchStatistics();
     }
     
     /**

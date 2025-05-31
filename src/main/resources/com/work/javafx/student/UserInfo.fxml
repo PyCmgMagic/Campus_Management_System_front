@@ -7,24 +7,23 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="700" prefWidth="1000" stylesheets="/com/work/javafx/css/student/UserInfo.css" xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.work.javafx.controller.student.UserInfoController">
+<BorderPane prefHeight="700" prefWidth="1000" stylesheets="/com/work/javafx/css/student/UserInfo.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.student.UserInfoController">
 
     <top>
         <VBox spacing="10" styleClass="header-box">
             <HBox alignment="CENTER_LEFT" spacing="20" styleClass="user-info-bar">
-                <Label fx:id="surnameLabel" styleClass="info-value"/>
+                <Label fx:id="surnameLabel" styleClass="info-value" />
                 <VBox spacing="5">
-                    <Label fx:id="userLabel" styleClass="user-name"  />
+                    <Label fx:id="userLabel" styleClass="user-name" />
                     <HBox spacing="10">
                         <Label styleClass="user-id" text="学号" />
-                        <Label fx:id="useridLabel" styleClass="info-value"/>
+                        <Label fx:id="useridLabel" styleClass="info-value" />
                         <HBox spacing="10">
                             <Label styleClass="info-label" text="入学年份" />
                             <Label fx:id="admissionLabel_1" styleClass="info-value" />
                         </HBox>
                         <Label styleClass="user-id" text="学习年限：4年" />
+                  <Label fx:id="IDLabel" styleClass="user-id" text="ID：" />
                     </HBox>
                 </VBox>
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
@@ -53,8 +52,8 @@
                         <Label fx:id="genderLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
-                        <Label styleClass="info-label" text="国籍"/>
-                        <Label fx:id="nationLabel" styleClass="info-value"/>
+                        <Label styleClass="info-label" text="国籍" />
+                        <Label fx:id="nationLabel" styleClass="info-value" />
                     </HBox>
                     <HBox spacing="10">
                         <Label styleClass="info-label" text="民族" />

@@ -605,8 +605,8 @@ public class ScoreInputController implements Initializable {
                         if (res.has("code") && res.get("code").getAsInt() == 200) {
                             Platform.runLater(() -> {
                                 ShowMessage.showInfoMessage("提交成功", res.get("msg").getAsString());
-                                scoreTableView.setEditable(false);
-                                submitLockButton.setDisable(true);
+//                                scoreTableView.setEditable(false);
+//                                submitLockButton.setDisable(true);
                             });
                         } else {
                             Platform.runLater(() -> {
@@ -631,27 +631,24 @@ public class ScoreInputController implements Initializable {
 
 
     // --- 分数输入验证的辅助类 ---
-    private static class ScoreStringConverter extends StringConverter<Integer> { // Changed to Integer
+    private static class ScoreStringConverter extends StringConverter<Integer> {
         @Override
         public String toString(Integer object) {
-            return object == null ? "" : object.toString(); // Format for Integer
+            return object == null ? "" : object.toString();
         }
 
         @Override
         public Integer fromString(String string) {
             if (string == null || string.trim().isEmpty()) {
-                System.err.println("Empty score input. Corrected to 0.");
                 return 0;
             }
             try {
-                int value = Integer.parseInt(string); // Parse as Integer
+                int value = Integer.parseInt(string);
                 if (value < 0 || value > 100) {
-                    System.err.println("Score must be between 0 and 100: " + string + ". Corrected to 0.");
                     return 0;
                 }
                 return value;
             } catch (NumberFormatException e) {
-                System.err.println("Invalid score format: " + string + ". Corrected to 0.");
                 return 0;
             }
         }

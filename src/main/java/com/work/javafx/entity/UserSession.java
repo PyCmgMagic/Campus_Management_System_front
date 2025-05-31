@@ -6,6 +6,7 @@ public class UserSession {
     private String refreshToken;
     private String username;
     private Integer identity;
+    private Integer id;
     private String email;
     private String phone;
     private String sex;
@@ -23,6 +24,14 @@ public class UserSession {
     private String number;
 
     public String getNumber(){return  number; }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public void  setNumber(String number) { this.number = number; }
 
