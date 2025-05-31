@@ -376,6 +376,7 @@ public class UserDetailsController_student implements Initializable {
         sectionLabel.setText(sectionField.getText());
         statusLabel.setText(statusComboBox.getValue());
         admissionLabel.setText(admissionField.getText());
+        majorLabel.setText(majorComboBox.getValue());
         graduationLabel.setText(graduationField.getText());
     }
     
@@ -446,6 +447,7 @@ public class UserDetailsController_student implements Initializable {
             setTextFieldFromLabel(gradeField, gradeLabel);
             setTextFieldFromLabel(sectionField, sectionLabel);
             setComboBoxFromLabel(statusComboBox, statusLabel);
+            setComboBoxFromLabel(majorComboBox, majorLabel);
             setTextFieldFromLabel(admissionField, admissionLabel);
             setTextFieldFromLabel(graduationField, graduationLabel);
             
