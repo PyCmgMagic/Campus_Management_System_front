@@ -188,7 +188,7 @@ public class StudentMangementController implements Initializable {
                 viewBtn.setGraphic(viewIcon);
 
                 Region editIcon = new Region();
-                editIcon.getStyleClass().add("edit-icon");
+                editIcon.getStyleClass().add("reset-icon");
                 resetBtn.setGraphic(editIcon);
                 Region deleteIcon = new Region();
                 deleteIcon.getStyleClass().add("delete-icon");

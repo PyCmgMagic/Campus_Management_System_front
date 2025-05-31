@@ -118,7 +118,7 @@ public class CourseDetailsController implements Initializable {
         collegeLabel.setText(nullSafeGetString(courseData, "college"));
         courseTypeLabel.setText(nullSafeGetString(courseData, "type"));
         creditLabel.setText(nullSafeGetString(courseData, "point"));
-        teacherIdLabel.setText(nullSafeGetString(courseData, "teacherId"));
+        teacherIdLabel.setText(nullSafeGetString(courseData, "teacherName"));
         classNumLabel.setText(nullSafeGetString(courseData, "classNum"));
 
         // 课程信息

@@ -205,7 +205,9 @@ public class ClassManagementController implements Initializable {
         Map<String, String> params = new HashMap<>();
         params.put("page", String.valueOf(pageIndex + 1));
         params.put("size", String.valueOf(ROWS_PER_PAGE));
-
+        if(!searchField.getText().isEmpty()){
+            params.put("keyword", searchField.getText());
+        }
         String selectedGrade = gradeFilter.getValue();
         if (selectedGrade != null && !selectedGrade.equals("全部年级")) {
             String gradeValue = selectedGrade.replace("级", "").trim();

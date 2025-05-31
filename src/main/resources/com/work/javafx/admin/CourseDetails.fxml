@@ -66,7 +66,7 @@
                                     <Label fx:id="courseTypeLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                     <Label styleClass="field-label" text="学分" GridPane.rowIndex="2" />
                                     <Label fx:id="creditLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Label styleClass="field-label" text="授课教师ID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label styleClass="field-label" text="授课教师" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     <Label fx:id="teacherIdLabel" styleClass="field-value" text="--" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                     <Label styleClass="field-label" text="课序号" GridPane.rowIndex="3" />
                                     <Label fx:id="classNumLabel" styleClass="field-value" text="--" GridPane.columnIndex="1" GridPane.rowIndex="3" />
