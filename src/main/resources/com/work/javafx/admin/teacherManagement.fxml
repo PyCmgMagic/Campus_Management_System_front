@@ -76,7 +76,7 @@
                         <HBox styleClass="search-row">
                             <HBox styleClass="search-input-container" HBox.hgrow="ALWAYS">
                                 <Region styleClass="search-icon" />
-                                <TextField fx:id="searchField" promptText="搜索教师姓名、工号、所属院系..." styleClass="search-input" HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="searchField" promptText="搜索教师姓名、工号" styleClass="search-input" HBox.hgrow="ALWAYS" />
                             </HBox>
                             <Button onAction="#searchTeachers" styleClass="btn,primary-btn" text="搜索" />
                             <Button onAction="#resetFilters" styleClass="btn,default-btn" text="重置" />
