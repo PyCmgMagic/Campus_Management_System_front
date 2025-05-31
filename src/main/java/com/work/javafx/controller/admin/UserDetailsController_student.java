@@ -30,6 +30,7 @@ public class UserDetailsController_student implements Initializable {
     private boolean isEditMode = false;
     
     @FXML private Label idLabel;
+    @FXML private Label idLabel1;//id
     @FXML private Label usernameLabel;
     @FXML private Label sduidLabel;
     @FXML private Label sexLabel;
@@ -44,6 +45,7 @@ public class UserDetailsController_student implements Initializable {
     @FXML private Label admissionLabel;
     @FXML private Label graduationLabel;
     @FXML private Label ethnicLabel;
+    @FXML private Label nationLabel;
     @FXML private Label politicsStatusLabel;
     
     @FXML private TextField usernameField;
@@ -59,6 +61,7 @@ public class UserDetailsController_student implements Initializable {
     @FXML private TextField admissionField;
     @FXML private TextField graduationField;
     @FXML private TextField ethnicField;
+    @FXML private TextField nationField;
     @FXML private TextField politicsStatusField;
     
     @FXML private Button editButton;
@@ -112,6 +115,7 @@ public class UserDetailsController_student implements Initializable {
                             // 显示基本信息
                             setLabelText(usernameLabel, userInfo, "username");
                             setLabelText(sduidLabel, userInfo, "sduid");
+                            idLabel1.setText("ID:"+userInfo.get("id").getAsString());
                             if (userInfo.has("sduid") && !userInfo.get("sduid").isJsonNull()) {
                                 idLabel.setText("学号: " + userInfo.get("sduid").getAsString());
                             }
@@ -120,6 +124,7 @@ public class UserDetailsController_student implements Initializable {
                             setLabelText(phoneLabel, userInfo, "phone", "未设置");
                             setLabelText(collegeLabel, userInfo, "college", "未设置");
                             setLabelText(ethnicLabel, userInfo, "ethnic");
+                            setLabelText(nationLabel, userInfo, "nation");
                             setLabelText(politicsStatusLabel, userInfo, "politicsStatus");
                             
                             // 设置权限标签
@@ -174,6 +179,8 @@ public class UserDetailsController_student implements Initializable {
                             setTextFieldFromLabel(sectionField, sectionLabel);
                             setTextFieldFromLabel(admissionField, admissionLabel);
                             setTextFieldFromLabel(graduationField, graduationLabel);
+                            setTextFieldFromLabel(nationField, nationLabel);
+
                         }
                         
                         // 数据加载成功后可以启用编辑按钮
@@ -259,6 +266,7 @@ public class UserDetailsController_student implements Initializable {
         userInfo.put("phone", phoneField.getText());
         userInfo.put("college", collegeField.getText());
         userInfo.put("ethnic", ethnicField.getText());
+        userInfo.put("nation", nationField.getText());
         userInfo.put("PoliticsStatus", politicsStatusField.getText());
         userInfo.put("admission", admissionField.getText());
         userInfo.put("graduation", graduationField.getText());
@@ -376,6 +384,7 @@ public class UserDetailsController_student implements Initializable {
         admissionField.setVisible(editMode);
         graduationField.setVisible(editMode);
         ethnicField.setVisible(editMode);
+        nationField.setVisible(editMode);
         politicsStatusField.setVisible(editMode);
         
         // 显示/隐藏标签
@@ -393,6 +402,7 @@ public class UserDetailsController_student implements Initializable {
         admissionLabel.setVisible(!editMode);
         graduationLabel.setVisible(!editMode);
         ethnicLabel.setVisible(!editMode);
+        nationLabel.setVisible(!editMode);
         politicsStatusLabel.setVisible(!editMode);
         
         // 显示/隐藏按钮

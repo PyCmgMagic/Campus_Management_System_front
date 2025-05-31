@@ -2,8 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -11,8 +13,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ComboBox?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/admin/UserDetails.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.work.javafx.controller.admin.UserDetailsController_student">
    <children>
@@ -28,14 +28,23 @@
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="idLabel" styleClass="id-label" text="学号: 202400000001">
-                     <HBox.margin>
-                        <Insets left="20.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                  <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="498.0" spacing="25.0">
+                     <children>
+                        <Label fx:id="idLabel" styleClass="id-label" text="学号: 202400000001">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="idLabel1" styleClass="id-label" text="ID: ">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
@@ -121,6 +130,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -131,23 +141,27 @@
                               <Label styleClass="field-label" text="状态" GridPane.rowIndex="2" />
                               <Label styleClass="field-label" text="入学年份" GridPane.rowIndex="3" />
                               <Label styleClass="field-label" text="毕业年份" GridPane.rowIndex="4" />
-                              <Label styleClass="field-label" text="民族" GridPane.rowIndex="5" />
-                              <Label styleClass="field-label" text="政治面貌" GridPane.rowIndex="6" />
+                              <Label styleClass="field-label" text="国籍" GridPane.rowIndex="5" />
+                              <Label styleClass="field-label" text="民族" GridPane.rowIndex="6" />
+                              <Label styleClass="field-label" text="政治面貌" GridPane.rowIndex="7" />
                               <Label fx:id="gradeLabel" styleClass="field-value" text="2024" GridPane.columnIndex="1" />
                               <Label fx:id="sectionLabel" styleClass="field-value" text="1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="statusLabel" styleClass="field-value" text="在学" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label fx:id="admissionLabel" styleClass="field-value" text="2024" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Label fx:id="graduationLabel" styleClass="field-value" text="2028" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label fx:id="ethnicLabel" styleClass="field-value" text="汉族" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label fx:id="politicsStatusLabel" styleClass="field-value" text="群众" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label fx:id="nationLabel" styleClass="field-value" text="中国" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label fx:id="ethnicLabel" styleClass="field-value" text="汉族" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label fx:id="politicsStatusLabel" styleClass="field-value" text="群众" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
                               <TextField fx:id="gradeField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" />
                               <TextField fx:id="sectionField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <ComboBox fx:id="statusComboBox" prefWidth="225.0" styleClass="combo-box-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField fx:id="admissionField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="graduationField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="ethnicField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField fx:id="politicsStatusField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="nationField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <TextField fx:id="ethnicField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="politicsStatusField" styleClass="field-edit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
                            </children>
                         </GridPane>
                      </children>
