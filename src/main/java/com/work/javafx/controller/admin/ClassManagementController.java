@@ -377,7 +377,10 @@ public class ClassManagementController implements Initializable {
                                     for (int i = 0; i < dataArray.size(); i++) {
                                         JsonObject classJson = dataArray.get(i).getAsJsonObject();
                                         String id = classJson.has("id") ? classJson.get("id").getAsString() : "N/A";
-                                        String major = classJson.has("major") ? classJson.get("major").getAsString() : "未知专业";
+                                        String major = "未知专业";
+                                        try{
+                                            major = classJson.get("major").getAsString();
+                                        }catch (Exception ignore){}
                                         String number = classJson.has("number") ? classJson.get("number").getAsString() : "未知班号";
                                         String name = major + number;
                                         String department = "软件学院";
