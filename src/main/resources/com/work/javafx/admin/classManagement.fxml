@@ -99,9 +99,7 @@
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="班级列表" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <HBox styleClass="list-actions">
-                                <Button fx:id="batchDeleteBtn" styleClass="btn,danger-btn" text="批量删除" />
-                            </HBox>
+                            <HBox styleClass="list-actions" />
                         </HBox>
 
                         <TableView fx:id="classTable" minHeight="-Infinity" styleClass="course-table" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"> <!-- Reuse course-table style -->

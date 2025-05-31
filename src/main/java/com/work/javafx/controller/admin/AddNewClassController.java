@@ -197,11 +197,12 @@ public class AddNewClassController implements Initializable {
         if (gradeComboBox.getValue() == null || gradeComboBox.getValue().isEmpty()) {
             errors.append("请选择年级\n");
         }
-        
-        if (advisorIdField.getText() == null || advisorIdField.getText().isEmpty()) {
-            errors.append("请输入导员ID\n");
+        if(ClassID == -1){
+            if (advisorIdField.getText() == null || advisorIdField.getText().isEmpty()) {
+                errors.append("请输入导员ID\n");
+            }
         }
-        
+
         if (numberField.getText() == null || numberField.getText().isEmpty()) {
             errors.append("请输入班级编号\n");
         }

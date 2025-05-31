@@ -599,7 +599,7 @@ public class CourseManagementController implements Initializable {
 
                 Dialog<List<ClassSimpleInfo>> dialog = new Dialog<>();
                 dialog.setTitle("选择班级绑定");
-                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个或多个班级进行绑定(shift+鼠标左键多选)");
+                dialog.setHeaderText("为必修课程 '" + app.getName() + "' 选择一个或多个班级进行绑定(shift+鼠标左键多选)/(CTRL + 左键)");
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
                 ListView<ClassSimpleInfo> classListView = new ListView<>(FXCollections.observableArrayList(availableClasses));
