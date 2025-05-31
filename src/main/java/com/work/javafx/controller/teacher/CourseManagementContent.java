@@ -80,7 +80,10 @@ static Gson gson = new Gson();
      * 获取统计数据
      * */
     private  void fetchStatistics(){
-        NetworkUtils.get("/Teacher/countClass", new NetworkUtils.Callback<String>() {
+        String term = semesterComboBox.getValue();
+        Map<String,String> param = new HashMap<>();
+        param.put("term", term);
+        NetworkUtils.get("/Teacher/countClass",param, new NetworkUtils.Callback<String>() {
             @Override
             public void onSuccess(String result) throws IOException {
                 JsonObject res = gson.fromJson(result, JsonObject.class);
@@ -548,7 +551,6 @@ static Gson gson = new Gson();
     public void handlequery(ActionEvent actionEvent) {
         currentPage = 1;
         loadData(currentPage,"/class/searchTeacherCourses");
-        System.out.println("cahxun");
     }
 
     // 更新分页控件状态
@@ -592,40 +594,7 @@ static Gson gson = new Gson();
         }
     }
 
-//    // 课程类
-//    public static class CourseForScoreInput {
-//        private final String courseCode;
-//        private final String courseName;
-//        private final String otherTeachers;
-//        private final String semester;
-//        private final String credits;
-//        private final String studentCount;
-//        private final String syllabusStatus;
-//        private final String status;
-//        private final HBox actions;
-//
-//        public CourseForScoreInput(String courseCode, String courseName, String otherTeachers,
-//                     String semester, String credits, String studentCount,
-//                     String syllabusStatus, String status, HBox actions) {
-//            this.courseCode = courseCode;
-//            this.courseName = courseName;
-//            this.otherTeachers = otherTeachers;
-//            this.semester = semester;
-//            this.credits = credits;
-//            this.studentCount = studentCount;
-//            this.syllabusStatus = syllabusStatus;
-//            this.status = status;
-//            this.actions = actions;
-//        }
-//
-//        public String getCourseCode() { return courseCode; }
-//        public String getCourseName() { return courseName; }
-//        public String getOtherTeachers() { return otherTeachers; }
-//        public String getSemester() { return semester; }
-//        public String getCredits() { return credits; }
-//        public String getStudentCount() { return studentCount; }
-//        public String getSyllabusStatus() { return syllabusStatus; }
-//        public String getStatus() { return status; }
-//        public HBox getActions() { return actions; }
-//    }
+    public void handleSemesterChange(ActionEvent actionEvent) {
+        fetchStatistics();
+    }
 }

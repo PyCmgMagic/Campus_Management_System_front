@@ -349,6 +349,7 @@ public class AddNewStudentController implements Initializable {
         params.put("ethnic", ethnicComboBox.getValue());
         params.put("password", "123456");
         params.put("nation", nationComboBox.getValue());
+        params.put("college", "软件学院");
         params.put("phone", phoneField.getText().trim());
         params.put("PoliticsStatus", politicsStatusComboBox.getValue());
         params.put("SDUId", sduIdField.getText().trim());

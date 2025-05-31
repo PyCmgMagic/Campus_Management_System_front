@@ -35,7 +35,7 @@
             <HBox styleClass="filter-row">
                 <HBox styleClass="filter-item">
                     <Label text="学期:" />
-                    <ComboBox fx:id="semesterComboBox" styleClass="filter-combo" />
+                    <ComboBox onAction="#handleSemesterChange" fx:id="semesterComboBox" styleClass="filter-combo" />
                 </HBox>
                 <HBox styleClass="filter-item" />
                 <HBox styleClass="filter-item">
