@@ -217,9 +217,6 @@ public class TeacherHomePageController implements Initializable {
                     // 确保 'time' 字段存在且为整数
                     int index = 0;
                     try {
-                        if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
-                            continue;
-                        }
                        index = course.get("time").getAsInt();
                     }catch (Exception e){
                         continue;
@@ -231,15 +228,21 @@ public class TeacherHomePageController implements Initializable {
                     if (courseDay == dayOfWeek) {
                         hasCourses = true;
                         String courseName = course.has("name") ? course.get("name").getAsString() : "未知课程";
-                        String classroom = course.has("classroom") ? course.get("classroom").getAsString() : "未知地点";
-                        String classInfo = course.has("className") ? course.get("className").getAsString() : "";
-                        String studentsCount = course.has("studentsCount") ? course.get("studentsCount").getAsString() : "";
+                        String  classroom = "";
+                        try{
+                             classroom = course.has("classroom") ? course.get("classroom").getAsString() : "未知地点";
+                        }catch (Exception ignored){}
+                        String classInfo = "";
+                        try {
+                             classInfo = course.has("className") ? course.get("className").getAsString() : "";
+                        }catch (Exception ignored){}
+//                        String studentsCount = course.has("studentsCount") ? course.get("studentsCount").getAsString() : "";
 
                         // 计算是第几节课 (0-4, 对应 timeSlots 数组的索引)
                         int timeSlotIndex = index % 5;
 
                         // 添加课程项
-                        addCourseItem(timeSlots[timeSlotIndex], courseName, classroom, classInfo, studentsCount);
+                        addCourseItem(timeSlots[timeSlotIndex], courseName, classroom, classInfo);
                     }
                 }
 
@@ -260,9 +263,8 @@ public class TeacherHomePageController implements Initializable {
      * @param courseName 课程名称
      * @param location 上课地点
      * @param classInfo 班级信息
-     * @param studentsCount 学生人数
      */
-    private void addCourseItem(String time, String courseName, String location, String classInfo, String studentsCount) {
+    private void addCourseItem(String time, String courseName, String location, String classInfo) {
         VBox courseItem = new VBox();
         courseItem.getStyleClass().add("course-item");
 
@@ -292,34 +294,12 @@ public class TeacherHomePageController implements Initializable {
 
         locationBox.getChildren().addAll(locationIcon, locationLabel);
 
-        // 学生信息
-        HBox studentsBox = new HBox(5); // Spacing for icon and label
-        studentsBox.getStyleClass().add("course-students");
-        studentsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-        FontAwesomeIconView studentsIcon = new FontAwesomeIconView();
-        studentsIcon.setGlyphName("USERS");
-        studentsIcon.setSize("12");
-
-        // 组合班级信息和人数
-        String studentInfo = classInfo;
-        if (studentsCount != null && !studentsCount.isEmpty() && !"0".equals(studentsCount)) { // Check for "0" as well
-            studentInfo += (studentInfo.isEmpty() ? "" : " / ") + studentsCount + "人";
-        }
-        if (studentInfo.isEmpty()) {
-            studentInfo = "暂无学生信息";
-        }
-
-        Label studentsLabel = new Label(studentInfo);
-
-        studentsBox.getChildren().addAll(studentsIcon, studentsLabel);
-
         // 添加空白占位
         javafx.scene.layout.Pane spacer = new javafx.scene.layout.Pane();
         javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
         // 组装课程信息
-        courseInfo.getChildren().addAll(locationBox, spacer, studentsBox);
+        courseInfo.getChildren().addAll(locationBox, spacer);
 
         // 组装整个课程项
         courseItem.getChildren().addAll(timeLabel, courseNameLabel, courseInfo);

@@ -93,9 +93,9 @@ public class HomeContentController implements Initializable {
         LocalDate today = LocalDate.now();
         // 获取今天是星期几 (1 = 星期一, ..., 7 = 星期日)
         int dayOfWeekValue = today.getDayOfWeek().getValue();
-
         // 获取当前学期
         String currentTerm = Data.getInstance().getCurrentTerm();
+        System.out.println("当前学期currentTerm："+currentTerm);
         if (currentTerm == null || currentTerm.isEmpty()) {
             // 当前学期为空，需要从服务器获取
             fetchCurrentTerm(() -> {
@@ -166,6 +166,7 @@ public class HomeContentController implements Initializable {
      */
     private void filterAndDisplayTodayCourses(JsonArray data, int dayOfWeekValue) {
         Platform.runLater(() -> {
+            System.out.println("进入筛选并显示今日课程");
             if (todayCoursesContainer != null) {
                 todayCoursesContainer.getChildren().clear();
 
@@ -184,27 +185,26 @@ public class HomeContentController implements Initializable {
                     JsonObject course = element.getAsJsonObject();
                     int timeIndex =  0;
                   try{
-                      if (!course.has("time") || !course.get("time").isJsonPrimitive() || !course.get("time").getAsJsonPrimitive().isNumber()) {
-                          continue;
-                      }
                        timeIndex = course.get("time").getAsInt(); // timeIndex 从0开始，代表周一第一节课
                   }catch (Exception e){
                       continue;
                   }
                     // 计算课程在哪一天 (1=周一, ..., 7=周日)
                     int courseDay = (timeIndex / 5) + 1;
-
                     // 如果是今天的课程
                     if (courseDay == dayOfWeekValue) {
                         hasCoursesToday = true;
-
                         String courseName = course.has("name") ? course.get("name").getAsString() : "未知课程";
-                        String classroom = course.has("classroom") ? course.get("classroom").getAsString() : "地点待定";
-                        // 学生端可能还需要显示教师名称
-                        String teacherName = course.has("teacherName") ? course.get("teacherName").getAsString() : "";
+                        String classroom = "";
+                        try{
+                             classroom = course.has("classroom") ? course.get("classroom").getAsString() : "地点待定";
+                        }catch (Exception ignored){}
+                        String teacherName = "";
+                        try{
+                             teacherName = course.has("teacherName") ? course.get("teacherName").getAsString() : "";
+                        }catch (Exception ignored){}
 
-
-                        // 计算是当天的第几大节课 (0-4, 对应 timeSlots 数组的索引)
+                        // 计算是当天的第几大节课
                         int slotInDay = timeIndex % 5;
 
                         // 添加课程项到UI
@@ -219,6 +219,8 @@ public class HomeContentController implements Initializable {
                     noCourseLabel.setStyle("-fx-padding: 15px; -fx-text-fill: #888; -fx-alignment: center; -fx-font-style: italic;");
                     todayCoursesContainer.getChildren().add(noCourseLabel);
                 }
+            }else{
+                System.out.println("todayCoursesContainer为空");
             }
         });
     }
@@ -619,42 +621,6 @@ public class HomeContentController implements Initializable {
             if (callback != null) Platform.runLater(() -> callback.accept(null));
             return;
         }
-        Map<String, String> params = new HashMap<>();
-        params.put("term", term); // API可能需要的参数名
         callback.accept("1");
-        //TODO:
-//        NetworkUtils.get("/week/getTermCurrentWeek", params, new NetworkUtils.Callback<String>() {
-//            @Override
-//            public void onSuccess(String result) throws IOException {
-//                try {
-//                    JsonObject res = gson.fromJson(result, JsonObject.class);
-//                    if (res.has("code") && res.get("code").getAsInt() == 200 && res.has("data")) {
-//                        String currentWeek = res.get("data").getAsString();
-//                        System.out.println("学生端成功获取当前教学周: " + currentWeek + " (学期: " + term + ")");
-//                        if (callback != null) Platform.runLater(() -> callback.accept(currentWeek));
-//                    } else {
-//                        String errorMsg = res.has("msg") ? res.get("msg").getAsString() : "未知错误或数据格式不正确";
-//                        System.err.println("学生端获取当前教学周失败: " + errorMsg);
-//                        if (callback != null) Platform.runLater(() -> callback.accept(null));
-//                    }
-//                } catch (JsonParseException e) {
-//                    System.err.println("学生端解析当前教学周数据时发生JSON错误: " + e.getMessage());
-//                    if (callback != null) Platform.runLater(() -> callback.accept(null));
-//                    e.printStackTrace();
-//                } catch (Exception e) { // 更广泛的异常
-//                    System.err.println("学生端处理当前教学周数据时发生错误: " + e.getMessage());
-//                    if (callback != null) Platform.runLater(() -> callback.accept(null));
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                String msg = ResUtil.getMsgFromException(e);
-//                System.err.println("学生端获取当前教学周网络请求失败: " + msg);
-//                if (callback != null) Platform.runLater(() -> callback.accept(null));
-//                e.printStackTrace();
-//            }
-//        });
     }
 }

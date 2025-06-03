@@ -179,6 +179,8 @@
 
 .course-item {
     -fx-border-color: transparent transparent transparent #d32f2f;
+    -fx-background-color: #fff9f9;
+
     -fx-border-width: 0 0 0 3px;
     -fx-padding: 5px 0 5px 10px;
     -fx-spacing: 5px;

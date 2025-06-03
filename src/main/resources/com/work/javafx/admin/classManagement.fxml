@@ -94,7 +94,6 @@
                         </GridPane>
                     </VBox>
 
-                    <!-- Class List Container -->
                     <VBox styleClass="list-container" VBox.vgrow="ALWAYS">
                         <HBox styleClass="list-header">
                             <Label styleClass="list-title" text="班级列表" />
