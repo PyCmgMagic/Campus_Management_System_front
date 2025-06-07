@@ -42,3 +42,5 @@ build/
 /src/main/resources/application.properties
 /custom-runtime/
 /CampusSystem/
+/release/
+/wix/
