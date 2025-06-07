@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.work.javafx.controller.teacher.PersonalCenterContent;
 import com.work.javafx.entity.UserSession;
 import com.work.javafx.util.NetworkUtils;
+import com.work.javafx.util.ResUtil;
 import com.work.javafx.util.ShowMessage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -256,6 +257,7 @@ public class UserInfo1 implements Initializable {
         verifyBody.put("code", verifyCode);
         String body = gson.toJson(verifyBody);
         NetworkUtils.post("/verify/verifyCode", body, new NetworkUtils.Callback<String>() {
+
             @Override
             public void onSuccess(String result) {
                 Platform.runLater(() -> {
@@ -277,7 +279,8 @@ public class UserInfo1 implements Initializable {
             @Override
             public void onFailure(Exception e) {
                 Platform.runLater(() -> {
-                    ShowMessage.showErrorMessage("请求失败", "验证码验证失败：" + e.getMessage());
+                    String msg = ResUtil.getMsgFromException(e);
+                    ShowMessage.showErrorMessage("验证码验证失败：", msg);
                 });
             }
         });

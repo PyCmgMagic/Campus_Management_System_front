@@ -125,7 +125,7 @@ public class ScoreInputController implements Initializable {
  * 初始化获取统计数据
  * */
 //private  void fetchStatistics(){
-//    NetworkUtils.get("/Teacher/countClass", new NetworkUtils.Callback<String>() {
+//    NetworkUtils.get("/grade/getMessage", new NetworkUtils.Callback<String>() {
 //        @Override
 //        public void onSuccess(String result) throws IOException {
 //            JsonObject res = gson.fromJson(result, JsonObject.class);
