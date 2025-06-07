@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.work.javafx.controller.student.StudentBaseViewController;
 import com.work.javafx.entity.Data;
+import com.work.javafx.model.Course;
 import com.work.javafx.util.NetworkUtils;
 import com.work.javafx.util.ShowMessage;
 import javafx.event.ActionEvent;
@@ -171,7 +172,6 @@ static Gson gson = new Gson();
                     System.out.println("失败！"+ res.get("msg").getAsString());
                 }
             }
-
             @Override
             public void onFailure(Exception e) {
                 System.out.println(e);
@@ -238,12 +238,15 @@ static Gson gson = new Gson();
         switch (status) {
             case "active":
                 Button viewStudentsButton = createIconButton("👥", "查看学生名单");
+                Button viewButton = createIconButton("查看详情", "查看详情");
                 Button enterGradesButton = createTextButton("成绩录入", "primary");
 
                 viewStudentsButton.setOnAction(event -> handleViewStudents(course));
+                viewButton.setOnAction(event -> handleViewButton(course));
                 enterGradesButton.setOnAction(event -> handleEnterGrades(course));
                 buttons.getChildren().addAll(
                     viewStudentsButton,
+                        viewButton,
                     enterGradesButton
                 );
                 break;
@@ -441,6 +444,28 @@ static Gson gson = new Gson();
             e.printStackTrace();
         }
 
+    }
+
+
+    private void handleViewButton(UltimateCourse course) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/work/javafx/admin/CourseDetails.fxml"));
+            Parent root = loader.load();
+            CourseDetailsController ctrl = loader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.NONE);
+            stage.initStyle(StageStyle.UNIFIED);
+            stage.setTitle("查看课程详情");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setMinWidth(700); stage.setMinHeight(550);
+            ctrl.setStage(stage);
+            ctrl.loadCourseDetails(Integer.parseInt(course.getCourseCode()));
+            ctrl.setApplicable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowMessage.showErrorMessage("错误", "无法加载课程详情: " + e.getMessage());
+        }
     }
     // 处理查看学生名单按钮点击事件
     private void handleViewStudents(UltimateCourse course) {

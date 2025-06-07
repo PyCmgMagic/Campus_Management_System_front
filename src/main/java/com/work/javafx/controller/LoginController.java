@@ -696,7 +696,6 @@ public class LoginController {
         handleLogin(actionEvent);
 
     }
-
     public void adminlogin(ActionEvent actionEvent) {
         usernameField.setText("1");
         passwordField.setText("123456");

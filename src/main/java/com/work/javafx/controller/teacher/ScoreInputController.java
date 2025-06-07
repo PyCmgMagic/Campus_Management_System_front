@@ -605,8 +605,25 @@ public class ScoreInputController implements Initializable {
                         if (res.has("code") && res.get("code").getAsInt() == 200) {
                             Platform.runLater(() -> {
                                 ShowMessage.showInfoMessage("提交成功", res.get("msg").getAsString());
-//                                scoreTableView.setEditable(false);
-//                                submitLockButton.setDisable(true);
+                                Map<String, String> params = new HashMap<>();
+                                params.put("classId", currentCourse.getId());
+                                NetworkUtils.post("/class/updateRank", params, null, new NetworkUtils.Callback<String>() {
+                                    @Override
+                                    public void onSuccess(String result) throws IOException {
+                                        JsonObject res = gson.fromJson(result, JsonObject.class);
+                                        if(res.get("code").getAsInt() == 200){
+                                            System.out.println("排名更新成功");
+                                        }else {
+                                            System.err.println("排名更新失败:"+ res.get("msg").getAsString());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                    String msg = ResUtil.getMsgFromException(e);
+                                    System.err.println(msg);
+                                    }
+                                });
                             });
                         } else {
                             Platform.runLater(() -> {

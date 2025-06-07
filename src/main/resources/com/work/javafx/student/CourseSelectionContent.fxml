@@ -64,18 +64,7 @@
             <VBox styleClass="course-list-container">
                 <!-- 颜色说明 -->
                 <HBox styleClass="status-legend">
-                    <HBox styleClass="legend-item">
-                        <Region styleClass="legend-dot, available-dot" />
-                        <Label styleClass="legend-text" text="可选" />
-                    </HBox>
-                    <HBox styleClass="legend-item">
-                        <Region styleClass="legend-dot, selected-dot" />
-                        <Label styleClass="legend-text" text="已选" />
-                    </HBox>
-                    <HBox styleClass="legend-item">
-                        <Region styleClass="legend-dot, full-dot" />
-                        <Label styleClass="legend-text" text="已满" />
-                    </HBox>
+
                     <Region HBox.hgrow="ALWAYS" />
                     <Label fx:id="courseCountLabel" styleClass="course-count" text="共找到5门课程" />
                 </HBox>
