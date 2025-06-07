@@ -42,6 +42,8 @@ import java.util.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.work.javafx.util.NetworkUtils.BaseUrl;
+
 public class LoginController {
 
     Gson gson = new Gson();
@@ -526,7 +528,7 @@ public class LoginController {
     }
 
     public void handleClick(ActionEvent actionEvent) {
-        String url = "http://110.42.38.155:8081/login/toLogin?deviceId=";
+        String url = BaseUrl + "/login/toLogin?deviceId=";
         String deviceId = generateDeviceId();
         String fullUrl = url + deviceId;
         try {

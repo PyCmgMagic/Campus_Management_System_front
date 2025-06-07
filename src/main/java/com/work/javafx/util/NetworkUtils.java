@@ -33,10 +33,10 @@ import javafx.concurrent.Task;
  */
 public class NetworkUtils {
     private static final Logger LOGGER = Logger.getLogger(NetworkUtils.class.getName());
-    private static final int TIMEOUT = 10000; // 超时时间，单位毫秒
+    private static final int TIMEOUT = 30000; // 超时时间，单位毫秒
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
-    private static String BaseUrl;
+    public static String BaseUrl;
     String token = "Bearer " + UserSession.getInstance().getToken();
     static {
         loadConfiguration();
